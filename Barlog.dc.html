@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Barlog</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Barlog">
+<meta name="theme-color" content="#0A0A0C">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-180.png">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;height:100%;background:#0A0A0C;color:#FFFFFF;font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overscroll-behavior:none;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+*{box-sizing:border-box}
+a{color:#CCFF00;text-decoration:none}a:hover{text-decoration:underline}
+button{font-family:inherit;cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+input{font-family:inherit;outline:none}
+input::placeholder{color:#9C9CA8}
+::-webkit-scrollbar{width:0;height:0}
+</style>
+</helmet>
+<div style="position:fixed;inset:0;background:#0A0A0C;">
+<div style="position:absolute;top:env(safe-area-inset-top);bottom:0;left:0;right:0;max-width:480px;margin:0 auto;overflow:hidden;">
+
+<sc-if value="{{ toastOn }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:8px;left:0;right:0;display:flex;justify-content:center;z-index:40;pointer-events:none;">
+<div style="padding:8px 14px;border-radius:999px;background:#16161A;border:1px solid #33333C;font-size:14px;font-weight:600;color:#FFFFFF;display:flex;gap:8px;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#CCFF00;"></span>{{ toast }}</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isToday }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 16px 24px;display:flex;flex-direction:column;gap:20px;">
+<sc-if value="{{ showInstall }}" hint-placeholder-val="{{ false }}">
+<div style="background:#16161A;border:1px solid #CCFF00;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+<span style="font-size:16px;font-weight:700;">Install on your iPhone</span>
+<span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">In Safari: tap Share, then “Add to Home Screen”. Barlog opens full-screen, works offline, and your data is kept safe from Safari’s cleanup.</span>
+<button onClick="{{ dismissInstall }}" style="align-self:flex-start;height:44px;padding:0 16px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">Got it</button>
+</div>
+</sc-if>
+<div style="display:flex;flex-direction:column;gap:4px;padding-top:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ dateLabel }}</div>
+<div style="font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">Today</div>
+</div>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:16px;">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#CCFF00;">Next up</div>
+<div style="font-size:13px;color:#9C9CA8;">Last done {{ nextAgo }}</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px;">
+<div style="font-size:28px;font-weight:800;letter-spacing:-0.02em;">{{ nextName }}</div>
+<div style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ nextEx }}</div>
+</div>
+<button onClick="{{ startNext }}" style="height:60px;border:none;border-radius:14px;background:#CCFF00;color:#0A0A0C;font-size:17px;font-weight:700;" style-active="transform:scale(0.98)">{{ startLabel }}</button>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">This week</div>
+<div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;">
+<sc-for list="{{ week }}" as="d" hint-placeholder-count="7">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0;border-radius:12px;background:#16161A;border:1px solid {{ d.border }};">
+<span style="font-size:12px;font-weight:600;color:#9C9CA8;">{{ d.label }}</span>
+<span style="width:10px;height:10px;border-radius:50%;background:{{ d.dot }};"></span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Other routines</div>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;overflow:hidden;">
+<sc-for list="{{ otherRoutines }}" as="r" hint-placeholder-count="2">
+<button onClick="{{ r.onStart }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;background:transparent;border:none;border-bottom:1px solid #24242B;color:#fff;text-align:left;min-height:64px;" style-active="background:#24242B">
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:16px;font-weight:700;">{{ r.name }}</span><span style="font-size:13px;color:#9C9CA8;">{{ r.meta }}</span></div>
+<span style="font-size:14px;font-weight:600;color:#CCFF00;">Start</span>
+</button>
+</sc-for>
+<button onClick="{{ startEmpty }}" style="width:100%;padding:14px 16px;background:transparent;border:none;color:#9C9CA8;text-align:left;font-size:15px;font-weight:600;min-height:56px;" style-active="background:#24242B">+ Empty workout</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isPrograms }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 16px 24px;display:flex;flex-direction:column;gap:20px;">
+<div style="display:flex;flex-direction:column;gap:4px;padding-top:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Program · rotates automatically</div>
+<div style="font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">Routines</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;">
+<sc-for list="{{ routineCards }}" as="r" hint-placeholder-count="3">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px;">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+<span style="font-size:20px;font-weight:700;">{{ r.name }}</span>
+<span style="font-size:12px;font-weight:700;letter-spacing:0.08em;color:#0A0A0C;background:#CCFF00;padding:3px 8px;border-radius:999px;opacity:{{ r.nextOpacity }};">NEXT</span>
+</div>
+<div style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ r.exText }}</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+<button onClick="{{ r.onEdit }}" style="height:48px;border-radius:12px;background:#24242B;border:none;color:#fff;font-size:15px;font-weight:600;">Edit</button>
+<button onClick="{{ r.onStart }}" style="height:48px;border-radius:12px;background:transparent;border:1px solid #CCFF00;color:#CCFF00;font-size:15px;font-weight:600;">Start</button>
+</div>
+</div>
+</sc-for>
+</div>
+<button onClick="{{ newRoutine }}" style="height:56px;border-radius:16px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:16px;font-weight:600;" style-active="background:#16161A">+ New routine</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ isProgress }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 0 24px;display:flex;flex-direction:column;gap:16px;">
+<div style="padding:8px 16px 0;font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">Progress</div>
+<div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px;">
+<sc-for list="{{ progChips }}" as="c" hint-placeholder-count="5">
+<button onClick="{{ c.onClick }}" style="flex:0 0 auto;height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.color }};font-size:14px;font-weight:600;white-space:nowrap;">{{ c.name }}</button>
+</sc-for>
+</div>
+<div style="margin:0 16px;background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:14px;">
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#0A0A0C;border-radius:12px;padding:4px;">
+<sc-for list="{{ metrics }}" as="m" hint-placeholder-count="3">
+<button onClick="{{ m.onClick }}" style="height:40px;border:none;border-radius:9px;background:{{ m.bg }};color:{{ m.color }};font-size:13px;font-weight:600;">{{ m.label }}</button>
+</sc-for>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:8px;">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ metricLabel }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:700;">{{ curVal }}<span style="font-size:15px;color:#9C9CA8;"> {{ curUnit }}</span></span></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#CCFF00;padding-bottom:8px;">{{ delta }}</span>
+</div>
+<div style="position:relative;height:160px;">
+<svg width="100%" height="160" viewBox="0 0 324 160" preserveAspectRatio="none" style="position:absolute;inset:0;overflow:visible;">
+<line x1="0" y1="152" x2="324" y2="152" stroke="#24242B" stroke-width="1"></line>
+<line x1="0" y1="80" x2="324" y2="80" stroke="#24242B" stroke-width="1" stroke-dasharray="3 4"></line>
+<line x1="0" y1="8" x2="324" y2="8" stroke="#24242B" stroke-width="1" stroke-dasharray="3 4"></line>
+<polyline points="{{ chartPts }}" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"></polyline>
+</svg>
+<sc-for list="{{ chartDots }}" as="p" hint-placeholder-count="0">
+<div style="position:absolute;left:{{ p.left }};top:{{ p.top }};width:{{ p.size }};height:{{ p.size }};margin:{{ p.margin }};border-radius:50%;background:{{ p.bg }};border:2px solid #16161A;"></div>
+</sc-for>
+</div>
+<div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;"><span>{{ chartFrom }}</span><span style="display:flex;gap:6px;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#CCFF00;"></span>PR</span><span>{{ chartTo }}</span></div>
+</div>
+<div style="margin:0 16px;display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Records · {{ progEx }}</div>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;">
+<sc-for list="{{ records }}" as="rc" hint-placeholder-count="4">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #24242B;gap:8px;">
+<span style="font-size:15px;color:#9C9CA8;">{{ rc.label }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;">{{ rc.value }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="margin:0 16px;display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">History · {{ progEx }}</div>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;">
+<sc-for list="{{ histList }}" as="hl" hint-placeholder-count="5">
+<div style="display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 16px;border-bottom:1px solid #24242B;">
+<span style="font-size:14px;font-weight:600;color:#9C9CA8;">{{ hl.date }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#FFFFFF;line-height:18px;">{{ hl.sets }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:{{ hl.color }};">{{ hl.val }}</span>
+</div>
+</sc-for>
+</div>
+<span style="font-size:13px;color:#9C9CA8;">Right column: best estimated 1RM of the session. Lime = PR.</span>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 16px 24px;display:flex;flex-direction:column;gap:20px;">
+<div style="padding-top:8px;font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">Profile</div>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px;">
+<span style="font-size:17px;font-weight:700;">No account. No subscription.</span>
+<span style="font-size:14px;line-height:20px;color:#9C9CA8;">Everything lives on this device. {{ storageLine }}</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Training</div>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #24242B;min-height:64px;gap:8px;">
+<span style="font-size:16px;font-weight:500;">Units</span>
+<div style="display:flex;gap:4px;background:#0A0A0C;border-radius:10px;padding:3px;">
+<button onClick="{{ setKg }}" style="width:56px;height:40px;border:none;border-radius:8px;background:{{ kgBg }};color:{{ kgColor }};font-size:15px;font-weight:600;">kg</button>
+<button onClick="{{ setLb }}" style="width:56px;height:40px;border:none;border-radius:8px;background:{{ lbBg }};color:{{ lbColor }};font-size:15px;font-weight:600;">lb</button>
+</div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #24242B;min-height:64px;gap:8px;">
+<span style="font-size:16px;font-weight:500;">Default rest</span>
+<div style="display:flex;align-items:center;gap:6px;">
+<button onClick="{{ restDown }}" style="width:48px;height:48px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:20px;">−</button>
+<span style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;width:56px;text-align:center;">{{ restDefaultLabel }}</span>
+<button onClick="{{ restUp }}" style="width:48px;height:48px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:20px;">+</button>
+</div>
+</div>
+<sc-for list="{{ toggles }}" as="t" hint-placeholder-count="4">
+<button onClick="{{ t.onClick }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">{{ t.label }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;">{{ t.sub }}</span></div>
+<div style="flex:0 0 auto;width:52px;height:32px;border-radius:999px;background:{{ t.track }};padding:3px;display:flex;justify-content:{{ t.justify }};"><div style="width:26px;height:26px;border-radius:50%;background:{{ t.knob }};"></div></div>
+</button>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Your data</div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
+<button onClick="{{ exportData }}" style="height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">Export</button>
+<button onClick="{{ importData }}" style="height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">Import</button>
+<button onClick="{{ resetData }}" style="height:52px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#9C9CA8;font-size:15px;font-weight:600;">{{ resetLabel }}</button>
+</div>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;">Export a JSON backup now and then — it’s the only copy of your data.</span>
+</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;text-align:center;">Barlog 0.2 · open source</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showResume }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ resume }}" style="position:absolute;left:12px;right:12px;bottom:calc(68px + env(safe-area-inset-bottom));height:56px;border-radius:14px;border:none;background:#CCFF00;color:#0A0A0C;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:15px;font-weight:700;z-index:4;">
+<span style="display:flex;align-items:center;gap:8px;"><span style="width:8px;height:8px;border-radius:50%;background:#0A0A0C;"></span>{{ wName }}<span style="font-family:'JetBrains Mono',monospace;font-weight:600;">{{ elapsed }}</span></span><span>Resume ›</span>
+</button>
+</sc-if>
+
+<sc-if value="{{ showTabs }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;left:0;right:0;bottom:0;height:calc(60px + env(safe-area-inset-bottom));background:#0A0A0C;border-top:1px solid #24242B;display:grid;grid-template-columns:repeat(4,1fr);padding:0 8px env(safe-area-inset-bottom);z-index:3;">
+<sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+<button onClick="{{ t.onClick }}" style="position:relative;border:none;background:transparent;color:{{ t.color }};font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;">
+<span style="position:absolute;top:-1px;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:{{ t.bar }};"></span>{{ t.label }}</button>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ isWorkout }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;z-index:6;background:#0A0A0C;">
+<div style="display:flex;align-items:center;gap:8px;padding:8px 12px 12px;border-bottom:1px solid #24242B;">
+<button onClick="{{ minimize }}" style="width:48px;height:48px;border-radius:12px;border:none;background:#16161A;color:#fff;font-size:22px;">‹</button>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;">
+<span style="font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ wName }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9C9CA8;">{{ elapsed }} · {{ setsDoneLabel }}</span>
+</div>
+<button onClick="{{ finish }}" style="height:48px;padding:0 18px;border-radius:12px;border:none;background:#CCFF00;color:#0A0A0C;font-size:15px;font-weight:700;">Finish</button>
+</div>
+<div style="flex:1;overflow-y:auto;padding:12px 12px 24px;display:flex;flex-direction:column;gap:12px;">
+<sc-for list="{{ wEx }}" as="ex" hint-placeholder-count="2">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;overflow:hidden;">
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding:14px 14px 6px;gap:8px;">
+<span style="font-size:17px;font-weight:700;">{{ ex.name }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:{{ ex.progColor }};">{{ ex.progress }}</span>
+</div>
+<sc-if value="{{ ex.up }}" hint-placeholder-val="{{ false }}">
+<div style="padding:0 14px 8px;font-size:13px;font-weight:600;color:#CCFF00;">↑ {{ ex.upText }}</div>
+</sc-if>
+<div style="display:grid;grid-template-columns:36px 56px minmax(0,1fr) minmax(0,1fr) 52px;gap:8px;padding:0 12px 6px;font-size:12px;font-weight:600;letter-spacing:0.06em;color:#9C9CA8;">
+<span style="text-align:center;">SET</span><span>PREV</span><span style="text-align:center;">{{ unitUpper }}</span><span style="text-align:center;">REPS</span><span></span>
+</div>
+<sc-for list="{{ ex.sets }}" as="s" hint-placeholder-count="3">
+<div style="background:{{ s.rowBg }};border-top:1px solid #24242B;">
+<div onClick="{{ s.onFocus }}" style="display:grid;grid-template-columns:36px 56px minmax(0,1fr) minmax(0,1fr) 52px;gap:8px;align-items:center;padding:6px 12px;min-height:62px;">
+<button onClick="{{ s.onWarm }}" style="height:44px;padding:0;border:none;border-radius:10px;background:{{ s.numBg }};color:{{ s.numColor }};font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;">{{ s.num }}</button>
+<span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ s.prev }}</span>
+<input type="text" inputmode="decimal" value="{{ s.wDisp }}" onChange="{{ s.onW }}" onFocus="{{ s.onSelect }}" style="width:100%;min-width:0;height:48px;border-radius:10px;border:1px solid {{ s.inBorder }};background:#0A0A0C;color:#fff;font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:600;text-align:center;">
+<input type="text" inputmode="numeric" value="{{ s.rDisp }}" onChange="{{ s.onR }}" onFocus="{{ s.onSelect }}" style="width:100%;min-width:0;height:48px;border-radius:10px;border:1px solid {{ s.inBorder }};background:#0A0A0C;color:#fff;font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:600;text-align:center;">
+<button onClick="{{ s.onCheck }}" style="width:52px;height:48px;border-radius:12px;border:1px solid {{ s.checkBorder }};background:{{ s.checkBg }};color:{{ s.checkColor }};font-size:20px;font-weight:700;transition:background 120ms, transform 120ms;" style-active="transform:scale(0.92)">✓</button>
+</div>
+<sc-if value="{{ s.isPR }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:8px;padding:0 12px 10px 56px;">
+<span style="font-size:12px;font-weight:800;letter-spacing:0.08em;background:#CCFF00;color:#0A0A0C;padding:3px 8px;border-radius:999px;">PR</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9C9CA8;">{{ s.prText }}</span>
+</div>
+</sc-if>
+<sc-if value="{{ s.active }}" hint-placeholder-val="{{ false }}">
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:0 12px 12px;">
+<button onClick="{{ s.wMinus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">−{{ wStep }}</button>
+<button onClick="{{ s.wPlus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">+{{ wStep }}</button>
+<button onClick="{{ s.rMinus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">−1 rep</button>
+<button onClick="{{ s.rPlus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">+1 rep</button>
+</div>
+</sc-if>
+</div>
+</sc-for>
+<button onClick="{{ ex.onAddSet }}" style="width:100%;height:52px;border:none;border-top:1px solid #24242B;background:transparent;color:#9C9CA8;font-size:15px;font-weight:600;" style-active="background:#24242B">+ Add set</button>
+</div>
+</sc-for>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;padding:0 4px;text-wrap:pretty;">Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.</span>
+<button onClick="{{ openLibW }}" style="min-height:56px;border-radius:16px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:15px;font-weight:600;">+ Add exercise</button>
+<button onClick="{{ discard }}" style="min-height:48px;border:none;background:transparent;color:#9C9CA8;font-size:14px;font-weight:600;">{{ discardLabel }}</button>
+</div>
+<sc-if value="{{ restOn }}" hint-placeholder-val="{{ false }}">
+<div style="margin:0 10px calc(10px + env(safe-area-inset-bottom));border-radius:18px;border:1px solid #33333C;background:{{ restBg }};position:relative;overflow:hidden;">
+<div style="position:absolute;left:0;top:0;bottom:0;width:{{ restPct }};background:rgba(204,255,0,0.14);transition:width 250ms linear;"></div>
+<div style="position:relative;display:flex;align-items:center;gap:6px;padding:8px 8px 8px 16px;">
+<div style="flex:1;display:flex;flex-direction:column;">
+<span style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:{{ restSub }};">{{ restLabel }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:{{ restColor }};">{{ restClock }}</span>
+</div>
+<button onClick="{{ restMinus }}" style="width:56px;height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;">−15</button>
+<button onClick="{{ restPlus }}" style="width:56px;height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;">+15</button>
+<button onClick="{{ restSkip }}" style="width:64px;height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">Skip</button>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ restOff }}" hint-placeholder-val="{{ true }}"><div style="height:calc(12px + env(safe-area-inset-bottom));"></div></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isLibrary }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;z-index:7;background:#0A0A0C;">
+<div style="display:flex;align-items:center;gap:8px;padding:8px 12px 12px;">
+<button onClick="{{ libBack }}" style="width:48px;height:48px;border-radius:12px;border:none;background:#16161A;color:#fff;font-size:22px;">‹</button>
+<div style="flex:1;display:flex;flex-direction:column;"><span style="font-size:17px;font-weight:700;">Add exercise</span><span style="font-size:13px;color:#9C9CA8;">{{ libCtxLabel }}</span></div>
+</div>
+<div style="padding:0 12px 12px;display:flex;flex-direction:column;gap:12px;">
+<input type="text" value="{{ libQuery }}" onChange="{{ onLibQuery }}" placeholder="Search or type a new name" style="height:48px;border-radius:12px;border:1px solid #24242B;background:#16161A;color:#fff;font-size:16px;padding:0 14px;">
+<div style="display:flex;gap:8px;overflow-x:auto;">
+<sc-for list="{{ groups }}" as="g" hint-placeholder-count="6">
+<button onClick="{{ g.onClick }}" style="flex:0 0 auto;height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ g.border }};background:{{ g.bg }};color:{{ g.color }};font-size:14px;font-weight:600;">{{ g.name }}</button>
+</sc-for>
+</div>
+</div>
+<div style="flex:1;overflow-y:auto;padding:0 12px calc(32px + env(safe-area-inset-bottom));display:flex;flex-direction:column;">
+<sc-if value="{{ canCreate }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ createCustom }}" style="min-height:56px;margin-bottom:8px;border-radius:14px;border:1px solid #CCFF00;background:transparent;color:#CCFF00;font-size:15px;font-weight:700;text-align:left;padding:0 16px;">+ Create “{{ libQuery }}” · {{ createGroup }}</button>
+</sc-if>
+<sc-for list="{{ libList }}" as="l" hint-placeholder-count="8">
+<button onClick="{{ l.onPick }}" style="display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:60px;padding:0 4px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;text-align:left;" style-active="background:#16161A">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:600;">{{ l.name }}</span><span style="font-size:13px;color:#9C9CA8;">{{ l.meta }}</span></div>
+<span style="width:40px;height:40px;border-radius:10px;background:#24242B;color:#CCFF00;font-size:20px;display:flex;align-items:center;justify-content:center;">+</span>
+</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isRoutine }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;z-index:7;background:#0A0A0C;">
+<div style="display:flex;align-items:center;gap:8px;padding:8px 12px 12px;border-bottom:1px solid #24242B;">
+<button onClick="{{ routineBack }}" style="width:48px;height:48px;border-radius:12px;border:none;background:#16161A;color:#fff;font-size:22px;">‹</button>
+<input type="text" value="{{ rName }}" onChange="{{ onRName }}" style="flex:1;min-width:0;height:48px;border:none;border-bottom:1px dashed #33333C;background:transparent;color:#fff;font-size:20px;font-weight:700;">
+<button onClick="{{ deleteRoutine }}" style="height:48px;padding:0 12px;border-radius:12px;border:none;background:transparent;color:#9C9CA8;font-size:14px;font-weight:600;">{{ deleteLabel }}</button>
+</div>
+<div style="flex:1;overflow-y:auto;padding:12px 12px 16px;display:flex;flex-direction:column;gap:10px;">
+<sc-if value="{{ rEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:24px 8px;text-align:center;color:#9C9CA8;font-size:15px;">No exercises yet. Add your first movement.</div></sc-if>
+<sc-for list="{{ rEx }}" as="e" hint-placeholder-count="4">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;">
+<div style="display:flex;align-items:center;gap:8px;">
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9C9CA8;width:18px;">{{ e.num }}</span>
+<span style="flex:1;font-size:16px;font-weight:700;">{{ e.name }}</span>
+<button onClick="{{ e.onUp }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#24242B;color:#fff;font-size:16px;opacity:{{ e.upOpacity }};">↑</button>
+<button onClick="{{ e.onRemove }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#24242B;color:#9C9CA8;font-size:16px;">✕</button>
+</div>
+<div style="display:flex;align-items:center;gap:6px;">
+<button onClick="{{ e.setsMinus }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#0A0A0C;color:#fff;font-size:18px;">−</button>
+<span style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;min-width:58px;text-align:center;">{{ e.sets }} sets</span>
+<button onClick="{{ e.setsPlus }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#0A0A0C;color:#fff;font-size:18px;">+</button>
+<span style="flex:1;text-align:center;color:#9C9CA8;">×</span>
+<button onClick="{{ e.repsMinus }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#0A0A0C;color:#fff;font-size:18px;">−</button>
+<span style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;min-width:58px;text-align:center;">{{ e.reps }} reps</span>
+<button onClick="{{ e.repsPlus }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#0A0A0C;color:#fff;font-size:18px;">+</button>
+</div>
+</div>
+</sc-for>
+<button onClick="{{ openLibR }}" style="min-height:56px;border-radius:14px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:15px;font-weight:600;">+ Add exercise</button>
+</div>
+<div style="padding:12px 12px calc(16px + env(safe-area-inset-bottom));border-top:1px solid #24242B;">
+<button onClick="{{ startEdited }}" style="width:100%;height:60px;border-radius:14px;border:none;background:#CCFF00;color:#0A0A0C;font-size:17px;font-weight:700;">Start {{ rName }}</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isSummary }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;z-index:8;background:#0A0A0C;">
+<div style="flex:1;overflow-y:auto;padding:28px 16px 16px;display:flex;flex-direction:column;gap:24px;">
+<div style="display:flex;flex-direction:column;gap:6px;">
+<span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#CCFF00;">Workout saved</span>
+<span style="font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">{{ sumName }}</span>
+</div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+<sc-for list="{{ sumStats }}" as="st" hint-placeholder-count="4">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:4px;">
+<span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ st.label }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:{{ st.color }};">{{ st.value }}</span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ sumPrTitle }}</span>
+<sc-for list="{{ sumPrs }}" as="p" hint-placeholder-count="0">
+<div style="display:flex;align-items:center;gap:12px;padding:14px;background:#16161A;border:1px solid #CCFF00;border-radius:14px;">
+<span style="font-size:12px;font-weight:800;letter-spacing:0.08em;background:#CCFF00;color:#0A0A0C;padding:3px 8px;border-radius:999px;">PR</span>
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:15px;font-weight:700;">{{ p.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9C9CA8;">{{ p.text }}</span></div>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Exercises</span>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;">
+<sc-for list="{{ sumEx }}" as="x" hint-placeholder-count="4">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #24242B;">
+<span style="font-size:15px;font-weight:600;">{{ x.name }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9C9CA8;text-align:right;">{{ x.text }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+<div style="padding:12px 16px calc(16px + env(safe-area-inset-bottom));">
+<button onClick="{{ closeSummary }}" style="width:100%;height:60px;border-radius:14px;border:none;background:#CCFF00;color:#0A0A0C;font-size:17px;font-weight:700;">Done</button>
+</div>
+</div>
+</sc-if>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;defaultRest&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:90,&quot;min&quot;:15,&quot;max&quot;:600,&quot;step&quot;:15,&quot;unit&quot;:&quot;s&quot;,&quot;tsType&quot;:&quot;number&quot;},&quot;autoStartRest&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const DAY = 864e5;
+const KG_LB = 2.20462;
+const LIB = [['Bench Press','Chest'],['Incline DB Press','Chest'],['Dumbbell Fly','Chest'],['Push-up','Chest'],['Deadlift','Back'],['Barbell Row','Back'],['Pull-up','Back'],['Lat Pulldown','Back'],['Seated Cable Row','Back'],['Squat','Legs'],['Romanian Deadlift','Legs'],['Leg Press','Legs'],['Leg Curl','Legs'],['Leg Extension','Legs'],['Calf Raise','Legs'],['Bulgarian Split Squat','Legs'],['Overhead Press','Shoulders'],['Lateral Raise','Shoulders'],['Face Pull','Shoulders'],['Barbell Curl','Arms'],['Hammer Curl','Arms'],['Triceps Pushdown','Arms'],['Skull Crusher','Arms'],['Plank','Core'],['Hanging Leg Raise','Core'],['Cable Crunch','Core']].map(([name, group]) => ({ name, group }));
+const GROUPS = ['All','Chest','Back','Legs','Shoulders','Arms','Core','Custom'];
+const BASE = {'Bench Press':80,'Overhead Press':50,'Incline DB Press':30,'Lateral Raise':12,'Triceps Pushdown':30,'Deadlift':160,'Barbell Row':70,'Pull-up':10,'Face Pull':25,'Barbell Curl':35,'Squat':120,'Romanian Deadlift':100,'Leg Press':180,'Leg Curl':45,'Calf Raise':70};
+const PK = ['routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen'];
+const e1 = (w, r) => w * (1 + r / 30);
+const trim = n => String(Math.round(n * 100) / 100);
+const pad = n => String(n).padStart(2, '0');
+const clock = ms => { const t = Math.max(0, Math.ceil(ms / 1000)); const h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), s = t % 60; return h ? h + ':' + pad(m) + ':' + pad(s) : m + ':' + pad(s); };
+const work = sets => sets.filter(x => !x.wu);
+function seedRoutines() {
+  return [
+    { id: 'r1', name: 'Push A', ex: [['Bench Press',3,6],['Overhead Press',3,8],['Incline DB Press',3,10],['Lateral Raise',3,15],['Triceps Pushdown',3,12]] },
+    { id: 'r2', name: 'Pull A', ex: [['Deadlift',2,5],['Barbell Row',3,8],['Pull-up',3,8],['Face Pull',3,15],['Barbell Curl',3,10]] },
+    { id: 'r3', name: 'Legs A', ex: [['Squat',3,5],['Romanian Deadlift',3,8],['Leg Press',3,10],['Leg Curl',3,12],['Calf Raise',4,12]] }
+  ].map(r => ({ ...r, ex: r.ex.map(([name, sets, reps]) => ({ name, sets, reps })) }));
+}
+function seedHistory(routines) {
+  const h = {}; const now = Date.now();
+  routines.forEach((r, ri) => r.ex.forEach((e, ei) => {
+    const b = BASE[e.name] || 20; h[e.name] = [];
+    for (let i = 0; i < 8; i++) {
+      const w = Math.round(b * (0.86 + 0.02 * i) / 2.5) * 2.5;
+      const date = now - (7 - i) * 7 * DAY - ((2 - ri) * 2 + 1) * DAY;
+      const miss = i === 7 ? ei % 2 === 1 : (i + ei) % 3 === 2;
+      h[e.name].push({ date, sets: Array.from({ length: e.sets }, (_, j) => ({ w, r: Math.max(1, e.reps - (miss && j === e.sets - 1 ? 1 : 0)) })) });
+    }
+  }));
+  return h;
+}
+
+class Component extends DCLogic {
+  state = this.initial();
+  initial() {
+    const routines = seedRoutines();
+    return { tab: 'today', screen: 'tabs', routines, history: seedHistory(routines), lastRoutineId: 'r3', workout: null, focus: null, restEnd: null, restTotal: 90, restAlert: false, now: Date.now(), libCtx: 'workout', libQuery: '', libGroup: 'All', custom: [], editId: null, progEx: 'Bench Press', metric: 'e1rm', unit: 'kg', haptics: true, sound: true, wake: true, autoRest: this.props.autoStartRest ?? true, restDefault: this.props.defaultRest ?? 90, summary: null, toast: null, discardArm: false, deleteArm: false, resetArm: false, installSeen: false, standalone: false };
+  }
+  componentDidMount() {
+    let d = null;
+    try { d = JSON.parse(localStorage.getItem('barlog-v1') || 'null'); } catch (e) {}
+    const standalone = !!(window.navigator.standalone || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches));
+    const extra = d && d.routines ? { ...d, restAlert: false } : {};
+    if (extra.workout) extra.screen = 'workout';
+    this.setState({ ...extra, standalone });
+    this.iv = setInterval(() => this.tick(), 250);
+    this.onVis = () => { this.save(); this.syncWake(); this.tick(); };
+    document.addEventListener('visibilitychange', this.onVis);
+    window.addEventListener('pagehide', this.onVis);
+    try { if ('serviceWorker' in navigator && location.protocol === 'https:' && window.self === window.top) navigator.serviceWorker.register('./sw.js').catch(() => {}); } catch (e) {}
+    try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch (e) {}
+  }
+  componentWillUnmount() { clearInterval(this.iv); clearTimeout(this.ra); clearTimeout(this.tt); document.removeEventListener('visibilitychange', this.onVis); window.removeEventListener('pagehide', this.onVis); if (this.wl) this.wl.release(); }
+  componentDidUpdate(_, prev) {
+    if (PK.some(k => prev[k] !== this.state[k])) this.save();
+    if (prev.workout !== this.state.workout || prev.wake !== this.state.wake) this.syncWake();
+  }
+  save() { const o = {}; PK.forEach(k => o[k] = this.state[k]); try { localStorage.setItem('barlog-v1', JSON.stringify(o)); } catch (e) {} }
+  syncWake() {
+    const want = !!(this.state.workout && this.state.wake && document.visibilityState === 'visible');
+    if (want && !this.wl && !this.wlp && navigator.wakeLock) {
+      this.wlp = navigator.wakeLock.request('screen').then(l => { this.wl = l; this.wlp = null; l.addEventListener('release', () => { this.wl = null; }); }).catch(() => { this.wlp = null; });
+    } else if (!want && this.wl) { try { this.wl.release(); } catch (e) {} this.wl = null; }
+  }
+  unlockAudio() {
+    try { if (!this.ac) { const C = window.AudioContext || window.webkitAudioContext; if (C) this.ac = new C(); } if (this.ac && this.ac.state === 'suspended') this.ac.resume(); } catch (e) {}
+  }
+  tone(notes) {
+    if (!this.state.sound || !this.ac) return;
+    try {
+      const t0 = this.ac.currentTime;
+      notes.forEach(([f, at, dur]) => { const o = this.ac.createOscillator(), g = this.ac.createGain(); o.type = 'sine'; o.frequency.value = f; g.gain.setValueAtTime(0.0001, t0 + at); g.gain.exponentialRampToValueAtTime(0.5, t0 + at + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t0 + at + dur); o.connect(g); g.connect(this.ac.destination); o.start(t0 + at); o.stop(t0 + at + dur + 0.05); });
+    } catch (e) {}
+  }
+  buzz(p) { if (!this.state.haptics) return; try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} }
+  flash(msg) { this.setState({ toast: msg }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 1800); }
+  tick() {
+    const now = Date.now(); const s = this.state;
+    if (s.restEnd && !s.restAlert && now >= s.restEnd) {
+      const late = now - s.restEnd > 5000;
+      this.setState({ now, restAlert: true });
+      if (!late) { this.buzz([80, 60, 80]); this.tone([[880, 0, 0.18], [880, 0.3, 0.18], [1320, 0.6, 0.35]]); }
+      clearTimeout(this.ra); this.ra = setTimeout(() => this.setState({ restAlert: false, restEnd: null }), late ? 1200 : 3000); return;
+    }
+    if (s.workout || s.restEnd || now - s.now > 20000) this.setState({ now });
+  }
+  inc() { return this.state.unit === 'kg' ? 2.5 : 5 / KG_LB; }
+  dispW(kg) { return this.state.unit === 'kg' ? trim(Math.round(kg * 4) / 4) : trim(Math.round(kg * KG_LB * 2) / 2); }
+  mkEx(name, n, target, history) {
+    const last = (history[name] || []).slice(-1)[0];
+    const ws = last ? work(last.sets).filter(x => x.w > 0) : [];
+    const up = !!(target && ws.length && ws.every(x => x.r >= target));
+    const inc = this.inc(); const sets = [];
+    for (let i = 0; i < n; i++) {
+      const p = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null;
+      const bump = up && p && !p.wu;
+      sets.push({ w: p ? p.w + (bump ? inc : 0) : 0, r: p ? (bump ? target : p.r) : (target || 8), pw: p ? p.w : null, pr: p ? p.r : null, warm: !!(p && p.wu), done: false });
+    }
+    return { name, target: target || null, up, sets };
+  }
+  start(rid) {
+    const s = this.state; this.unlockAudio();
+    if (s.workout) { this.setState({ screen: 'workout' }); return; }
+    const r = s.routines.find(x => x.id === rid);
+    const ex = r ? r.ex.map(e => this.mkEx(e.name, e.sets, e.reps, s.history)) : [];
+    this.setState({ workout: { rid: r ? r.id : null, name: r ? r.name : 'Quick workout', start: Date.now(), ex }, focus: ex.length ? { ei: 0, si: 0 } : null, screen: 'workout', restEnd: null, restAlert: false, discardArm: false });
+  }
+  updW(fn) {
+    const s = this.state; if (!s.workout) return {};
+    const w = JSON.parse(JSON.stringify(s.workout)); const extra = fn(w, s) || {};
+    this.setState({ workout: w, ...extra }); return extra;
+  }
+  nextFocus(w, ei, si) {
+    const ex = w.ex;
+    for (let j = si + 1; j < ex[ei].sets.length; j++) if (!ex[ei].sets[j].done) return { ei, si: j };
+    for (let i = 0; i < ex.length; i++) { const k = (ei + 1 + i) % ex.length; const j = ex[k].sets.findIndex(x => !x.done); if (j >= 0) return { ei: k, si: j }; }
+    return null;
+  }
+  bestHist(name, h) { let b = 0; (h[name] || []).forEach(se => work(se.sets).forEach(x => { b = Math.max(b, e1(x.w, x.r)); })); return b; }
+  check(ei, si) {
+    const t = Date.now(); if (this.lastCheck && t - this.lastCheck < 300) return; this.lastCheck = t;
+    this.unlockAudio();
+    let fx = null;
+    this.updW((w, s) => {
+      const ex = w.ex[ei]; const set = ex.sets[si]; set.wStr = null; set.rStr = null;
+      if (set.done) { set.done = false; set.isPR = false; return { focus: { ei, si } }; }
+      set.done = true;
+      let best = this.bestHist(ex.name, s.history);
+      ex.sets.forEach((x, j) => { if (j !== si && x.done && !x.warm) best = Math.max(best, e1(x.w, x.r)); });
+      set.isPR = !set.warm && set.w > 0 && e1(set.w, set.r) > best + 0.01;
+      fx = set.isPR ? 'pr' : 'log';
+      const o = { focus: this.nextFocus(w, ei, si) };
+      if (s.autoRest) { clearTimeout(this.ra); o.restEnd = Date.now() + s.restDefault * 1000; o.restTotal = s.restDefault; o.restAlert = false; }
+      return o;
+    });
+    if (fx === 'pr') { this.buzz([30, 60, 30]); this.tone([[660, 0, 0.1], [990, 0.1, 0.22]]); } else if (fx === 'log') this.buzz(15);
+  }
+  toggleWarm(ei, si) { this.updW(w => { const x = w.ex[ei].sets[si]; x.warm = !x.warm; if (x.warm) x.isPR = false; }); }
+  adj(ei, si, f, d) { this.updW(w => { const x = w.ex[ei].sets[si]; x[f] = Math.max(0, Math.round((x[f] + d) * 1000) / 1000); x.wStr = null; x.rStr = null; }); }
+  typeW(ei, si, val) { this.updW((w, s) => { const x = w.ex[ei].sets[si]; x.wStr = val; const v = parseFloat(String(val).replace(',', '.')); if (!isNaN(v)) x.w = s.unit === 'kg' ? v : v / KG_LB; else if (val === '') x.w = 0; }); }
+  typeR(ei, si, val) { this.updW(w => { const x = w.ex[ei].sets[si]; x.rStr = val; const v = parseInt(val, 10); if (!isNaN(v)) x.r = v; else if (val === '') x.r = 0; }); }
+  addSet(ei) {
+    this.updW((w, s) => {
+      const ex = w.ex[ei]; const last = ex.sets[ex.sets.length - 1] || { w: 0, r: 8 };
+      const hl = (s.history[ex.name] || []).slice(-1)[0]; const p = hl && hl.sets[ex.sets.length];
+      ex.sets.push({ w: last.w, r: last.r, pw: p ? p.w : null, pr: p ? p.r : null, warm: false, done: false });
+      return { focus: { ei, si: ex.sets.length - 1 } };
+    });
+  }
+  restAdj(d) { const s = this.state; if (!s.restEnd || s.restAlert) return; this.setState({ restEnd: Math.max(Date.now(), s.restEnd + d * 1000), restTotal: Math.max(1, s.restTotal + d) }); }
+  restSkip() { clearTimeout(this.ra); this.setState({ restEnd: null, restAlert: false }); }
+  finish() {
+    const s = this.state; const w = s.workout; if (!w) return;
+    let vol = 0, sets = 0, prevVol = 0, hasPrev = false; const prs = {}; const h = { ...s.history }; const exs = [];
+    w.ex.forEach(ex => {
+      const ds = ex.sets.filter(x => x.done); if (!ds.length) return;
+      sets += ds.length;
+      const last = (s.history[ex.name] || []).slice(-1)[0];
+      if (last) { hasPrev = true; prevVol += work(last.sets).reduce((a, x) => a + x.w * x.r, 0); }
+      ds.forEach(x => { if (x.warm) return; vol += x.w * x.r; if (x.isPR && (!prs[ex.name] || e1(x.w, x.r) > prs[ex.name].e)) prs[ex.name] = { name: ex.name, w: x.w, r: x.r, e: e1(x.w, x.r) }; });
+      const entry = ds.map(x => x.warm ? { w: x.w, r: x.r, wu: true } : { w: x.w, r: x.r });
+      h[ex.name] = [...(h[ex.name] || []), { date: w.start, sets: entry }];
+      exs.push({ name: ex.name, sets: entry });
+    });
+    clearTimeout(this.ra);
+    if (!sets) { this.setState({ workout: null, focus: null, screen: 'tabs', tab: 'today', restEnd: null, restAlert: false }); return; }
+    this.setState({ history: h, workout: null, focus: null, restEnd: null, restAlert: false, lastRoutineId: w.rid || s.lastRoutineId, summary: { name: w.name, dur: Date.now() - w.start, vol, sets, prevVol, hasPrev, prs: Object.values(prs), ex: exs }, screen: 'summary' });
+  }
+  discard() {
+    if (!this.state.discardArm) { this.setState({ discardArm: true }); setTimeout(() => this.setState({ discardArm: false }), 3000); return; }
+    clearTimeout(this.ra); this.setState({ workout: null, focus: null, restEnd: null, restAlert: false, discardArm: false, screen: 'tabs', tab: 'today' });
+  }
+  pick(name) {
+    const s = this.state;
+    if (s.libCtx === 'workout') { this.updW((w, st) => { w.ex.push(this.mkEx(name, 3, null, st.history)); return { focus: { ei: w.ex.length - 1, si: 0 }, screen: 'workout' }; }); }
+    else { this.setState({ routines: s.routines.map(r => r.id === s.editId ? { ...r, ex: [...r.ex, { name, sets: 3, reps: 8 }] } : r), screen: 'routine' }); }
+  }
+  createCustom() {
+    const s = this.state; const name = s.libQuery.trim(); if (!name) return;
+    const group = s.libGroup === 'All' ? 'Custom' : s.libGroup;
+    this.setState({ custom: [...s.custom, { name, group, custom: true }] }, () => this.pick(name));
+  }
+  updR(fn) { const s = this.state; this.setState({ routines: s.routines.map(r => { if (r.id !== s.editId) return r; const c = JSON.parse(JSON.stringify(r)); fn(c); return c; }) }); }
+  newRoutine() { const id = 'r' + Date.now(); this.setState(s => ({ routines: [...s.routines, { id, name: 'New routine', ex: [] }], editId: id, screen: 'routine', deleteArm: false })); }
+  deleteRoutine() {
+    const s = this.state;
+    if (!s.deleteArm) { this.setState({ deleteArm: true }); setTimeout(() => this.setState({ deleteArm: false }), 3000); return; }
+    const routines = s.routines.filter(r => r.id !== s.editId);
+    this.setState({ routines, screen: 'tabs', tab: 'programs', deleteArm: false, lastRoutineId: s.lastRoutineId === s.editId && routines.length ? routines[routines.length - 1].id : s.lastRoutineId });
+  }
+  exportData() {
+    const s = this.state; const o = {}; PK.forEach(k => o[k] = s[k]);
+    const blob = new Blob([JSON.stringify(o, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'barlog-' + new Date().toISOString().slice(0, 10) + '.json'; document.body.appendChild(a); a.click(); a.remove();
+    this.flash('Backup exported');
+  }
+  importData() {
+    const i = document.createElement('input'); i.type = 'file'; i.accept = 'application/json,.json';
+    i.onchange = () => { const f = i.files && i.files[0]; if (!f) return; f.text().then(t => { const d = JSON.parse(t); if (!d || !d.routines || !d.history) throw 0; this.setState({ ...d, screen: d.workout ? 'workout' : 'tabs', tab: 'today', restAlert: false }); this.flash('Data imported'); }).catch(() => this.flash('Not a Barlog backup')); };
+    i.click();
+  }
+  resetData() {
+    if (!this.state.resetArm) { this.setState({ resetArm: true }); setTimeout(() => this.setState({ resetArm: false }), 3000); return; }
+    const i = this.initial(); this.setState({ ...i, tab: 'profile', standalone: this.state.standalone, installSeen: true });
+  }
+  renderVals() {
+    const s = this.state; const now = s.now; const kg = s.unit === 'kg';
+    const go = (p) => () => this.setState(p);
+    const routines = s.routines;
+    const li = routines.findIndex(r => r.id === s.lastRoutineId);
+    const next = routines.length ? routines[(li + 1) % routines.length] : null;
+    const ago = (t) => { if (!t) return 'never'; const d = Math.floor((now - t) / DAY); return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d + ' days ago'; };
+    const lastOf = (r) => { let t = 0; r.ex.forEach(e => { const l = (s.history[e.name] || []).slice(-1)[0]; if (l) t = Math.max(t, l.date); }); return t; };
+    const d0 = new Date(now);
+    const monday = new Date(d0.getFullYear(), d0.getMonth(), d0.getDate() - ((d0.getDay() + 6) % 7));
+    const dayKeys = new Set(); Object.values(s.history).forEach(a => a.forEach(x => dayKeys.add(new Date(x.date).toDateString())));
+    const week = ['M','T','W','T','F','S','S'].map((label, i) => { const d = new Date(monday.getTime() + i * DAY); const done = dayKeys.has(d.toDateString()); const today = d.toDateString() === d0.toDateString(); return { label, dot: done ? '#CCFF00' : '#24242B', border: today ? '#9C9CA8' : '#24242B' }; });
+
+    const w = s.workout;
+    const wStepKg = this.inc();
+    let doneCount = 0, total = 0;
+    const wEx = w ? w.ex.map((ex, ei) => {
+      const d = ex.sets.filter(x => x.done).length; doneCount += d; total += ex.sets.length;
+      return {
+        name: ex.name, progress: d + '/' + ex.sets.length, progColor: d === ex.sets.length && d ? '#CCFF00' : '#9C9CA8',
+        up: !!ex.up, upText: '+' + (kg ? '2.5 kg' : '5 lb') + ' · you hit every rep last time',
+        onAddSet: () => this.addSet(ei),
+        sets: ex.sets.map((x, si) => {
+          const active = !!(s.focus && s.focus.ei === ei && s.focus.si === si && !x.done);
+          return {
+            num: x.warm ? 'W' : String(si + 1), numBg: x.warm ? '#24242B' : 'transparent',
+            prev: x.pw != null ? this.dispW(x.pw) + '×' + x.pr : '—',
+            wDisp: x.wStr != null ? x.wStr : (x.w ? this.dispW(x.w) : ''), rDisp: x.rStr != null ? x.rStr : String(x.r),
+            isPR: !!x.isPR, active,
+            prText: 'e1RM ' + this.dispW(e1(x.w, x.r)) + ' ' + s.unit,
+            rowBg: x.done ? 'rgba(204,255,0,0.06)' : active ? '#1B1B20' : 'transparent',
+            numColor: x.warm ? '#FFFFFF' : x.done ? '#CCFF00' : '#9C9CA8', inBorder: active ? '#FFFFFF' : '#24242B',
+            checkBg: x.done ? '#CCFF00' : 'transparent', checkColor: x.done ? '#0A0A0C' : '#9C9CA8', checkBorder: x.done ? '#CCFF00' : '#33333C',
+            onFocus: () => { if (!x.done) this.setState({ focus: { ei, si } }); },
+            onWarm: (e) => { e.stopPropagation(); this.toggleWarm(ei, si); },
+            onSelect: (e) => { const t = e.target; setTimeout(() => { try { t.setSelectionRange(0, t.value.length); } catch (er) {} }, 0); },
+            onCheck: (e) => { e.stopPropagation(); this.check(ei, si); },
+            onW: (e) => this.typeW(ei, si, e.target.value), onR: (e) => this.typeR(ei, si, e.target.value),
+            wMinus: () => this.adj(ei, si, 'w', -wStepKg), wPlus: () => this.adj(ei, si, 'w', wStepKg),
+            rMinus: () => this.adj(ei, si, 'r', -1), rPlus: () => this.adj(ei, si, 'r', 1)
+          };
+        })
+      };
+    }) : [];
+    const restOn = !!s.restEnd && !!w;
+    const remain = s.restEnd ? s.restEnd - now : 0;
+
+    const all = [...LIB, ...s.custom];
+    const q = s.libQuery.trim().toLowerCase();
+    const libList = all.filter(l => (s.libGroup === 'All' || (s.libGroup === 'Custom' ? l.custom : l.group === s.libGroup)) && (!q || l.name.toLowerCase().includes(q)))
+      .map(l => { const h = s.history[l.name]; const last = h && h.length ? h[h.length - 1] : null; return { name: l.name, meta: l.group + (l.custom ? ' · custom' : '') + (last ? ' · last ' + this.dispW(last.sets[0].w) + ' ' + s.unit + ' × ' + last.sets[0].r : ''), onPick: () => this.pick(l.name) }; });
+    const canCreate = !!q && !all.some(l => l.name.toLowerCase() === q);
+
+    const er = routines.find(r => r.id === s.editId);
+    const rEx = er ? er.ex.map((e, i) => ({ num: String(i + 1), name: e.name, sets: e.sets, reps: e.reps, upOpacity: i ? 1 : 0.3,
+      onUp: () => i && this.updR(c => { const t = c.ex[i]; c.ex[i] = c.ex[i - 1]; c.ex[i - 1] = t; }),
+      onRemove: () => this.updR(c => { c.ex.splice(i, 1); }),
+      setsMinus: () => this.updR(c => { c.ex[i].sets = Math.max(1, c.ex[i].sets - 1); }), setsPlus: () => this.updR(c => { c.ex[i].sets = Math.min(10, c.ex[i].sets + 1); }),
+      repsMinus: () => this.updR(c => { c.ex[i].reps = Math.max(1, c.ex[i].reps - 1); }), repsPlus: () => this.updR(c => { c.ex[i].reps = Math.min(50, c.ex[i].reps + 1); })
+    })) : [];
+
+    const histNames = Object.keys(s.history).filter(k => s.history[k].some(se => work(se.sets).length));
+    const progEx = histNames.includes(s.progEx) ? s.progEx : (histNames[0] || '');
+    const sess = (s.history[progEx] || []).map(se => ({ date: se.date, ws: work(se.sets) })).filter(se => se.ws.length);
+    const val = (se) => s.metric === 'e1rm' ? Math.max(...se.ws.map(x => e1(x.w, x.r))) : s.metric === 'vol' ? se.ws.reduce((a, x) => a + x.w * x.r, 0) : Math.max(...se.ws.map(x => x.w));
+    const series = sess.map(val);
+    const toU = (v) => s.metric === 'vol' ? Math.round(kg ? v : v * KG_LB).toLocaleString() : this.dispW(v);
+    const mn = Math.min(...series), mx = Math.max(...series);
+    let run = 0;
+    const pts = series.map((v, i) => { const x = series.length > 1 ? 4 + i * 316 / (series.length - 1) : 162; const y = 152 - (mx > mn ? (v - mn) / (mx - mn) : 0.5) * 144; const pr = v > run + 0.01; run = Math.max(run, v); return { x, y, pr }; });
+    const chartDots = pts.map(p => ({ left: (p.x / 324 * 100) + '%', top: p.y + 'px', size: p.pr ? '12px' : '8px', margin: p.pr ? '-6px 0 0 -6px' : '-4px 0 0 -4px', bg: p.pr ? '#CCFF00' : '#FFFFFF' }));
+    const fmtD = (t) => new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    let bestE = 0, bestW = 0, bestV = 0, bestSet = '';
+    sess.forEach(se => { se.ws.forEach(x => { const e = e1(x.w, x.r); if (e > bestE) { bestE = e; bestSet = this.dispW(x.w) + ' × ' + x.r; } bestW = Math.max(bestW, x.w); }); bestV = Math.max(bestV, se.ws.reduce((a, x) => a + x.w * x.r, 0)); });
+    const delta = series.length > 1 ? series[series.length - 1] - series[0] : 0;
+    let runE = 0;
+    const histRows = sess.map(se => { const e = Math.max(...se.ws.map(x => e1(x.w, x.r))); const pr = e > runE + 0.01; runE = Math.max(runE, e); return { date: fmtD(se.date), sets: se.ws.map(x => this.dispW(x.w) + '×' + x.r).join('  '), val: this.dispW(e), color: pr ? '#CCFF00' : '#FFFFFF' }; });
+    const histList = histRows.reverse().slice(0, 12);
+
+    const sm = s.summary;
+    const volU = (v) => Math.round(kg ? v : v * KG_LB).toLocaleString();
+    const dv = sm ? sm.vol - sm.prevVol : 0;
+    const toggleRow = (label, sub, on, key) => ({ label, sub, track: on ? '#CCFF00' : '#24242B', knob: on ? '#0A0A0C' : '#9C9CA8', justify: on ? 'flex-end' : 'flex-start', onClick: () => { this.unlockAudio(); this.setState({ [key]: !s[key] }); } });
+    const sessCount = new Set(Object.values(s.history).flatMap(a => a.map(x => x.date))).size;
+    const showTabs = s.screen === 'tabs';
+
+    return {
+      toastOn: !!s.toast, toast: s.toast,
+      showInstall: !s.standalone && !s.installSeen, dismissInstall: go({ installSeen: true }),
+      isToday: showTabs && s.tab === 'today', isPrograms: showTabs && s.tab === 'programs', isProgress: showTabs && s.tab === 'progress', isProfile: showTabs && s.tab === 'profile',
+      isWorkout: s.screen === 'workout' && !!w, isLibrary: s.screen === 'library', isRoutine: s.screen === 'routine' && !!er, isSummary: s.screen === 'summary' && !!sm,
+      showTabs, showResume: showTabs && !!w, tabBottom: showTabs && w ? 'calc(132px + env(safe-area-inset-bottom))' : 'calc(60px + env(safe-area-inset-bottom))',
+      tabs: [['today','Today'],['programs','Programs'],['progress','Progress'],['profile','Profile']].map(([k, label]) => ({ label, color: s.tab === k ? '#FFFFFF' : '#9C9CA8', bar: s.tab === k ? '#CCFF00' : 'transparent', onClick: go({ tab: k }) })),
+      dateLabel: d0.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }),
+      nextName: w ? w.name : next ? next.name : 'No routines', nextEx: w ? 'In progress · ' + clock(now - w.start) : next ? next.ex.map(e => e.name).join(' · ') : 'Create one in Programs.',
+      nextAgo: next ? ago(lastOf(next)) : '—', startLabel: w ? 'Resume workout' : 'Start workout',
+      startNext: () => next || w ? this.start(next && next.id) : this.setState({ tab: 'programs' }),
+      startEmpty: () => this.start(null), week,
+      otherRoutines: routines.filter(r => r !== next).map(r => ({ name: r.name, meta: r.ex.length + ' exercises · ' + ago(lastOf(r)), onStart: () => this.start(r.id) })),
+      routineCards: routines.map(r => ({ name: r.name, exText: r.ex.length ? r.ex.map(e => e.name + ' ' + e.sets + '×' + e.reps).join(' · ') : 'No exercises yet', nextOpacity: r === next ? 1 : 0, onEdit: go({ editId: r.id, screen: 'routine', deleteArm: false }), onStart: () => this.start(r.id) })),
+      newRoutine: () => this.newRoutine(),
+      progEx, progChips: histNames.map(n => ({ name: n, bg: n === progEx ? '#FFFFFF' : 'transparent', color: n === progEx ? '#0A0A0C' : '#FFFFFF', border: n === progEx ? '#FFFFFF' : '#33333C', onClick: go({ progEx: n }) })),
+      metrics: [['e1rm','Est. 1RM'],['vol','Volume'],['top','Top set']].map(([k, label]) => ({ label, bg: s.metric === k ? '#24242B' : 'transparent', color: s.metric === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ metric: k }) })),
+      metricLabel: s.metric === 'e1rm' ? 'Estimated 1RM' : s.metric === 'vol' ? 'Session volume' : 'Heaviest set',
+      curVal: series.length ? toU(series[series.length - 1]) : '—', curUnit: s.unit,
+      delta: series.length > 1 ? (delta >= 0 ? '+' : '−') + toU(Math.abs(delta)) + ' · ' + series.length + ' sessions' : '',
+      chartPts: pts.map(p => p.x.toFixed(1) + ',' + p.y.toFixed(1)).join(' '), chartDots,
+      chartFrom: sess.length ? fmtD(sess[0].date) : '', chartTo: sess.length ? fmtD(sess[sess.length - 1].date) : '',
+      records: [{ label: 'Best e1RM', value: this.dispW(bestE) + ' ' + s.unit }, { label: 'Best set', value: bestSet + ' ' + s.unit }, { label: 'Heaviest weight', value: this.dispW(bestW) + ' ' + s.unit }, { label: 'Best session volume', value: volU(bestV) + ' ' + s.unit }],
+      histList,
+      storageLine: sessCount + ' sessions stored offline.',
+      kgBg: kg ? '#24242B' : 'transparent', kgColor: kg ? '#fff' : '#9C9CA8', lbBg: kg ? 'transparent' : '#24242B', lbColor: kg ? '#9C9CA8' : '#fff',
+      setKg: go({ unit: 'kg' }), setLb: go({ unit: 'lb' }),
+      restDefaultLabel: clock(s.restDefault * 1000), restDown: go({ restDefault: Math.max(15, s.restDefault - 15) }), restUp: go({ restDefault: Math.min(600, s.restDefault + 15) }),
+      toggles: [
+        toggleRow('Auto-start rest', 'Starts when you log a set', s.autoRest, 'autoRest'),
+        toggleRow('Sound at rest end', 'Beeps when rest is over. Muted by the iPhone silent switch.', s.sound, 'sound'),
+        toggleRow('Vibration', 'Android only — iPhone doesn’t allow it in web apps', s.haptics, 'haptics'),
+        toggleRow('Keep screen on', 'During a workout, so the timer stays visible', s.wake, 'wake')
+      ],
+      exportData: () => this.exportData(), importData: () => this.importData(), resetData: () => this.resetData(), resetLabel: s.resetArm ? 'Tap again' : 'Reset',
+      resume: go({ screen: 'workout' }),
+      wName: w ? w.name : '', elapsed: w ? clock(now - w.start) : '', setsDoneLabel: doneCount + '/' + total + ' sets',
+      minimize: go({ screen: 'tabs', tab: 'today' }), finish: () => this.finish(),
+      wEx, unitUpper: s.unit.toUpperCase(), wStep: kg ? '2.5' : '5',
+      openLibW: go({ screen: 'library', libCtx: 'workout', libQuery: '', libGroup: 'All' }),
+      discard: () => this.discard(), discardLabel: s.discardArm ? 'Tap again to discard' : 'Discard workout',
+      restOn, restOff: !restOn,
+      restPct: s.restAlert ? '100%' : Math.min(100, Math.max(0, 100 - remain / (s.restTotal * 10))) + '%',
+      restBg: s.restAlert ? '#CCFF00' : '#16161A', restColor: s.restAlert ? '#0A0A0C' : '#FFFFFF', restSub: s.restAlert ? '#0A0A0C' : '#9C9CA8',
+      restLabel: s.restAlert ? 'Rest over — lift' : 'Rest', restClock: s.restAlert ? '0:00' : clock(remain),
+      restMinus: () => this.restAdj(-15), restPlus: () => this.restAdj(15), restSkip: () => this.restSkip(),
+      libBack: go({ screen: s.libCtx === 'workout' ? 'workout' : 'routine' }), libCtxLabel: s.libCtx === 'workout' ? 'to ' + (w ? w.name : 'workout') : 'to ' + (er ? er.name : 'routine'),
+      libQuery: s.libQuery, onLibQuery: (e) => this.setState({ libQuery: e.target.value }),
+      groups: GROUPS.map(g => ({ name: g, bg: s.libGroup === g ? '#FFFFFF' : 'transparent', color: s.libGroup === g ? '#0A0A0C' : '#FFFFFF', border: s.libGroup === g ? '#FFFFFF' : '#33333C', onClick: go({ libGroup: g }) })),
+      libList, canCreate, createGroup: s.libGroup === 'All' ? 'Custom' : s.libGroup, createCustom: () => this.createCustom(),
+      rName: er ? er.name : '', onRName: (e) => { const v = e.target.value; this.updR(c => { c.name = v; }); },
+      rEx, rEmpty: !!er && !er.ex.length, routineBack: go({ screen: 'tabs', tab: 'programs' }),
+      deleteRoutine: () => this.deleteRoutine(), deleteLabel: s.deleteArm ? 'Tap again' : 'Delete',
+      openLibR: go({ screen: 'library', libCtx: 'routine', libQuery: '', libGroup: 'All' }),
+      startEdited: () => { if (!er || !er.ex.length) return; if (s.workout) { this.setState({ screen: 'workout' }); return; } this.start(er.id); },
+      sumName: sm ? sm.name : '',
+      sumStats: sm ? [
+        { label: 'Time', value: clock(sm.dur), color: '#FFFFFF' },
+        { label: 'Sets', value: String(sm.sets), color: '#FFFFFF' },
+        { label: 'Volume ' + s.unit, value: volU(sm.vol), color: '#FFFFFF' },
+        { label: 'vs last time', value: sm.hasPrev ? (dv >= 0 ? '+' : '−') + volU(Math.abs(dv)) : '—', color: sm.hasPrev && dv > 0 ? '#CCFF00' : '#FFFFFF' }
+      ] : [],
+      sumPrTitle: sm && sm.prs.length ? sm.prs.length + ' personal record' + (sm.prs.length > 1 ? 's' : '') : 'No PRs this time — consistency counts',
+      sumPrs: sm ? sm.prs.map(p => ({ name: p.name, text: this.dispW(p.w) + ' ' + s.unit + ' × ' + p.r + ' · e1RM ' + this.dispW(p.e) })) : [],
+      sumEx: sm ? (sm.ex || []).map(x => { const ws = work(x.sets); const b = ws.reduce((a, y) => (!a || e1(y.w, y.r) > e1(a.w, a.r)) ? y : a, null); const wu = x.sets.length - ws.length; return { name: x.name, text: ws.length + ' × ' + (b ? 'best ' + this.dispW(b.w) + '×' + b.r : '—') + (wu ? ' · ' + wu + ' W' : '') }; }) : [],
+      closeSummary: go({ screen: 'tabs', tab: 'today', summary: null })
+    };
+  }
+}
+</script>
+</body>
+</html>
