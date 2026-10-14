@@ -582,14 +582,18 @@ class Component extends DCLogic {
   inc() { return this.state.unit === 'kg' ? 2.5 : 5 / KG_LB; }
   dispW(kg) { return this.state.unit === 'kg' ? trim(Math.round(kg * 4) / 4) : trim(Math.round(kg * KG_LB * 2) / 2); }
   mkEx(name, n, target, history) {
-    const last = (history[name] || []).slice(-1)[0];
+    const hist = history[name] || [];
+    const last = hist.slice(-1)[0];
+    const lastW = [...hist].reverse().find(se => se.sets.some(x => x.w > 0));
     const ws = last ? work(last.sets).filter(x => x.w > 0) : [];
     const up = !!(target && ws.length && ws.every(x => x.r >= target));
     const inc = this.inc(); const sets = [];
     for (let i = 0; i < n; i++) {
       const p = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null;
       const bump = up && p && !p.wu;
-      sets.push({ w: p ? p.w + (bump ? inc : 0) : 0, r: p ? (bump ? target : p.r) : (target || 8), pw: p ? p.w : null, pr: p ? p.r : null, warm: !!(p && p.wu), done: false });
+      const q = lastW ? (lastW.sets[i] || lastW.sets[lastW.sets.length - 1]) : null;
+      const bw = p && p.w > 0 ? p.w : q ? q.w : 0;
+      sets.push({ w: bw ? bw + (bump ? inc : 0) : 0, r: p ? (bump ? target : p.r) : (target || 8), pw: p ? p.w : null, pr: p ? p.r : null, warm: !!(p && p.wu), done: false });
     }
     return { name, target: target || null, up, sets };
   }
@@ -770,7 +774,7 @@ class Component extends DCLogic {
       repsMinus: () => this.updR(c => { c.ex[i].reps = Math.max(1, c.ex[i].reps - 1); }), repsPlus: () => this.updR(c => { c.ex[i].reps = Math.min(50, c.ex[i].reps + 1); })
     })) : [];
 
-    const histNames = Object.keys(s.history).filter(k => s.history[k].some(se => work(se.sets).length));
+    const histNames = Object.keys(s.history).filter(k => s.history[k].some(se => work(se.sets).some(x => x.w > 0)));
     const progEx = histNames.includes(s.progEx) ? s.progEx : (histNames[0] || '');
     const sess = (s.history[progEx] || []).map(se => ({ date: se.date, ws: work(se.sets) })).filter(se => se.ws.length);
     const val = (se) => s.metric === 'e1rm' ? Math.max(...se.ws.map(x => e1(x.w, x.r))) : s.metric === 'vol' ? se.ws.reduce((a, x) => a + x.w * x.r, 0) : Math.max(...se.ws.map(x => x.w));
