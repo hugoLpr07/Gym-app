@@ -420,7 +420,8 @@ input::placeholder{color:#9C9CA8}
 <div style="display:flex;align-items:center;gap:8px;padding:8px 12px 12px;border-bottom:1px solid #24242B;">
 <button onClick="{{ sessBack }}" style="width:48px;height:48px;border-radius:12px;border:none;background:#16161A;color:#fff;font-size:22px;">‹</button>
 <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;"><span style="font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ sdName }}</span><span style="font-size:13px;color:#9C9CA8;">{{ sdDate }}</span></div>
-<button onClick="{{ deleteSess }}" style="height:48px;padding:0 12px;border-radius:12px;border:none;background:transparent;color:{{ delSessColor }};font-size:14px;font-weight:600;">{{ delSessLabel }}</button>
+<button onClick="{{ deleteSess }}" style="height:48px;padding:0 10px;border-radius:12px;border:none;background:transparent;color:{{ delSessColor }};font-size:14px;font-weight:600;">{{ delSessLabel }}</button>
+<button onClick="{{ toggleSessEdit }}" style="height:48px;padding:0 16px;border-radius:12px;border:{{ editBtnBorder }};background:{{ editBtnBg }};color:{{ editBtnColor }};font-size:15px;font-weight:700;">{{ editBtnLabel }}</button>
 </div>
 <div style="flex:1;overflow-y:auto;padding:12px 12px calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;">
 <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
@@ -431,15 +432,27 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-for>
 </div>
+<sc-if value="{{ sdEditing }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:13px;line-height:18px;color:#9C9CA8;padding:0 4px;text-wrap:pretty;">Fix any weight or reps. Changes save instantly and update your records and charts.</div>
+</sc-if>
 <sc-for list="{{ sdEx }}" as="x" hint-placeholder-count="4">
 <div style="flex:0 0 auto;background:#16161A;border:1px solid #24242B;border-radius:16px;overflow:hidden;">
 <div style="padding:14px 14px 8px;font-size:16px;font-weight:700;">{{ x.name }}</div>
 <sc-for list="{{ x.sets }}" as="y" hint-placeholder-count="3">
+<sc-if value="{{ sdView }}" hint-placeholder-val="{{ true }}">
 <div style="display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 14px;border-top:1px solid #24242B;">
 <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#9C9CA8;text-align:center;">{{ y.num }}</span>
 <span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;">{{ y.text }}</span>
 <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;">{{ y.e }}</span>
 </div>
+</sc-if>
+<sc-if value="{{ sdEditing }}" hint-placeholder-val="{{ false }}">
+<div style="display:grid;grid-template-columns:28px minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:center;padding:8px 14px;border-top:1px solid #24242B;">
+<span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#9C9CA8;text-align:center;">{{ y.num }}</span>
+<div style="display:flex;align-items:center;gap:6px;"><input type="text" inputmode="decimal" value="{{ y.wDisp }}" onChange="{{ y.onW }}" onFocus="{{ y.onSelect }}" style="width:100%;min-width:0;height:48px;border-radius:10px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;text-align:center;"><span style="font-size:13px;color:#9C9CA8;">{{ unit }}</span></div>
+<div style="display:flex;align-items:center;gap:6px;"><input type="text" inputmode="numeric" value="{{ y.rDisp }}" onChange="{{ y.onR }}" onFocus="{{ y.onSelect }}" style="width:100%;min-width:0;height:48px;border-radius:10px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;text-align:center;"><span style="font-size:13px;color:#9C9CA8;">reps</span></div>
+</div>
+</sc-if>
 </sc-for>
 </div>
 </sc-for>
@@ -529,7 +542,7 @@ class Component extends DCLogic {
   state = this.initial();
   initial() {
     const routines = seedRoutines();
-    return { tab: 'today', screen: 'tabs', routines, history: seedHistory(routines), lastRoutineId: 'r3', workout: null, focus: null, restEnd: null, restTotal: 90, restAlert: false, now: Date.now(), libCtx: 'workout', libQuery: '', libGroup: 'All', custom: [], editId: null, progEx: 'Bench Press', metric: 'e1rm', unit: 'kg', haptics: true, sound: true, wake: true, autoRest: this.props.autoStartRest ?? true, restDefault: this.props.defaultRest ?? 90, summary: null, toast: null, discardArm: false, deleteArm: false, resetArm: false, installSeen: false, standalone: false, sessMeta: {}, progView: 'sessions', calOff: 0, openSess: null, delSessArm: false, clearArm: false, eraseArm: false };
+    return { tab: 'today', screen: 'tabs', routines, history: seedHistory(routines), lastRoutineId: 'r3', workout: null, focus: null, restEnd: null, restTotal: 90, restAlert: false, now: Date.now(), libCtx: 'workout', libQuery: '', libGroup: 'All', custom: [], editId: null, progEx: 'Bench Press', metric: 'e1rm', unit: 'kg', haptics: true, sound: true, wake: true, autoRest: this.props.autoStartRest ?? true, restDefault: this.props.defaultRest ?? 90, summary: null, toast: null, discardArm: false, deleteArm: false, resetArm: false, installSeen: false, standalone: false, sessMeta: {}, progView: 'sessions', calOff: 0, openSess: null, delSessArm: false, clearArm: false, eraseArm: false, sessEdit: false, editBuf: {} };
   }
   componentDidMount() {
     let d = null;
@@ -705,6 +718,17 @@ class Component extends DCLogic {
   }
   clearHistory() { this.arm('clearArm', () => { clearTimeout(this.ra); this.setState({ history: {}, sessMeta: {}, workout: null, focus: null, restEnd: null, restAlert: false, summary: null }); this.flash('History cleared'); }); }
   eraseAll() { this.arm('eraseArm', () => { clearTimeout(this.ra); this.setState({ history: {}, sessMeta: {}, routines: [], custom: [], lastRoutineId: null, workout: null, focus: null, restEnd: null, restAlert: false, summary: null, tab: 'today', screen: 'tabs' }); this.flash('All data erased'); }); }
+  editSessSet(date, name, i, field, val) {
+    const s = this.state; const key = date + '|' + name + '|' + i + '|' + field;
+    let v = field === 'w' ? parseFloat(String(val).replace(',', '.')) : parseInt(val, 10);
+    if (val === '') v = 0;
+    const editBuf = { ...s.editBuf, [key]: val };
+    if (isNaN(v)) { this.setState({ editBuf }); return; }
+    if (field === 'w' && s.unit !== 'kg') v = v / KG_LB;
+    const h = { ...s.history };
+    h[name] = (h[name] || []).map(se => se.date !== date ? se : { ...se, sets: se.sets.map((x, j) => j !== i ? x : { ...x, [field]: Math.max(0, v) }) });
+    this.setState({ history: h, editBuf });
+  }
   deleteSession(date) {
     this.arm('delSessArm', () => {
       const s = this.state; const h = {};
@@ -819,7 +843,7 @@ class Component extends DCLogic {
     for (let dd = 1; dd <= dim; dd++) {
       const dt = new Date(cm.getFullYear(), cm.getMonth(), dd); const se = dayMap[dt.toDateString()]; const isT = dt.toDateString() === d0.toDateString();
       if (se) monthCount += sessions.filter(x => new Date(x.date).toDateString() === dt.toDateString()).length;
-      calDays.push({ label: String(dd), bg: se ? '#CCFF00' : 'transparent', color: se ? '#0A0A0C' : dt > d0 ? '#55555F' : '#FFFFFF', border: isT ? '#FFFFFF' : 'transparent', weight: se ? 700 : 500, opacity: 1, onClick: se ? go({ openSess: se.date, screen: 'session', delSessArm: false }) : () => {} });
+      calDays.push({ label: String(dd), bg: se ? '#CCFF00' : 'transparent', color: se ? '#0A0A0C' : dt > d0 ? '#55555F' : '#FFFFFF', border: isT ? '#FFFFFF' : 'transparent', weight: se ? 700 : 500, opacity: 1, onClick: se ? go({ openSess: se.date, screen: 'session', delSessArm: false, sessEdit: false, editBuf: {} }) : () => {} });
     }
     const fmtLong = t => new Date(t).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
     const sd = s.openSess != null ? sessions.find(x => x.date === s.openSess) : null;
@@ -834,11 +858,18 @@ class Component extends DCLogic {
       calTitle: cm.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }), calCount: monthCount + ' session' + (monthCount === 1 ? '' : 's'),
       calPrev: go({ calOff: s.calOff - 1 }), calNext: () => { if (s.calOff < 0) this.setState({ calOff: s.calOff + 1 }); }, calNextOpacity: s.calOff < 0 ? 1 : 0.3,
       calDays, noSess: !sessions.length,
-      sessList: sessions.slice(0, 100).map(se => { const dt = new Date(se.date); return { day: String(dt.getDate()), mon: dt.toLocaleDateString('en-US', { month: 'short' }), name: se.name, meta: se.ex.length + ' exercises · ' + se.sets + ' sets · ' + volU(se.vol) + ' ' + s.unit + (se.dur ? ' · ' + clock(se.dur) : ''), onClick: go({ openSess: se.date, screen: 'session', delSessArm: false }) }; }),
+      sessList: sessions.slice(0, 100).map(se => { const dt = new Date(se.date); return { day: String(dt.getDate()), mon: dt.toLocaleDateString('en-US', { month: 'short' }), name: se.name, meta: se.ex.length + ' exercises · ' + se.sets + ' sets · ' + volU(se.vol) + ' ' + s.unit + (se.dur ? ' · ' + clock(se.dur) : ''), onClick: go({ openSess: se.date, screen: 'session', delSessArm: false, sessEdit: false, editBuf: {} }) }; }),
       sdName: sd ? sd.name : '', sdDate: sd ? fmtLong(sd.date) : '',
       sdStats: sd ? [{ label: 'Time', value: sd.dur ? clock(sd.dur) : '—' }, { label: 'Sets', value: String(sd.sets) }, { label: 'Vol ' + s.unit, value: volU(sd.vol) }] : [],
-      sdEx: sd ? sd.ex.map(x => { let n = 0; return { name: x.name, sets: x.sets.map(y => ({ num: y.wu ? 'W' : String(++n), text: (y.w ? this.dispW(y.w) + ' ' + s.unit + ' × ' : '') + y.r + (y.w ? '' : ' reps'), e: y.w && !y.wu ? 'e1RM ' + this.dispW(e1(y.w, y.r)) : '' })) }; }) : [],
-      sessBack: go({ screen: 'tabs', tab: 'progress', openSess: null }),
+      sdEx: sd ? sd.ex.map(x => { let n = 0; return { name: x.name, sets: x.sets.map((y, i) => { const k = sd.date + '|' + x.name + '|' + i + '|'; return {
+        num: y.wu ? 'W' : String(++n), text: (y.w ? this.dispW(y.w) + ' ' + s.unit + ' × ' : '') + y.r + (y.w ? '' : ' reps'), e: y.w && !y.wu ? 'e1RM ' + this.dispW(e1(y.w, y.r)) : '',
+        wDisp: s.editBuf[k + 'w'] != null ? s.editBuf[k + 'w'] : (y.w ? this.dispW(y.w) : ''), rDisp: s.editBuf[k + 'r'] != null ? s.editBuf[k + 'r'] : String(y.r),
+        onW: (e) => this.editSessSet(sd.date, x.name, i, 'w', e.target.value), onR: (e) => this.editSessSet(sd.date, x.name, i, 'r', e.target.value),
+        onSelect: (e) => { const t = e.target; setTimeout(() => { try { t.setSelectionRange(0, t.value.length); } catch (er) {} }, 0); } }; }) }; }) : [],
+      sdView: !s.sessEdit, sdEditing: !!s.sessEdit, unit: s.unit,
+      toggleSessEdit: () => { if (s.sessEdit) this.flash('Session updated'); this.setState({ sessEdit: !s.sessEdit, editBuf: {}, delSessArm: false }); },
+      editBtnLabel: s.sessEdit ? 'Done' : 'Edit', editBtnBg: s.sessEdit ? '#CCFF00' : '#24242B', editBtnColor: s.sessEdit ? '#0A0A0C' : '#FFFFFF', editBtnBorder: 'none',
+      sessBack: go({ screen: 'tabs', tab: 'progress', openSess: null, sessEdit: false, editBuf: {} }),
       deleteSess: () => sd && this.deleteSession(sd.date), delSessLabel: s.delSessArm ? 'Tap again' : 'Delete', delSessColor: s.delSessArm ? '#FFFFFF' : '#9C9CA8',
       isWorkout: s.screen === 'workout' && !!w, isLibrary: s.screen === 'library', isRoutine: s.screen === 'routine' && !!er, isSummary: s.screen === 'summary' && !!sm,
       showTabs, showResume: showTabs && !!w, tabBottom: showTabs && w ? 'calc(132px + env(safe-area-inset-bottom))' : 'calc(60px + env(safe-area-inset-bottom))',
