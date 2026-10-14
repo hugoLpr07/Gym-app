@@ -115,6 +115,47 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ isProgress }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 0 24px;display:flex;flex-direction:column;gap:16px;">
 <div style="padding:8px 16px 0;font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">Progress</div>
+<div style="margin:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#16161A;border:1px solid #24242B;border-radius:12px;padding:4px;">
+<sc-for list="{{ progViews }}" as="v" hint-placeholder-count="2">
+<button onClick="{{ v.onClick }}" style="height:44px;border:none;border-radius:9px;background:{{ v.bg }};color:{{ v.color }};font-size:15px;font-weight:600;">{{ v.label }}</button>
+</sc-for>
+</div>
+<sc-if value="{{ isSessView }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;gap:16px;padding:0 16px;">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:10px;">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+<button onClick="{{ calPrev }}" style="width:44px;height:44px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:20px;">‹</button>
+<div style="display:flex;flex-direction:column;align-items:center;gap:2px;"><span style="font-size:17px;font-weight:700;">{{ calTitle }}</span><span style="font-size:13px;color:#9C9CA8;">{{ calCount }}</span></div>
+<button onClick="{{ calNext }}" style="width:44px;height:44px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:20px;opacity:{{ calNextOpacity }};">›</button>
+</div>
+<div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;font-size:12px;font-weight:600;color:#9C9CA8;text-align:center;">
+<span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+</div>
+<div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;">
+<sc-for list="{{ calDays }}" as="c" hint-placeholder-count="35">
+<button onClick="{{ c.onClick }}" style="height:42px;padding:0;border-radius:10px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.color }};font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:{{ c.weight }};opacity:{{ c.opacity }};">{{ c.label }}</button>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">All sessions</div>
+<sc-if value="{{ noSess }}" hint-placeholder-val="{{ false }}">
+<div style="padding:24px 16px;background:#16161A;border:1px solid #24242B;border-radius:16px;text-align:center;color:#9C9CA8;font-size:15px;">No sessions yet. Finish a workout and it shows up here.</div>
+</sc-if>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;overflow:hidden;">
+<sc-for list="{{ sessList }}" as="se" hint-placeholder-count="5">
+<button onClick="{{ se.onClick }}" style="width:100%;display:grid;grid-template-columns:48px minmax(0,1fr) 16px;gap:12px;align-items:center;padding:12px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;text-align:left;min-height:64px;" style-active="background:#24242B">
+<div style="display:flex;flex-direction:column;align-items:center;"><span style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;line-height:22px;">{{ se.day }}</span><span style="font-size:12px;font-weight:600;color:#9C9CA8;text-transform:uppercase;">{{ se.mon }}</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:16px;font-weight:700;">{{ se.name }}</span><span style="font-size:13px;color:#9C9CA8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ se.meta }}</span></div>
+<span style="color:#9C9CA8;font-size:18px;">›</span>
+</button>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ isLiftView }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:16px;">
 <div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px;">
 <sc-for list="{{ progChips }}" as="c" hint-placeholder-count="5">
 <button onClick="{{ c.onClick }}" style="flex:0 0 auto;height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.color }};font-size:14px;font-weight:600;white-space:nowrap;">{{ c.name }}</button>
@@ -169,6 +210,8 @@ input::placeholder{color:#9C9CA8}
 </div>
 </div>
 </sc-if>
+</div>
+</sc-if>
 
 <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 16px 24px;display:flex;flex-direction:column;gap:20px;">
@@ -205,12 +248,16 @@ input::placeholder{color:#9C9CA8}
 </div>
 <div style="display:flex;flex-direction:column;gap:8px;">
 <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Your data</div>
-<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
-<button onClick="{{ exportData }}" style="height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">Export</button>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+<button onClick="{{ exportData }}" style="height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">Export backup</button>
 <button onClick="{{ importData }}" style="height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">Import</button>
-<button onClick="{{ resetData }}" style="height:52px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#9C9CA8;font-size:15px;font-weight:600;">{{ resetLabel }}</button>
 </div>
-<span style="font-size:13px;line-height:18px;color:#9C9CA8;">Export a JSON backup now and then — it’s the only copy of your data.</span>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">Logging a workout only adds to your history. Import replaces everything with the file’s content — export first if unsure.</span>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px;">
+<button onClick="{{ clearHistory }}" style="height:52px;border-radius:12px;border:1px solid {{ clearBorder }};background:transparent;color:{{ clearColor }};font-size:15px;font-weight:600;">{{ clearLabel }}</button>
+<button onClick="{{ eraseAll }}" style="height:52px;border-radius:12px;border:1px solid {{ eraseBorder }};background:transparent;color:{{ eraseColor }};font-size:15px;font-weight:600;">{{ eraseLabel }}</button>
+</div>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">Clear history keeps your routines. Erase all also deletes routines and custom exercises. Both ask for a second tap.</span>
 </div>
 <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;text-align:center;">Barlog 0.2 · open source</div>
 </div>
@@ -368,6 +415,38 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-if>
 
+<sc-if value="{{ isSession }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;z-index:7;background:#0A0A0C;">
+<div style="display:flex;align-items:center;gap:8px;padding:8px 12px 12px;border-bottom:1px solid #24242B;">
+<button onClick="{{ sessBack }}" style="width:48px;height:48px;border-radius:12px;border:none;background:#16161A;color:#fff;font-size:22px;">‹</button>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;"><span style="font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ sdName }}</span><span style="font-size:13px;color:#9C9CA8;">{{ sdDate }}</span></div>
+<button onClick="{{ deleteSess }}" style="height:48px;padding:0 12px;border-radius:12px;border:none;background:transparent;color:{{ delSessColor }};font-size:14px;font-weight:600;">{{ delSessLabel }}</button>
+</div>
+<div style="flex:1;overflow-y:auto;padding:12px 12px calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;">
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
+<sc-for list="{{ sdStats }}" as="st" hint-placeholder-count="3">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:4px;">
+<span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ st.label }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;">{{ st.value }}</span>
+</div>
+</sc-for>
+</div>
+<sc-for list="{{ sdEx }}" as="x" hint-placeholder-count="4">
+<div style="flex:0 0 auto;background:#16161A;border:1px solid #24242B;border-radius:16px;overflow:hidden;">
+<div style="padding:14px 14px 8px;font-size:16px;font-weight:700;">{{ x.name }}</div>
+<sc-for list="{{ x.sets }}" as="y" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 14px;border-top:1px solid #24242B;">
+<span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#9C9CA8;text-align:center;">{{ y.num }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;">{{ y.text }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;">{{ y.e }}</span>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
 <sc-if value="{{ isSummary }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;inset:0;display:flex;flex-direction:column;z-index:8;background:#0A0A0C;">
 <div style="flex:1;overflow-y:auto;padding:28px 16px 16px;display:flex;flex-direction:column;gap:24px;">
@@ -419,7 +498,7 @@ const KG_LB = 2.20462;
 const LIB = [['Bench Press','Chest'],['Incline DB Press','Chest'],['Dumbbell Fly','Chest'],['Push-up','Chest'],['Deadlift','Back'],['Barbell Row','Back'],['Pull-up','Back'],['Lat Pulldown','Back'],['Seated Cable Row','Back'],['Squat','Legs'],['Romanian Deadlift','Legs'],['Leg Press','Legs'],['Leg Curl','Legs'],['Leg Extension','Legs'],['Calf Raise','Legs'],['Bulgarian Split Squat','Legs'],['Overhead Press','Shoulders'],['Lateral Raise','Shoulders'],['Face Pull','Shoulders'],['Barbell Curl','Arms'],['Hammer Curl','Arms'],['Triceps Pushdown','Arms'],['Skull Crusher','Arms'],['Plank','Core'],['Hanging Leg Raise','Core'],['Cable Crunch','Core']].map(([name, group]) => ({ name, group }));
 const GROUPS = ['All','Chest','Back','Legs','Shoulders','Arms','Core','Custom'];
 const BASE = {'Bench Press':80,'Overhead Press':50,'Incline DB Press':30,'Lateral Raise':12,'Triceps Pushdown':30,'Deadlift':160,'Barbell Row':70,'Pull-up':10,'Face Pull':25,'Barbell Curl':35,'Squat':120,'Romanian Deadlift':100,'Leg Press':180,'Leg Curl':45,'Calf Raise':70};
-const PK = ['routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen'];
+const PK = ['routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta'];
 const e1 = (w, r) => w * (1 + r / 30);
 const trim = n => String(Math.round(n * 100) / 100);
 const pad = n => String(n).padStart(2, '0');
@@ -450,7 +529,7 @@ class Component extends DCLogic {
   state = this.initial();
   initial() {
     const routines = seedRoutines();
-    return { tab: 'today', screen: 'tabs', routines, history: seedHistory(routines), lastRoutineId: 'r3', workout: null, focus: null, restEnd: null, restTotal: 90, restAlert: false, now: Date.now(), libCtx: 'workout', libQuery: '', libGroup: 'All', custom: [], editId: null, progEx: 'Bench Press', metric: 'e1rm', unit: 'kg', haptics: true, sound: true, wake: true, autoRest: this.props.autoStartRest ?? true, restDefault: this.props.defaultRest ?? 90, summary: null, toast: null, discardArm: false, deleteArm: false, resetArm: false, installSeen: false, standalone: false };
+    return { tab: 'today', screen: 'tabs', routines, history: seedHistory(routines), lastRoutineId: 'r3', workout: null, focus: null, restEnd: null, restTotal: 90, restAlert: false, now: Date.now(), libCtx: 'workout', libQuery: '', libGroup: 'All', custom: [], editId: null, progEx: 'Bench Press', metric: 'e1rm', unit: 'kg', haptics: true, sound: true, wake: true, autoRest: this.props.autoStartRest ?? true, restDefault: this.props.defaultRest ?? 90, summary: null, toast: null, discardArm: false, deleteArm: false, resetArm: false, installSeen: false, standalone: false, sessMeta: {}, progView: 'sessions', calOff: 0, openSess: null, delSessArm: false, clearArm: false, eraseArm: false };
   }
   componentDidMount() {
     let d = null;
@@ -580,7 +659,8 @@ class Component extends DCLogic {
     });
     clearTimeout(this.ra);
     if (!sets) { this.setState({ workout: null, focus: null, screen: 'tabs', tab: 'today', restEnd: null, restAlert: false }); return; }
-    this.setState({ history: h, workout: null, focus: null, restEnd: null, restAlert: false, lastRoutineId: w.rid || s.lastRoutineId, summary: { name: w.name, dur: Date.now() - w.start, vol, sets, prevVol, hasPrev, prs: Object.values(prs), ex: exs }, screen: 'summary' });
+    const dur = Date.now() - w.start;
+    this.setState({ sessMeta: { ...(s.sessMeta || {}), [w.start]: { name: w.name, rid: w.rid, dur } }, history: h, workout: null, focus: null, restEnd: null, restAlert: false, lastRoutineId: w.rid || s.lastRoutineId, summary: { name: w.name, dur: Date.now() - w.start, vol, sets, prevVol, hasPrev, prs: Object.values(prs), ex: exs }, screen: 'summary' });
   }
   discard() {
     if (!this.state.discardArm) { this.setState({ discardArm: true }); setTimeout(() => this.setState({ discardArm: false }), 3000); return; }
@@ -612,12 +692,22 @@ class Component extends DCLogic {
   }
   importData() {
     const i = document.createElement('input'); i.type = 'file'; i.accept = 'application/json,.json';
-    i.onchange = () => { const f = i.files && i.files[0]; if (!f) return; f.text().then(t => { const d = JSON.parse(t); if (!d || !d.routines || !d.history) throw 0; this.setState({ ...d, screen: d.workout ? 'workout' : 'tabs', tab: 'today', restAlert: false }); this.flash('Data imported'); }).catch(() => this.flash('Not a Barlog backup')); };
+    i.onchange = () => { const f = i.files && i.files[0]; if (!f) return; f.text().then(t => { const d = JSON.parse(t); if (!d || !d.routines || !d.history) throw 0; this.setState({ ...d, sessMeta: d.sessMeta || {}, custom: d.custom || [], screen: d.workout ? 'workout' : 'tabs', tab: 'today', restAlert: false, calOff: 0 }); this.flash('Data imported'); }).catch(() => this.flash('Not a Barlog backup')); };
     i.click();
   }
-  resetData() {
-    if (!this.state.resetArm) { this.setState({ resetArm: true }); setTimeout(() => this.setState({ resetArm: false }), 3000); return; }
-    const i = this.initial(); this.setState({ ...i, tab: 'profile', standalone: this.state.standalone, installSeen: true });
+  arm(key, fn) {
+    if (!this.state[key]) { this.setState({ [key]: true }); setTimeout(() => this.setState({ [key]: false }), 3000); return; }
+    this.setState({ [key]: false }); fn();
+  }
+  clearHistory() { this.arm('clearArm', () => { clearTimeout(this.ra); this.setState({ history: {}, sessMeta: {}, workout: null, focus: null, restEnd: null, restAlert: false, summary: null }); this.flash('History cleared'); }); }
+  eraseAll() { this.arm('eraseArm', () => { clearTimeout(this.ra); this.setState({ history: {}, sessMeta: {}, routines: [], custom: [], lastRoutineId: null, workout: null, focus: null, restEnd: null, restAlert: false, summary: null, tab: 'today', screen: 'tabs' }); this.flash('All data erased'); }); }
+  deleteSession(date) {
+    this.arm('delSessArm', () => {
+      const s = this.state; const h = {};
+      Object.entries(s.history).forEach(([k, a]) => { const f = a.filter(x => x.date !== date); if (f.length) h[k] = f; });
+      const m = { ...(s.sessMeta || {}) }; delete m[date];
+      this.setState({ history: h, sessMeta: m, screen: 'tabs', tab: 'progress', openSess: null }); this.flash('Session deleted');
+    });
   }
   renderVals() {
     const s = this.state; const now = s.now; const kg = s.unit === 'kg';
@@ -704,11 +794,48 @@ class Component extends DCLogic {
     const toggleRow = (label, sub, on, key) => ({ label, sub, track: on ? '#CCFF00' : '#24242B', knob: on ? '#0A0A0C' : '#9C9CA8', justify: on ? 'flex-end' : 'flex-start', onClick: () => { this.unlockAudio(); this.setState({ [key]: !s[key] }); } });
     const sessCount = new Set(Object.values(s.history).flatMap(a => a.map(x => x.date))).size;
     const showTabs = s.screen === 'tabs';
+    const meta = s.sessMeta || {};
+    const byDate = {};
+    Object.entries(s.history).forEach(([name, arr]) => arr.forEach(se => { (byDate[se.date] = byDate[se.date] || []).push({ name, sets: se.sets }); }));
+    const sessions = Object.keys(byDate).map(Number).sort((a, b) => b - a).map(date => {
+      const ex = byDate[date]; const m = meta[date] || {};
+      let r = m.rid ? routines.find(x => x.id === m.rid) : null;
+      if (!r && !m.name) { let best = 0; routines.forEach(x => { const o = x.ex.filter(e => ex.some(y => y.name === e.name)).length; if (o > best) { best = o; r = x; } }); }
+      if (r) { const ix = n => { const i = r.ex.findIndex(e => e.name === n); return i < 0 ? 99 : i; }; ex.sort((a, b) => ix(a.name) - ix(b.name)); }
+      const vol = ex.reduce((a, x) => a + work(x.sets).reduce((b, y) => b + y.w * y.r, 0), 0);
+      return { date, name: m.name || (r ? r.name : 'Workout'), dur: m.dur, ex, vol, sets: ex.reduce((a, x) => a + x.sets.length, 0) };
+    });
+    const cm = new Date(d0.getFullYear(), d0.getMonth() + s.calOff, 1);
+    const dim = new Date(cm.getFullYear(), cm.getMonth() + 1, 0).getDate();
+    const lead = (cm.getDay() + 6) % 7;
+    const dayMap = {}; sessions.forEach(se => { const k = new Date(se.date).toDateString(); if (!dayMap[k]) dayMap[k] = se; });
+    let monthCount = 0;
+    const calDays = [];
+    for (let i = 0; i < lead; i++) calDays.push({ label: '', bg: 'transparent', color: '#9C9CA8', border: 'transparent', weight: 400, opacity: 0, onClick: () => {} });
+    for (let dd = 1; dd <= dim; dd++) {
+      const dt = new Date(cm.getFullYear(), cm.getMonth(), dd); const se = dayMap[dt.toDateString()]; const isT = dt.toDateString() === d0.toDateString();
+      if (se) monthCount += sessions.filter(x => new Date(x.date).toDateString() === dt.toDateString()).length;
+      calDays.push({ label: String(dd), bg: se ? '#CCFF00' : 'transparent', color: se ? '#0A0A0C' : dt > d0 ? '#55555F' : '#FFFFFF', border: isT ? '#FFFFFF' : 'transparent', weight: se ? 700 : 500, opacity: 1, onClick: se ? go({ openSess: se.date, screen: 'session', delSessArm: false }) : () => {} });
+    }
+    const fmtLong = t => new Date(t).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+    const sd = s.openSess != null ? sessions.find(x => x.date === s.openSess) : null;
 
     return {
       toastOn: !!s.toast, toast: s.toast,
       showInstall: !s.standalone && !s.installSeen, dismissInstall: go({ installSeen: true }),
       isToday: showTabs && s.tab === 'today', isPrograms: showTabs && s.tab === 'programs', isProgress: showTabs && s.tab === 'progress', isProfile: showTabs && s.tab === 'profile',
+      isSession: s.screen === 'session' && !!sd,
+      progViews: [['sessions', 'Sessions'], ['lifts', 'Lifts']].map(([k, label]) => ({ label, bg: s.progView === k ? '#24242B' : 'transparent', color: s.progView === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ progView: k }) })),
+      isSessView: s.progView !== 'lifts', isLiftView: s.progView === 'lifts',
+      calTitle: cm.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }), calCount: monthCount + ' session' + (monthCount === 1 ? '' : 's'),
+      calPrev: go({ calOff: s.calOff - 1 }), calNext: () => { if (s.calOff < 0) this.setState({ calOff: s.calOff + 1 }); }, calNextOpacity: s.calOff < 0 ? 1 : 0.3,
+      calDays, noSess: !sessions.length,
+      sessList: sessions.slice(0, 100).map(se => { const dt = new Date(se.date); return { day: String(dt.getDate()), mon: dt.toLocaleDateString('en-US', { month: 'short' }), name: se.name, meta: se.ex.length + ' exercises · ' + se.sets + ' sets · ' + volU(se.vol) + ' ' + s.unit + (se.dur ? ' · ' + clock(se.dur) : ''), onClick: go({ openSess: se.date, screen: 'session', delSessArm: false }) }; }),
+      sdName: sd ? sd.name : '', sdDate: sd ? fmtLong(sd.date) : '',
+      sdStats: sd ? [{ label: 'Time', value: sd.dur ? clock(sd.dur) : '—' }, { label: 'Sets', value: String(sd.sets) }, { label: 'Vol ' + s.unit, value: volU(sd.vol) }] : [],
+      sdEx: sd ? sd.ex.map(x => { let n = 0; return { name: x.name, sets: x.sets.map(y => ({ num: y.wu ? 'W' : String(++n), text: (y.w ? this.dispW(y.w) + ' ' + s.unit + ' × ' : '') + y.r + (y.w ? '' : ' reps'), e: y.w && !y.wu ? 'e1RM ' + this.dispW(e1(y.w, y.r)) : '' })) }; }) : [],
+      sessBack: go({ screen: 'tabs', tab: 'progress', openSess: null }),
+      deleteSess: () => sd && this.deleteSession(sd.date), delSessLabel: s.delSessArm ? 'Tap again' : 'Delete', delSessColor: s.delSessArm ? '#FFFFFF' : '#9C9CA8',
       isWorkout: s.screen === 'workout' && !!w, isLibrary: s.screen === 'library', isRoutine: s.screen === 'routine' && !!er, isSummary: s.screen === 'summary' && !!sm,
       showTabs, showResume: showTabs && !!w, tabBottom: showTabs && w ? 'calc(132px + env(safe-area-inset-bottom))' : 'calc(60px + env(safe-area-inset-bottom))',
       tabs: [['today','Today'],['programs','Programs'],['progress','Progress'],['profile','Profile']].map(([k, label]) => ({ label, color: s.tab === k ? '#FFFFFF' : '#9C9CA8', bar: s.tab === k ? '#CCFF00' : 'transparent', onClick: go({ tab: k }) })),
@@ -739,7 +866,9 @@ class Component extends DCLogic {
         toggleRow('Vibration', 'Android only — iPhone doesn’t allow it in web apps', s.haptics, 'haptics'),
         toggleRow('Keep screen on', 'During a workout, so the timer stays visible', s.wake, 'wake')
       ],
-      exportData: () => this.exportData(), importData: () => this.importData(), resetData: () => this.resetData(), resetLabel: s.resetArm ? 'Tap again' : 'Reset',
+      exportData: () => this.exportData(), importData: () => this.importData(),
+      clearHistory: () => this.clearHistory(), clearLabel: s.clearArm ? 'Tap again' : 'Clear history', clearBorder: s.clearArm ? '#FFFFFF' : '#33333C', clearColor: s.clearArm ? '#FFFFFF' : '#9C9CA8',
+      eraseAll: () => this.eraseAll(), eraseLabel: s.eraseArm ? 'Tap again' : 'Erase all', eraseBorder: s.eraseArm ? '#FFFFFF' : '#33333C', eraseColor: s.eraseArm ? '#FFFFFF' : '#9C9CA8',
       resume: go({ screen: 'workout' }),
       wName: w ? w.name : '', elapsed: w ? clock(now - w.start) : '', setsDoneLabel: doneCount + '/' + total + ' sets',
       minimize: go({ screen: 'tabs', tab: 'today' }), finish: () => this.finish(),
