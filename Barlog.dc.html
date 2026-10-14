@@ -6,7 +6,7 @@
 <title>Barlog</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Barlog">
 <meta name="theme-color" content="#0A0A0C">
 <link rel="manifest" href="./manifest.json">
@@ -29,7 +29,7 @@ input::placeholder{color:#9C9CA8}
 </style>
 </helmet>
 <div style="position:fixed;inset:0;background:#0A0A0C;">
-<div style="position:absolute;top:env(safe-area-inset-top);bottom:0;left:0;right:0;max-width:480px;margin:0 auto;overflow:hidden;">
+<div style="position:absolute;top:calc(env(safe-area-inset-top) + 16px);bottom:0;left:0;right:0;max-width:480px;margin:0 auto;overflow:hidden;">
 
 <sc-if value="{{ toastOn }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;top:8px;left:0;right:0;display:flex;justify-content:center;z-index:40;pointer-events:none;">
