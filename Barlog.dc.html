@@ -58,6 +58,7 @@ input::placeholder{color:#9C9CA8}
 <textarea value="{{ sheetNote }}" onChange="{{ onSheetNote }}" placeholder="{{ tx.nNotePh }}" rows="3" style="width:100%;border-radius:12px;border:1px solid #24242B;background:#0A0A0C;color:#fff;font-size:16px;line-height:22px;padding:12px;font-family:inherit;resize:none;"></textarea>
 <span style="font-size:12px;color:#9C9CA8;">{{ tx.nNoteSub }}</span>
 </div>
+<button onClick="{{ sheetInfo }}" style="min-height:52px;border-radius:16px;border:1px solid #33333C;background:transparent;color:#fff;font-size:15px;font-weight:600;">{{ tx.nSheetInfo }}</button>
 <button onClick="{{ closeSheet }}" style="min-height:56px;border-radius:16px;border:none;background:#CCFF00;color:#0A0A0C;font-size:16px;font-weight:700;">{{ tx.nDone }}</button>
 </div>
 </div>
@@ -166,6 +167,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 <button onClick="{{ newRoutine }}" style="height:56px;border-radius:16px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:16px;font-weight:600;" style-active="background:#16161A">{{ tx.k21 }}</button>
 <button onClick="{{ openTemplates }}" style="min-height:56px;border-radius:16px;border:1px solid #33333C;background:transparent;color:#CCFF00;font-size:15px;font-weight:600;">{{ tx.nFromTpl }}</button>
+<button onClick="{{ openLibrary }}" style="min-height:56px;border-radius:16px;border:1px solid #33333C;background:transparent;color:#fff;font-size:15px;font-weight:600;">{{ tx.nLibrary }}</button>
 </div>
 </sc-if>
 
@@ -402,6 +404,36 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ isStatsView }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;flex-direction:column;gap:16px;padding:0 16px;">
 <div style="display:flex;flex-direction:column;gap:8px;">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.nBodyMap }}</div>
+<div style="display:flex;gap:4px;background:#16161A;border:1px solid #24242B;border-radius:10px;padding:3px;"><sc-for list="{{ bmRanges }}" as="r" hint-placeholder-count="2"><button onClick="{{ r.onClick }}" style="height:34px;padding:0 10px;border:none;border-radius:8px;background:{{ r.bg }};color:{{ r.color }};font-size:13px;font-weight:600;">{{ r.label }}</button></sc-for></div>
+</div>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:14px;">
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><svg viewBox="0 0 120 228" style="width:100%;max-width:150px;height:auto;display:block;margin:0 auto;"><circle cx="60" cy="16" r="11" fill="#2A2A31"></circle><rect x="55" y="26" width="10" height="8" rx="3" fill="#2A2A31"></rect><circle cx="27" cy="116" r="4" fill="#2A2A31"></circle><circle cx="93" cy="116" r="4" fill="#2A2A31"></circle><path d="M44 104 H76 L74 114 H46 Z" fill="#2A2A31"></path><circle cx="50" cy="176" r="4" fill="#2A2A31"></circle><circle cx="70" cy="176" r="4" fill="#2A2A31"></circle><rect x="42" y="218" width="13" height="6" rx="3" fill="#2A2A31"></rect><rect x="65" y="218" width="13" height="6" rx="3" fill="#2A2A31"></rect>
+<ellipse cx="38" cy="45" rx="9" ry="8" fill="{{ bmS.shoulders }}"></ellipse><ellipse cx="82" cy="45" rx="9" ry="8" fill="{{ bmS.shoulders }}"></ellipse>
+<path d="M46 38 H59 V62 Q50 66 44 60 Q42 48 46 38 Z" fill="{{ bmS.chest }}"></path><path d="M74 38 H61 V62 Q70 66 76 60 Q78 48 74 38 Z" fill="{{ bmS.chest }}"></path>
+<ellipse cx="33" cy="68" rx="6" ry="12" fill="{{ bmS.biceps }}"></ellipse><ellipse cx="87" cy="68" rx="6" ry="12" fill="{{ bmS.biceps }}"></ellipse><ellipse cx="29" cy="96" rx="5" ry="14" fill="{{ bmS.forearms }}"></ellipse><ellipse cx="91" cy="96" rx="5" ry="14" fill="{{ bmS.forearms }}"></ellipse>
+<rect x="51" y="66" width="18" height="36" rx="5" fill="{{ bmS.abs }}"></rect><rect x="44" y="66" width="6" height="32" rx="3" fill="{{ bmS.obliques }}"></rect><rect x="70" y="66" width="6" height="32" rx="3" fill="{{ bmS.obliques }}"></rect>
+<ellipse cx="50" cy="145" rx="9" ry="26" fill="{{ bmS.quads }}"></ellipse><ellipse cx="70" cy="145" rx="9" ry="26" fill="{{ bmS.quads }}"></ellipse>
+<ellipse cx="49" cy="198" rx="6" ry="17" fill="{{ bmS.calves }}"></ellipse><ellipse cx="71" cy="198" rx="6" ry="17" fill="{{ bmS.calves }}"></ellipse></svg><span style="font-size:12px;font-weight:600;color:#9C9CA8;">{{ tx.nFront }}</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><svg viewBox="0 0 120 228" style="width:100%;max-width:150px;height:auto;display:block;margin:0 auto;"><circle cx="60" cy="16" r="11" fill="#2A2A31"></circle><rect x="55" y="26" width="10" height="8" rx="3" fill="#2A2A31"></rect><circle cx="27" cy="116" r="4" fill="#2A2A31"></circle><circle cx="93" cy="116" r="4" fill="#2A2A31"></circle><path d="M44 104 H76 L74 114 H46 Z" fill="#2A2A31"></path><circle cx="50" cy="176" r="4" fill="#2A2A31"></circle><circle cx="70" cy="176" r="4" fill="#2A2A31"></circle><rect x="42" y="218" width="13" height="6" rx="3" fill="#2A2A31"></rect><rect x="65" y="218" width="13" height="6" rx="3" fill="#2A2A31"></rect>
+<path d="M50 30 H70 L76 40 L64 52 H56 L44 40 Z" fill="{{ bmS.traps }}"></path>
+<ellipse cx="38" cy="45" rx="9" ry="8" fill="{{ bmS.reardelts }}"></ellipse><ellipse cx="82" cy="45" rx="9" ry="8" fill="{{ bmS.reardelts }}"></ellipse>
+<path d="M45 52 L58 56 V90 Q50 88 46 80 Q43 64 45 52 Z" fill="{{ bmS.lats }}"></path><path d="M75 52 L62 56 V90 Q70 88 74 80 Q77 64 75 52 Z" fill="{{ bmS.lats }}"></path>
+<ellipse cx="33" cy="68" rx="6" ry="12" fill="{{ bmS.triceps }}"></ellipse><ellipse cx="87" cy="68" rx="6" ry="12" fill="{{ bmS.triceps }}"></ellipse><ellipse cx="29" cy="96" rx="5" ry="14" fill="{{ bmS.forearms }}"></ellipse><ellipse cx="91" cy="96" rx="5" ry="14" fill="{{ bmS.forearms }}"></ellipse>
+<rect x="52" y="88" width="16" height="15" rx="4" fill="{{ bmS.lowerback }}"></rect>
+<ellipse cx="51" cy="122" rx="9" ry="10" fill="{{ bmS.glutes }}"></ellipse><ellipse cx="69" cy="122" rx="9" ry="10" fill="{{ bmS.glutes }}"></ellipse>
+<ellipse cx="50" cy="152" rx="8.5" ry="20" fill="{{ bmS.hamstrings }}"></ellipse><ellipse cx="70" cy="152" rx="8.5" ry="20" fill="{{ bmS.hamstrings }}"></ellipse>
+<ellipse cx="49" cy="198" rx="7" ry="17" fill="{{ bmS.calves }}"></ellipse><ellipse cx="71" cy="198" rx="7" ry="17" fill="{{ bmS.calves }}"></ellipse></svg><span style="font-size:12px;font-weight:600;color:#9C9CA8;">{{ tx.nBack }}</span></div>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;"><span>0</span><span style="width:18px;height:10px;border-radius:3px;background:#24242B;"></span><span style="width:18px;height:10px;border-radius:3px;background:rgba(204,255,0,0.3);"></span><span style="width:18px;height:10px;border-radius:3px;background:rgba(204,255,0,0.6);"></span><span style="width:18px;height:10px;border-radius:3px;background:#CCFF00;"></span><span>{{ tx.nScale }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px 10px;">
+<sc-for list="{{ bmList }}" as="m" hint-placeholder-count="15"><div style="display:flex;justify-content:space-between;gap:4px;font-size:12px;"><span style="color:#9C9CA8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ m.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-weight:700;color:{{ m.color }};">{{ m.val }}</span></div></sc-for>
+</div>
+<span style="font-size:12px;line-height:17px;color:#9C9CA8;text-wrap:pretty;">{{ tx.nBodyMapHint }}</span>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
 <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k33 }}</div>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:16px;">
 <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
@@ -622,7 +654,7 @@ input::placeholder{color:#9C9CA8}
 <div style="position:absolute;inset:0;display:flex;flex-direction:column;z-index:7;background:#0A0A0C;">
 <div style="display:flex;align-items:center;gap:8px;padding:8px 12px 12px;">
 <button onClick="{{ libBack }}" style="width:48px;height:48px;border-radius:12px;border:none;background:#16161A;color:#fff;font-size:22px;">‹</button>
-<div style="flex:1;display:flex;flex-direction:column;"><span style="font-size:17px;font-weight:700;">{{ tx.k59 }}</span><span style="font-size:13px;color:#9C9CA8;">{{ libCtxLabel }}</span></div>
+<div style="flex:1;display:flex;flex-direction:column;"><span style="font-size:17px;font-weight:700;">{{ libTitle }}</span><span style="font-size:13px;color:#9C9CA8;">{{ libCtxLabel }}</span></div>
 </div>
 <div style="padding:0 12px 12px;display:flex;flex-direction:column;gap:12px;">
 <input type="text" value="{{ libQuery }}" onChange="{{ onLibQuery }}" placeholder="{{ tx.k69 }}" style="height:48px;border-radius:12px;border:1px solid #24242B;background:#16161A;color:#fff;font-size:16px;padding:0 14px;">
@@ -637,10 +669,13 @@ input::placeholder{color:#9C9CA8}
 <button onClick="{{ createCustom }}" style="min-height:56px;margin-bottom:8px;border-radius:14px;border:1px solid #CCFF00;background:transparent;color:#CCFF00;font-size:15px;font-weight:700;text-align:left;padding:0 16px;">{{ tx.k60 }}{{ libQuery }}” · {{ createGroup }}</button>
 </sc-if>
 <sc-for list="{{ libList }}" as="l" hint-placeholder-count="8">
-<button onClick="{{ l.onPick }}" style="display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:60px;padding:0 4px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;text-align:left;" style-active="background:#16161A">
-<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:600;">{{ l.name }}</span><span style="font-size:13px;color:#9C9CA8;">{{ l.meta }}</span></div>
-<span style="width:40px;height:40px;border-radius:10px;background:#24242B;color:#CCFF00;font-size:20px;display:flex;align-items:center;justify-content:center;">+</span>
+<div style="display:flex;align-items:center;gap:8px;min-height:64px;border-bottom:1px solid #24242B;">
+<button onClick="{{ l.onInfo }}" style="flex:1;min-width:0;display:flex;align-items:center;gap:8px;min-height:64px;padding:0 4px;border:none;background:transparent;color:#fff;text-align:left;" style-active="background:#16161A">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:600;">{{ l.name }}</span><span style="font-size:13px;color:#9C9CA8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ l.meta }}</span></div>
+<span style="font-size:13px;font-weight:600;color:#9C9CA8;">{{ tx.nInfo }} ›</span>
 </button>
+<sc-if value="{{ l.canAdd }}" hint-placeholder-val="{{ true }}"><button onClick="{{ l.onPick }}" style="flex:0 0 auto;width:48px;height:48px;border-radius:12px;border:none;background:#24242B;color:#CCFF00;font-size:22px;" style-active="background:#3A3A44">+</button></sc-if>
+</div>
 </sc-for>
 </div>
 </div>
@@ -661,7 +696,7 @@ input::placeholder{color:#9C9CA8}
 <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9C9CA8;width:18px;">{{ e.num }}</span>
 <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
 <sc-if value="{{ e.hasSS }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:0.08em;color:#CCFF00;border:1px solid #CCFF00;padding:2px 8px;border-radius:999px;">{{ e.ssTag }}</span></sc-if>
-<span style="font-size:16px;font-weight:700;">{{ e.name }}</span>
+<button onClick="{{ e.onInfo }}" style="padding:0;border:none;background:transparent;color:#fff;font-size:16px;font-weight:700;text-align:left;">{{ e.name }} <span style="color:#9C9CA8;font-weight:500;">›</span></button>
 </div>
 <button onClick="{{ e.onMenu }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#24242B;color:#fff;font-size:18px;font-weight:700;">⋯</button>
 <button onClick="{{ e.onUp }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#24242B;color:#fff;font-size:16px;opacity:{{ e.upOpacity }};">↑</button>
@@ -684,6 +719,66 @@ input::placeholder{color:#9C9CA8}
 <div style="padding:12px 12px calc(16px + env(safe-area-inset-bottom));border-top:1px solid #24242B;">
 <button onClick="{{ startEdited }}" style="width:100%;height:60px;border-radius:14px;border:none;background:#CCFF00;color:#0A0A0C;font-size:17px;font-weight:700;">{{ tx.k15 }} {{ rName }}</button>
 </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isInfo }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;z-index:9;background:#0A0A0C;">
+<div style="display:flex;align-items:center;gap:8px;padding:8px 12px 12px;border-bottom:1px solid #24242B;">
+<button onClick="{{ infoBack }}" style="width:48px;height:48px;border-radius:12px;border:none;background:#16161A;color:#fff;font-size:22px;">‹</button>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;"><span style="font-size:17px;font-weight:700;">{{ fiName }}</span><span style="font-size:13px;color:#9C9CA8;">{{ fiSub }}</span></div>
+</div>
+<div style="flex:1;overflow-y:auto;padding:12px 12px 24px;display:flex;flex-direction:column;gap:14px;">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:20px;flex:0 0 auto;overflow:hidden;display:flex;flex-direction:column;">
+<sc-if value="{{ fiHasMedia }}" hint-placeholder-val="{{ false }}">{{ fiMediaEl }}</sc-if>
+<sc-if value="{{ fiNoMedia }}" hint-placeholder-val="{{ true }}"><div style="aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:16px;background:#0A0A0C;text-align:center;"><span style="font-size:15px;font-weight:600;">{{ tx.nNoMedia }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;max-width:280px;">{{ tx.nNoMediaSub }}</span></div></sc-if>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px;">
+<button onClick="{{ fiAddMedia }}" style="min-height:48px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:14px;font-weight:600;">{{ fiAddLabel }}</button>
+<button onClick="{{ fiDemo }}" style="min-height:48px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#fff;font-size:14px;font-weight:600;">{{ tx.nDemo }}</button>
+</div>
+<sc-if value="{{ fiHasMedia }}" hint-placeholder-val="{{ false }}"><button onClick="{{ fiDelMedia }}" style="margin:0 12px 12px;min-height:44px;border:none;background:transparent;color:#9C9CA8;font-size:14px;font-weight:600;">{{ fiDelLabel }}</button></sc-if>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.nMuscles }}</div>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:14px;">
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><svg viewBox="0 0 120 228" style="width:100%;max-width:150px;height:auto;display:block;margin:0 auto;"><circle cx="60" cy="16" r="11" fill="#2A2A31"></circle><rect x="55" y="26" width="10" height="8" rx="3" fill="#2A2A31"></rect><circle cx="27" cy="116" r="4" fill="#2A2A31"></circle><circle cx="93" cy="116" r="4" fill="#2A2A31"></circle><path d="M44 104 H76 L74 114 H46 Z" fill="#2A2A31"></path><circle cx="50" cy="176" r="4" fill="#2A2A31"></circle><circle cx="70" cy="176" r="4" fill="#2A2A31"></circle><rect x="42" y="218" width="13" height="6" rx="3" fill="#2A2A31"></rect><rect x="65" y="218" width="13" height="6" rx="3" fill="#2A2A31"></rect>
+<ellipse cx="38" cy="45" rx="9" ry="8" fill="{{ bmF.shoulders }}"></ellipse><ellipse cx="82" cy="45" rx="9" ry="8" fill="{{ bmF.shoulders }}"></ellipse>
+<path d="M46 38 H59 V62 Q50 66 44 60 Q42 48 46 38 Z" fill="{{ bmF.chest }}"></path><path d="M74 38 H61 V62 Q70 66 76 60 Q78 48 74 38 Z" fill="{{ bmF.chest }}"></path>
+<ellipse cx="33" cy="68" rx="6" ry="12" fill="{{ bmF.biceps }}"></ellipse><ellipse cx="87" cy="68" rx="6" ry="12" fill="{{ bmF.biceps }}"></ellipse><ellipse cx="29" cy="96" rx="5" ry="14" fill="{{ bmF.forearms }}"></ellipse><ellipse cx="91" cy="96" rx="5" ry="14" fill="{{ bmF.forearms }}"></ellipse>
+<rect x="51" y="66" width="18" height="36" rx="5" fill="{{ bmF.abs }}"></rect><rect x="44" y="66" width="6" height="32" rx="3" fill="{{ bmF.obliques }}"></rect><rect x="70" y="66" width="6" height="32" rx="3" fill="{{ bmF.obliques }}"></rect>
+<ellipse cx="50" cy="145" rx="9" ry="26" fill="{{ bmF.quads }}"></ellipse><ellipse cx="70" cy="145" rx="9" ry="26" fill="{{ bmF.quads }}"></ellipse>
+<ellipse cx="49" cy="198" rx="6" ry="17" fill="{{ bmF.calves }}"></ellipse><ellipse cx="71" cy="198" rx="6" ry="17" fill="{{ bmF.calves }}"></ellipse></svg><span style="font-size:12px;font-weight:600;color:#9C9CA8;">{{ tx.nFront }}</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><svg viewBox="0 0 120 228" style="width:100%;max-width:150px;height:auto;display:block;margin:0 auto;"><circle cx="60" cy="16" r="11" fill="#2A2A31"></circle><rect x="55" y="26" width="10" height="8" rx="3" fill="#2A2A31"></rect><circle cx="27" cy="116" r="4" fill="#2A2A31"></circle><circle cx="93" cy="116" r="4" fill="#2A2A31"></circle><path d="M44 104 H76 L74 114 H46 Z" fill="#2A2A31"></path><circle cx="50" cy="176" r="4" fill="#2A2A31"></circle><circle cx="70" cy="176" r="4" fill="#2A2A31"></circle><rect x="42" y="218" width="13" height="6" rx="3" fill="#2A2A31"></rect><rect x="65" y="218" width="13" height="6" rx="3" fill="#2A2A31"></rect>
+<path d="M50 30 H70 L76 40 L64 52 H56 L44 40 Z" fill="{{ bmF.traps }}"></path>
+<ellipse cx="38" cy="45" rx="9" ry="8" fill="{{ bmF.reardelts }}"></ellipse><ellipse cx="82" cy="45" rx="9" ry="8" fill="{{ bmF.reardelts }}"></ellipse>
+<path d="M45 52 L58 56 V90 Q50 88 46 80 Q43 64 45 52 Z" fill="{{ bmF.lats }}"></path><path d="M75 52 L62 56 V90 Q70 88 74 80 Q77 64 75 52 Z" fill="{{ bmF.lats }}"></path>
+<ellipse cx="33" cy="68" rx="6" ry="12" fill="{{ bmF.triceps }}"></ellipse><ellipse cx="87" cy="68" rx="6" ry="12" fill="{{ bmF.triceps }}"></ellipse><ellipse cx="29" cy="96" rx="5" ry="14" fill="{{ bmF.forearms }}"></ellipse><ellipse cx="91" cy="96" rx="5" ry="14" fill="{{ bmF.forearms }}"></ellipse>
+<rect x="52" y="88" width="16" height="15" rx="4" fill="{{ bmF.lowerback }}"></rect>
+<ellipse cx="51" cy="122" rx="9" ry="10" fill="{{ bmF.glutes }}"></ellipse><ellipse cx="69" cy="122" rx="9" ry="10" fill="{{ bmF.glutes }}"></ellipse>
+<ellipse cx="50" cy="152" rx="8.5" ry="20" fill="{{ bmF.hamstrings }}"></ellipse><ellipse cx="70" cy="152" rx="8.5" ry="20" fill="{{ bmF.hamstrings }}"></ellipse>
+<ellipse cx="49" cy="198" rx="7" ry="17" fill="{{ bmF.calves }}"></ellipse><ellipse cx="71" cy="198" rx="7" ry="17" fill="{{ bmF.calves }}"></ellipse></svg><span style="font-size:12px;font-weight:600;color:#9C9CA8;">{{ tx.nBack }}</span></div>
+</div>
+<div style="display:flex;justify-content:center;gap:14px;font-size:12px;color:#9C9CA8;"><span style="display:flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;border-radius:3px;background:#CCFF00;"></span>{{ tx.nPrimary }}</span><span style="display:flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;border-radius:3px;background:rgba(204,255,0,0.4);"></span>{{ tx.nSecondary }}</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:6px;">
+<sc-for list="{{ fiChips }}" as="c" hint-placeholder-count="15"><button onClick="{{ c.onClick }}" style="height:36px;padding:0 12px;border-radius:999px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.color }};font-size:13px;font-weight:600;">{{ c.label }}</button></sc-for>
+</div>
+<span style="font-size:12px;line-height:17px;color:#9C9CA8;text-wrap:pretty;">{{ tx.nMusHint }}</span>
+</div>
+</div>
+<sc-if value="{{ fiHasStats }}" hint-placeholder-val="{{ false }}">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;">
+<sc-for list="{{ fiStats }}" as="st" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:14px 16px;border-bottom:1px solid #24242B;"><span style="font-size:15px;color:#9C9CA8;">{{ st.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;">{{ st.value }}</span></div></sc-for>
+</div>
+</sc-if>
+<div style="display:flex;flex-direction:column;gap:6px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.nNote }}</div>
+<textarea value="{{ fiNote }}" onChange="{{ onFiNote }}" placeholder="{{ tx.nNotePh }}" rows="3" style="width:100%;border-radius:14px;border:1px solid #24242B;background:#16161A;color:#fff;font-size:16px;line-height:22px;padding:12px 14px;font-family:inherit;resize:none;"></textarea>
+</div>
+</div>
+<sc-if value="{{ fiCanAdd }}" hint-placeholder-val="{{ false }}">
+<div style="padding:12px 12px calc(16px + env(safe-area-inset-bottom));border-top:1px solid #24242B;"><button onClick="{{ fiAdd }}" style="width:100%;height:60px;border-radius:14px;border:none;background:#CCFF00;color:#0A0A0C;font-size:17px;font-weight:700;">{{ fiAddToLabel }}</button></div>
+</sc-if>
 </div>
 </sc-if>
 
@@ -812,8 +907,17 @@ const TX = {"k0":"Start anyway","k1":"Cancel","k2":"New version ready · Tap to 
 Object.assign(TX, { nSessNote: 'Session note (optional)', nFromTpl: '+ Ready-made program', nTpl: 'Ready-made programs', nTplSub: 'Adds routines — yours stay untouched', nType: 'Exercise type', nNote: 'Note', nNotePh: 'Seat height, grip, cues…', nNoteSub: 'Saved with this exercise, shown every session.', nDone: 'Done', nBodyW: 'Body weight', nBodyEmpty: 'Log a weigh-in below to start your chart.', nLogToday: 'Log today', nSave: 'Save', nBodyHint: 'Fill only what you want. Saving again today updates today’s entry.', nMeas: 'Measurements', nEntries: 'Entries' });
 Object.assign(FR, { 'Session note (optional)': 'Note de séance (optionnelle)', '+ Ready-made program': '+ Programme prêt à l’emploi', 'Ready-made programs': 'Programmes prêts à l’emploi', 'Adds routines — yours stay untouched': 'Ajoute des routines — les tiennes restent', 'Exercise type': 'Type d’exercice', 'Note': 'Note', 'Seat height, grip, cues…': 'Réglage du siège, prise, consignes…', 'Saved with this exercise, shown every session.': 'Enregistrée avec l’exercice, affichée à chaque séance.', 'Body weight': 'Poids corporel', 'Log a weigh-in below to start your chart.': 'Enregistre un poids ci-dessous pour démarrer ton graphique.', 'Log today': 'Enregistrer aujourd’hui', 'Save': 'Enregistrer', 'Fill only what you want. Saving again today updates today’s entry.': 'Remplis seulement ce que tu veux. Enregistrer à nouveau aujourd’hui met à jour l’entrée du jour.', 'Measurements': 'Mensurations', 'Entries': 'Entrées',
   'Body': 'Corps', 'Reps': 'Reps', 'Per side': 'Par côté', 'per side': 'par côté', 'Plate calculator': 'Calculateur de disques', 'Shows the plates to load on each side of the bar.': 'Affiche les disques à mettre de chaque côté de la barre.', 'Superset with next': 'Superset avec le suivant', 'No rest between linked exercises — rest starts after the last one.': 'Pas de repos entre les exercices liés — le repos démarre après le dernier.', 'SUPERSET': 'SUPERSET', 'Stop': 'Stop', '▶ Start ': '▶ Lancer ', 'Below bar weight': 'Sous le poids de la barre', 'Empty bar': 'Barre vide', 'bar': 'barre', '+ Superset with next': '+ Superset avec le suivant', 'Superset ✓ · tap to unlink': 'Superset ✓ · toucher pour délier', 'Light bar (15 kg / 35 lb)': 'Barre légère (15 kg / 35 lb)', 'For the plate calculator. Off = 20 kg / 45 lb.': 'Pour le calculateur de disques. Désactivé = 20 kg / 45 lb.', 'Program added': 'Programme ajouté', 'Saved': 'Enregistré', 'Enter at least one value': 'Entre au moins une valeur', 'SEC': 'SEC', 'SET': 'SÉRIE', 'Left': 'Gauche', 'Right': 'Droite', 'Left and right logged separately.': 'Gauche et droite saisis séparément.' });
+Object.assign(TX, { nInfo: 'Info', nLibrary: 'Exercise library', nSheetInfo: 'Exercise sheet · muscles, photo, video', nBodyMap: 'Body map', nScale: '15+ sets', nBodyMapHint: 'Work sets per muscle (secondary muscles count half). Brighter = more trained. Tap any exercise in the library to adjust its muscles.', nFront: 'Front', nBack: 'Back', nNoMedia: 'No photo or video yet', nNoMediaSub: 'Add your own clip or photo of the movement — it stays on this phone.', nDemo: 'Watch a demo', nMuscles: 'Muscles worked', nPrimary: 'Primary', nSecondary: 'Secondary', nMusHint: 'Tap a muscle: primary → secondary → off. Used for the body map and stats.' });
+Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exercices', 'Exercise sheet · muscles, photo, video': 'Fiche de l’exercice · muscles, photo, vidéo', 'Body map': 'Carte du corps', '15+ sets': '15+ séries', 'Work sets per muscle (secondary muscles count half). Brighter = more trained. Tap any exercise in the library to adjust its muscles.': 'Séries de travail par muscle (les muscles secondaires comptent pour moitié). Plus c’est lumineux, plus c’est travaillé. Touche un exercice dans la bibliothèque pour ajuster ses muscles.', 'Front': 'Avant', 'Back': 'Arrière', 'No photo or video yet': 'Aucune photo ou vidéo', 'Add your own clip or photo of the movement — it stays on this phone.': 'Ajoute ta propre vidéo ou photo du mouvement — elle reste sur ce téléphone.', 'Watch a demo': 'Voir une démo', 'Muscles worked': 'Muscles travaillés', 'Primary': 'Principal', 'Secondary': 'Secondaire', 'Tap a muscle: primary → secondary → off. Used for the body map and stats.': 'Touche un muscle : principal → secondaire → retiré. Sert à la carte du corps et aux stats.', 'Add photo or video': 'Ajouter photo ou vidéo', 'Replace media': 'Remplacer', 'Remove media': 'Retirer le média', 'Media saved': 'Média enregistré', 'Could not save media': 'Impossible d’enregistrer le média', 'Add to workout': 'Ajouter à la séance', 'Add to routine': 'Ajouter à la routine', 'Best e1RM': 'Meilleur e1RM', 'Last done': 'Dernière fois', 'Sessions logged': 'Séances enregistrées', '7 days': '7 jours', '4-wk avg': 'Moy. 4 sem.', ' · media': ' · média', 'Browse, add photos or videos, set muscles': 'Parcourir, ajouter photos ou vidéos, régler les muscles' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.5.5';
+const APP_VERSION = '0.6.0';
+const MUS = [['chest', 'Chest', 'Pectoraux'], ['shoulders', 'Front delts', 'Deltoïdes avant'], ['reardelts', 'Rear delts', 'Deltoïdes arrière'], ['traps', 'Traps', 'Trapèzes'], ['lats', 'Lats', 'Dorsaux'], ['biceps', 'Biceps', 'Biceps'], ['triceps', 'Triceps', 'Triceps'], ['forearms', 'Forearms', 'Avant-bras'], ['abs', 'Abs', 'Abdos'], ['obliques', 'Obliques', 'Obliques'], ['lowerback', 'Lower back', 'Lombaires'], ['glutes', 'Glutes', 'Fessiers'], ['quads', 'Quads', 'Quadriceps'], ['hamstrings', 'Hamstrings', 'Ischios'], ['calves', 'Calves', 'Mollets']];
+const MUS_LIB = { 'Bench Press': ['chest', 'triceps shoulders'], 'Incline DB Press': ['chest shoulders', 'triceps'], 'Dumbbell Fly': ['chest', 'shoulders'], 'Push-up': ['chest', 'triceps shoulders abs'], 'Deadlift': ['hamstrings glutes lowerback', 'traps lats forearms quads'], 'Barbell Row': ['lats', 'reardelts biceps lowerback'], 'Pull-up': ['lats', 'biceps reardelts'], 'Lat Pulldown': ['lats', 'biceps'], 'Seated Cable Row': ['lats', 'reardelts biceps traps'], 'Squat': ['quads glutes', 'lowerback hamstrings'], 'Romanian Deadlift': ['hamstrings glutes', 'lowerback'], 'Leg Press': ['quads', 'glutes'], 'Leg Curl': ['hamstrings', ''], 'Leg Extension': ['quads', ''], 'Calf Raise': ['calves', ''], 'Bulgarian Split Squat': ['quads glutes', 'hamstrings'], 'Overhead Press': ['shoulders', 'triceps traps'], 'Lateral Raise': ['shoulders', ''], 'Face Pull': ['reardelts', 'traps'], 'Barbell Curl': ['biceps', 'forearms'], 'Hammer Curl': ['biceps forearms', ''], 'Triceps Pushdown': ['triceps', ''], 'Skull Crusher': ['triceps', ''], 'Plank': ['abs', 'obliques'], 'Hanging Leg Raise': ['abs', 'obliques'], 'Cable Crunch': ['abs', ''] };
+const MUS_RULES = [[/nordic|leg curl/i, 'hamstrings', 'glutes'], [/ghd hold|back ext|hyperext/i, 'lowerback glutes', 'hamstrings'], [/rdl|romanian|deadlift|good morning/i, 'hamstrings glutes', 'lowerback'], [/zottman/i, 'biceps forearms', ''], [/curl/i, 'biceps', 'forearms'], [/overhead|ohp|military/i, 'shoulders', 'triceps traps'], [/pull-?up|chin|pulldown|row/i, 'lats', 'biceps reardelts'], [/jump|cmj|drop|hop|bound/i, 'quads glutes calves', ''], [/squat|zercher|lunge|leg press|split/i, 'quads glutes', 'hamstrings'], [/calf/i, 'calves', ''], [/face pull|rear delt|er\/ir|ir\/er|screw|arm bar|rotation/i, 'reardelts', 'shoulders'], [/lateral raise/i, 'shoulders', ''], [/extension|ffe|skull|pushdown|triceps|kickback|dip/i, 'triceps', ''], [/bench|press|push-?up|fly/i, 'chest', 'triceps shoulders'], [/shrug/i, 'traps', ''], [/plank|chop|windmill|crunch|leg raise|hold|iso|core/i, 'abs obliques', '']];
+const sp = x => x ? x.split(' ').filter(Boolean) : [];
+const autoMus = n => { const l = MUS_LIB[n]; if (l) return { p: sp(l[0]), s: sp(l[1]) }; const r = MUS_RULES.find(x => x[0].test(n)); return r ? { p: sp(r[1]), s: sp(r[2]) } : { p: [], s: [] }; };
+const idb = () => new Promise((res, rej) => { const r = indexedDB.open('barlog-media', 1); r.onupgradeneeded = () => r.result.createObjectStore('m'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+const idbTx = (fn) => idb().then(db => new Promise((res, rej) => { const t = db.transaction('m', 'readwrite'); fn(t.objectStore('m')); t.oncomplete = () => res(); t.onerror = () => rej(t.error); }));
 const autoType = n => { const t = /\(sec\)|\bplank\b|\bhold\b|\biso\b/i.test(n), u = /per side/i.test(n); return t && u ? 'timeuni' : t ? 'time' : u ? 'uni' : 'reps'; };
 const isT = t => t === 'time' || t === 'timeuni';
 const isU = t => t === 'uni' || t === 'timeuni';
@@ -865,7 +969,7 @@ class Component extends DCLogic {
   state = this.initial();
   initial() {
     const routines = seedRoutines();
-    return { tab: 'today', screen: 'tabs', routines, history: seedHistory(routines), lastRoutineId: 'r3', workout: null, focus: null, restEnd: null, restTotal: 90, restAlert: false, now: Date.now(), libCtx: 'workout', libQuery: '', libGroup: 'All', custom: [], editId: null, progEx: 'Bench Press', metric: 'e1rm', unit: 'kg', haptics: true, sound: true, wake: true, autoRest: this.props.autoStartRest ?? true, restDefault: this.props.defaultRest ?? 90, summary: null, toast: null, discardArm: false, deleteArm: false, resetArm: false, installSeen: false, standalone: false, sessMeta: {}, progView: 'sessions', calOff: 0, openSess: null, delSessArm: false, clearArm: false, eraseArm: false, sessEdit: false, editBuf: {}, dayWarn: true, confirmStart: null, exMeta: {}, body: [], barLight: false, exSheet: null, hold: null, bodyBuf: {}, bodyDelArm: null, lang: (typeof navigator !== 'undefined' && (navigator.language || '').toLowerCase().startsWith('fr')) ? 'fr' : 'en' };
+    return { tab: 'today', screen: 'tabs', routines, history: seedHistory(routines), lastRoutineId: 'r3', workout: null, focus: null, restEnd: null, restTotal: 90, restAlert: false, now: Date.now(), libCtx: 'workout', libQuery: '', libGroup: 'All', custom: [], editId: null, progEx: 'Bench Press', metric: 'e1rm', unit: 'kg', haptics: true, sound: true, wake: true, autoRest: this.props.autoStartRest ?? true, restDefault: this.props.defaultRest ?? 90, summary: null, toast: null, discardArm: false, deleteArm: false, resetArm: false, installSeen: false, standalone: false, sessMeta: {}, progView: 'sessions', calOff: 0, openSess: null, delSessArm: false, clearArm: false, eraseArm: false, sessEdit: false, editBuf: {}, dayWarn: true, confirmStart: null, exMeta: {}, body: [], barLight: false, exSheet: null, hold: null, media: {}, infoName: null, infoFrom: null, bmRange: '7d', bodyBuf: {}, bodyDelArm: null, lang: (typeof navigator !== 'undefined' && (navigator.language || '').toLowerCase().startsWith('fr')) ? 'fr' : 'en' };
   }
   componentDidMount() {
     let d = null;
@@ -877,6 +981,7 @@ class Component extends DCLogic {
     this.iv = setInterval(() => this.tick(), 250);
     this.onVis = () => { this.save(); this.syncWake(); this.tick(); if (document.visibilityState === 'visible') this.checkUpdate(); };
     this.checkUpdate();
+    this.loadMedia();
     document.addEventListener('visibilitychange', this.onVis);
     window.addEventListener('pagehide', this.onVis);
     try { if ('serviceWorker' in navigator && location.protocol === 'https:' && window.self === window.top) navigator.serviceWorker.register('./sw.js').catch(() => {}); } catch (e) {}
@@ -936,7 +1041,34 @@ class Component extends DCLogic {
     }).catch(() => {});
   }
   dispW(kg) { return this.state.unit === 'kg' ? trim(Math.round(kg * 4) / 4) : trim(Math.round(kg * KG_LB * 2) / 2); }
-  meta(n) { const m = (this.state.exMeta || {})[n] || {}; return { type: m.type || autoType(n), bar: m.bar != null ? m.bar : autoBar(n), note: m.note || '' }; }
+  meta(n) { const m = (this.state.exMeta || {})[n] || {}; return { type: m.type || autoType(n), bar: m.bar != null ? m.bar : autoBar(n), note: m.note || '', mus: m.mus || autoMus(n) }; }
+  loadMedia() {
+    try { idb().then(db => { const out = {}; const rq = db.transaction('m', 'readonly').objectStore('m').openCursor(); rq.onsuccess = e => { const c = e.target.result; if (c) { const b = c.value; out[c.key] = { url: URL.createObjectURL(b), vid: String(b.type || '').startsWith('video') }; c.continue(); } else this.setState({ media: out }); }; }).catch(() => {}); } catch (e) {}
+  }
+  setMedia(name, blob) {
+    const old = (this.state.media || {})[name]; if (old) try { URL.revokeObjectURL(old.url); } catch (e) {}
+    const media = { ...(this.state.media || {}) }; if (blob) media[name] = { url: URL.createObjectURL(blob), vid: String(blob.type || '').startsWith('video') }; else delete media[name];
+    this.setState({ media });
+  }
+  pickMedia(name) {
+    const i = document.createElement('input'); i.type = 'file'; i.accept = 'image/*,video/*';
+    i.onchange = () => {
+      const file = i.files && i.files[0]; if (!file) return;
+      const store = blob => idbTx(st => st.put(blob, name)).then(() => { this.setMedia(name, blob); this.flash(L('Media saved')); }).catch(() => this.flash(L('Could not save media')));
+      if (!String(file.type).startsWith('image')) { store(file); return; }
+      const img = new Image(); const u = URL.createObjectURL(file);
+      img.onload = () => { const k = Math.min(1, 1280 / Math.max(img.width, img.height)); const c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(u); c.toBlob(b => store(b || file), 'image/jpeg', 0.82); };
+      img.onerror = () => { URL.revokeObjectURL(u); store(file); };
+      img.src = u;
+    };
+    i.click();
+  }
+  delMedia(name) {
+    if (this.state.mediaDelArm !== name) { this.setState({ mediaDelArm: name }); setTimeout(() => this.setState({ mediaDelArm: null }), 3000); return; }
+    idbTx(st => st.delete(name)).catch(() => {}); this.setMedia(name, null); this.setState({ mediaDelArm: null });
+  }
+  openInfo(name) { const s = this.state; this.setState({ infoName: name, infoFrom: s.screen === 'exinfo' ? s.infoFrom : s.screen, screen: 'exinfo', exSheet: null, rSheet: null }); }
+  cycleMus(name, k) { const m = this.meta(name).mus; const p = m.p.filter(x => x !== k), sc = m.s.filter(x => x !== k); if (m.p.includes(k)) sc.push(k); else if (!m.s.includes(k)) p.push(k); this.setMeta(name, { mus: { p, s: sc } }); }
   setMeta(n, patch) { this.setState(s => ({ exMeta: { ...(s.exMeta || {}), [n]: { ...((s.exMeta || {})[n] || {}), ...patch } } })); }
   ssGroup(exs, i) { let a = i; while (a > 0 && exs[a - 1].ss) a--; let b = i; while (b < exs.length - 1 && exs[b].ss) b++; return [a, b]; }
   toggleSS(ei) { this.updW(w => { w.ex[ei].ss = !w.ex[ei].ss; }); }
@@ -1077,6 +1209,7 @@ class Component extends DCLogic {
   }
   pick(name) {
     const s = this.state;
+    if (s.libCtx === 'browse') { this.openInfo(name); return; }
     if (s.libCtx === 'workout') { this.updW((w, st) => { w.ex.push(this.mkEx(name, 3, null, st.history)); return { focus: { ei: w.ex.length - 1, si: 0 }, screen: 'workout' }; }); }
     else { this.setState({ routines: s.routines.map(r => r.id === s.editId ? { ...r, ex: [...r.ex, { name, sets: 3, reps: 8 }] } : r), screen: 'routine' }); }
   }
@@ -1234,7 +1367,7 @@ class Component extends DCLogic {
     const all = [...LIB, ...s.custom];
     const q = s.libQuery.trim().toLowerCase();
     const libList = all.filter(l => (s.libGroup === 'All' || (s.libGroup === 'Custom' ? l.custom : l.group === s.libGroup)) && (!q || l.name.toLowerCase().includes(q)))
-      .map(l => { const h = s.history[l.name]; const last = h && h.length ? h[h.length - 1] : null; return { name: l.name, meta: L(l.group) + (l.custom ? L(' · custom') : '') + (last ? L(' · last ') + this.dispW(last.sets[0].w) + ' ' + s.unit + ' × ' + last.sets[0].r : ''), onPick: () => this.pick(l.name) }; });
+      .map(l => { const h = s.history[l.name]; const last = h && h.length ? h[h.length - 1] : null; const mp = this.meta(l.name).mus.p.map(k => { const m = MUS.find(x => x[0] === k); return m ? (LANG === 'fr' ? m[2] : m[1]) : k; }); return { canAdd: s.libCtx !== 'browse', onInfo: () => this.openInfo(l.name), name: l.name, meta: (mp.length ? mp.join(', ') : L(l.group)) + ((s.media || {})[l.name] ? L(' · media') : '') + (l.custom ? L(' · custom') : '') + (last ? L(' · last ') + this.dispW(last.sets[0].w) + ' ' + s.unit + ' × ' + last.sets[0].r : ''), onPick: () => this.pick(l.name) }; });
     const canCreate = !!q && !all.some(l => l.name.toLowerCase() === q);
 
     const er = routines.find(r => r.id === s.editId);
@@ -1242,7 +1375,7 @@ class Component extends DCLogic {
     const rEx = er ? er.ex.map((e, i) => ({ num: String(i + 1), name: e.name, sets: e.sets, reps: e.reps, upOpacity: i ? 1 : 0.3,
       hasSS: !!tagsR[i], ssTag: tagsR[i] ? L('SUPERSET') + ' ' + tagsR[i] : '', repsUnit: isT(this.meta(e.name).type) ? 's' : L('reps'),
       canLink: i < er.ex.length - 1, linkLabel: e.ss ? L('Superset ✓ · tap to unlink') : L('+ Superset with next'), linkColor: e.ss ? '#CCFF00' : '#9C9CA8', linkBorder: e.ss ? '#CCFF00' : '#33333C',
-      onLink: () => this.updR(c => { c.ex[i].ss = !c.ex[i].ss; }), onMenu: go({ rSheet: i }),
+      onLink: () => this.updR(c => { c.ex[i].ss = !c.ex[i].ss; }), onMenu: go({ rSheet: i }), onInfo: () => this.openInfo(e.name),
       onUp: () => i && this.updR(c => { const t = c.ex[i]; c.ex[i] = c.ex[i - 1]; c.ex[i - 1] = t; }),
       onRemove: () => this.updR(c => { c.ex.splice(i, 1); }),
       setsMinus: () => this.updR(c => { c.ex[i].sets = Math.max(1, c.ex[i].sets - 1); }), setsPlus: () => this.updR(c => { c.ex[i].sets = Math.min(10, c.ex[i].sets + 1); }),
@@ -1370,7 +1503,30 @@ class Component extends DCLogic {
     const shCtx = s.screen === 'workout' && w && s.exSheet != null && w.ex[s.exSheet] ? { list: w.ex, i: s.exSheet, r: false } : s.screen === 'routine' && er && s.rSheet != null && er.ex[s.rSheet] ? { list: er.ex, i: s.rSheet, r: true } : null;
     const shEx = shCtx ? shCtx.list[shCtx.i] : null; const shM = shEx ? this.meta(shEx.name) : null;
     const tg = (label, sub, on, fn) => ({ label, sub, track: on ? '#CCFF00' : '#24242B', knob: on ? '#0A0A0C' : '#9C9CA8', justify: on ? 'flex-end' : 'flex-start', onClick: fn });
+    const mWin = s.bmRange === '4w' ? 28 : 7; const mAcc = {};
+    Object.entries(s.history).forEach(([n, arr]) => { const mu = this.meta(n).mus; if (!mu.p.length && !mu.s.length) return; arr.forEach(se => { if (se.date < now - mWin * DAY) return; const k = work(se.sets).length; mu.p.forEach(m => { mAcc[m] = (mAcc[m] || 0) + k; }); mu.s.forEach(m => { mAcc[m] = (mAcc[m] || 0) + k * 0.5; }); }); });
+    const mVal = k => (mAcc[k] || 0) / (mWin === 28 ? 4 : 1);
+    const heat = v => v <= 0 ? '#24242B' : 'rgba(204,255,0,' + (0.25 + 0.75 * Math.min(1, v / 15)).toFixed(2) + ')';
+    const fi = s.screen === 'exinfo' && s.infoName ? s.infoName : null; const fiM = fi ? this.meta(fi) : null; const fiMed = fi ? (s.media || {})[fi] : null;
+    const fiHist = fi ? (s.history[fi] || []).filter(se => work(se.sets).length) : [];
+    const fiBest = fiHist.reduce((a, se) => Math.max(a, ...work(se.sets).map(x => e1(x.w, x.r))), 0);
+    const fiLib = fi ? [...LIB, ...s.custom].find(l => l.name === fi) : null;
     return {
+      bmS: Object.fromEntries(MUS.map(m => [m[0], heat(mVal(m[0]))])),
+      bmList: MUS.map(m => { const v = mVal(m[0]); return { label: LANG === 'fr' ? m[2] : m[1], val: trim(Math.round(v * 10) / 10), color: v > 0 ? '#FFFFFF' : '#55555F' }; }),
+      bmRanges: [['7d', L('7 days')], ['4w', L('4-wk avg')]].map(([k, label]) => ({ label, bg: (s.bmRange || '7d') === k ? '#24242B' : 'transparent', color: (s.bmRange || '7d') === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ bmRange: k }) })),
+      isInfo: !!fi, fiName: fi || '', fiSub: fiLib ? L(fiLib.group) : '',
+      infoBack: () => this.setState({ screen: s.infoFrom || 'tabs' }),
+      bmF: Object.fromEntries(MUS.map(m => [m[0], fiM && fiM.mus.p.includes(m[0]) ? '#CCFF00' : fiM && fiM.mus.s.includes(m[0]) ? 'rgba(204,255,0,0.4)' : '#24242B'])),
+      fiChips: fiM ? MUS.map(m => { const st = fiM.mus.p.includes(m[0]) ? 2 : fiM.mus.s.includes(m[0]) ? 1 : 0; return { label: LANG === 'fr' ? m[2] : m[1], bg: st === 2 ? '#CCFF00' : st === 1 ? 'rgba(204,255,0,0.16)' : 'transparent', color: st === 2 ? '#0A0A0C' : st === 1 ? '#CCFF00' : '#9C9CA8', border: st ? '#CCFF00' : '#33333C', onClick: () => this.cycleMus(fi, m[0]) }; }) : [],
+      fiHasImg: !!(fiMed && !fiMed.vid), fiHasVid: !!(fiMed && fiMed.vid), fiNoMedia: !fiMed, fiHasMedia: !!fiMed, fiMediaEl: fiMed ? React.createElement(fiMed.vid ? 'video' : 'img', fiMed.vid ? { key: fiMed.url, src: fiMed.url, controls: true, playsInline: true, loop: true, muted: true, style: { width: '100%', maxHeight: 360, background: '#000', display: 'block' } } : { key: fiMed.url, src: fiMed.url, alt: fi, style: { width: '100%', maxHeight: 360, objectFit: 'contain', background: '#000', display: 'block' } }) : null,
+      fiAddLabel: fiMed ? L('Replace media') : L('Add photo or video'), fiAddMedia: () => fi && this.pickMedia(fi),
+      fiDelLabel: s.mediaDelArm === fi ? L('Tap again') : L('Remove media'), fiDelMedia: () => fi && this.delMedia(fi),
+      fiDemo: () => { try { window.open('https://www.youtube.com/results?search_query=' + encodeURIComponent(fi + ' exercise technique'), '_blank'); } catch (e) {} },
+      fiHasStats: fiHist.length > 0, fiStats: fiHist.length ? [...(fiBest > 0 && !isT(fiM.type) ? [{ label: L('Best e1RM'), value: this.dispW(fiBest) + ' ' + s.unit }] : []), { label: L('Last done'), value: fmtD(fiHist[fiHist.length - 1].date) }, { label: L('Sessions logged'), value: String(fiHist.length) }] : [],
+      fiNote: fiM ? fiM.note : '', onFiNote: (e) => fi && this.setMeta(fi, { note: e.target.value }),
+      fiCanAdd: !!fi && s.infoFrom === 'library' && s.libCtx !== 'browse', fiAddToLabel: s.libCtx === 'workout' ? L('Add to workout') : L('Add to routine'), fiAdd: () => fi && this.pick(fi),
+      openLibrary: go({ screen: 'library', libCtx: 'browse', libQuery: '', libGroup: 'All' }),
       isBodyView: s.progView === 'body',
       bwCur: bAllW.length ? dBW(bAllW[bAllW.length - 1].w) : '—', bwUnit: bU,
       bwRanges: BR.map(([k, l]) => ({ label: l, bg: br[0] === k ? '#24242B' : 'transparent', color: br[0] === k ? '#FFFFFF' : '#9C9CA8', onClick: () => this.setState({ bodyRange: k }) })),
@@ -1388,7 +1544,7 @@ class Component extends DCLogic {
       sheetOn: !!shEx, sheetName: shEx ? shEx.name : '',
       sheetTypes: [['reps', L('Reps')], ['time', L('Time')]].map(([k, label]) => { const on = shM && (k === 'time') === isT(shM.type); return { label, bg: on ? '#24242B' : 'transparent', color: on ? '#FFFFFF' : '#9C9CA8', onClick: () => shEx && this.setMeta(shEx.name, { type: k === 'time' ? (isU(shM.type) ? 'timeuni' : 'time') : (isU(shM.type) ? 'uni' : 'reps') }) }; }),
       sheetToggles: shEx ? [tg(L('Per side'), L('Left and right logged separately.'), isU(shM.type), () => this.setMeta(shEx.name, { type: isT(shM.type) ? (isU(shM.type) ? 'time' : 'timeuni') : (isU(shM.type) ? 'reps' : 'uni') })), tg(L('Plate calculator'), L('Shows the plates to load on each side of the bar.'), shM.bar, () => this.setMeta(shEx.name, { bar: !shM.bar }))].concat(shCtx.i < shCtx.list.length - 1 ? [tg(L('Superset with next'), L('No rest between linked exercises — rest starts after the last one.'), !!shEx.ss, () => shCtx.r ? this.updR(c => { c.ex[shCtx.i].ss = !c.ex[shCtx.i].ss; }) : this.toggleSS(shCtx.i))] : []) : [],
-      sheetNote: shM ? shM.note : '', onSheetNote: (e) => shEx && this.setMeta(shEx.name, { note: e.target.value }), closeSheet: go({ exSheet: null, rSheet: null }),
+      sheetNote: shM ? shM.note : '', onSheetNote: (e) => shEx && this.setMeta(shEx.name, { note: e.target.value }), closeSheet: go({ exSheet: null, rSheet: null }), sheetInfo: () => shEx && this.openInfo(shEx.name),
       wNote: w ? (w.note || '') : '', onWNote: (e) => { const v = e.target.value; this.updW(x => { x.note = v; }); },
       isTemplates: s.screen === 'templates', templBack: go({ screen: 'tabs', tab: 'programs' }), openTemplates: go({ screen: 'templates' }),
       templates: TEMPLATES.map(t => ({ name: fr ? t.fr : t.name, meta: fr ? t.metaFr : t.meta, desc: fr ? t.descFr : t.desc,
@@ -1489,7 +1645,8 @@ class Component extends DCLogic {
       restBg: s.restAlert ? '#CCFF00' : '#16161A', restColor: s.restAlert ? '#0A0A0C' : '#FFFFFF', restSub: s.restAlert ? '#0A0A0C' : '#9C9CA8',
       restLabel: s.restAlert ? L('Rest over — lift') : L('Rest'), restClock: s.restAlert ? '0:00' : clock(remain),
       restMinus: () => this.restAdj(-15), restPlus: () => this.restAdj(15), restSkip: () => this.restSkip(),
-      libBack: go({ screen: s.libCtx === 'workout' ? 'workout' : 'routine' }), libCtxLabel: s.libCtx === 'workout' ? L('to ') + (w ? w.name : 'workout') : L('to ') + (er ? er.name : 'routine'),
+      libTitle: s.libCtx === 'browse' ? L('Exercise library') : L('Add exercise'),
+      libBack: go(s.libCtx === 'browse' ? { screen: 'tabs', tab: 'programs' } : { screen: s.libCtx === 'workout' ? 'workout' : 'routine' }), libCtxLabel: s.libCtx === 'browse' ? L('Browse, add photos or videos, set muscles') : s.libCtx === 'workout' ? L('to ') + (w ? w.name : 'workout') : L('to ') + (er ? er.name : 'routine'),
       libQuery: s.libQuery, onLibQuery: (e) => this.setState({ libQuery: e.target.value }),
       groups: GROUPS.map(g => ({ name: L(g), bg: s.libGroup === g ? '#FFFFFF' : 'transparent', color: s.libGroup === g ? '#0A0A0C' : '#FFFFFF', border: s.libGroup === g ? '#FFFFFF' : '#33333C', onClick: go({ libGroup: g }) })),
       libList, canCreate, createGroup: L(s.libGroup === 'All' ? 'Custom' : s.libGroup), createCustom: () => this.createCustom(),
