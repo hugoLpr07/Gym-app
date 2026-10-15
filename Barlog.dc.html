@@ -66,6 +66,16 @@ input::placeholder{color:#9C9CA8}
 <button onClick="{{ dismissInstall }}" style="align-self:flex-start;height:44px;padding:0 16px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">Got it</button>
 </div>
 </sc-if>
+<sc-if value="{{ backupOn }}" hint-placeholder-val="{{ false }}">
+<div style="background:#16161A;border:1px solid #33333C;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+<span style="font-size:16px;font-weight:700;">Back up your data</span>
+<span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ backupText }} Tap Export, then “Save to Files” → iCloud Drive.</span>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+<button onClick="{{ backupNow }}" style="height:48px;border-radius:12px;border:none;background:#CCFF00;color:#0A0A0C;font-size:15px;font-weight:700;">Export now</button>
+<button onClick="{{ backupLater }}" style="height:48px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">Later</button>
+</div>
+</div>
+</sc-if>
 <div style="display:flex;flex-direction:column;gap:4px;padding-top:8px;">
 <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ dateLabel }}</div>
 <div style="font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">Today</div>
@@ -645,7 +655,7 @@ const KG_LB = 2.20462;
 const LIB = [['Bench Press','Chest'],['Incline DB Press','Chest'],['Dumbbell Fly','Chest'],['Push-up','Chest'],['Deadlift','Back'],['Barbell Row','Back'],['Pull-up','Back'],['Lat Pulldown','Back'],['Seated Cable Row','Back'],['Squat','Legs'],['Romanian Deadlift','Legs'],['Leg Press','Legs'],['Leg Curl','Legs'],['Leg Extension','Legs'],['Calf Raise','Legs'],['Bulgarian Split Squat','Legs'],['Overhead Press','Shoulders'],['Lateral Raise','Shoulders'],['Face Pull','Shoulders'],['Barbell Curl','Arms'],['Hammer Curl','Arms'],['Triceps Pushdown','Arms'],['Skull Crusher','Arms'],['Plank','Core'],['Hanging Leg Raise','Core'],['Cable Crunch','Core']].map(([name, group]) => ({ name, group }));
 const GROUPS = ['All','Chest','Back','Legs','Shoulders','Arms','Core','Custom'];
 const BASE = {'Bench Press':80,'Overhead Press':50,'Incline DB Press':30,'Lateral Raise':12,'Triceps Pushdown':30,'Deadlift':160,'Barbell Row':70,'Pull-up':10,'Face Pull':25,'Barbell Curl':35,'Squat':120,'Romanian Deadlift':100,'Leg Press':180,'Leg Curl':45,'Calf Raise':70};
-const PK = ['routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn'];
+const PK = ['routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze'];
 const e1 = (w, r) => w * (1 + r / 30);
 const WD = { dimanche: 0, lundi: 1, mardi: 2, mercredi: 3, jeudi: 4, vendredi: 5, samedi: 6, sunday: 0, monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6 };
 const WD_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -855,9 +865,13 @@ class Component extends DCLogic {
   }
   exportData() {
     const s = this.state; const o = {}; PK.forEach(k => o[k] = s[k]);
-    const blob = new Blob([JSON.stringify(o, null, 2)], { type: 'application/json' });
+    const name = 'barlog-' + new Date().toISOString().slice(0, 10) + '.json';
+    const json = JSON.stringify(o, null, 2);
+    const done = () => { this.setState({ lastExport: Date.now(), backupSnooze: null }); this.flash('Backup exported'); };
+    try { const file = new File([json], name, { type: 'application/json' }); if (navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file], title: 'Barlog backup' }).then(done).catch(() => {}); return; } } catch (e) {}
+    const blob = new Blob([json], { type: 'application/json' });
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'barlog-' + new Date().toISOString().slice(0, 10) + '.json'; document.body.appendChild(a); a.click(); a.remove();
-    this.flash('Backup exported');
+    done();
   }
   importData() {
     const i = document.createElement('input'); i.type = 'file'; i.accept = 'application/json,.json';
@@ -1069,6 +1083,8 @@ class Component extends DCLogic {
           confirmGo: () => cr && this.start(cr.id, true), confirmCancel: go({ confirmStart: null }),
           confirmHasToday: !!(cr && tr && tr !== cr), confirmTodayLabel: tr ? 'Start today’s: ' + tr.name : '', confirmToday: () => tr && this.start(tr.id, true) }; })(),
       updateOn: !!s.updateReady && !s.workout && s.screen === 'tabs', applyUpdate: () => { this.save(); location.reload(); },
+      ...(() => { const n = sessions.length; const le = s.lastExport; const due = n >= 3 && (!le || now - le > 14 * DAY) && !(s.backupSnooze && now < s.backupSnooze);
+        return { backupOn: due, backupText: le ? 'Last backup ' + Math.floor((now - le) / DAY) + ' days ago. Your data lives only on this phone.' : 'No backup yet. Your data lives only on this phone.', backupNow: () => this.exportData(), backupLater: go({ backupSnooze: now + 3 * DAY }) }; })(),
       showInstall: !s.standalone && !s.installSeen, dismissInstall: go({ installSeen: true }),
       isToday: showTabs && s.tab === 'today', isPrograms: showTabs && s.tab === 'programs', isProgress: showTabs && s.tab === 'progress', isProfile: showTabs && s.tab === 'profile',
       isSession: s.screen === 'session' && !!sd,
