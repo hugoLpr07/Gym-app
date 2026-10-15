@@ -162,11 +162,28 @@ input::placeholder{color:#9C9CA8}
 </sc-if>
 <sc-if value="{{ isLiftView }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;flex-direction:column;gap:16px;">
+<div style="display:flex;flex-direction:column;gap:10px;">
+<div style="position:relative;margin:0 16px;">
+<input type="search" value="{{ progQuery }}" onChange="{{ onProgQuery }}" placeholder="Search an exercise" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #24242B;background:#16161A;color:#fff;font-size:16px;padding:0 48px 0 14px;">
+<sc-if value="{{ hasProgQuery }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ clearProgQuery }}" style="position:absolute;right:2px;top:2px;width:44px;height:44px;border:none;background:transparent;color:#9C9CA8;font-size:20px;">×</button>
+</sc-if>
+</div>
+<div style="display:flex;gap:6px;overflow-x:auto;padding:0 16px;">
+<sc-for list="{{ routineFilters }}" as="rf" hint-placeholder-count="5">
+<button onClick="{{ rf.onClick }}" style="flex:0 0 auto;height:36px;padding:0 12px;border-radius:10px;border:1px solid {{ rf.border }};background:{{ rf.bg }};color:{{ rf.color }};font-size:13px;font-weight:600;white-space:nowrap;">{{ rf.name }}</button>
+</sc-for>
+</div>
 <div style="display:flex;gap:8px;overflow-x:auto;padding:0 16px;">
 <sc-for list="{{ progChips }}" as="c" hint-placeholder-count="5">
 <button onClick="{{ c.onClick }}" style="flex:0 0 auto;height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.color }};font-size:14px;font-weight:600;white-space:nowrap;">{{ c.name }}</button>
 </sc-for>
 </div>
+</div>
+<sc-if value="{{ noLift }}" hint-placeholder-val="{{ false }}">
+<div style="margin:0 16px;padding:24px 16px;background:#16161A;border:1px solid #24242B;border-radius:16px;text-align:center;color:#9C9CA8;font-size:15px;">No weighted exercise matches.</div>
+</sc-if>
+<sc-if value="{{ hasLift }}" hint-placeholder-val="{{ true }}">
 <div style="margin:0 16px;background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:14px;">
 <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#0A0A0C;border-radius:12px;padding:4px;">
 <sc-for list="{{ metrics }}" as="m" hint-placeholder-count="3">
@@ -255,8 +272,9 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-for>
 </div>
-<span style="font-size:13px;color:#9C9CA8;">Right column: best estimated 1RM of the session. Lime = PR. @n = RIR.</span>
+<span style="font-size:13px;color:#9C9CA8;">Right column: best estimated 1RM of the session. Lime = PR.</span>
 </div>
+</sc-if>
 </div>
 </sc-if>
 <sc-if value="{{ isStatsView }}" hint-placeholder-val="{{ false }}">
@@ -425,19 +443,13 @@ input::placeholder{color:#9C9CA8}
 <button onClick="{{ s.rMinus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">−1 rep</button>
 <button onClick="{{ s.rPlus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">+1 rep</button>
 </div>
-<div style="display:grid;grid-template-columns:48px repeat(5,minmax(0,1fr));gap:6px;align-items:center;padding:0 12px 12px;">
-<span style="font-size:12px;font-weight:700;letter-spacing:0.06em;color:#9C9CA8;line-height:14px;">RIR<br>opt.</span>
-<sc-for list="{{ s.rirs }}" as="q" hint-placeholder-count="5">
-<button onClick="{{ q.onClick }}" style="height:44px;border-radius:10px;border:1px solid #33333C;background:{{ q.bg }};color:{{ q.color }};font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;">{{ q.label }}</button>
-</sc-for>
-</div>
 </sc-if>
 </div>
 </sc-for>
 <button onClick="{{ ex.onAddSet }}" style="width:100%;height:52px;border:none;border-top:1px solid #24242B;background:transparent;color:#9C9CA8;font-size:15px;font-weight:600;" style-active="background:#24242B">+ Add set</button>
 </div>
 </sc-for>
-<span style="font-size:13px;line-height:18px;color:#9C9CA8;padding:0 4px;text-wrap:pretty;">Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume. RIR (optional) = reps you still had in the tank; 3+ on every set doubles the next weight jump.</span>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;padding:0 4px;text-wrap:pretty;">Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.</span>
 <button onClick="{{ openLibW }}" style="min-height:56px;border-radius:16px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:15px;font-weight:600;">+ Add exercise</button>
 <button onClick="{{ discard }}" style="min-height:48px;border:none;background:transparent;color:#9C9CA8;font-size:14px;font-weight:600;">{{ discardLabel }}</button>
 </div>
@@ -720,8 +732,7 @@ class Component extends DCLogic {
     const lastW = [...hist].reverse().find(se => se.sets.some(x => x.w > 0));
     const ws = last ? work(last.sets).filter(x => x.w > 0) : [];
     const up = !!(target && ws.length && ws.every(x => x.r >= target));
-    const rirs = ws.map(x => x.rir).filter(v => v != null);
-    const inc = this.inc() * (up && rirs.length === ws.length && rirs.every(v => v >= 3) ? 2 : 1); const sets = [];
+    const inc = this.inc(); const sets = [];
     for (let i = 0; i < n; i++) {
       const p = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null;
       const bump = up && p && !p.wu;
@@ -768,7 +779,6 @@ class Component extends DCLogic {
     });
     if (fx === 'pr') { this.buzz([30, 60, 30]); this.tone([[660, 0, 0.1], [990, 0.1, 0.22]]); } else if (fx === 'log') this.buzz(15);
   }
-  setRir(ei, si, v) { this.updW(w => { const x = w.ex[ei].sets[si]; x.rir = x.rir === v ? null : v; }); }
   toggleWarm(ei, si) { this.updW(w => { const x = w.ex[ei].sets[si]; x.warm = !x.warm; if (x.warm) x.isPR = false; }); }
   adj(ei, si, f, d) { this.updW(w => { const x = w.ex[ei].sets[si]; x[f] = Math.max(0, Math.round((x[f] + d) * 1000) / 1000); x.wStr = null; x.rStr = null; }); }
   typeW(ei, si, val) { this.updW((w, s) => { const x = w.ex[ei].sets[si]; x.wStr = val; const v = parseFloat(String(val).replace(',', '.')); if (!isNaN(v)) x.w = s.unit === 'kg' ? v : v / KG_LB; else if (val === '') x.w = 0; }); }
@@ -792,7 +802,7 @@ class Component extends DCLogic {
       const last = (s.history[ex.name] || []).slice(-1)[0];
       if (last) { hasPrev = true; prevVol += work(last.sets).reduce((a, x) => a + x.w * x.r, 0); }
       ds.forEach(x => { if (x.warm) return; vol += x.w * x.r; if (x.isPR && (!prs[ex.name] || e1(x.w, x.r) > prs[ex.name].e)) prs[ex.name] = { name: ex.name, w: x.w, r: x.r, e: e1(x.w, x.r) }; });
-      const entry = ds.map(x => x.warm ? { w: x.w, r: x.r, wu: true } : x.rir != null ? { w: x.w, r: x.r, rir: x.rir } : { w: x.w, r: x.r });
+      const entry = ds.map(x => x.warm ? { w: x.w, r: x.r, wu: true } : { w: x.w, r: x.r });
       h[ex.name] = [...(h[ex.name] || []), { date: w.start, sets: entry }];
       exs.push({ name: ex.name, sets: entry });
     });
@@ -863,10 +873,23 @@ class Component extends DCLogic {
     const s = this.state; const now = s.now; const kg = s.unit === 'kg';
     const go = (p) => () => this.setState(p);
     const routines = s.routines;
-    const li = routines.findIndex(r => r.id === s.lastRoutineId);
-    const next = routines.length ? routines[(li + 1) % routines.length] : null;
     const ago = (t) => { if (!t) return 'never'; const d = Math.floor((now - t) / DAY); return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d + ' days ago'; };
     const lastOf = (r) => { let t = 0; r.ex.forEach(e => { const l = (s.history[e.name] || []).slice(-1)[0]; if (l) t = Math.max(t, l.date); }); return t; };
+    const WD = { dimanche: 0, lundi: 1, mardi: 2, mercredi: 3, jeudi: 4, vendredi: 5, samedi: 6, sunday: 0, monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6 };
+    const wdOf = r => { const m = r.name.toLowerCase().match(/[a-zé]+/g) || []; const k = m.find(x => x in WD); return k ? WD[k] : null; };
+    const dayStart = new Date(now); dayStart.setHours(0, 0, 0, 0);
+    let next = null;
+    const dated = routines.filter(r => wdOf(r) != null);
+    if (dated.length) {
+      const todayWd = dayStart.getDay();
+      const doneToday = r => lastOf(r) >= dayStart.getTime();
+      let bestD = 99;
+      dated.forEach(r => { let d = (wdOf(r) - todayWd + 7) % 7; if (d === 0 && doneToday(r)) d = 7; if (d < bestD) { bestD = d; next = r; } });
+    } else if (routines.length) {
+      let lastR = null, lastT = 0; routines.forEach(r => { const t = lastOf(r); if (t > lastT) { lastT = t; lastR = r; } });
+      const li = routines.indexOf(lastR);
+      next = routines[(li + 1) % routines.length];
+    }
     const d0 = new Date(now);
     const monday = new Date(d0.getFullYear(), d0.getMonth(), d0.getDate() - ((d0.getDay() + 6) % 7));
     const dayKeys = new Set(); Object.values(s.history).forEach(a => a.forEach(x => dayKeys.add(new Date(x.date).toDateString())));
@@ -894,8 +917,6 @@ class Component extends DCLogic {
             checkBg: x.done ? '#CCFF00' : 'transparent', checkColor: x.done ? '#0A0A0C' : '#9C9CA8', checkBorder: x.done ? '#CCFF00' : '#33333C',
             onFocus: () => { if (!x.done) this.setState({ focus: { ei, si } }); },
             onWarm: (e) => { e.stopPropagation(); this.toggleWarm(ei, si); },
-            rirs: [0, 1, 2, 3, 4].map(v => ({ label: v === 4 ? '4+' : String(v), bg: x.rir === v ? '#CCFF00' : '#0A0A0C', color: x.rir === v ? '#0A0A0C' : '#FFFFFF', onClick: (e) => { e.stopPropagation(); this.setRir(ei, si, v); } })),
-            rirTag: x.rir != null ? 'RIR ' + (x.rir === 4 ? '4+' : x.rir) : '',
             onSelect: (e) => { const t = e.target; setTimeout(() => { try { t.setSelectionRange(0, t.value.length); } catch (er) {} }, 0); },
             onCheck: (e) => { e.stopPropagation(); this.check(ei, si); },
             onW: (e) => this.typeW(ei, si, e.target.value), onR: (e) => this.typeR(ei, si, e.target.value),
@@ -924,12 +945,15 @@ class Component extends DCLogic {
 
     const hasW = k => (s.history[k] || []).some(se => work(se.sets).some(x => x.w > 0));
     const progNames = [...new Set(routines.flatMap(r => r.ex.map(e => e.name)))].filter(hasW);
-    const histNames = progNames.length ? progNames : Object.keys(s.history).filter(hasW);
+    const histAll = progNames.length ? progNames : Object.keys(s.history).filter(hasW);
+    const fR = routines.find(r => r.id === s.progRoutine);
+    const pq = (s.progQuery || '').trim().toLowerCase();
+    const histNames = histAll.filter(n => (!fR || fR.ex.some(e => e.name === n)) && (!pq || n.toLowerCase().includes(pq)));
     const topE = n => Math.max(0, ...(s.history[n] || []).flatMap(se => work(se.sets).map(x => e1(x.w, x.r))));
     const progEx = histNames.includes(s.progEx) ? s.progEx : (histNames.slice().sort((a, b) => topE(b) - topE(a))[0] || '');
     const T = Date.now();
     const fmtD = (t) => new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    const setTxt = x => this.dispW(x.w) + '×' + x.r + (x.rir != null ? '@' + x.rir : '');
+    const setTxt = x => this.dispW(x.w) + '×' + x.r;
     const sessAll = (s.history[progEx] || []).map(se => ({ date: se.date, ws: work(se.sets).filter(x => x.w > 0) })).filter(se => se.ws.length);
     const RANGES = [['4w', '4 wk', 28], ['3m', '3 mo', 91], ['all', 'All', 0]];
     const rg = RANGES.find(r => r[0] === s.progRange) || RANGES[2];
@@ -1017,7 +1041,7 @@ class Component extends DCLogic {
     const mg = {}, mgNow = {};
     Object.entries(s.history).forEach(([name, arr]) => { const g = GMAP[name]; if (!g) return; arr.forEach(se => { const n = work(se.sets).length; const k = wkStart(se.date); if (k >= wkKey(4) && k < w0) mg[g] = (mg[g] || 0) + n; if (k === w0) mgNow[g] = (mgNow[g] || 0) + n; }); });
     const muscleRows = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core'].map(g => { const avg = (mg[g] || 0) / 4; const ok = avg >= 10 && avg <= 20; return { name: g, avg: String(Math.round(avg * 10) / 10), w: Math.min(100, avg / 25 * 100) + '%', color: ok ? '#CCFF00' : '#FFFFFF', tag: (avg < 10 ? 'Low' : avg > 20 ? 'High' : 'In range') + ' · ' + (mgNow[g] || 0) + ' this week', tagColor: ok ? '#CCFF00' : '#9C9CA8' }; });
-    const liftTrends = histNames.map(n => { const st = liftStat(n); return { name: n, pct: pctTxt(st.pct), color: st.pct == null ? '#9C9CA8' : st.pct > 0.05 ? '#CCFF00' : '#FFFFFF', flag: st.stalled ? 'No PR for ' + st.wks + ' weeks' : '', hasFlag: !!st.stalled, onClick: go({ progView: 'lifts', progEx: n, progSel: null }) }; });
+    const liftTrends = histAll.map(n => { const st = liftStat(n); return { name: n, pct: pctTxt(st.pct), color: st.pct == null ? '#9C9CA8' : st.pct > 0.05 ? '#CCFF00' : '#FFFFFF', flag: st.stalled ? 'No PR for ' + st.wks + ' weeks' : '', hasFlag: !!st.stalled, onClick: go({ progView: 'lifts', progEx: n, progSel: null }) }; });
     const stalledN = liftTrends.filter(x => x.hasFlag).length;
 
     return {
@@ -1038,7 +1062,7 @@ class Component extends DCLogic {
       sdName: sd ? sd.name : '', sdDate: sd ? fmtLong(sd.date) : '',
       sdStats: sd ? [{ label: 'Time', value: sd.dur ? clock(sd.dur) : '—' }, { label: 'Sets', value: String(sd.sets) }, { label: 'Vol ' + s.unit, value: volU(sd.vol) }] : [],
       sdEx: sd ? sd.ex.map(x => { let n = 0; return { name: x.name, sets: x.sets.map((y, i) => { const k = sd.date + '|' + x.name + '|' + i + '|'; return {
-        num: y.wu ? 'W' : String(++n), text: (y.w ? this.dispW(y.w) + ' ' + s.unit + ' × ' : '') + y.r + (y.w ? '' : ' reps') + (y.rir != null ? ' · RIR ' + y.rir : ''), e: y.w && !y.wu ? 'e1RM ' + this.dispW(e1(y.w, y.r)) : '',
+        num: y.wu ? 'W' : String(++n), text: (y.w ? this.dispW(y.w) + ' ' + s.unit + ' × ' : '') + y.r + (y.w ? '' : ' reps'), e: y.w && !y.wu ? 'e1RM ' + this.dispW(e1(y.w, y.r)) : '',
         wDisp: s.editBuf[k + 'w'] != null ? s.editBuf[k + 'w'] : (y.w ? this.dispW(y.w) : ''), rDisp: s.editBuf[k + 'r'] != null ? s.editBuf[k + 'r'] : String(y.r),
         onW: (e) => this.editSessSet(sd.date, x.name, i, 'w', e.target.value), onR: (e) => this.editSessSet(sd.date, x.name, i, 'r', e.target.value),
         onSelect: (e) => { const t = e.target; setTimeout(() => { try { t.setSelectionRange(0, t.value.length); } catch (er) {} }, 0); } }; }) }; }) : [],
@@ -1058,6 +1082,9 @@ class Component extends DCLogic {
       otherRoutines: routines.filter(r => r !== next).map(r => ({ name: r.name, meta: r.ex.length + ' exercises · ' + ago(lastOf(r)), onStart: () => this.start(r.id) })),
       routineCards: routines.map(r => ({ name: r.name, exText: r.ex.length ? r.ex.map(e => e.name + ' ' + e.sets + '×' + e.reps).join(' · ') : 'No exercises yet', nextOpacity: r === next ? 1 : 0, onEdit: go({ editId: r.id, screen: 'routine', deleteArm: false }), onStart: () => this.start(r.id) })),
       newRoutine: () => this.newRoutine(),
+      progQuery: s.progQuery || '', onProgQuery: (e) => this.setState({ progQuery: e.target.value, progSel: null }), clearProgQuery: go({ progQuery: '', progSel: null }), hasProgQuery: !!pq,
+      noLift: !progEx, hasLift: !!progEx,
+      routineFilters: [{ id: null, name: 'All' }, ...routines.filter(r => r.ex.some(e => histAll.includes(e.name)))].map(r => { const on = (s.progRoutine || null) === r.id || (!fR && r.id === null); return { name: r.name, bg: on ? '#24242B' : 'transparent', color: on ? '#FFFFFF' : '#9C9CA8', border: on ? '#55555F' : '#24242B', onClick: go({ progRoutine: r.id, progSel: null }) }; }),
       progEx, progChips: histNames.map(n => ({ name: n, bg: n === progEx ? '#FFFFFF' : 'transparent', color: n === progEx ? '#0A0A0C' : '#FFFFFF', border: n === progEx ? '#FFFFFF' : '#33333C', onClick: go({ progEx: n, progSel: null }) })),
       metrics: [['e1rm','Est. 1RM'],['vol','Volume'],['top','Top set']].map(([k, label]) => ({ label, bg: s.metric === k ? '#24242B' : 'transparent', color: s.metric === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ metric: k, progSel: null }) })),
       metricHelp: s.metric === 'e1rm' ? 'Estimated max for 1 rep, from your best set: weight × (1 + reps ÷ 30). Best overall strength gauge.' : s.metric === 'vol' ? 'Total weight × reps over all work sets of the session. Tracks workload — the main driver of muscle growth.' : 'Heaviest weight lifted in the session, regardless of reps.',
