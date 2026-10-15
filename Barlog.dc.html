@@ -549,9 +549,9 @@ input::placeholder{color:#9C9CA8}
 </sc-if>
 
 <sc-if value="{{ showTabs }}" hint-placeholder-val="{{ true }}">
-<div style="position:absolute;left:0;right:0;bottom:0;height:calc(60px + env(safe-area-inset-bottom));background:#0A0A0C;border-top:1px solid #24242B;display:grid;grid-template-columns:repeat(4,1fr);padding:0 8px env(safe-area-inset-bottom);z-index:3;">
+<div style="position:absolute;left:0;right:0;bottom:0;height:calc(60px + env(safe-area-inset-bottom));background:#0A0A0C;border-top:1px solid #24242B;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:0 8px env(safe-area-inset-bottom);z-index:3;">
 <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
-<button onClick="{{ t.onClick }}" style="position:relative;border:none;background:transparent;color:{{ t.color }};font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;">
+<button onClick="{{ t.onClick }}" style="position:relative;min-width:0;padding:0 2px;white-space:nowrap;border:none;background:transparent;color:{{ t.color }};font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;">
 <span style="position:absolute;top:-1px;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:{{ t.bar }};"></span>{{ t.label }}</button>
 </sc-for>
 </div>
@@ -896,7 +896,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.7.0';
+const APP_VERSION = '0.7.1';
 let ACC = '#CCFF00';
 const ACCENTS = [['#CCFF00', 'Lime'], ['#FF7A1A', 'Orange'], ['#FF4D8D', 'Pink'], ['#A78BFA', 'Violet'], ['#22D3EE', 'Cyan'], ['#FFC83D', 'Gold']];
 const hexRgb = h => { h = h.replace('#', ''); return [0, 2, 4].map(i => parseInt(h.substr(i, 2), 16)); };
