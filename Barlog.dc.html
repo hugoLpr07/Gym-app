@@ -19,9 +19,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+:root{--acc:#CCFF00}
 html,body{margin:0;height:100%;background:#0A0A0C;color:#FFFFFF;font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overscroll-behavior:none;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
 *{box-sizing:border-box}
-a{color:#CCFF00;text-decoration:none}a:hover{text-decoration:underline}
+a{color:var(--acc);text-decoration:none}a:hover{text-decoration:underline}
 button{font-family:inherit;cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
 input{font-family:inherit;outline:none}
 input::placeholder{color:#9C9CA8}
@@ -33,7 +34,7 @@ input::placeholder{color:#9C9CA8}
 
 <sc-if value="{{ toastOn }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;top:8px;left:0;right:0;display:flex;justify-content:center;z-index:40;pointer-events:none;">
-<div style="padding:8px 14px;border-radius:999px;background:#16161A;border:1px solid #33333C;font-size:14px;font-weight:600;color:#FFFFFF;display:flex;gap:8px;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#CCFF00;"></span>{{ toast }}</div>
+<div style="padding:8px 14px;border-radius:999px;background:#16161A;border:1px solid #33333C;font-size:14px;font-weight:600;color:#FFFFFF;display:flex;gap:8px;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:var(--acc);"></span>{{ toast }}</div>
 </div>
 </sc-if>
 
@@ -59,7 +60,7 @@ input::placeholder{color:#9C9CA8}
 <span style="font-size:12px;color:#9C9CA8;">{{ tx.nNoteSub }}</span>
 </div>
 <button onClick="{{ sheetInfo }}" style="min-height:52px;border-radius:16px;border:1px solid #33333C;background:transparent;color:#fff;font-size:15px;font-weight:600;">{{ tx.nSheetInfo }}</button>
-<button onClick="{{ closeSheet }}" style="min-height:56px;border-radius:16px;border:none;background:#CCFF00;color:#0A0A0C;font-size:16px;font-weight:700;">{{ tx.nDone }}</button>
+<button onClick="{{ closeSheet }}" style="min-height:56px;border-radius:16px;border:none;background:var(--acc);color:#0A0A0C;font-size:16px;font-weight:700;">{{ tx.nDone }}</button>
 </div>
 </div>
 </sc-if>
@@ -69,7 +70,7 @@ input::placeholder{color:#9C9CA8}
 <div onClick="{{ stop }}" style="width:100%;max-width:480px;box-sizing:border-box;background:#16161A;border-top:1px solid #33333C;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;">
 <span style="font-size:20px;font-weight:800;">{{ confirmTitle }}</span>
 <span style="font-size:15px;line-height:21px;color:#9C9CA8;text-wrap:pretty;padding-bottom:6px;">{{ confirmText }}</span>
-<button onClick="{{ confirmGo }}" style="min-height:56px;border-radius:16px;border:none;background:#CCFF00;color:#0A0A0C;font-size:16px;font-weight:700;">{{ tx.k0 }}</button>
+<button onClick="{{ confirmGo }}" style="min-height:56px;border-radius:16px;border:none;background:var(--acc);color:#0A0A0C;font-size:16px;font-weight:700;">{{ tx.k0 }}</button>
 <sc-if value="{{ confirmHasToday }}" hint-placeholder-val="{{ false }}">
 <button onClick="{{ confirmToday }}" style="min-height:56px;border-radius:16px;border:none;background:#24242B;color:#FFFFFF;font-size:15px;font-weight:600;padding:0 12px;">{{ confirmTodayLabel }}</button>
 </sc-if>
@@ -80,14 +81,14 @@ input::placeholder{color:#9C9CA8}
 
 <sc-if value="{{ updateOn }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;top:8px;left:16px;right:16px;display:flex;justify-content:center;z-index:41;">
-<button onClick="{{ applyUpdate }}" style="min-height:44px;padding:0 16px;border-radius:999px;border:none;background:#CCFF00;color:#0A0A0C;font-size:14px;font-weight:700;">{{ tx.k2 }}</button>
+<button onClick="{{ applyUpdate }}" style="min-height:44px;padding:0 16px;border-radius:999px;border:none;background:var(--acc);color:#0A0A0C;font-size:14px;font-weight:700;">{{ tx.k2 }}</button>
 </div>
 </sc-if>
 
 <sc-if value="{{ isToday }}" hint-placeholder-val="{{ true }}">
 <div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 16px 24px;display:flex;flex-direction:column;gap:20px;">
 <sc-if value="{{ showInstall }}" hint-placeholder-val="{{ false }}">
-<div style="background:#16161A;border:1px solid #CCFF00;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+<div style="background:#16161A;border:1px solid var(--acc);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
 <span style="font-size:16px;font-weight:700;">{{ tx.k3 }}</span>
 <span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ tx.k4 }}</span>
 <button onClick="{{ dismissInstall }}" style="align-self:flex-start;height:44px;padding:0 16px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ tx.k5 }}</button>
@@ -98,7 +99,7 @@ input::placeholder{color:#9C9CA8}
 <span style="font-size:16px;font-weight:700;">{{ tx.k6 }}</span>
 <span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ backupText }} {{ tx.k7 }}</span>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-<button onClick="{{ backupNow }}" style="height:48px;border-radius:12px;border:none;background:#CCFF00;color:#0A0A0C;font-size:15px;font-weight:700;">{{ tx.k8 }}</button>
+<button onClick="{{ backupNow }}" style="height:48px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;">{{ tx.k8 }}</button>
 <button onClick="{{ backupLater }}" style="height:48px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ tx.k9 }}</button>
 </div>
 </div>
@@ -109,14 +110,14 @@ input::placeholder{color:#9C9CA8}
 </div>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:16px;">
 <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#CCFF00;">{{ tx.k11 }}</div>
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--acc);">{{ tx.k11 }}</div>
 <div style="font-size:13px;color:#9C9CA8;">{{ tx.k12 }} {{ nextAgo }}</div>
 </div>
 <div style="display:flex;flex-direction:column;gap:6px;">
 <div style="font-size:28px;font-weight:800;letter-spacing:-0.02em;">{{ nextName }}</div>
 <div style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ nextEx }}</div>
 </div>
-<button onClick="{{ startNext }}" style="height:60px;border:none;border-radius:14px;background:#CCFF00;color:#0A0A0C;font-size:17px;font-weight:700;" style-active="transform:scale(0.98)">{{ startLabel }}</button>
+<button onClick="{{ startNext }}" style="height:60px;border:none;border-radius:14px;background:var(--acc);color:#0A0A0C;font-size:17px;font-weight:700;" style-active="transform:scale(0.98)">{{ startLabel }}</button>
 </div>
 <div style="display:flex;flex-direction:column;gap:8px;">
 <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k13 }}</div>
@@ -135,7 +136,7 @@ input::placeholder{color:#9C9CA8}
 <sc-for list="{{ otherRoutines }}" as="r" hint-placeholder-count="2">
 <button onClick="{{ r.onStart }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;background:transparent;border:none;border-bottom:1px solid #24242B;color:#fff;text-align:left;min-height:64px;" style-active="background:#24242B">
 <div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:16px;font-weight:700;">{{ r.name }}</span><span style="font-size:13px;color:#9C9CA8;">{{ r.meta }}</span></div>
-<span style="font-size:14px;font-weight:600;color:#CCFF00;">{{ tx.k15 }}</span>
+<span style="font-size:14px;font-weight:600;color:var(--acc);">{{ tx.k15 }}</span>
 </button>
 </sc-for>
 <button onClick="{{ startEmpty }}" style="width:100%;padding:14px 16px;background:transparent;border:none;color:#9C9CA8;text-align:left;font-size:15px;font-weight:600;min-height:56px;" style-active="background:#24242B">{{ tx.k16 }}</button>
@@ -155,18 +156,18 @@ input::placeholder{color:#9C9CA8}
 <div style="background:#16161A;border:1px solid #24242B;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px;">
 <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
 <span style="font-size:20px;font-weight:700;">{{ r.name }}</span>
-<span style="font-size:12px;font-weight:700;letter-spacing:0.08em;color:#0A0A0C;background:#CCFF00;padding:3px 8px;border-radius:999px;opacity:{{ r.nextOpacity }};">{{ tx.k19 }}</span>
+<span style="font-size:12px;font-weight:700;letter-spacing:0.08em;color:#0A0A0C;background:var(--acc);padding:3px 8px;border-radius:999px;opacity:{{ r.nextOpacity }};">{{ tx.k19 }}</span>
 </div>
 <div style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ r.exText }}</div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
 <button onClick="{{ r.onEdit }}" style="height:48px;border-radius:12px;background:#24242B;border:none;color:#fff;font-size:15px;font-weight:600;">{{ tx.k20 }}</button>
-<button onClick="{{ r.onStart }}" style="height:48px;border-radius:12px;background:transparent;border:1px solid #CCFF00;color:#CCFF00;font-size:15px;font-weight:600;">{{ tx.k15 }}</button>
+<button onClick="{{ r.onStart }}" style="height:48px;border-radius:12px;background:transparent;border:1px solid var(--acc);color:var(--acc);font-size:15px;font-weight:600;">{{ tx.k15 }}</button>
 </div>
 </div>
 </sc-for>
 </div>
 <button onClick="{{ newRoutine }}" style="height:56px;border-radius:16px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:16px;font-weight:600;" style-active="background:#16161A">{{ tx.k21 }}</button>
-<button onClick="{{ openTemplates }}" style="min-height:56px;border-radius:16px;border:1px solid #33333C;background:transparent;color:#CCFF00;font-size:15px;font-weight:600;">{{ tx.nFromTpl }}</button>
+<button onClick="{{ openTemplates }}" style="min-height:56px;border-radius:16px;border:1px solid #33333C;background:transparent;color:var(--acc);font-size:15px;font-weight:600;">{{ tx.nFromTpl }}</button>
 <button onClick="{{ openLibrary }}" style="min-height:56px;border-radius:16px;border:1px solid #33333C;background:transparent;color:#fff;font-size:15px;font-weight:600;">{{ tx.nLibrary }}</button>
 </div>
 </sc-if>
@@ -246,7 +247,7 @@ input::placeholder{color:#9C9CA8}
 <span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ metricHelp }}</span>
 <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:8px;">
 <div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ metricLabel }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:700;">{{ curVal }}<span style="font-size:15px;color:#9C9CA8;"> {{ curUnit }}</span></span></div>
-<span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#CCFF00;padding-bottom:8px;text-align:right;">{{ delta }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--acc);padding-bottom:8px;text-align:right;">{{ delta }}</span>
 </div>
 <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
 <div style="font-family:'JetBrains Mono',monospace;font-size:13px;line-height:18px;color:#FFFFFF;background:#0A0A0C;border-radius:10px;padding:8px 10px;">{{ selSets }}</div>
@@ -262,13 +263,13 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ chartHas }}" hint-placeholder-val="{{ true }}">
 <div style="position:relative;height:160px;">
 <svg width="100%" height="160" viewBox="0 0 324 160" preserveAspectRatio="none" style="position:absolute;inset:0;overflow:visible;">
-<defs><linearGradient id="blArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CCFF00" stop-opacity="0.22"></stop><stop offset="1" stop-color="#CCFF00" stop-opacity="0"></stop></linearGradient></defs>
+<defs><linearGradient id="blArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-opacity="0.22" style="stop-color:var(--acc)"></stop><stop offset="1" stop-opacity="0" style="stop-color:var(--acc)"></stop></linearGradient></defs>
 <line x1="0" y1="152" x2="324" y2="152" stroke="#24242B" stroke-width="1" vector-effect="non-scaling-stroke"></line>
 <line x1="0" y1="80" x2="324" y2="80" stroke="#24242B" stroke-width="1" stroke-dasharray="3 4" vector-effect="non-scaling-stroke"></line>
 <line x1="0" y1="8" x2="324" y2="8" stroke="#24242B" stroke-width="1" stroke-dasharray="3 4" vector-effect="non-scaling-stroke"></line>
 <polygon points="{{ areaPts }}" fill="url(#blArea)"></polygon>
 <polyline points="{{ chartPts }}" fill="none" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="1.5" stroke-linejoin="round" vector-effect="non-scaling-stroke"></polyline>
-<polyline points="{{ trendPts }}" fill="none" stroke="#CCFF00" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"></polyline>
+<polyline points="{{ trendPts }}" fill="none" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" style="stroke:var(--acc)"></polyline>
 </svg>
 <sc-for list="{{ chartAxis }}" as="a" hint-placeholder-count="0">
 <span style="position:absolute;left:0;top:{{ a.top }};font-family:'JetBrains Mono',monospace;font-size:11px;color:#9C9CA8;pointer-events:none;">{{ a.label }}</span>
@@ -283,7 +284,7 @@ input::placeholder{color:#9C9CA8}
 </sc-for>
 </div>
 </sc-if>
-<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;"><span>{{ chartFrom }}</span><span style="display:flex;gap:10px;align-items:center;"><span style="display:flex;gap:5px;align-items:center;"><span style="width:14px;height:3px;border-radius:2px;background:#CCFF00;"></span>{{ tx.k27 }}</span><span style="display:flex;gap:5px;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#CCFF00;"></span>PR</span></span><span>{{ chartTo }}</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;"><span>{{ chartFrom }}</span><span style="display:flex;gap:10px;align-items:center;"><span style="display:flex;gap:5px;align-items:center;"><span style="width:14px;height:3px;border-radius:2px;background:var(--acc);"></span>{{ tx.k27 }}</span><span style="display:flex;gap:5px;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:var(--acc);"></span>PR</span></span><span>{{ chartTo }}</span></div>
 <span style="font-size:12px;color:#9C9CA8;text-align:center;">{{ tx.k28 }}</span>
 </div>
 <sc-if value="{{ stallOn }}" hint-placeholder-val="{{ false }}">
@@ -341,17 +342,17 @@ input::placeholder{color:#9C9CA8}
 <div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:14px;">
 <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:8px;">
 <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.nBodyW }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:700;">{{ bwCur }}<span style="font-size:15px;color:#9C9CA8;"> {{ bwUnit }}</span></span></div>
-<span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:#CCFF00;padding-bottom:8px;text-align:right;">{{ bwDelta }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--acc);padding-bottom:8px;text-align:right;">{{ bwDelta }}</span>
 </div>
 <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;background:#0A0A0C;border-radius:12px;padding:4px;"><sc-for list="{{ bwRanges }}" as="u" hint-placeholder-count="5"><button onClick="{{ u.onClick }}" style="height:36px;border:none;border-radius:9px;background:{{ u.bg }};color:{{ u.color }};font-size:14px;font-weight:600;">{{ u.label }}</button></sc-for></div>
 <sc-if value="{{ bwNoChart }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ bwEmptyText }}</span></sc-if>
 <sc-if value="{{ bwHasChart }}" hint-placeholder-val="{{ false }}">
 <div style="position:relative;height:140px;">
 <svg width="100%" height="140" viewBox="0 0 324 140" preserveAspectRatio="none" style="position:absolute;inset:0;overflow:visible;">
-<defs><linearGradient id="blBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CCFF00" stop-opacity="0.22"></stop><stop offset="1" stop-color="#CCFF00" stop-opacity="0"></stop></linearGradient></defs>
+<defs><linearGradient id="blBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-opacity="0.22" style="stop-color:var(--acc)"></stop><stop offset="1" stop-opacity="0" style="stop-color:var(--acc)"></stop></linearGradient></defs>
 <line x1="0" y1="132" x2="324" y2="132" stroke="#24242B" stroke-width="1" vector-effect="non-scaling-stroke"></line>
 <polygon points="{{ bwArea }}" fill="url(#blBody)"></polygon>
-<polyline points="{{ bwPts }}" fill="none" stroke="#CCFF00" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"></polyline>
+<polyline points="{{ bwPts }}" fill="none" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" style="stroke:var(--acc)"></polyline>
 </svg>
 <sc-for list="{{ bwDots }}" as="p" hint-placeholder-count="0"><span style="position:absolute;left:{{ p.left }};top:{{ p.top }};width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:#FFFFFF;"></span></sc-for>
 </div>
@@ -365,11 +366,11 @@ input::placeholder{color:#9C9CA8}
 <label style="display:flex;flex-direction:column;gap:4px;"><span style="font-size:13px;font-weight:600;color:#9C9CA8;">{{ bf.label }}</span><input type="text" inputmode="{{ bf.im }}" value="{{ bf.val }}" onChange="{{ bf.onChange }}" placeholder="{{ bf.ph }}" style="width:100%;min-width:0;height:48px;border-radius:10px;border:1px solid #24242B;background:#0A0A0C;color:#fff;font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;padding:0 12px;"></label>
 </sc-for>
 </div>
-<button onClick="{{ saveBody }}" style="height:56px;border-radius:14px;border:none;background:#CCFF00;color:#0A0A0C;font-size:16px;font-weight:700;">{{ tx.nSave }}</button>
+<button onClick="{{ saveBody }}" style="height:56px;border-radius:14px;border:none;background:var(--acc);color:#0A0A0C;font-size:16px;font-weight:700;">{{ tx.nSave }}</button>
 <span style="font-size:12px;line-height:17px;color:#9C9CA8;text-wrap:pretty;">{{ tx.nBodyHint }}</span>
 </div>
 <div style="display:flex;flex-direction:column;gap:6px;">
-<button onClick="{{ importBody }}" style="min-height:52px;border-radius:14px;border:1px solid #33333C;background:transparent;color:#CCFF00;font-size:15px;font-weight:600;">{{ importBodyLabel }}</button>
+<button onClick="{{ importBody }}" style="min-height:52px;border-radius:14px;border:1px solid #33333C;background:transparent;color:var(--acc);font-size:15px;font-weight:600;">{{ importBodyLabel }}</button>
 <span style="font-size:12px;line-height:17px;color:#9C9CA8;text-wrap:pretty;">{{ importBodyHint }}</span>
 </div>
 <sc-if value="{{ hasMeasures }}" hint-placeholder-val="{{ false }}">
@@ -408,55 +409,15 @@ input::placeholder{color:#9C9CA8}
 <div style="display:flex;gap:4px;background:#16161A;border:1px solid #24242B;border-radius:10px;padding:3px;"><sc-for list="{{ bmRanges }}" as="r" hint-placeholder-count="2"><button onClick="{{ r.onClick }}" style="height:34px;padding:0 10px;border:none;border-radius:8px;background:{{ r.bg }};color:{{ r.color }};font-size:13px;font-weight:600;">{{ r.label }}</button></sc-for></div>
 </div>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:14px;">
-<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
-<div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><svg viewBox="0 0 200 400" style="width:100%;max-width:160px;height:auto;display:block;margin:0 auto;"><ellipse cx="100" cy="30" rx="18" ry="22" fill="#1D1D23"></ellipse>
-<path d="M90 46 L110 46 L114 64 L86 64 Z" fill="#1D1D23"></path>
-<path d="M100 60 C78 60 60 62 50 70 C40 78 36 92 34 108 L30 150 C28 170 25 190 22 208 L32 212 C38 192 44 172 48 152 L54 118 L58 150 C58 176 60 196 60 212 C56 244 56 272 60 300 C62 330 62 360 64 386 L86 386 C86 360 90 330 92 300 C96 272 98 244 100 222 C102 244 104 272 108 300 C110 330 114 360 114 386 L136 386 C138 360 138 330 140 300 C144 272 144 244 140 212 C140 196 142 176 142 150 L146 118 L152 152 C156 172 162 192 168 212 L178 208 C175 190 172 170 170 150 L166 108 C164 92 160 78 150 70 C140 62 122 60 100 60 Z" fill="#1D1D23"></path>
-<circle cx="25" cy="218" r="7" fill="#1D1D23"></circle><circle cx="175" cy="218" r="7" fill="#1D1D23"></circle>
-<path d="M62 390 L88 390 L90 398 L58 398 Z" fill="#1D1D23"></path><path d="M112 390 L138 390 L142 398 L110 398 Z" fill="#1D1D23"></path>
-<g><path d="M56 68 C44 70 36 82 36 100 C42 95 50 91 58 89 C61 80 60 73 56 68 Z" fill="{{ bmS.shoulders }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M60 70 C72 66 88 66 99 68 L99 104 C86 111 70 109 60 101 C55 92 55 80 60 70 Z" fill="{{ bmS.chest }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M40 102 C34 114 34 130 38 142 C46 140 51 128 52 116 C52 106 48 100 40 102 Z" fill="{{ bmS.biceps }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M36 147 C30 164 28 182 25 202 L33 205 C39 186 45 168 48 150 C45 144 39 143 36 147 Z" fill="{{ bmS.forearms }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<rect x="88" y="110" width="11" height="15" rx="3" fill="{{ bmS.abs }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></rect><rect x="88" y="127" width="11" height="15" rx="3" fill="{{ bmS.abs }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></rect><rect x="88" y="144" width="11" height="15" rx="3" fill="{{ bmS.abs }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></rect><rect x="89" y="161" width="10" height="22" rx="3" fill="{{ bmS.abs }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></rect>
-<path d="M62 106 C70 112 79 114 85 112 L85 180 C76 178 68 170 64 158 C60 142 59 122 62 106 Z" fill="{{ bmS.obliques }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M64 216 C59 242 60 268 66 290 C72 296 80 296 86 290 C92 268 96 244 97 224 C87 215 75 213 64 216 Z" fill="{{ bmS.quads }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M66 314 C62 332 64 354 70 374 L80 374 C84 354 87 332 85 314 C79 307 71 307 66 314 Z" fill="{{ bmS.calves }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path></g><g transform="matrix(-1 0 0 1 200 0)"><path d="M56 68 C44 70 36 82 36 100 C42 95 50 91 58 89 C61 80 60 73 56 68 Z" fill="{{ bmS.shoulders }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M60 70 C72 66 88 66 99 68 L99 104 C86 111 70 109 60 101 C55 92 55 80 60 70 Z" fill="{{ bmS.chest }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M40 102 C34 114 34 130 38 142 C46 140 51 128 52 116 C52 106 48 100 40 102 Z" fill="{{ bmS.biceps }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M36 147 C30 164 28 182 25 202 L33 205 C39 186 45 168 48 150 C45 144 39 143 36 147 Z" fill="{{ bmS.forearms }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<rect x="88" y="110" width="11" height="15" rx="3" fill="{{ bmS.abs }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></rect><rect x="88" y="127" width="11" height="15" rx="3" fill="{{ bmS.abs }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></rect><rect x="88" y="144" width="11" height="15" rx="3" fill="{{ bmS.abs }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></rect><rect x="89" y="161" width="10" height="22" rx="3" fill="{{ bmS.abs }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></rect>
-<path d="M62 106 C70 112 79 114 85 112 L85 180 C76 178 68 170 64 158 C60 142 59 122 62 106 Z" fill="{{ bmS.obliques }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M64 216 C59 242 60 268 66 290 C72 296 80 296 86 290 C92 268 96 244 97 224 C87 215 75 213 64 216 Z" fill="{{ bmS.quads }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M66 314 C62 332 64 354 70 374 L80 374 C84 354 87 332 85 314 C79 307 71 307 66 314 Z" fill="{{ bmS.calves }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path></g></svg><span style="font-size:12px;font-weight:600;color:#9C9CA8;">{{ tx.nFront }}</span></div>
-<div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><svg viewBox="0 0 200 400" style="width:100%;max-width:160px;height:auto;display:block;margin:0 auto;"><ellipse cx="100" cy="30" rx="18" ry="22" fill="#1D1D23"></ellipse>
-<path d="M90 46 L110 46 L114 64 L86 64 Z" fill="#1D1D23"></path>
-<path d="M100 60 C78 60 60 62 50 70 C40 78 36 92 34 108 L30 150 C28 170 25 190 22 208 L32 212 C38 192 44 172 48 152 L54 118 L58 150 C58 176 60 196 60 212 C56 244 56 272 60 300 C62 330 62 360 64 386 L86 386 C86 360 90 330 92 300 C96 272 98 244 100 222 C102 244 104 272 108 300 C110 330 114 360 114 386 L136 386 C138 360 138 330 140 300 C144 272 144 244 140 212 C140 196 142 176 142 150 L146 118 L152 152 C156 172 162 192 168 212 L178 208 C175 190 172 170 170 150 L166 108 C164 92 160 78 150 70 C140 62 122 60 100 60 Z" fill="#1D1D23"></path>
-<circle cx="25" cy="218" r="7" fill="#1D1D23"></circle><circle cx="175" cy="218" r="7" fill="#1D1D23"></circle>
-<path d="M62 390 L88 390 L90 398 L58 398 Z" fill="#1D1D23"></path><path d="M112 390 L138 390 L142 398 L110 398 Z" fill="#1D1D23"></path>
-<g><path d="M100 48 C93 55 81 61 64 70 C78 75 90 88 99 106 Z" fill="{{ bmS.traps }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M56 68 C44 70 36 82 36 100 C42 95 50 91 58 89 C61 80 60 73 56 68 Z" fill="{{ bmS.reardelts }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M62 90 C72 95 87 104 99 120 L99 150 C86 155 74 151 66 141 C59 124 58 106 62 90 Z" fill="{{ bmS.lats }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M40 102 C34 114 34 130 38 142 C46 140 51 128 52 116 C52 106 48 100 40 102 Z" fill="{{ bmS.triceps }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M36 147 C30 164 28 182 25 202 L33 205 C39 186 45 168 48 150 C45 144 39 143 36 147 Z" fill="{{ bmS.forearms }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M87 152 C91 162 95 171 99 178 L99 194 L84 194 C82 180 82 166 87 152 Z" fill="{{ bmS.lowerback }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M62 198 C59 212 64 230 78 236 C90 238 99 230 99 216 L99 200 C86 193 72 193 62 198 Z" fill="{{ bmS.glutes }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M64 242 C60 264 62 286 68 302 C76 306 84 304 90 298 C94 278 96 258 95 242 C84 238 72 238 64 242 Z" fill="{{ bmS.hamstrings }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M66 314 C59 328 61 346 70 360 C77 364 83 360 86 350 C88 336 87 322 83 314 C77 307 71 307 66 314 Z" fill="{{ bmS.calves }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path></g><g transform="matrix(-1 0 0 1 200 0)"><path d="M100 48 C93 55 81 61 64 70 C78 75 90 88 99 106 Z" fill="{{ bmS.traps }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M56 68 C44 70 36 82 36 100 C42 95 50 91 58 89 C61 80 60 73 56 68 Z" fill="{{ bmS.reardelts }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M62 90 C72 95 87 104 99 120 L99 150 C86 155 74 151 66 141 C59 124 58 106 62 90 Z" fill="{{ bmS.lats }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M40 102 C34 114 34 130 38 142 C46 140 51 128 52 116 C52 106 48 100 40 102 Z" fill="{{ bmS.triceps }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M36 147 C30 164 28 182 25 202 L33 205 C39 186 45 168 48 150 C45 144 39 143 36 147 Z" fill="{{ bmS.forearms }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M87 152 C91 162 95 171 99 178 L99 194 L84 194 C82 180 82 166 87 152 Z" fill="{{ bmS.lowerback }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M62 198 C59 212 64 230 78 236 C90 238 99 230 99 216 L99 200 C86 193 72 193 62 198 Z" fill="{{ bmS.glutes }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M64 242 C60 264 62 286 68 302 C76 306 84 304 90 298 C94 278 96 258 95 242 C84 238 72 238 64 242 Z" fill="{{ bmS.hamstrings }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M66 314 C59 328 61 346 70 360 C77 364 83 360 86 350 C88 336 87 322 83 314 C77 307 71 307 66 314 Z" fill="{{ bmS.calves }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path></g></svg><span style="font-size:12px;font-weight:600;color:#9C9CA8;">{{ tx.nBack }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;">
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><div style="width:100%;max-width:170px;">{{ bmFront }}</div><span style="font-size:13px;font-weight:600;color:#9C9CA8;">{{ tx.nFront }}</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><div style="width:100%;max-width:170px;">{{ bmBack }}</div><span style="font-size:13px;font-weight:600;color:#9C9CA8;">{{ tx.nBack }}</span></div>
 </div>
-<div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;">
-<sc-for list="{{ bmLegend }}" as="lg" hint-placeholder-count="5"><div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><span style="width:100%;height:10px;border-radius:3px;background:{{ lg.c }};"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#9C9CA8;">{{ lg.t }}</span></div></sc-for>
-</div>
+<div style="display:flex;align-items:center;justify-content:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;"><span>0</span><sc-for list="{{ bmLegend }}" as="lg" hint-placeholder-count="4"><span style="width:26px;height:10px;border-radius:3px;background:{{ lg.c }};"></span></sc-for><span>{{ tx.nScale }}</span></div>
+<sc-if value="{{ bmHasSel }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:12px;background:#1B1B20;border:1px solid #2A2A30;border-radius:16px;padding:12px 14px;"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;"><span style="font-size:16px;font-weight:700;">{{ bmSelName }}</span><span style="font-size:12px;color:#9C9CA8;">{{ bmSelSub }}</span></div><span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--acc);">{{ bmSelVal }}</span><button onClick="{{ bmClear }}" style="width:44px;height:44px;border-radius:22px;border:none;background:#2A2A30;color:#C8C8CF;font-size:15px;">✕</button></div></sc-if>
+<sc-if value="{{ bmNoSel }}" hint-placeholder-val="{{ true }}"><div style="text-align:center;color:#6E6E77;font-size:12px;">{{ tx.nTapMuscle }}</div></sc-if>
 <div style="display:flex;flex-direction:column;gap:8px;">
-<sc-for list="{{ bmList }}" as="m" hint-placeholder-count="8"><div style="display:grid;grid-template-columns:96px minmax(0,1fr) 40px;gap:10px;align-items:center;">
+<sc-for list="{{ bmList }}" as="m" hint-placeholder-count="8"><div onClick="{{ m.onClick }}" style="display:grid;grid-template-columns:22px 96px minmax(0,1fr) 40px;gap:10px;align-items:center;padding:7px 8px;margin:0 -8px;border-radius:10px;background:{{ m.bg }};cursor:pointer;"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#55555F;">{{ m.rank }}</span>
 <span style="font-size:13px;font-weight:600;color:{{ m.labelColor }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ m.label }}</span>
 <div style="height:8px;border-radius:4px;background:#0A0A0C;overflow:hidden;"><div style="height:100%;width:{{ m.w }};border-radius:4px;background:{{ m.c }};"></div></div>
 <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;text-align:right;color:{{ m.color }};">{{ m.val }}</span>
@@ -493,7 +454,7 @@ input::placeholder{color:#9C9CA8}
 <div style="display:grid;grid-template-columns:84px minmax(0,1fr) 44px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #24242B;">
 <div style="display:flex;flex-direction:column;gap:1px;"><span style="font-size:15px;font-weight:600;">{{ g.name }}</span><span style="font-size:11px;color:{{ g.tagColor }};white-space:nowrap;">{{ g.tag }}</span></div>
 <div style="position:relative;height:10px;border-radius:5px;background:#0A0A0C;overflow:hidden;">
-<div style="position:absolute;top:0;bottom:0;left:40%;width:40%;background:rgba(204,255,0,0.14);"></div>
+<div style="position:absolute;top:0;bottom:0;left:40%;width:40%;background:color-mix(in srgb, var(--acc) 14%, transparent);"></div>
 <div style="position:absolute;top:0;bottom:0;left:0;width:{{ g.w }};border-radius:5px;background:{{ g.color }};"></div>
 </div>
 <span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;text-align:right;">{{ g.avg }}</span>
@@ -545,6 +506,10 @@ input::placeholder{color:#9C9CA8}
 </div>
 </div>
 <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #24242B;min-height:64px;gap:8px;">
+<span style="font-size:16px;font-weight:500;">{{ tx.nAccent }}</span>
+<div style="display:flex;gap:2px;"><sc-for list="{{ accOpts }}" as="a" hint-placeholder-count="6"><button onClick="{{ a.onClick }}" aria-label="{{ a.label }}" style="width:38px;height:44px;border:none;background:transparent;padding:0;display:flex;align-items:center;justify-content:center;"><span style="width:28px;height:28px;border-radius:999px;background:{{ a.c }};box-shadow:{{ a.ring }};"></span></button></sc-for></div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #24242B;min-height:64px;gap:8px;">
 <span style="font-size:16px;font-weight:500;">{{ tx.k43 }}</span>
 <div style="display:flex;align-items:center;gap:6px;">
 <button onClick="{{ restDown }}" style="width:48px;height:48px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:20px;">−</button>
@@ -578,7 +543,7 @@ input::placeholder{color:#9C9CA8}
 </sc-if>
 
 <sc-if value="{{ showResume }}" hint-placeholder-val="{{ false }}">
-<button onClick="{{ resume }}" style="position:absolute;left:12px;right:12px;bottom:calc(68px + env(safe-area-inset-bottom));height:56px;border-radius:14px;border:none;background:#CCFF00;color:#0A0A0C;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:15px;font-weight:700;z-index:4;">
+<button onClick="{{ resume }}" style="position:absolute;left:12px;right:12px;bottom:calc(68px + env(safe-area-inset-bottom));height:56px;border-radius:14px;border:none;background:var(--acc);color:#0A0A0C;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:15px;font-weight:700;z-index:4;">
 <span style="display:flex;align-items:center;gap:8px;"><span style="width:8px;height:8px;border-radius:50%;background:#0A0A0C;"></span>{{ wName }}<span style="font-family:'JetBrains Mono',monospace;font-weight:600;">{{ elapsed }}</span></span><span>{{ tx.k49 }}</span>
 </button>
 </sc-if>
@@ -600,14 +565,14 @@ input::placeholder{color:#9C9CA8}
 <span style="font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ wName }}</span>
 <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9C9CA8;">{{ elapsed }} · {{ setsDoneLabel }}</span>
 </div>
-<button onClick="{{ finish }}" style="height:48px;padding:0 18px;border-radius:12px;border:none;background:#CCFF00;color:#0A0A0C;font-size:15px;font-weight:700;">{{ tx.k50 }}</button>
+<button onClick="{{ finish }}" style="height:48px;padding:0 18px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;">{{ tx.k50 }}</button>
 </div>
 <div style="flex:1;overflow-y:auto;padding:12px 12px 24px;display:flex;flex-direction:column;gap:12px;">
 <sc-for list="{{ wEx }}" as="ex" hint-placeholder-count="2">
 <div style="flex:0 0 auto;background:#16161A;border:1px solid #24242B;border-radius:16px;overflow:hidden;">
 <div style="display:flex;align-items:center;padding:8px 4px 4px 14px;gap:6px;">
 <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
-<sc-if value="{{ ex.hasSS }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:0.08em;color:#CCFF00;border:1px solid #CCFF00;padding:2px 8px;border-radius:999px;">{{ ex.ssTag }}</span></sc-if>
+<sc-if value="{{ ex.hasSS }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:0.08em;color:var(--acc);border:1px solid var(--acc);padding:2px 8px;border-radius:999px;">{{ ex.ssTag }}</span></sc-if>
 <span style="font-size:17px;font-weight:700;">{{ ex.name }}</span>
 </div>
 <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:{{ ex.progColor }};">{{ ex.progress }}</span>
@@ -615,7 +580,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 <sc-if value="{{ ex.hasNote }}" hint-placeholder-val="{{ false }}"><div style="padding:0 14px 8px;font-size:13px;line-height:18px;color:#9C9CA8;white-space:pre-wrap;text-wrap:pretty;">{{ ex.note }}</div></sc-if>
 <sc-if value="{{ ex.up }}" hint-placeholder-val="{{ false }}">
-<div style="padding:0 14px 8px;font-size:13px;font-weight:600;color:#CCFF00;">↑ {{ ex.upText }}</div>
+<div style="padding:0 14px 8px;font-size:13px;font-weight:600;color:var(--acc);">↑ {{ ex.upText }}</div>
 </sc-if>
 <div style="display:grid;grid-template-columns:{{ ex.cols }};gap:8px;padding:0 12px 6px;font-size:12px;font-weight:600;letter-spacing:0.06em;color:#9C9CA8;">
 <span style="text-align:center;">{{ ex.h0 }}</span><span>{{ tx.k52 }}</span><span style="text-align:center;">{{ unitUpper }}</span><span style="text-align:center;">{{ ex.h2 }}</span><sc-if value="{{ ex.isUni }}" hint-placeholder-val="{{ false }}"><span style="text-align:center;">{{ ex.h3 }}</span></sc-if><span></span>
@@ -632,7 +597,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 <sc-if value="{{ s.isPR }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;align-items:center;gap:8px;padding:0 12px 10px 56px;">
-<span style="font-size:12px;font-weight:800;letter-spacing:0.08em;background:#CCFF00;color:#0A0A0C;padding:3px 8px;border-radius:999px;">PR</span>
+<span style="font-size:12px;font-weight:800;letter-spacing:0.08em;background:var(--acc);color:#0A0A0C;padding:3px 8px;border-radius:999px;">PR</span>
 <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9C9CA8;">{{ s.prText }}</span>
 </div>
 </sc-if>
@@ -667,7 +632,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 <sc-if value="{{ restOn }}" hint-placeholder-val="{{ false }}">
 <div style="margin:0 10px calc(10px + env(safe-area-inset-bottom));border-radius:18px;border:1px solid #33333C;background:{{ restBg }};position:relative;overflow:hidden;">
-<div style="position:absolute;left:0;top:0;bottom:0;width:{{ restPct }};background:rgba(204,255,0,0.14);transition:width 250ms linear;"></div>
+<div style="position:absolute;left:0;top:0;bottom:0;width:{{ restPct }};background:color-mix(in srgb, var(--acc) 14%, transparent);transition:width 250ms linear;"></div>
 <div style="position:relative;display:flex;align-items:center;gap:6px;padding:8px 8px 8px 16px;">
 <div style="flex:1;display:flex;flex-direction:column;">
 <span style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:{{ restSub }};">{{ restLabel }}</span>
@@ -699,7 +664,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 <div style="flex:1;overflow-y:auto;padding:0 12px calc(32px + env(safe-area-inset-bottom));display:flex;flex-direction:column;">
 <sc-if value="{{ canCreate }}" hint-placeholder-val="{{ false }}">
-<button onClick="{{ createCustom }}" style="min-height:56px;margin-bottom:8px;border-radius:14px;border:1px solid #CCFF00;background:transparent;color:#CCFF00;font-size:15px;font-weight:700;text-align:left;padding:0 16px;">{{ tx.k60 }}{{ libQuery }}” · {{ createGroup }}</button>
+<button onClick="{{ createCustom }}" style="min-height:56px;margin-bottom:8px;border-radius:14px;border:1px solid var(--acc);background:transparent;color:var(--acc);font-size:15px;font-weight:700;text-align:left;padding:0 16px;">{{ tx.k60 }}{{ libQuery }}” · {{ createGroup }}</button>
 </sc-if>
 <sc-for list="{{ libList }}" as="l" hint-placeholder-count="8">
 <div style="display:flex;align-items:center;gap:8px;min-height:64px;border-bottom:1px solid #24242B;">
@@ -707,7 +672,7 @@ input::placeholder{color:#9C9CA8}
 <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:600;">{{ l.name }}</span><span style="font-size:13px;color:#9C9CA8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ l.meta }}</span></div>
 <span style="font-size:13px;font-weight:600;color:#9C9CA8;">{{ tx.nInfo }} ›</span>
 </button>
-<sc-if value="{{ l.canAdd }}" hint-placeholder-val="{{ true }}"><button onClick="{{ l.onPick }}" style="flex:0 0 auto;width:48px;height:48px;border-radius:12px;border:none;background:#24242B;color:#CCFF00;font-size:22px;" style-active="background:#3A3A44">+</button></sc-if>
+<sc-if value="{{ l.canAdd }}" hint-placeholder-val="{{ true }}"><button onClick="{{ l.onPick }}" style="flex:0 0 auto;width:48px;height:48px;border-radius:12px;border:none;background:#24242B;color:var(--acc);font-size:22px;" style-active="background:#3A3A44">+</button></sc-if>
 </div>
 </sc-for>
 </div>
@@ -728,7 +693,7 @@ input::placeholder{color:#9C9CA8}
 <div style="display:flex;align-items:center;gap:8px;">
 <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9C9CA8;width:18px;">{{ e.num }}</span>
 <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
-<sc-if value="{{ e.hasSS }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:0.08em;color:#CCFF00;border:1px solid #CCFF00;padding:2px 8px;border-radius:999px;">{{ e.ssTag }}</span></sc-if>
+<sc-if value="{{ e.hasSS }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:0.08em;color:var(--acc);border:1px solid var(--acc);padding:2px 8px;border-radius:999px;">{{ e.ssTag }}</span></sc-if>
 <button onClick="{{ e.onInfo }}" style="padding:0;border:none;background:transparent;color:#fff;font-size:16px;font-weight:700;text-align:left;">{{ e.name }} <span style="color:#9C9CA8;font-weight:500;">›</span></button>
 </div>
 <button onClick="{{ e.onMenu }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#24242B;color:#fff;font-size:18px;font-weight:700;">⋯</button>
@@ -750,7 +715,7 @@ input::placeholder{color:#9C9CA8}
 <button onClick="{{ openLibR }}" style="min-height:56px;border-radius:14px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:15px;font-weight:600;">{{ tx.k57 }}</button>
 </div>
 <div style="padding:12px 12px calc(16px + env(safe-area-inset-bottom));border-top:1px solid #24242B;">
-<button onClick="{{ startEdited }}" style="width:100%;height:60px;border-radius:14px;border:none;background:#CCFF00;color:#0A0A0C;font-size:17px;font-weight:700;">{{ tx.k15 }} {{ rName }}</button>
+<button onClick="{{ startEdited }}" style="width:100%;height:60px;border-radius:14px;border:none;background:var(--acc);color:#0A0A0C;font-size:17px;font-weight:700;">{{ tx.k15 }} {{ rName }}</button>
 </div>
 </div>
 </sc-if>
@@ -774,51 +739,11 @@ input::placeholder{color:#9C9CA8}
 <div style="display:flex;flex-direction:column;gap:8px;">
 <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.nMuscles }}</div>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:14px;">
-<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
-<div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><svg viewBox="0 0 200 400" style="width:100%;max-width:160px;height:auto;display:block;margin:0 auto;"><ellipse cx="100" cy="30" rx="18" ry="22" fill="#1D1D23"></ellipse>
-<path d="M90 46 L110 46 L114 64 L86 64 Z" fill="#1D1D23"></path>
-<path d="M100 60 C78 60 60 62 50 70 C40 78 36 92 34 108 L30 150 C28 170 25 190 22 208 L32 212 C38 192 44 172 48 152 L54 118 L58 150 C58 176 60 196 60 212 C56 244 56 272 60 300 C62 330 62 360 64 386 L86 386 C86 360 90 330 92 300 C96 272 98 244 100 222 C102 244 104 272 108 300 C110 330 114 360 114 386 L136 386 C138 360 138 330 140 300 C144 272 144 244 140 212 C140 196 142 176 142 150 L146 118 L152 152 C156 172 162 192 168 212 L178 208 C175 190 172 170 170 150 L166 108 C164 92 160 78 150 70 C140 62 122 60 100 60 Z" fill="#1D1D23"></path>
-<circle cx="25" cy="218" r="7" fill="#1D1D23"></circle><circle cx="175" cy="218" r="7" fill="#1D1D23"></circle>
-<path d="M62 390 L88 390 L90 398 L58 398 Z" fill="#1D1D23"></path><path d="M112 390 L138 390 L142 398 L110 398 Z" fill="#1D1D23"></path>
-<g><path d="M56 68 C44 70 36 82 36 100 C42 95 50 91 58 89 C61 80 60 73 56 68 Z" fill="{{ bmF.shoulders }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M60 70 C72 66 88 66 99 68 L99 104 C86 111 70 109 60 101 C55 92 55 80 60 70 Z" fill="{{ bmF.chest }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M40 102 C34 114 34 130 38 142 C46 140 51 128 52 116 C52 106 48 100 40 102 Z" fill="{{ bmF.biceps }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M36 147 C30 164 28 182 25 202 L33 205 C39 186 45 168 48 150 C45 144 39 143 36 147 Z" fill="{{ bmF.forearms }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<rect x="88" y="110" width="11" height="15" rx="3" fill="{{ bmF.abs }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></rect><rect x="88" y="127" width="11" height="15" rx="3" fill="{{ bmF.abs }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></rect><rect x="88" y="144" width="11" height="15" rx="3" fill="{{ bmF.abs }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></rect><rect x="89" y="161" width="10" height="22" rx="3" fill="{{ bmF.abs }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></rect>
-<path d="M62 106 C70 112 79 114 85 112 L85 180 C76 178 68 170 64 158 C60 142 59 122 62 106 Z" fill="{{ bmF.obliques }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M64 216 C59 242 60 268 66 290 C72 296 80 296 86 290 C92 268 96 244 97 224 C87 215 75 213 64 216 Z" fill="{{ bmF.quads }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M66 314 C62 332 64 354 70 374 L80 374 C84 354 87 332 85 314 C79 307 71 307 66 314 Z" fill="{{ bmF.calves }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path></g><g transform="matrix(-1 0 0 1 200 0)"><path d="M56 68 C44 70 36 82 36 100 C42 95 50 91 58 89 C61 80 60 73 56 68 Z" fill="{{ bmF.shoulders }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M60 70 C72 66 88 66 99 68 L99 104 C86 111 70 109 60 101 C55 92 55 80 60 70 Z" fill="{{ bmF.chest }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M40 102 C34 114 34 130 38 142 C46 140 51 128 52 116 C52 106 48 100 40 102 Z" fill="{{ bmF.biceps }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M36 147 C30 164 28 182 25 202 L33 205 C39 186 45 168 48 150 C45 144 39 143 36 147 Z" fill="{{ bmF.forearms }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<rect x="88" y="110" width="11" height="15" rx="3" fill="{{ bmF.abs }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></rect><rect x="88" y="127" width="11" height="15" rx="3" fill="{{ bmF.abs }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></rect><rect x="88" y="144" width="11" height="15" rx="3" fill="{{ bmF.abs }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></rect><rect x="89" y="161" width="10" height="22" rx="3" fill="{{ bmF.abs }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></rect>
-<path d="M62 106 C70 112 79 114 85 112 L85 180 C76 178 68 170 64 158 C60 142 59 122 62 106 Z" fill="{{ bmF.obliques }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M64 216 C59 242 60 268 66 290 C72 296 80 296 86 290 C92 268 96 244 97 224 C87 215 75 213 64 216 Z" fill="{{ bmF.quads }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M66 314 C62 332 64 354 70 374 L80 374 C84 354 87 332 85 314 C79 307 71 307 66 314 Z" fill="{{ bmF.calves }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path></g></svg><span style="font-size:12px;font-weight:600;color:#9C9CA8;">{{ tx.nFront }}</span></div>
-<div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><svg viewBox="0 0 200 400" style="width:100%;max-width:160px;height:auto;display:block;margin:0 auto;"><ellipse cx="100" cy="30" rx="18" ry="22" fill="#1D1D23"></ellipse>
-<path d="M90 46 L110 46 L114 64 L86 64 Z" fill="#1D1D23"></path>
-<path d="M100 60 C78 60 60 62 50 70 C40 78 36 92 34 108 L30 150 C28 170 25 190 22 208 L32 212 C38 192 44 172 48 152 L54 118 L58 150 C58 176 60 196 60 212 C56 244 56 272 60 300 C62 330 62 360 64 386 L86 386 C86 360 90 330 92 300 C96 272 98 244 100 222 C102 244 104 272 108 300 C110 330 114 360 114 386 L136 386 C138 360 138 330 140 300 C144 272 144 244 140 212 C140 196 142 176 142 150 L146 118 L152 152 C156 172 162 192 168 212 L178 208 C175 190 172 170 170 150 L166 108 C164 92 160 78 150 70 C140 62 122 60 100 60 Z" fill="#1D1D23"></path>
-<circle cx="25" cy="218" r="7" fill="#1D1D23"></circle><circle cx="175" cy="218" r="7" fill="#1D1D23"></circle>
-<path d="M62 390 L88 390 L90 398 L58 398 Z" fill="#1D1D23"></path><path d="M112 390 L138 390 L142 398 L110 398 Z" fill="#1D1D23"></path>
-<g><path d="M100 48 C93 55 81 61 64 70 C78 75 90 88 99 106 Z" fill="{{ bmF.traps }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M56 68 C44 70 36 82 36 100 C42 95 50 91 58 89 C61 80 60 73 56 68 Z" fill="{{ bmF.reardelts }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M62 90 C72 95 87 104 99 120 L99 150 C86 155 74 151 66 141 C59 124 58 106 62 90 Z" fill="{{ bmF.lats }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M40 102 C34 114 34 130 38 142 C46 140 51 128 52 116 C52 106 48 100 40 102 Z" fill="{{ bmF.triceps }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M36 147 C30 164 28 182 25 202 L33 205 C39 186 45 168 48 150 C45 144 39 143 36 147 Z" fill="{{ bmF.forearms }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M87 152 C91 162 95 171 99 178 L99 194 L84 194 C82 180 82 166 87 152 Z" fill="{{ bmF.lowerback }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M62 198 C59 212 64 230 78 236 C90 238 99 230 99 216 L99 200 C86 193 72 193 62 198 Z" fill="{{ bmF.glutes }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M64 242 C60 264 62 286 68 302 C76 306 84 304 90 298 C94 278 96 258 95 242 C84 238 72 238 64 242 Z" fill="{{ bmF.hamstrings }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M66 314 C59 328 61 346 70 360 C77 364 83 360 86 350 C88 336 87 322 83 314 C77 307 71 307 66 314 Z" fill="{{ bmF.calves }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path></g><g transform="matrix(-1 0 0 1 200 0)"><path d="M100 48 C93 55 81 61 64 70 C78 75 90 88 99 106 Z" fill="{{ bmF.traps }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M56 68 C44 70 36 82 36 100 C42 95 50 91 58 89 C61 80 60 73 56 68 Z" fill="{{ bmF.reardelts }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M62 90 C72 95 87 104 99 120 L99 150 C86 155 74 151 66 141 C59 124 58 106 62 90 Z" fill="{{ bmF.lats }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M40 102 C34 114 34 130 38 142 C46 140 51 128 52 116 C52 106 48 100 40 102 Z" fill="{{ bmF.triceps }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M36 147 C30 164 28 182 25 202 L33 205 C39 186 45 168 48 150 C45 144 39 143 36 147 Z" fill="{{ bmF.forearms }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M87 152 C91 162 95 171 99 178 L99 194 L84 194 C82 180 82 166 87 152 Z" fill="{{ bmF.lowerback }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M62 198 C59 212 64 230 78 236 C90 238 99 230 99 216 L99 200 C86 193 72 193 62 198 Z" fill="{{ bmF.glutes }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M64 242 C60 264 62 286 68 302 C76 306 84 304 90 298 C94 278 96 258 95 242 C84 238 72 238 64 242 Z" fill="{{ bmF.hamstrings }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path>
-<path d="M66 314 C59 328 61 346 70 360 C77 364 83 360 86 350 C88 336 87 322 83 314 C77 307 71 307 66 314 Z" fill="{{ bmF.calves }}" stroke="#0A0A0C" stroke-width="1.6" stroke-linejoin="round"></path></g></svg><span style="font-size:12px;font-weight:600;color:#9C9CA8;">{{ tx.nBack }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;">
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><div style="width:100%;max-width:170px;">{{ fiFront }}</div><span style="font-size:13px;font-weight:600;color:#9C9CA8;">{{ tx.nFront }}</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><div style="width:100%;max-width:170px;">{{ fiBack }}</div><span style="font-size:13px;font-weight:600;color:#9C9CA8;">{{ tx.nBack }}</span></div>
 </div>
-<div style="display:flex;justify-content:center;gap:14px;font-size:12px;color:#9C9CA8;"><span style="display:flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;border-radius:3px;background:#CCFF00;"></span>{{ tx.nPrimary }}</span><span style="display:flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;border-radius:3px;background:#7E9A12;"></span>{{ tx.nSecondary }}</span></div>
+<div style="display:flex;justify-content:center;gap:20px;font-size:12px;color:#9C9CA8;"><span style="display:flex;align-items:center;gap:7px;"><span style="width:14px;height:14px;border-radius:4px;background:var(--acc);box-shadow:0 0 8px var(--acc);"></span>{{ tx.nPrimary }}</span><span style="display:flex;align-items:center;gap:7px;"><span style="width:14px;height:14px;border-radius:4px;background:color-mix(in srgb, var(--acc) 38%, #3a3a42);border:1px dashed var(--acc);box-sizing:border-box;"></span>{{ tx.nSecondary }}</span></div>
 <div style="display:flex;flex-wrap:wrap;gap:6px;">
 <sc-for list="{{ fiChips }}" as="c" hint-placeholder-count="15"><button onClick="{{ c.onClick }}" style="height:36px;padding:0 12px;border-radius:999px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.color }};font-size:13px;font-weight:600;">{{ c.label }}</button></sc-for>
 </div>
@@ -836,7 +761,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 </div>
 <sc-if value="{{ fiCanAdd }}" hint-placeholder-val="{{ false }}">
-<div style="padding:12px 12px calc(16px + env(safe-area-inset-bottom));border-top:1px solid #24242B;"><button onClick="{{ fiAdd }}" style="width:100%;height:60px;border-radius:14px;border:none;background:#CCFF00;color:#0A0A0C;font-size:17px;font-weight:700;">{{ fiAddToLabel }}</button></div>
+<div style="padding:12px 12px calc(16px + env(safe-area-inset-bottom));border-top:1px solid #24242B;"><button onClick="{{ fiAdd }}" style="width:100%;height:60px;border-radius:14px;border:none;background:var(--acc);color:#0A0A0C;font-size:17px;font-weight:700;">{{ fiAddToLabel }}</button></div>
 </sc-if>
 </div>
 </sc-if>
@@ -850,12 +775,12 @@ input::placeholder{color:#9C9CA8}
 <div style="flex:1;overflow-y:auto;padding:12px 12px calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;">
 <sc-for list="{{ templates }}" as="tp" hint-placeholder-count="4">
 <div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px;">
-<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:20px;font-weight:800;">{{ tp.name }}</span><span style="font-size:13px;font-weight:600;color:#CCFF00;">{{ tp.meta }}</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:20px;font-weight:800;">{{ tp.name }}</span><span style="font-size:13px;font-weight:600;color:var(--acc);">{{ tp.meta }}</span></div>
 <span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ tp.desc }}</span>
 <div style="display:flex;flex-direction:column;gap:8px;">
 <sc-for list="{{ tp.days }}" as="dy" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:14px;font-weight:700;">{{ dy.name }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;">{{ dy.ex }}</span></div></sc-for>
 </div>
-<button onClick="{{ tp.onAdd }}" style="height:52px;border-radius:12px;border:1px solid #CCFF00;background:transparent;color:#CCFF00;font-size:15px;font-weight:700;">{{ tp.addLabel }}</button>
+<button onClick="{{ tp.onAdd }}" style="height:52px;border-radius:12px;border:1px solid var(--acc);background:transparent;color:var(--acc);font-size:15px;font-weight:700;">{{ tp.addLabel }}</button>
 </div>
 </sc-for>
 </div>
@@ -912,7 +837,7 @@ input::placeholder{color:#9C9CA8}
 <div style="position:absolute;inset:0;display:flex;flex-direction:column;z-index:8;background:#0A0A0C;">
 <div style="flex:1;overflow-y:auto;padding:28px 16px 16px;display:flex;flex-direction:column;gap:24px;">
 <div style="display:flex;flex-direction:column;gap:6px;">
-<span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#CCFF00;">{{ tx.k65 }}</span>
+<span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--acc);">{{ tx.k65 }}</span>
 <span style="font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">{{ sumName }}</span>
 </div>
 <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
@@ -926,8 +851,8 @@ input::placeholder{color:#9C9CA8}
 <div style="display:flex;flex-direction:column;gap:8px;">
 <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ sumPrTitle }}</span>
 <sc-for list="{{ sumPrs }}" as="p" hint-placeholder-count="0">
-<div style="display:flex;align-items:center;gap:12px;padding:14px;background:#16161A;border:1px solid #CCFF00;border-radius:14px;">
-<span style="font-size:12px;font-weight:800;letter-spacing:0.08em;background:#CCFF00;color:#0A0A0C;padding:3px 8px;border-radius:999px;">PR</span>
+<div style="display:flex;align-items:center;gap:12px;padding:14px;background:#16161A;border:1px solid var(--acc);border-radius:14px;">
+<span style="font-size:12px;font-weight:800;letter-spacing:0.08em;background:var(--acc);color:#0A0A0C;padding:3px 8px;border-radius:999px;">PR</span>
 <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:15px;font-weight:700;">{{ p.name }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9C9CA8;">{{ p.text }}</span></div>
 </div>
 </sc-for>
@@ -945,7 +870,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 </div>
 <div style="padding:12px 16px calc(16px + env(safe-area-inset-bottom));">
-<button onClick="{{ closeSummary }}" style="width:100%;height:60px;border-radius:14px;border:none;background:#CCFF00;color:#0A0A0C;font-size:17px;font-weight:700;">{{ tx.k67 }}</button>
+<button onClick="{{ closeSummary }}" style="width:100%;height:60px;border-radius:14px;border:none;background:var(--acc);color:#0A0A0C;font-size:17px;font-weight:700;">{{ tx.k67 }}</button>
 </div>
 </div>
 </sc-if>
@@ -959,7 +884,7 @@ const KG_LB = 2.20462;
 const LIB = [['Bench Press','Chest'],['Incline DB Press','Chest'],['Dumbbell Fly','Chest'],['Push-up','Chest'],['Deadlift','Back'],['Barbell Row','Back'],['Pull-up','Back'],['Lat Pulldown','Back'],['Seated Cable Row','Back'],['Squat','Legs'],['Romanian Deadlift','Legs'],['Leg Press','Legs'],['Leg Curl','Legs'],['Leg Extension','Legs'],['Calf Raise','Legs'],['Bulgarian Split Squat','Legs'],['Overhead Press','Shoulders'],['Lateral Raise','Shoulders'],['Face Pull','Shoulders'],['Barbell Curl','Arms'],['Hammer Curl','Arms'],['Triceps Pushdown','Arms'],['Skull Crusher','Arms'],['Plank','Core'],['Hanging Leg Raise','Core'],['Cable Crunch','Core']].map(([name, group]) => ({ name, group }));
 const GROUPS = ['All','Chest','Back','Legs','Shoulders','Arms','Core','Custom'];
 const BASE = {'Bench Press':80,'Overhead Press':50,'Incline DB Press':30,'Lateral Raise':12,'Triceps Pushdown':30,'Deadlift':160,'Barbell Row':70,'Pull-up':10,'Face Pull':25,'Barbell Curl':35,'Squat':120,'Romanian Deadlift':100,'Leg Press':180,'Leg Curl':45,'Calf Raise':70};
-const PK = ['bodyRange','bodyU','lenU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight'];
+const PK = ['bodyRange','bodyU','lenU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight','accent'];
 const e1 = (w, r) => w * (1 + r / 30);
 const FR = {"Start anyway":"Lancer quand même","Cancel":"Annuler","New version ready · Tap to update":"Nouvelle version prête · Toucher pour mettre à jour","Install on your iPhone":"Installer sur ton iPhone","In Safari: tap Share, then “Add to Home Screen”. Barlog opens full-screen, works offline, and your data is kept safe from Safari’s cleanup.":"Dans Safari : touche Partager, puis « Sur l’écran d’accueil ». Barlog s’ouvre en plein écran, fonctionne hors ligne et tes données sont protégées du nettoyage de Safari.","Got it":"Compris","Today":"Aujourd’hui","Next up":"À suivre","Last done":"Dernière fois :","This week":"Cette semaine","Other routines":"Autres routines","Start":"Lancer","+ Empty workout":"+ Séance libre","Program · rotates automatically":"Programme · rotation automatique","Routines":"Routines","NEXT":"SUIVANTE","Edit":"Modifier","+ New routine":"+ Nouvelle routine","Progress":"Progrès","All sessions":"Toutes les séances","No sessions yet. Finish a workout and it shows up here.":"Aucune séance. Termine une séance et elle apparaîtra ici.","No weighted exercise matches.":"Aucun exercice avec charge ne correspond.","No sessions in this range.":"Aucune séance sur cette période.","Trend":"Tendance","Tap a point for details":"Touche un point pour les détails","Rep records · heaviest weight (":"Records par reps · charge max (","Records ·":"Records ·","History ·":"Historique ·","Right column: best estimated 1RM of the session. Lime = PR.":"Colonne de droite : meilleur 1RM estimé de la séance. Lime = PR.","Consistency":"Régularité","Sets per muscle · weekly avg, last 4 wk":"Séries par muscle · moyenne/sem. sur 4 sem.","Shaded zone = 10–20 work sets per muscle per week, the usual range for muscle growth. Warm-ups excluded.":"Zone ombrée = 10 à 20 séries de travail par muscle et par semaine, la plage habituelle pour la prise de muscle. Échauffements exclus.","e1RM trend · last 4 weeks":"Tendance e1RM · 4 dernières semaines","Profile":"Profil","No account. No subscription.":"Pas de compte. Pas d’abonnement.","Everything lives on this device.":"Tout est stocké sur cet appareil.","Training":"Entraînement","Language":"Langue","Units":"Unités","Default rest":"Repos par défaut","Your data":"Tes données","Export backup":"Exporter","Import":"Importer","Logging a workout only adds to your history. Import replaces everything with the file’s content — export first if unsure.":"Enregistrer une séance ne fait qu’ajouter à ton historique. Importer remplace tout par le contenu du fichier — exporte d’abord en cas de doute.","Clear history keeps your routines. Erase all also deletes routines and custom exercises. Both ask for a second tap.":"« Effacer l’historique » garde tes routines. « Tout effacer » supprime aussi les routines et les exercices perso. Les deux demandent une deuxième touche.","Resume ›":"Reprendre ›","Finish":"Terminer","SET":"SÉRIE","PREV":"PRÉC.","−1 rep":"−1 rép","+1 rep":"+1 rép","+ Add set":"+ Ajouter une série","Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.":"Touche un numéro de série pour la marquer comme échauffement (W). Les échauffements ne comptent ni dans les PR ni dans le volume.","+ Add exercise":"+ Ajouter un exercice","Skip":"Passer","Add exercise":"Ajouter un exercice","+ Create “":"+ Créer « ","” ·":" » ·","No exercises yet. Add your first movement.":"Aucun exercice. Ajoute ton premier mouvement.","sets":"séries","reps":"reps","Fix any weight or reps. Changes save instantly and update your records and charts.":"Corrige une charge ou des reps. Les changements sont enregistrés tout de suite et mettent à jour tes records et graphiques.","Workout saved":"Séance enregistrée","Exercises":"Exercices","Done":"Terminé","Back up your data":"Sauvegarde tes données","Tap Export, then “Save to Files” → iCloud Drive.":"Touche Exporter, puis « Enregistrer dans Fichiers » → iCloud Drive.","Export now":"Exporter","Later":"Plus tard","Search an exercise":"Chercher un exercice","Search or type a new name":"Chercher ou taper un nouveau nom","Chest":"Pectoraux","Back":"Dos","Legs":"Jambes","Shoulders":"Épaules","Arms":"Bras","Core":"Gainage","All":"Tous","Custom":"Perso","No backup yet. Your data lives only on this phone.":"Aucune sauvegarde. Tes données sont uniquement sur ce téléphone.","Volume":"Volume","Vol ":"Vol ","Quick workout":"Séance libre","New routine":"Nouvelle routine","Backup exported":"Sauvegarde exportée","Data imported":"Données importées","Not a Barlog backup":"Ce n’est pas une sauvegarde Barlog","History cleared":"Historique effacé","All data erased":"Toutes les données effacées","Session deleted":"Séance supprimée"," · you hit every rep last time":" · toutes tes reps réussies la dernière fois"," · custom":" · perso"," · last ":" · dernière "," rep":" rép"," reps":" reps","Workout":"Séance","Low":"Bas","High":"Élevé","In range":"Dans la zone"," this week":" cette semaine","No PR for ":"Aucun PR depuis "," weeks":" semaines","Start today’s: ":"Lancer celle du jour : ","Sessions":"Séances","Lifts":"Exercices","Stats":"Stats","Last 4 wk":"4 dern. sem.","Streak":"Série"," wk":" sem","4 wk":"4 sem","3 mo":"3 mois","Target: ":"Objectif : "," sessions per week (one per routine). Streak = weeks in a row at target.":" séances par semaine (une par routine). Série = semaines d’affilée à l’objectif."," lift":" exercice"," without a PR for 3+ weeks.":" sans PR depuis 3 semaines ou plus.","Every lift has set a PR in the last 3 weeks.":"Chaque exercice a fait un PR ces 3 dernières semaines."," Compared with the 4 weeks before, or with your first session of the period if there is no earlier data.":" Comparé aux 4 semaines précédentes, ou à ta première séance de la période s’il n’y a pas de données plus anciennes."," exercises · ":" exercices · "," sets · ":" séries · ","Time":"Durée","Sets":"Séries","Session updated":"Séance mise à jour","Tap again":"Toucher encore","Delete":"Supprimer","Programs":"Programmes","No routines":"Aucune routine","In progress · ":"En cours · ","Create one in Programs.":"Crées-en une dans Programmes.","Resume workout":"Reprendre la séance","Start workout":"Lancer la séance","No exercises yet":"Aucun exercice","Est. 1RM":"1RM est.","Top set":"Top set","Estimated max for 1 rep, from your best set: weight × (1 + reps ÷ 30). Best overall strength gauge.":"Charge max estimée pour 1 rep, calculée sur ta meilleure série : charge × (1 + reps ÷ 30). Le meilleur indicateur de force.","Total weight × reps over all work sets of the session. Tracks workload — the main driver of muscle growth.":"Charge × reps sur toutes les séries de travail de la séance. Mesure la charge de travail — le moteur principal de la prise de muscle.","Heaviest weight lifted in the session, regardless of reps.":"Charge la plus lourde soulevée dans la séance, peu importe les reps.","Estimated 1RM":"1RM estimé","Session volume":"Volume de la séance","Heaviest set":"Série la plus lourde"," sessions":" séances"," session":" séance","No PR on ":"Aucun PR sur "," for ":" depuis "," sessions since your last best. Try a deload week (−10%), a different rep range, or a close variation.":" séances depuis ton dernier record. Essaie une semaine de décharge (−10 %), une autre plage de reps ou une variante proche.","4-week trend (e1RM)":"Tendance 4 sem. (e1RM)","Best e1RM":"Meilleur e1RM","Best set":"Meilleure série","Heaviest weight":"Charge max","Best session volume":"Meilleur volume de séance"," sessions stored offline.":" séances stockées hors ligne.","Auto-start rest":"Repos automatique","Starts when you log a set":"Démarre quand tu valides une série","Sound at rest end":"Son en fin de repos","Beeps when rest is over. Muted by the iPhone silent switch.":"Bip à la fin du repos. Coupé par le mode silencieux de l’iPhone.","Android only — iPhone doesn’t allow it in web apps":"Android seulement — l’iPhone ne le permet pas dans les apps web","Warn on off-day start":"Alerte hors du jour prévu","Only for routines with a weekday in their name (e.g. “Mardi – …”). Asks before starting one on another day.":"Seulement pour les routines avec un jour dans leur nom (ex. « Mardi – … »). Demande confirmation avant de la lancer un autre jour.","Keep screen on":"Garder l’écran allumé","During a workout, so the timer stays visible":"Pendant une séance, pour garder le minuteur visible","Clear history":"Effacer l’historique","Erase all":"Tout effacer"," sets":" séries","Tap again to discard":"Toucher encore pour abandonner","Discard workout":"Abandonner la séance","Rest over — lift":"Repos terminé — à toi","Rest":"Repos","to ":"à ","Volume ":"Volume ","vs last time":"vs la dernière fois","No PRs this time — consistency counts":"Pas de PR cette fois — la régularité compte","best ":"meilleure "};
 const TX = {"k0":"Start anyway","k1":"Cancel","k2":"New version ready · Tap to update","k3":"Install on your iPhone","k4":"In Safari: tap Share, then “Add to Home Screen”. Barlog opens full-screen, works offline, and your data is kept safe from Safari’s cleanup.","k5":"Got it","k6":"Back up your data","k7":"Tap Export, then “Save to Files” → iCloud Drive.","k8":"Export now","k9":"Later","k10":"Today","k11":"Next up","k12":"Last done","k13":"This week","k14":"Other routines","k15":"Start","k16":"+ Empty workout","k17":"Program · rotates automatically","k18":"Routines","k19":"NEXT","k20":"Edit","k21":"+ New routine","k22":"Progress","k23":"All sessions","k24":"No sessions yet. Finish a workout and it shows up here.","k25":"No weighted exercise matches.","k26":"No sessions in this range.","k27":"Trend","k28":"Tap a point for details","k29":"Rep records · heaviest weight (","k30":"Records ·","k31":"History ·","k32":"Right column: best estimated 1RM of the session. Lime = PR.","k33":"Consistency","k34":"Sets per muscle · weekly avg, last 4 wk","k35":"Shaded zone = 10–20 work sets per muscle per week, the usual range for muscle growth. Warm-ups excluded.","k36":"e1RM trend · last 4 weeks","k37":"Profile","k38":"No account. No subscription.","k39":"Everything lives on this device.","k40":"Training","k41":"Language","k42":"Units","k43":"Default rest","k44":"Your data","k45":"Export backup","k46":"Import","k47":"Logging a workout only adds to your history. Import replaces everything with the file’s content — export first if unsure.","k48":"Clear history keeps your routines. Erase all also deletes routines and custom exercises. Both ask for a second tap.","k49":"Resume ›","k50":"Finish","k51":"SET","k52":"PREV","k53":"−1 rep","k54":"+1 rep","k55":"+ Add set","k56":"Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.","k57":"+ Add exercise","k58":"Skip","k59":"Add exercise","k60":"+ Create “","k61":"No exercises yet. Add your first movement.","k62":"sets","k63":"reps","k64":"Fix any weight or reps. Changes save instantly and update your records and charts.","k65":"Workout saved","k66":"Exercises","k67":"Done","k68":"Search an exercise","k69":"Search or type a new name"};
@@ -967,9 +892,65 @@ Object.assign(TX, { nSessNote: 'Session note (optional)', nFromTpl: '+ Ready-mad
 Object.assign(FR, { 'Session note (optional)': 'Note de séance (optionnelle)', '+ Ready-made program': '+ Programme prêt à l’emploi', 'Ready-made programs': 'Programmes prêts à l’emploi', 'Adds routines — yours stay untouched': 'Ajoute des routines — les tiennes restent', 'Exercise type': 'Type d’exercice', 'Note': 'Note', 'Seat height, grip, cues…': 'Réglage du siège, prise, consignes…', 'Saved with this exercise, shown every session.': 'Enregistrée avec l’exercice, affichée à chaque séance.', 'Body weight': 'Poids corporel', 'Log a weigh-in below to start your chart.': 'Enregistre un poids ci-dessous pour démarrer ton graphique.', 'Log today': 'Enregistrer aujourd’hui', 'Save': 'Enregistrer', 'Fill only what you want. Saving again today updates today’s entry.': 'Remplis seulement ce que tu veux. Enregistrer à nouveau aujourd’hui met à jour l’entrée du jour.', 'Measurements': 'Mensurations', 'Entries': 'Entrées',
   'Body': 'Corps', 'Reps': 'Reps', 'Per side': 'Par côté', 'per side': 'par côté', 'Plate calculator': 'Calculateur de disques', 'Shows the plates to load on each side of the bar.': 'Affiche les disques à mettre de chaque côté de la barre.', 'Superset with next': 'Superset avec le suivant', 'No rest between linked exercises — rest starts after the last one.': 'Pas de repos entre les exercices liés — le repos démarre après le dernier.', 'SUPERSET': 'SUPERSET', 'Stop': 'Stop', '▶ Start ': '▶ Lancer ', 'Below bar weight': 'Sous le poids de la barre', 'Empty bar': 'Barre vide', 'bar': 'barre', '+ Superset with next': '+ Superset avec le suivant', 'Superset ✓ · tap to unlink': 'Superset ✓ · toucher pour délier', 'Light bar (15 kg / 35 lb)': 'Barre légère (15 kg / 35 lb)', 'For the plate calculator. Off = 20 kg / 45 lb.': 'Pour le calculateur de disques. Désactivé = 20 kg / 45 lb.', 'Program added': 'Programme ajouté', 'Saved': 'Enregistré', 'Enter at least one value': 'Entre au moins une valeur', 'SEC': 'SEC', 'SET': 'SÉRIE', 'Left': 'Gauche', 'Right': 'Droite', 'Left and right logged separately.': 'Gauche et droite saisis séparément.' });
 Object.assign(TX, { nInfo: 'Info', nLibrary: 'Exercise library', nSheetInfo: 'Exercise sheet · muscles, photo, video', nBodyMap: 'Body map', nScale: 'sets', nBodyMapHint: 'Work sets per muscle (secondary muscles count half). Brighter = more trained. Tap any exercise in the library to adjust its muscles.', nFront: 'Front', nBack: 'Back', nNoMedia: 'No photo or video yet', nNoMediaSub: 'Add your own clip or photo of the movement — it stays on this phone.', nDemo: 'Watch a demo', nMuscles: 'Muscles worked', nPrimary: 'Primary', nSecondary: 'Secondary', nMusHint: 'Tap a muscle: primary → secondary → off. Used for the body map and stats.' });
-Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exercices', 'Exercise sheet · muscles, photo, video': 'Fiche de l’exercice · muscles, photo, vidéo', 'Body map': 'Carte du corps', '15+ sets': '15+ séries', 'Work sets per muscle (secondary muscles count half). Brighter = more trained. Tap any exercise in the library to adjust its muscles.': 'Séries de travail par muscle (les muscles secondaires comptent pour moitié). Plus c’est lumineux, plus c’est travaillé. Touche un exercice dans la bibliothèque pour ajuster ses muscles.', 'Front': 'Avant', 'Back': 'Arrière', 'No photo or video yet': 'Aucune photo ou vidéo', 'Add your own clip or photo of the movement — it stays on this phone.': 'Ajoute ta propre vidéo ou photo du mouvement — elle reste sur ce téléphone.', 'Watch a demo': 'Voir une démo', 'Muscles worked': 'Muscles travaillés', 'Primary': 'Principal', 'Secondary': 'Secondaire', 'Tap a muscle: primary → secondary → off. Used for the body map and stats.': 'Touche un muscle : principal → secondaire → retiré. Sert à la carte du corps et aux stats.', 'Add photo or video': 'Ajouter photo ou vidéo', 'Replace media': 'Remplacer', 'Remove media': 'Retirer le média', 'Media saved': 'Média enregistré', 'Could not save media': 'Impossible d’enregistrer le média', 'Add to workout': 'Ajouter à la séance', 'Add to routine': 'Ajouter à la routine', 'Best e1RM': 'Meilleur e1RM', 'Last done': 'Dernière fois', 'Sessions logged': 'Séances enregistrées', '7 days': '7 jours', '4-wk avg': 'Moy. 4 sem.', ' · media': ' · média', 'Browse, add photos or videos, set muscles': 'Parcourir, ajouter photos ou vidéos, régler les muscles' });
+Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exercices', 'Exercise sheet · muscles, photo, video': 'Fiche de l’exercice · muscles, photo, vidéo', 'Body map': 'Carte du corps', '15+ sets': '15+ séries', 'Work sets per muscle (secondary muscles count half). Brighter = more trained. Tap any exercise in the library to adjust its muscles.': 'Séries de travail par muscle (les muscles secondaires comptent pour moitié). Plus c’est lumineux, plus c’est travaillé. Touche un exercice dans la bibliothèque pour ajuster ses muscles.', 'Front': 'Avant', 'Back': 'Arrière', 'No photo or video yet': 'Aucune photo ou vidéo', 'Add your own clip or photo of the movement — it stays on this phone.': 'Ajoute ta propre vidéo ou photo du mouvement — elle reste sur ce téléphone.', 'Watch a demo': 'Voir une démo', 'Muscles worked': 'Muscles travaillés', 'Primary': 'Principal', 'Secondary': 'Secondaire', 'Tap a muscle: primary → secondary → off. Used for the body map and stats.': 'Touche un muscle (sur le corps ou ci-dessous) : principal → secondaire → retiré.', 'Add photo or video': 'Ajouter photo ou vidéo', 'Replace media': 'Remplacer', 'Remove media': 'Retirer le média', 'Media saved': 'Média enregistré', 'Could not save media': 'Impossible d’enregistrer le média', 'Add to workout': 'Ajouter à la séance', 'Add to routine': 'Ajouter à la routine', 'Best e1RM': 'Meilleur e1RM', 'Last done': 'Dernière fois', 'Sessions logged': 'Séances enregistrées', '7 days': '7 jours', '4-wk avg': 'Moy. 4 sem.', ' · media': ' · média', 'Browse, add photos or videos, set muscles': 'Parcourir, ajouter photos ou vidéos, régler les muscles' });
+Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets' });
+Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.6.1';
+const APP_VERSION = '0.7.0';
+let ACC = '#CCFF00';
+const ACCENTS = [['#CCFF00', 'Lime'], ['#FF7A1A', 'Orange'], ['#FF4D8D', 'Pink'], ['#A78BFA', 'Violet'], ['#22D3EE', 'Cyan'], ['#FFC83D', 'Gold']];
+const hexRgb = h => { h = h.replace('#', ''); return [0, 2, 4].map(i => parseInt(h.substr(i, 2), 16)); };
+const mixC = (a, b, t) => { const A = hexRgb(a), B = hexRgb(b); return 'rgb(' + A.map((v, i) => Math.round(v + (B[i] - v) * t)).join(',') + ')'; };
+const accA = x => { const [r, g, b] = hexRgb(ACC); return 'rgba(' + r + ',' + g + ',' + b + ',' + x + ')'; };
+const FIG_OUT = "M92,44 C92,52 91,58 88,62 C82,66 72,67 64,70 C54,73 47,79 45,88 C43,96 43,104 42,112 C41,124 40,140 38,156 C36,166 34,176 32,190 C30,200 29,208 28,214 C24,222 22,232 23,242 C24,250 30,252 33,246 C35,238 36,228 36,220 C39,206 43,190 46,176 C48,168 50,160 51,152 C53,140 55,126 58,114 C59,110 60,108 62,108 C62,124 64,140 66,156 C67,168 68,178 67,190 C66,200 64,208 63,216 C60,232 59,250 61,270 C62,292 66,316 70,336 C67,350 66,366 68,384 C70,400 73,414 75,426 C71,432 67,438 69,443 C75,446 85,446 91,444 C92,438 91,432 90,426 C91,410 94,394 94,376 C94,360 92,348 93,338 C95,320 97,298 98,276 C98,262 99,252 100,246";
+const FIG_SIL = "M100,44 L" + FIG_OUT.slice(1) + " Z";
+const FIG_FA = ["M38,158 C36,168 34,178 32,190 C30,200 29,208 29,214 L32,215 C34,200 38,184 44,166 C46,162 48,158 49,156 Z", "M49,157 C50,162 48,168 46,176 C43,190 39,204 36,216 L32,215 C34,200 38,184 44,166 Z"];
+const FIG_HAND = { deco: 1, d: ["M29,217 L36,219 C36,228 35,238 33,246 C30,252 24,250 23,242 C22,232 25,222 29,217 Z"] };
+const FIG_FOOT = { deco: 1, d: ["M75,428 C71,433 67,438 69,443 C75,446 85,446 91,444 C92,440 91,434 90,428 Z"] };
+const FIG_FRONT = [
+  { deco: 1, d: ["M92,47 C92,53 91,58 89,62 L97,69 L100,69 L100,47 Z"] },
+  { k: 'traps', d: ["M88,62 C82,66 72,67 64,70 C72,72 82,72 90,70 L96,69 Z"] },
+  { k: 'shoulders', d: ["M64,71 C54,73 47,79 45,88 C43,96 43,104 43,110 C48,106 52,100 56,94 C60,88 66,84 70,82 C70,76 68,72 64,71 Z"] },
+  { k: 'chest', d: ["M99,72 L72,74 C68,78 66,82 62,88 C58,94 56,100 57,106 C62,114 74,118 86,118 C93,118 97,116 99,112 Z"] },
+  { k: 'biceps', d: ["M44,110 C42,124 41,138 40,152 C44,156 49,155 51,151 C53,140 55,126 57,114 C58,106 56,100 52,100 C48,102 45,106 44,110 Z"] },
+  { k: 'forearms', d: FIG_FA }, FIG_HAND,
+  { k: 'obliques', d: ["M86,120 C76,120 68,116 63,110 C63,124 65,140 66,156 C67,168 68,178 67,190 C70,198 76,204 84,208 C86,196 87,184 87,172 C87,154 87,136 86,120 Z"], l: ["M65,124 L76,130", "M66,138 L78,143", "M67,152 L79,156"] },
+  { k: 'abs', d: ["M99,121 L89,121 C88,126 88,131 88,136 L99,136 Z", "M99,136 L88,136 L88,152 L99,152 Z", "M99,152 L88,152 C88,158 88.5,163 89,168 L99,168 Z", "M99,168 L89,168 C89.5,184 93,198 99,210 Z"] },
+  { deco: 1, d: ["M70,212 C80,214 92,222 99,240 L98,276 C97,290 96,298 94,304 C92,296 90,286 88,272 C86,254 80,232 70,212 Z"] },
+  { k: 'quads', d: ["M64,214 C60,232 59,252 61,272 C62,294 66,316 70,334 C73,334 75,332 76,330 C74,306 73,282 74,258 C74,242 70,226 64,214 Z", "M66,212 C74,220 80,232 84,248 C87,264 88,292 87,318 C85,326 82,330 78,330 C76,306 75,282 76,258 C76,240 72,224 66,212 Z", "M88,300 C92,306 95,316 95,326 C94,334 90,336 86,334 C88,324 89,312 88,300 Z"] },
+  { deco: 1, d: ["M80,336 C86,336 90,340 90,345 C90,350 86,352 81,352 C76,352 72,349 72,344 C72,339 75,336 80,336 Z"] },
+  { k: 'calves', d: ["M71,352 C67,366 67,384 70,400 C72,410 74,418 75,424 L79,424 C79,404 79,384 79,368 C79,360 77,354 71,352 Z", "M88,350 C93,358 95,370 94,384 C93,394 91,402 89,408 C86,398 84,384 84,372 C84,362 85,354 88,350 Z"] },
+  FIG_FOOT,
+];
+const FIG_BACK = [
+  { k: 'reardelts', d: ["M64,71 C54,73 47,79 45,88 C43,96 43,104 43,110 C48,104 54,98 60,94 C64,90 68,86 70,82 C70,76 68,72 64,71 Z"] },
+  { k: 'lats', d: ["M62,104 C62,124 64,140 66,156 C67,166 68,176 68,184 C76,182 86,176 94,168 C96,152 96,136 92,120 C88,110 80,106 62,104 Z"] },
+  { deco: 1, d: ["M72,80 C68,86 64,92 62,98 C66,104 76,108 86,104 C86,96 80,86 72,80 Z"] },
+  { k: 'traps', d: ["M100,48 L92,48 C92,55 91,59 88,62 C82,66 72,67 66,70 C74,74 82,80 88,90 C92,100 96,116 100,132 Z"] },
+  { k: 'triceps', d: ["M44,108 C42,122 41,138 40,152 C44,156 49,155 51,151 C53,140 55,126 57,114 C57,106 54,100 50,100 C47,102 45,104 44,108 Z"], l: ["M49,106 C47,122 46,138 46,150"] },
+  { k: 'forearms', d: FIG_FA }, FIG_HAND,
+  { k: 'obliques', d: ["M68,186 C67,198 65,206 64,214 L72,212 C80,210 86,208 90,206 C90,196 92,184 94,170 C86,178 76,184 68,186 Z"] },
+  { k: 'lowerback', d: ["M99,140 L97,140 C96,150 95,160 94,170 C92,184 90,196 90,206 C93,207 96,208 99,208 Z"] },
+  { k: 'glutes', d: ["M99,210 C90,207 76,208 66,216 C61,228 61,244 66,254 C74,264 90,266 99,260 Z"] },
+  { k: 'hamstrings', d: ["M63,256 C60,272 61,294 66,316 C68,326 71,332 74,334 L80,330 C80,308 80,286 81,264 C74,264 68,262 63,256 Z", "M83,264 C83,288 83,310 84,330 L90,334 C94,318 97,296 97,278 C97,270 98,266 98,262 C92,264 88,264 83,264 Z"] },
+  { k: 'calves', d: ["M70,342 C66,354 66,370 70,384 C74,392 78,394 82,388 L83,346 C79,340 74,339 70,342 Z", "M85,346 C91,342 95,352 94,368 C93,380 91,388 88,392 C86,386 85,370 85,346 Z"] },
+  { deco: 1, d: ["M72,394 C73,406 74,416 75,424 L90,424 C90,414 91,404 92,394 C88,398 84,400 82,396 C78,400 74,398 72,394 Z"] },
+  FIG_FOOT,
+];
+const FIG_BODY = '#141417', FIG_BASE = '#3A3A42', FIG_LINE = '#5E5E68';
+const bodyFig = (parts, styleOf, onPick, dimAll) => {
+  const h = React.createElement; const sides = [null, 'translate(200 0) scale(-1 1)'];
+  const deco = { fill: FIG_BASE, op: dimAll ? 0.28 : 1 };
+  return h('svg', { viewBox: '14 2 172 450', style: { width: '100%', height: 'auto', display: 'block', overflow: 'visible' } },
+    sides.map((tf, i) => h('path', { key: 'f' + i, d: FIG_SIL, fill: FIG_BODY, transform: tf || undefined })),
+    h('ellipse', { cx: 100, cy: 26, rx: 14, ry: 20, fill: FIG_BODY, stroke: FIG_LINE, strokeWidth: 1.2 }),
+    sides.map((tf, si) => h('g', { key: 'm' + si, transform: tf || undefined }, parts.map((p, pi) => { const st = p.deco ? deco : styleOf(p.k); return h('g', { key: pi, onClick: p.deco ? undefined : () => onPick(p.k), style: { cursor: p.deco ? 'default' : 'pointer', opacity: st.op, filter: st.glow ? 'drop-shadow(0 0 3px ' + st.glowC + ')' : 'none', transition: 'opacity .25s, filter .25s' } },
+      p.d.map((d, i) => h('path', { key: i, d, fill: st.fill, stroke: FIG_BODY, strokeWidth: 2.2, strokeLinejoin: 'round', style: { transition: 'fill .3s' } })),
+      (p.l || []).map((d, i) => h('path', { key: 'l' + i, d, fill: 'none', stroke: FIG_BODY, strokeWidth: 1.4, strokeLinecap: 'round', style: { pointerEvents: 'none' } })),
+      st.stroke && st.stroke !== 'none' ? p.d.map((d, i) => h('path', { key: 's' + i, d, fill: 'none', stroke: st.stroke, strokeWidth: st.sw, strokeDasharray: st.dash, strokeLinejoin: 'round', style: { pointerEvents: 'none' } })) : null); }))),
+    sides.map((tf, i) => h('path', { key: 'o' + i, d: FIG_OUT, fill: 'none', stroke: FIG_LINE, strokeWidth: 1.2, strokeLinejoin: 'round', strokeLinecap: 'round', transform: tf || undefined })));
+};
+const exStyleOf = mus => k => mus.p.includes(k) ? { fill: ACC, glow: true, glowC: ACC, op: 1 } : mus.s.includes(k) ? { fill: mixC(FIG_BASE, ACC, 0.38), stroke: mixC(FIG_BASE, ACC, 0.85), sw: 0.9, dash: '2.5 2', op: 1 } : { fill: FIG_BASE, op: 1 };
 const MUS = [['chest', 'Chest', 'Pectoraux'], ['shoulders', 'Front delts', 'Deltoïdes avant'], ['reardelts', 'Rear delts', 'Deltoïdes arrière'], ['traps', 'Traps', 'Trapèzes'], ['lats', 'Lats', 'Dorsaux'], ['biceps', 'Biceps', 'Biceps'], ['triceps', 'Triceps', 'Triceps'], ['forearms', 'Forearms', 'Avant-bras'], ['abs', 'Abs', 'Abdos'], ['obliques', 'Obliques', 'Obliques'], ['lowerback', 'Lower back', 'Lombaires'], ['glutes', 'Glutes', 'Fessiers'], ['quads', 'Quads', 'Quadriceps'], ['hamstrings', 'Hamstrings', 'Ischios'], ['calves', 'Calves', 'Mollets']];
 const MUS_LIB = { 'Bench Press': ['chest', 'triceps shoulders'], 'Incline DB Press': ['chest shoulders', 'triceps'], 'Dumbbell Fly': ['chest', 'shoulders'], 'Push-up': ['chest', 'triceps shoulders abs'], 'Deadlift': ['hamstrings glutes lowerback', 'traps lats forearms quads'], 'Barbell Row': ['lats', 'reardelts biceps lowerback'], 'Pull-up': ['lats', 'biceps reardelts'], 'Lat Pulldown': ['lats', 'biceps'], 'Seated Cable Row': ['lats', 'reardelts biceps traps'], 'Squat': ['quads glutes', 'lowerback hamstrings'], 'Romanian Deadlift': ['hamstrings glutes', 'lowerback'], 'Leg Press': ['quads', 'glutes'], 'Leg Curl': ['hamstrings', ''], 'Leg Extension': ['quads', ''], 'Calf Raise': ['calves', ''], 'Bulgarian Split Squat': ['quads glutes', 'hamstrings'], 'Overhead Press': ['shoulders', 'triceps traps'], 'Lateral Raise': ['shoulders', ''], 'Face Pull': ['reardelts', 'traps'], 'Barbell Curl': ['biceps', 'forearms'], 'Hammer Curl': ['biceps forearms', ''], 'Triceps Pushdown': ['triceps', ''], 'Skull Crusher': ['triceps', ''], 'Plank': ['abs', 'obliques'], 'Hanging Leg Raise': ['abs', 'obliques'], 'Cable Crunch': ['abs', ''] };
 const MUS_RULES = [[/nordic|leg curl/i, 'hamstrings', 'glutes'], [/ghd hold|back ext|hyperext/i, 'lowerback glutes', 'hamstrings'], [/rdl|romanian|deadlift|good morning/i, 'hamstrings glutes', 'lowerback'], [/zottman/i, 'biceps forearms', ''], [/curl/i, 'biceps', 'forearms'], [/overhead|ohp|military/i, 'shoulders', 'triceps traps'], [/pull-?up|chin|pulldown|row/i, 'lats', 'biceps reardelts'], [/jump|cmj|drop|hop|bound/i, 'quads glutes calves', ''], [/squat|zercher|lunge|leg press|split/i, 'quads glutes', 'hamstrings'], [/calf/i, 'calves', ''], [/face pull|rear delt|er\/ir|ir\/er|screw|arm bar|rotation/i, 'reardelts', 'shoulders'], [/lateral raise/i, 'shoulders', ''], [/extension|ffe|skull|pushdown|triceps|kickback|dip/i, 'triceps', ''], [/bench|press|push-?up|fly/i, 'chest', 'triceps shoulders'], [/shrug/i, 'traps', ''], [/plank|chop|windmill|crunch|leg raise|hold|iso|core/i, 'abs obliques', '']];
@@ -1348,6 +1329,7 @@ class Component extends DCLogic {
     });
   }
   renderVals() {
+    ACC = this.state.accent || '#CCFF00'; try { document.documentElement.style.setProperty('--acc', ACC); } catch (e) {}
     const s = this.state; const now = s.now; const kg = s.unit === 'kg';
     LANG = s.lang === 'fr' ? 'fr' : 'en'; try { document.documentElement.lang = LANG; } catch (e) {}
     const go = (p) => () => this.setState(p);
@@ -1370,7 +1352,7 @@ class Component extends DCLogic {
     const d0 = new Date(now);
     const monday = new Date(d0.getFullYear(), d0.getMonth(), d0.getDate() - ((d0.getDay() + 6) % 7));
     const dayKeys = new Set(); Object.values(s.history).forEach(a => a.forEach(x => dayKeys.add(new Date(x.date).toDateString())));
-    const week = (LANG === 'fr' ? ['L','M','M','J','V','S','D'] : ['M','T','W','T','F','S','S']).map((label, i) => { const d = new Date(monday.getTime() + i * DAY); const done = dayKeys.has(d.toDateString()); const today = d.toDateString() === d0.toDateString(); return { label, dot: done ? '#CCFF00' : '#24242B', border: today ? '#9C9CA8' : '#24242B' }; });
+    const week = (LANG === 'fr' ? ['L','M','M','J','V','S','D'] : ['M','T','W','T','F','S','S']).map((label, i) => { const d = new Date(monday.getTime() + i * DAY); const done = dayKeys.has(d.toDateString()); const today = d.toDateString() === d0.toDateString(); return { label, dot: done ? ACC : '#24242B', border: today ? '#9C9CA8' : '#24242B' }; });
 
     const w = s.workout;
     const wStepKg = this.inc();
@@ -1381,7 +1363,7 @@ class Component extends DCLogic {
       const m = this.meta(ex.name); const uni = isU(m.type), tim = isT(m.type);
       const cols = uni ? '30px 44px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 48px' : '36px 52px minmax(0,1fr) minmax(0,1fr) 52px';
       return {
-        name: ex.name, progress: d + '/' + ex.sets.length, progColor: d === ex.sets.length && d ? '#CCFF00' : '#9C9CA8',
+        name: ex.name, progress: d + '/' + ex.sets.length, progColor: d === ex.sets.length && d ? ACC : '#9C9CA8',
         up: !!ex.up, upText: '+' + (kg ? '2.5 kg' : '5 lb') + L(' · you hit every rep last time'),
         hasSS: !!tagsW[ei], ssTag: tagsW[ei] ? L('SUPERSET') + ' ' + tagsW[ei] : '', hasNote: !!m.note, note: m.note,
         onMenu: go({ exSheet: ei }), cols, isUni: uni, h0: uni ? '#' : L('SET'), h3: tim ? 'R s' : 'R', h2: uni ? (tim ? 'L s' : 'L') : tim ? L('SEC') : 'REPS',
@@ -1398,9 +1380,9 @@ class Component extends DCLogic {
             r2Disp: x.r2Str != null ? x.r2Str : String(x.r2 != null ? x.r2 : x.r), cols, isUni: uni, isTime: tim,
             isPR: !!x.isPR, active,
             prText: 'e1RM ' + this.dispW(e1(x.w, uni ? Math.min(x.r, x.r2 != null ? x.r2 : x.r) : x.r)) + ' ' + s.unit,
-            rowBg: x.done ? 'rgba(204,255,0,0.06)' : active ? '#1B1B20' : 'transparent',
-            numColor: x.warm ? '#FFFFFF' : x.done ? '#CCFF00' : '#9C9CA8', inBorder: active ? '#FFFFFF' : '#24242B',
-            checkBg: x.done ? '#CCFF00' : 'transparent', checkColor: x.done ? '#0A0A0C' : '#9C9CA8', checkBorder: x.done ? '#CCFF00' : '#33333C',
+            rowBg: x.done ? accA(0.06) : active ? '#1B1B20' : 'transparent',
+            numColor: x.warm ? '#FFFFFF' : x.done ? ACC : '#9C9CA8', inBorder: active ? '#FFFFFF' : '#24242B',
+            checkBg: x.done ? ACC : 'transparent', checkColor: x.done ? '#0A0A0C' : '#9C9CA8', checkBorder: x.done ? ACC : '#33333C',
             onFocus: () => { if (!x.done) this.setState({ focus: { ei, si } }); },
             onWarm: (e) => { e.stopPropagation(); this.toggleWarm(ei, si); },
             onSelect: (e) => { const t = e.target; setTimeout(() => { try { t.setSelectionRange(0, t.value.length); } catch (er) {} }, 0); },
@@ -1411,7 +1393,7 @@ class Component extends DCLogic {
             rPlus: tim && uni ? () => this.adjBoth(ei, si, 5) : tim ? () => this.adj(ei, si, 'r', 5) : uni ? () => this.adjBoth(ei, si, 1) : () => this.adj(ei, si, 'r', 1),
             rmL: tim ? '−5s' : L('−1 rep'), rpL: tim ? '+5s' : L('+1 rep'),
             holdLabel: hOn ? (s.hold.side ? L(s.hold.side === 'l' ? 'Left' : 'Right') + ' · ' : L('Stop') + ' · ') + clock(s.hold.end - now) : L('▶ Start ') + clock((x.r || 0) * 1000) + (uni ? ' + ' + clock((x.r2 != null ? x.r2 : x.r) * 1000) : ''),
-            holdBg: hOn ? '#CCFF00' : '#24242B', holdColor: hOn ? '#0A0A0C' : '#FFFFFF',
+            holdBg: hOn ? ACC : '#24242B', holdColor: hOn ? '#0A0A0C' : '#FFFFFF',
             onHold: (e) => { e.stopPropagation(); this.holdToggle(ei, si); },
             hasPlates: !!pc, plateHead: pc ? L('Per side') + ' · ' + L('bar') + ' ' + pc.bar + ' ' + s.unit : '',
             plates: !pc ? [] : pc.below ? [{ label: L('Below bar weight'), bg: 'transparent', color: '#9C9CA8' }] : !pc.list.length ? [{ label: L('Empty bar'), bg: 'transparent', color: '#9C9CA8' }]
@@ -1433,7 +1415,7 @@ class Component extends DCLogic {
     const tagsR = er ? ssTags(er.ex) : [];
     const rEx = er ? er.ex.map((e, i) => ({ num: String(i + 1), name: e.name, sets: e.sets, reps: e.reps, upOpacity: i ? 1 : 0.3,
       hasSS: !!tagsR[i], ssTag: tagsR[i] ? L('SUPERSET') + ' ' + tagsR[i] : '', repsUnit: isT(this.meta(e.name).type) ? 's' : L('reps'),
-      canLink: i < er.ex.length - 1, linkLabel: e.ss ? L('Superset ✓ · tap to unlink') : L('+ Superset with next'), linkColor: e.ss ? '#CCFF00' : '#9C9CA8', linkBorder: e.ss ? '#CCFF00' : '#33333C',
+      canLink: i < er.ex.length - 1, linkLabel: e.ss ? L('Superset ✓ · tap to unlink') : L('+ Superset with next'), linkColor: e.ss ? ACC : '#9C9CA8', linkBorder: e.ss ? ACC : '#33333C',
       onLink: () => this.updR(c => { c.ex[i].ss = !c.ex[i].ss; }), onMenu: go({ rSheet: i }), onInfo: () => this.openInfo(e.name),
       onUp: () => i && this.updR(c => { const t = c.ex[i]; c.ex[i] = c.ex[i - 1]; c.ex[i - 1] = t; }),
       onRemove: () => this.updR(c => { c.ex.splice(i, 1); }),
@@ -1471,7 +1453,7 @@ class Component extends DCLogic {
     const sel = s.progSel != null && s.progSel < series.length ? s.progSel : null;
     let run = prior.length ? Math.max(...prior) : 0;
     const pts = series.map((v, i) => { const pr = v > run + 0.01; run = Math.max(run, v); return { x: X(i), y: Y(v), pr }; });
-    const chartDots = pts.map((p, i) => { const on = sel === i; const sz = on ? 14 : p.pr ? 12 : 8; return { left: (p.x / 324 * 100) + '%', top: p.y + 'px', size: sz + 'px', bg: p.pr ? '#CCFF00' : '#FFFFFF', halo: on ? '#FFFFFF' : 'transparent', onClick: () => this.setState({ progSel: on ? null : i }) }; });
+    const chartDots = pts.map((p, i) => { const on = sel === i; const sz = on ? 14 : p.pr ? 12 : 8; return { left: (p.x / 324 * 100) + '%', top: p.y + 'px', size: sz + 'px', bg: p.pr ? ACC : '#FFFFFF', halo: on ? '#FFFFFF' : 'transparent', onClick: () => this.setState({ progSel: on ? null : i }) }; });
     const axisVals = mx0 > mn0 ? [mx0, (mx0 + mn0) / 2, mn0] : series.length ? [mx0] : [];
     const chartAxis = axisVals.map(v => ({ label: toU(v), top: (Y(v) - 17) + 'px' }));
     let bestE = 0, bestW = 0, bestV = 0, bestSet = '';
@@ -1491,13 +1473,13 @@ class Component extends DCLogic {
     const ls = liftStat(progEx);
     const repRecs = [1, 3, 5, 8, 10, 12].map(n => { let b = 0; sessAll.forEach(se => se.ws.forEach(x => { if (x.r >= n) b = Math.max(b, x.w); })); return { label: n + (n === 1 ? L(' rep') : L(' reps')), value: b ? this.dispW(b) : '—' }; });
     let runE = 0;
-    const histRows = sessAll.map(se => { const e = Math.max(...se.ws.map(x => e1(x.w, x.r))); const pr = e > runE + 0.01; runE = Math.max(runE, e); return { date: fmtD(se.date), sets: se.ws.map(setTxt).join('  '), val: this.dispW(e), color: pr ? '#CCFF00' : '#FFFFFF' }; });
+    const histRows = sessAll.map(se => { const e = Math.max(...se.ws.map(x => e1(x.w, x.r))); const pr = e > runE + 0.01; runE = Math.max(runE, e); return { date: fmtD(se.date), sets: se.ws.map(setTxt).join('  '), val: this.dispW(e), color: pr ? ACC : '#FFFFFF' }; });
     const histList = histRows.reverse().slice(0, 12);
 
     const sm = s.summary;
     const volU = (v) => Math.round(kg ? v : v * KG_LB).toLocaleString();
     const dv = sm ? sm.vol - sm.prevVol : 0;
-    const toggleRow = (label, sub, on, key) => ({ label, sub, track: on ? '#CCFF00' : '#24242B', knob: on ? '#0A0A0C' : '#9C9CA8', justify: on ? 'flex-end' : 'flex-start', onClick: () => { this.unlockAudio(); this.setState({ [key]: !s[key] }); } });
+    const toggleRow = (label, sub, on, key) => ({ label, sub, track: on ? ACC : '#24242B', knob: on ? '#0A0A0C' : '#9C9CA8', justify: on ? 'flex-end' : 'flex-start', onClick: () => { this.unlockAudio(); this.setState({ [key]: !s[key] }); } });
     const sessCount = new Set(Object.values(s.history).flatMap(a => a.map(x => x.date))).size;
     const showTabs = s.screen === 'tabs';
     const meta = s.sessMeta || {};
@@ -1522,7 +1504,7 @@ class Component extends DCLogic {
     for (let dd = 1; dd <= dim; dd++) {
       const dt = new Date(cm.getFullYear(), cm.getMonth(), dd); const se = dayMap[dt.toDateString()]; const isT = dt.toDateString() === d0.toDateString();
       if (se) monthCount += sessions.filter(x => new Date(x.date).toDateString() === dt.toDateString()).length;
-      calDays.push({ label: String(dd), bg: se ? '#CCFF00' : 'transparent', color: se ? '#0A0A0C' : dt > d0 ? '#55555F' : '#FFFFFF', border: isT ? '#FFFFFF' : 'transparent', weight: se ? 700 : 500, opacity: 1, onClick: se ? go({ openSess: se.date, screen: 'session', delSessArm: false, sessEdit: false, editBuf: {} }) : () => {} });
+      calDays.push({ label: String(dd), bg: se ? ACC : 'transparent', color: se ? '#0A0A0C' : dt > d0 ? '#55555F' : '#FFFFFF', border: isT ? '#FFFFFF' : 'transparent', weight: se ? 700 : 500, opacity: 1, onClick: se ? go({ openSess: se.date, screen: 'session', delSessArm: false, sessEdit: false, editBuf: {} }) : () => {} });
     }
     const fmtLong = t => new Date(t).toLocaleDateString(LOC(), { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
     const sd = s.openSess != null ? sessions.find(x => x.date === s.openSess) : null;
@@ -1535,12 +1517,12 @@ class Component extends DCLogic {
     let streak = 0; for (let i = thisWk >= planned ? 0 : 1; i < 520; i++) { if ((wkCount[wkKey(i)] || 0) >= planned) streak++; else break; }
     let last4 = 0; for (let i = 1; i <= 4; i++) last4 += wkCount[wkKey(i)] || 0;
     const barMax = Math.max(planned, ...Array.from({ length: 8 }, (_, i) => wkCount[wkKey(i)] || 0));
-    const weekBars = Array.from({ length: 8 }, (_, j) => { const i = 7 - j; const k = wkKey(i); const c = wkCount[k] || 0; const d = new Date(k); return { count: String(c), h: Math.max(3, c / barMax * 72) + 'px', bg: c >= planned ? '#CCFF00' : c ? '#FFFFFF' : '#33333C', label: d.getDate() + '/' + (d.getMonth() + 1), labelColor: i === 0 ? '#FFFFFF' : '#9C9CA8' }; });
+    const weekBars = Array.from({ length: 8 }, (_, j) => { const i = 7 - j; const k = wkKey(i); const c = wkCount[k] || 0; const d = new Date(k); return { count: String(c), h: Math.max(3, c / barMax * 72) + 'px', bg: c >= planned ? ACC : c ? '#FFFFFF' : '#33333C', label: d.getDate() + '/' + (d.getMonth() + 1), labelColor: i === 0 ? '#FFFFFF' : '#9C9CA8' }; });
     const GMAP = {}; [...LIB, ...s.custom].forEach(l => { GMAP[l.name] = l.group; });
     const mg = {}, mgNow = {};
     Object.entries(s.history).forEach(([name, arr]) => { const g = GMAP[name]; if (!g) return; arr.forEach(se => { const n = work(se.sets).length; const k = wkStart(se.date); if (k >= wkKey(4) && k < w0) mg[g] = (mg[g] || 0) + n; if (k === w0) mgNow[g] = (mgNow[g] || 0) + n; }); });
-    const muscleRows = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core'].map(g => { const avg = (mg[g] || 0) / 4; const ok = avg >= 10 && avg <= 20; return { name: L(g), avg: String(Math.round(avg * 10) / 10), w: Math.min(100, avg / 25 * 100) + '%', color: ok ? '#CCFF00' : '#FFFFFF', tag: (avg < 10 ? L('Low') : avg > 20 ? L('High') : L('In range')) + ' · ' + (mgNow[g] || 0) + L(' this week'), tagColor: ok ? '#CCFF00' : '#9C9CA8' }; });
-    const liftTrends = histAll.map(n => { const st = liftStat(n); return { name: n, pct: pctTxt(st.pct), color: st.pct == null ? '#9C9CA8' : st.pct > 0.05 ? '#CCFF00' : '#FFFFFF', flag: st.stalled ? L('No PR for ') + st.wks + L(' weeks') : '', hasFlag: !!st.stalled, onClick: go({ progView: 'lifts', progEx: n, progSel: null }) }; });
+    const muscleRows = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core'].map(g => { const avg = (mg[g] || 0) / 4; const ok = avg >= 10 && avg <= 20; return { name: L(g), avg: String(Math.round(avg * 10) / 10), w: Math.min(100, avg / 25 * 100) + '%', color: ok ? ACC : '#FFFFFF', tag: (avg < 10 ? L('Low') : avg > 20 ? L('High') : L('In range')) + ' · ' + (mgNow[g] || 0) + L(' this week'), tagColor: ok ? ACC : '#9C9CA8' }; });
+    const liftTrends = histAll.map(n => { const st = liftStat(n); return { name: n, pct: pctTxt(st.pct), color: st.pct == null ? '#9C9CA8' : st.pct > 0.05 ? ACC : '#FFFFFF', flag: st.stalled ? L('No PR for ') + st.wks + L(' weeks') : '', hasFlag: !!st.stalled, onClick: go({ progView: 'lifts', progEx: n, progSel: null }) }; });
     const stalledN = liftTrends.filter(x => x.hasFlag).length;
 
     const fr = LANG === 'fr';
@@ -1561,26 +1543,35 @@ class Component extends DCLogic {
     const bTiles = MEAS.map(m => { const a = bodyArr.filter(b => b[m[0]] > 0); if (!a.length) return null; const cur = a[a.length - 1][m[0]], dd = cur - a[0][m[0]]; return { label: fr ? m[2] : m[1], value: dLen(cur) + lenSfx, delta: a.length > 1 ? (dd >= 0 ? '+' : '−') + dLen(Math.abs(dd)) : '' }; }).filter(Boolean);
     const shCtx = s.screen === 'workout' && w && s.exSheet != null && w.ex[s.exSheet] ? { list: w.ex, i: s.exSheet, r: false } : s.screen === 'routine' && er && s.rSheet != null && er.ex[s.rSheet] ? { list: er.ex, i: s.rSheet, r: true } : null;
     const shEx = shCtx ? shCtx.list[shCtx.i] : null; const shM = shEx ? this.meta(shEx.name) : null;
-    const tg = (label, sub, on, fn) => ({ label, sub, track: on ? '#CCFF00' : '#24242B', knob: on ? '#0A0A0C' : '#9C9CA8', justify: on ? 'flex-end' : 'flex-start', onClick: fn });
+    const tg = (label, sub, on, fn) => ({ label, sub, track: on ? ACC : '#24242B', knob: on ? '#0A0A0C' : '#9C9CA8', justify: on ? 'flex-end' : 'flex-start', onClick: fn });
     const mWin = s.bmRange === '4w' ? 28 : 7; const mAcc = {};
     Object.entries(s.history).forEach(([n, arr]) => { const mu = this.meta(n).mus; if (!mu.p.length && !mu.s.length) return; arr.forEach(se => { if (se.date < now - mWin * DAY) return; const k = work(se.sets).length; mu.p.forEach(m => { mAcc[m] = (mAcc[m] || 0) + k; }); mu.s.forEach(m => { mAcc[m] = (mAcc[m] || 0) + k * 0.5; }); }); });
     const mVal = k => (mAcc[k] || 0) / (mWin === 28 ? 4 : 1);
-    const HEAT = ['#34343D', '#55661A', '#8AAD0B', '#B4E000', '#CCFF00'];
-    const hIdx = v => v <= 0 ? 0 : v < 5 ? 1 : v < 10 ? 2 : v < 15 ? 3 : 4; const heat = v => HEAT[hIdx(v)];
+    const FILLS = [FIG_BASE, mixC(FIG_BASE, ACC, 0.3), mixC(FIG_BASE, ACC, 0.62), ACC]; const lvl = v => v <= 0 ? 0 : v < 8 ? 1 : v < 15 ? 2 : 3; const heat = v => FILLS[Math.max(1, lvl(v))];
+    const bmSel = s.bmSel || null; const bmPick = k => this.setState(st => ({ bmSel: st.bmSel === k ? null : k }));
+    const bmTotal = MUS.reduce((t, m) => t + mVal(m[0]), 0); const bmRank = MUS.map(m => m[0]).sort((a, b) => mVal(b) - mVal(a));
+    const statStyle = k => { const lv = lvl(mVal(k)), on = bmSel === k; return { fill: FILLS[lv], stroke: on ? '#FFFFFF' : 'none', sw: 1.4, glow: on || lv === 3, glowC: on ? 'rgba(255,255,255,.7)' : ACC, op: bmSel && !on ? 0.28 : 1 }; };
+    const musName = k => { const m = MUS.find(x => x[0] === k); return m ? (LANG === 'fr' ? m[2] : m[1]) : k; };
     const fi = s.screen === 'exinfo' && s.infoName ? s.infoName : null; const fiM = fi ? this.meta(fi) : null; const fiMed = fi ? (s.media || {})[fi] : null;
     const fiHist = fi ? (s.history[fi] || []).filter(se => work(se.sets).length) : [];
     const fiBest = fiHist.reduce((a, se) => Math.max(a, ...work(se.sets).map(x => e1(x.w, x.r))), 0);
     const fiLib = fi ? [...LIB, ...s.custom].find(l => l.name === fi) : null;
     return {
       bmS: Object.fromEntries(MUS.map(m => [m[0], heat(mVal(m[0]))])),
-      bmList: MUS.map(m => ({ m, v: mVal(m[0]) })).filter(x => x.v > 0).sort((a, b) => b.v - a.v).map(({ m, v }) => ({ label: LANG === 'fr' ? m[2] : m[1], val: trim(Math.round(v * 10) / 10), color: '#FFFFFF', labelColor: '#FFFFFF', c: heat(v), w: Math.min(100, v / 20 * 100) + '%' })),
-      bmLegend: [['0', 0], ['1–4', 1], ['5–9', 2], ['10–14', 3], ['15+', 4]].map(([t, i]) => ({ t, c: HEAT[i] })),
+      bmList: MUS.map(m => ({ m, v: mVal(m[0]) })).filter(x => x.v > 0).sort((a, b) => b.v - a.v).map(({ m, v }, i, arr) => ({ rank: String(i + 1).padStart(2, '0'), label: LANG === 'fr' ? m[2] : m[1], val: trim(Math.round(v * 10) / 10), color: '#FFFFFF', labelColor: '#FFFFFF', c: heat(v), w: (v / arr[0].v * 100) + '%', bg: bmSel === m[0] ? '#1D1D22' : 'transparent', onClick: () => bmPick(m[0]) })),
+      bmLegend: FILLS.map(c => ({ c })),
+      bmFront: bodyFig(FIG_FRONT, statStyle, bmPick, !!bmSel), bmBack: bodyFig(FIG_BACK, statStyle, bmPick, !!bmSel),
+      bmHasSel: !!bmSel, bmNoSel: !bmSel, bmSelName: bmSel ? musName(bmSel) : '', bmSelVal: bmSel ? trim(Math.round(mVal(bmSel) * 10) / 10) : '',
+      bmSelSub: bmSel ? (LANG === 'fr' ? 'séries · ' : 'sets · ') + (bmTotal ? Math.round(mVal(bmSel) / bmTotal * 100) : 0) + (LANG === 'fr' ? ' % du volume · rang ' : '% of volume · rank ') + (bmRank.indexOf(bmSel) + 1) + '/' + MUS.length : '',
+      bmClear: () => this.setState({ bmSel: null }),
+      fiFront: fiM ? bodyFig(FIG_FRONT, exStyleOf(fiM.mus), k => this.cycleMus(fi, k)) : null, fiBack: fiM ? bodyFig(FIG_BACK, exStyleOf(fiM.mus), k => this.cycleMus(fi, k)) : null,
+      accOpts: ACCENTS.map(([c, label]) => ({ c, label, ring: c.toLowerCase() === ACC.toLowerCase() ? '0 0 0 2px #0A0A0C, 0 0 0 4px #FFFFFF' : 'none', onClick: () => this.setState({ accent: c }) })),
       ...(() => { const z = MUS.filter(m => mVal(m[0]) <= 0).map(m => LANG === 'fr' ? m[2] : m[1]); return { bmHasZero: z.length > 0, bmZero: (LANG === 'fr' ? 'Pas travaillé : ' : 'Not trained: ') + z.join(', ') }; })(),
       bmRanges: [['7d', L('7 days')], ['4w', L('4-wk avg')]].map(([k, label]) => ({ label, bg: (s.bmRange || '7d') === k ? '#24242B' : 'transparent', color: (s.bmRange || '7d') === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ bmRange: k }) })),
       isInfo: !!fi, fiName: fi || '', fiSub: fiLib ? L(fiLib.group) : '',
       infoBack: () => this.setState({ screen: s.infoFrom || 'tabs' }),
-      bmF: Object.fromEntries(MUS.map(m => [m[0], fiM && fiM.mus.p.includes(m[0]) ? '#CCFF00' : fiM && fiM.mus.s.includes(m[0]) ? '#7E9A12' : '#34343D'])),
-      fiChips: fiM ? MUS.map(m => { const st = fiM.mus.p.includes(m[0]) ? 2 : fiM.mus.s.includes(m[0]) ? 1 : 0; return { label: LANG === 'fr' ? m[2] : m[1], bg: st === 2 ? '#CCFF00' : st === 1 ? 'rgba(204,255,0,0.16)' : 'transparent', color: st === 2 ? '#0A0A0C' : st === 1 ? '#CCFF00' : '#9C9CA8', border: st ? '#CCFF00' : '#33333C', onClick: () => this.cycleMus(fi, m[0]) }; }) : [],
+      bmF: Object.fromEntries(MUS.map(m => [m[0], fiM && fiM.mus.p.includes(m[0]) ? ACC : fiM && fiM.mus.s.includes(m[0]) ? mixC('#34343D', ACC, 0.5) : '#34343D'])),
+      fiChips: fiM ? MUS.map(m => { const st = fiM.mus.p.includes(m[0]) ? 2 : fiM.mus.s.includes(m[0]) ? 1 : 0; return { label: LANG === 'fr' ? m[2] : m[1], bg: st === 2 ? ACC : st === 1 ? accA(0.16) : 'transparent', color: st === 2 ? '#0A0A0C' : st === 1 ? ACC : '#9C9CA8', border: st ? ACC : '#33333C', onClick: () => this.cycleMus(fi, m[0]) }; }) : [],
       fiHasImg: !!(fiMed && !fiMed.vid), fiHasVid: !!(fiMed && fiMed.vid), fiNoMedia: !fiMed, fiHasMedia: !!fiMed, fiMediaEl: fiMed ? React.createElement(fiMed.vid ? 'video' : 'img', fiMed.vid ? { key: fiMed.url, src: fiMed.url, controls: true, playsInline: true, loop: true, muted: true, style: { width: '100%', maxHeight: 360, background: '#000', display: 'block' } } : { key: fiMed.url, src: fiMed.url, alt: fi, style: { width: '100%', maxHeight: 360, objectFit: 'contain', background: '#000', display: 'block' } }) : null,
       fiAddLabel: fiMed ? L('Replace media') : L('Add photo or video'), fiAddMedia: () => fi && this.pickMedia(fi),
       fiDelLabel: s.mediaDelArm === fi ? L('Tap again') : L('Remove media'), fiDelMedia: () => fi && this.delMedia(fi),
@@ -1646,12 +1637,12 @@ class Component extends DCLogic {
         onSelect: (e) => { const t = e.target; setTimeout(() => { try { t.setSelectionRange(0, t.value.length); } catch (er) {} }, 0); } }; }) }; }) : [],
       sdView: !s.sessEdit, sdEditing: !!s.sessEdit, unit: s.unit,
       toggleSessEdit: () => { if (s.sessEdit) this.flash(L('Session updated')); this.setState({ sessEdit: !s.sessEdit, editBuf: {}, delSessArm: false }); },
-      editBtnLabel: s.sessEdit ? L('Done') : L('Edit'), editBtnBg: s.sessEdit ? '#CCFF00' : '#24242B', editBtnColor: s.sessEdit ? '#0A0A0C' : '#FFFFFF', editBtnBorder: 'none',
+      editBtnLabel: s.sessEdit ? L('Done') : L('Edit'), editBtnBg: s.sessEdit ? ACC : '#24242B', editBtnColor: s.sessEdit ? '#0A0A0C' : '#FFFFFF', editBtnBorder: 'none',
       sessBack: go({ screen: 'tabs', tab: 'progress', openSess: null, sessEdit: false, editBuf: {} }),
       deleteSess: () => sd && this.deleteSession(sd.date), delSessLabel: s.delSessArm ? L('Tap again') : L('Delete'), delSessColor: s.delSessArm ? '#FFFFFF' : '#9C9CA8',
       isWorkout: s.screen === 'workout' && !!w, isLibrary: s.screen === 'library', isRoutine: s.screen === 'routine' && !!er, isSummary: s.screen === 'summary' && !!sm,
       showTabs, showResume: showTabs && !!w, tabBottom: showTabs && w ? 'calc(132px + env(safe-area-inset-bottom))' : 'calc(60px + env(safe-area-inset-bottom))',
-      tabs: [['today',L('Today')],['programs',L('Programs')],['progress',L('Progress')],['profile',L('Profile')]].map(([k, label]) => ({ label, color: s.tab === k ? '#FFFFFF' : '#9C9CA8', bar: s.tab === k ? '#CCFF00' : 'transparent', onClick: go({ tab: k }) })),
+      tabs: [['today',L('Today')],['programs',L('Programs')],['progress',L('Progress')],['profile',L('Profile')]].map(([k, label]) => ({ label, color: s.tab === k ? '#FFFFFF' : '#9C9CA8', bar: s.tab === k ? ACC : 'transparent', onClick: go({ tab: k }) })),
       dateLabel: d0.toLocaleDateString(LOC(), { weekday: 'long', month: 'short', day: 'numeric' }),
       nextName: w ? w.name : next ? next.name : L('No routines'), nextEx: w ? L('In progress · ') + clock(now - w.start) : next ? next.ex.map(e => e.name).join(' · ') : L('Create one in Programs.'),
       nextAgo: next ? ago(lastOf(next)) : '—', startLabel: w ? L('Resume workout') : L('Start workout'),
@@ -1704,7 +1695,7 @@ class Component extends DCLogic {
       discard: () => this.discard(), discardLabel: s.discardArm ? L('Tap again to discard') : L('Discard workout'),
       restOn, restOff: !restOn,
       restPct: s.restAlert ? '100%' : Math.min(100, Math.max(0, 100 - remain / (s.restTotal * 10))) + '%',
-      restBg: s.restAlert ? '#CCFF00' : '#16161A', restColor: s.restAlert ? '#0A0A0C' : '#FFFFFF', restSub: s.restAlert ? '#0A0A0C' : '#9C9CA8',
+      restBg: s.restAlert ? ACC : '#16161A', restColor: s.restAlert ? '#0A0A0C' : '#FFFFFF', restSub: s.restAlert ? '#0A0A0C' : '#9C9CA8',
       restLabel: s.restAlert ? L('Rest over — lift') : L('Rest'), restClock: s.restAlert ? '0:00' : clock(remain),
       restMinus: () => this.restAdj(-15), restPlus: () => this.restAdj(15), restSkip: () => this.restSkip(),
       libTitle: s.libCtx === 'browse' ? L('Exercise library') : L('Add exercise'),
@@ -1722,7 +1713,7 @@ class Component extends DCLogic {
         { label: L('Time'), value: clock(sm.dur), color: '#FFFFFF' },
         { label: L('Sets'), value: String(sm.sets), color: '#FFFFFF' },
         { label: L('Volume ') + s.unit, value: volU(sm.vol), color: '#FFFFFF' },
-        { label: L('vs last time'), value: sm.hasPrev ? (dv >= 0 ? '+' : '−') + volU(Math.abs(dv)) : '—', color: sm.hasPrev && dv > 0 ? '#CCFF00' : '#FFFFFF' }
+        { label: L('vs last time'), value: sm.hasPrev ? (dv >= 0 ? '+' : '−') + volU(Math.abs(dv)) : '—', color: sm.hasPrev && dv > 0 ? ACC : '#FFFFFF' }
       ] : [],
       sumPrTitle: sm && sm.prs.length ? sm.prs.length + (LANG === 'fr' ? ' record' + (sm.prs.length > 1 ? 's personnels' : ' personnel') : ' personal record' + (sm.prs.length > 1 ? 's' : '')) : L('No PRs this time — consistency counts'),
       sumPrs: sm ? sm.prs.map(p => ({ name: p.name, text: this.dispW(p.w) + ' ' + s.unit + ' × ' + p.r + ' · e1RM ' + this.dispW(p.e) })) : [],
