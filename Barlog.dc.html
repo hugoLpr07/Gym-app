@@ -652,6 +652,7 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ e.hasSS }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:0.08em;color:#CCFF00;border:1px solid #CCFF00;padding:2px 8px;border-radius:999px;">{{ e.ssTag }}</span></sc-if>
 <span style="font-size:16px;font-weight:700;">{{ e.name }}</span>
 </div>
+<button onClick="{{ e.onMenu }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#24242B;color:#fff;font-size:18px;font-weight:700;">⋯</button>
 <button onClick="{{ e.onUp }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#24242B;color:#fff;font-size:16px;opacity:{{ e.upOpacity }};">↑</button>
 <button onClick="{{ e.onRemove }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#24242B;color:#9C9CA8;font-size:16px;">✕</button>
 </div>
@@ -801,7 +802,7 @@ Object.assign(TX, { nSessNote: 'Session note (optional)', nFromTpl: '+ Ready-mad
 Object.assign(FR, { 'Session note (optional)': 'Note de séance (optionnelle)', '+ Ready-made program': '+ Programme prêt à l’emploi', 'Ready-made programs': 'Programmes prêts à l’emploi', 'Adds routines — yours stay untouched': 'Ajoute des routines — les tiennes restent', 'Exercise type': 'Type d’exercice', 'Note': 'Note', 'Seat height, grip, cues…': 'Réglage du siège, prise, consignes…', 'Saved with this exercise, shown every session.': 'Enregistrée avec l’exercice, affichée à chaque séance.', 'Body weight': 'Poids corporel', 'Log a weigh-in below to start your chart.': 'Enregistre un poids ci-dessous pour démarrer ton graphique.', 'Log today': 'Enregistrer aujourd’hui', 'Save': 'Enregistrer', 'Fill only what you want. Saving again today updates today’s entry.': 'Remplis seulement ce que tu veux. Enregistrer à nouveau aujourd’hui met à jour l’entrée du jour.', 'Measurements': 'Mensurations', 'Entries': 'Entrées',
   'Body': 'Corps', 'Reps': 'Reps', 'Per side': 'Par côté', 'per side': 'par côté', 'Plate calculator': 'Calculateur de disques', 'Shows the plates to load on each side of the bar.': 'Affiche les disques à mettre de chaque côté de la barre.', 'Superset with next': 'Superset avec le suivant', 'No rest between linked exercises — rest starts after the last one.': 'Pas de repos entre les exercices liés — le repos démarre après le dernier.', 'SUPERSET': 'SUPERSET', 'Stop': 'Stop', '▶ Start ': '▶ Lancer ', 'Below bar weight': 'Sous le poids de la barre', 'Empty bar': 'Barre vide', 'bar': 'barre', '+ Superset with next': '+ Superset avec le suivant', 'Superset ✓ · tap to unlink': 'Superset ✓ · toucher pour délier', 'Light bar (15 kg / 35 lb)': 'Barre légère (15 kg / 35 lb)', 'For the plate calculator. Off = 20 kg / 45 lb.': 'Pour le calculateur de disques. Désactivé = 20 kg / 45 lb.', 'Program added': 'Programme ajouté', 'Saved': 'Enregistré', 'Enter at least one value': 'Entre au moins une valeur', 'SEC': 'SEC', 'SET': 'SÉRIE', 'Left': 'Gauche', 'Right': 'Droite', 'Left and right logged separately.': 'Gauche et droite saisis séparément.' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.5.1';
+const APP_VERSION = '0.5.2';
 const autoType = n => { const t = /\(sec\)|\bplank\b|\bhold\b|\biso\b/i.test(n), u = /per side/i.test(n); return t && u ? 'timeuni' : t ? 'time' : u ? 'uni' : 'reps'; };
 const isT = t => t === 'time' || t === 'timeuni';
 const isU = t => t === 'uni' || t === 'timeuni';
@@ -1207,7 +1208,7 @@ class Component extends DCLogic {
     const rEx = er ? er.ex.map((e, i) => ({ num: String(i + 1), name: e.name, sets: e.sets, reps: e.reps, upOpacity: i ? 1 : 0.3,
       hasSS: !!tagsR[i], ssTag: tagsR[i] ? L('SUPERSET') + ' ' + tagsR[i] : '', repsUnit: isT(this.meta(e.name).type) ? 's' : L('reps'),
       canLink: i < er.ex.length - 1, linkLabel: e.ss ? L('Superset ✓ · tap to unlink') : L('+ Superset with next'), linkColor: e.ss ? '#CCFF00' : '#9C9CA8', linkBorder: e.ss ? '#CCFF00' : '#33333C',
-      onLink: () => this.updR(c => { c.ex[i].ss = !c.ex[i].ss; }),
+      onLink: () => this.updR(c => { c.ex[i].ss = !c.ex[i].ss; }), onMenu: go({ rSheet: i }),
       onUp: () => i && this.updR(c => { const t = c.ex[i]; c.ex[i] = c.ex[i - 1]; c.ex[i - 1] = t; }),
       onRemove: () => this.updR(c => { c.ex.splice(i, 1); }),
       setsMinus: () => this.updR(c => { c.ex[i].sets = Math.max(1, c.ex[i].sets - 1); }), setsPlus: () => this.updR(c => { c.ex[i].sets = Math.min(10, c.ex[i].sets + 1); }),
@@ -1325,7 +1326,8 @@ class Component extends DCLogic {
     const BX = i => bv.length > 1 ? 8 + i * 308 / (bv.length - 1) : 162; const BY = v => 132 - (v - (bmn0 - bpad)) / ((bmx0 + bpad) - (bmn0 - bpad)) * 124;
     const bwPl = bv.map((v, i) => BX(i).toFixed(1) + ',' + BY(v).toFixed(1)).join(' ');
     const bTiles = MEAS.map(m => { const a = bodyArr.filter(b => b[m[0]] > 0); if (!a.length) return null; const cur = a[a.length - 1][m[0]], dd = cur - a[0][m[0]]; return { label: fr ? m[2] : m[1], value: dLen(cur) + ' ' + lenU, delta: a.length > 1 ? (dd >= 0 ? '+' : '−') + dLen(Math.abs(dd)) : '' }; }).filter(Boolean);
-    const shEx = w && s.exSheet != null ? w.ex[s.exSheet] : null; const shM = shEx ? this.meta(shEx.name) : null;
+    const shCtx = s.screen === 'workout' && w && s.exSheet != null && w.ex[s.exSheet] ? { list: w.ex, i: s.exSheet, r: false } : s.screen === 'routine' && er && s.rSheet != null && er.ex[s.rSheet] ? { list: er.ex, i: s.rSheet, r: true } : null;
+    const shEx = shCtx ? shCtx.list[shCtx.i] : null; const shM = shEx ? this.meta(shEx.name) : null;
     const tg = (label, sub, on, fn) => ({ label, sub, track: on ? '#CCFF00' : '#24242B', knob: on ? '#0A0A0C' : '#9C9CA8', justify: on ? 'flex-end' : 'flex-start', onClick: fn });
     return {
       isBodyView: s.progView === 'body',
@@ -1338,8 +1340,8 @@ class Component extends DCLogic {
       bodyList: bodyArr.slice().reverse().slice(0, 40).map(b => ({ date: fmtD(b.date), text: [b.w ? this.dispW(b.w) + ' ' + s.unit : null, ...MEAS.filter(m => b[m[0]] > 0).map(m => (fr ? m[2] : m[1]) + ' ' + dLen(b[m[0]]))].filter(Boolean).join(' · '), delLabel: s.bodyDelArm === b.date ? L('Tap again') : '✕', onDel: () => this.delBody(b.date) })),
       sheetOn: !!shEx, sheetName: shEx ? shEx.name : '',
       sheetTypes: [['reps', L('Reps')], ['time', L('Time')]].map(([k, label]) => { const on = shM && (k === 'time') === isT(shM.type); return { label, bg: on ? '#24242B' : 'transparent', color: on ? '#FFFFFF' : '#9C9CA8', onClick: () => shEx && this.setMeta(shEx.name, { type: k === 'time' ? (isU(shM.type) ? 'timeuni' : 'time') : (isU(shM.type) ? 'uni' : 'reps') }) }; }),
-      sheetToggles: shEx ? [tg(L('Per side'), L('Left and right logged separately.'), isU(shM.type), () => this.setMeta(shEx.name, { type: isT(shM.type) ? (isU(shM.type) ? 'time' : 'timeuni') : (isU(shM.type) ? 'reps' : 'uni') })), tg(L('Plate calculator'), L('Shows the plates to load on each side of the bar.'), shM.bar, () => this.setMeta(shEx.name, { bar: !shM.bar }))].concat(s.exSheet < w.ex.length - 1 ? [tg(L('Superset with next'), L('No rest between linked exercises — rest starts after the last one.'), !!shEx.ss, () => this.toggleSS(s.exSheet))] : []) : [],
-      sheetNote: shM ? shM.note : '', onSheetNote: (e) => shEx && this.setMeta(shEx.name, { note: e.target.value }), closeSheet: go({ exSheet: null }),
+      sheetToggles: shEx ? [tg(L('Per side'), L('Left and right logged separately.'), isU(shM.type), () => this.setMeta(shEx.name, { type: isT(shM.type) ? (isU(shM.type) ? 'time' : 'timeuni') : (isU(shM.type) ? 'reps' : 'uni') })), tg(L('Plate calculator'), L('Shows the plates to load on each side of the bar.'), shM.bar, () => this.setMeta(shEx.name, { bar: !shM.bar }))].concat(shCtx.i < shCtx.list.length - 1 ? [tg(L('Superset with next'), L('No rest between linked exercises — rest starts after the last one.'), !!shEx.ss, () => shCtx.r ? this.updR(c => { c.ex[shCtx.i].ss = !c.ex[shCtx.i].ss; }) : this.toggleSS(shCtx.i))] : []) : [],
+      sheetNote: shM ? shM.note : '', onSheetNote: (e) => shEx && this.setMeta(shEx.name, { note: e.target.value }), closeSheet: go({ exSheet: null, rSheet: null }),
       wNote: w ? (w.note || '') : '', onWNote: (e) => { const v = e.target.value; this.updW(x => { x.note = v; }); },
       isTemplates: s.screen === 'templates', templBack: go({ screen: 'tabs', tab: 'programs' }), openTemplates: go({ screen: 'templates' }),
       templates: TEMPLATES.map(t => ({ name: fr ? t.fr : t.name, meta: fr ? t.metaFr : t.meta, desc: fr ? t.descFr : t.desc,
