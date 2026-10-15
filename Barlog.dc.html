@@ -37,6 +37,12 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-if>
 
+<sc-if value="{{ updateOn }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:8px;left:16px;right:16px;display:flex;justify-content:center;z-index:41;">
+<button onClick="{{ applyUpdate }}" style="min-height:44px;padding:0 16px;border-radius:999px;border:none;background:#CCFF00;color:#0A0A0C;font-size:14px;font-weight:700;">New version ready · Tap to update</button>
+</div>
+</sc-if>
+
 <sc-if value="{{ isToday }}" hint-placeholder-val="{{ true }}">
 <div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 16px 24px;display:flex;flex-direction:column;gap:20px;">
 <sc-if value="{{ showInstall }}" hint-placeholder-val="{{ false }}">
@@ -115,8 +121,8 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ isProgress }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 0 24px;display:flex;flex-direction:column;gap:16px;">
 <div style="padding:8px 16px 0;font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">Progress</div>
-<div style="margin:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#16161A;border:1px solid #24242B;border-radius:12px;padding:4px;">
-<sc-for list="{{ progViews }}" as="v" hint-placeholder-count="2">
+<div style="margin:0 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#16161A;border:1px solid #24242B;border-radius:12px;padding:4px;">
+<sc-for list="{{ progViews }}" as="v" hint-placeholder-count="3">
 <button onClick="{{ v.onClick }}" style="height:44px;border:none;border-radius:9px;background:{{ v.bg }};color:{{ v.color }};font-size:15px;font-weight:600;">{{ v.label }}</button>
 </sc-for>
 </div>
@@ -167,27 +173,70 @@ input::placeholder{color:#9C9CA8}
 <button onClick="{{ m.onClick }}" style="height:40px;border:none;border-radius:9px;background:{{ m.bg }};color:{{ m.color }};font-size:13px;font-weight:600;">{{ m.label }}</button>
 </sc-for>
 </div>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ metricHelp }}</span>
 <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:8px;">
-<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ metricLabel }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:700;">{{ curVal }}<span style="font-size:15px;color:#9C9CA8;"> {{ curUnit }}</span></span></div>
-<span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#CCFF00;padding-bottom:8px;">{{ delta }}</span>
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ metricLabel }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:700;">{{ curVal }}<span style="font-size:15px;color:#9C9CA8;"> {{ curUnit }}</span></span></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#CCFF00;padding-bottom:8px;text-align:right;">{{ delta }}</span>
 </div>
-<div style="position:relative;height:160px;">
-<svg width="100%" height="160" viewBox="0 0 324 160" preserveAspectRatio="none" style="position:absolute;inset:0;overflow:visible;">
-<line x1="0" y1="152" x2="324" y2="152" stroke="#24242B" stroke-width="1"></line>
-<line x1="0" y1="80" x2="324" y2="80" stroke="#24242B" stroke-width="1" stroke-dasharray="3 4"></line>
-<line x1="0" y1="8" x2="324" y2="8" stroke="#24242B" stroke-width="1" stroke-dasharray="3 4"></line>
-<polyline points="{{ chartPts }}" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"></polyline>
-</svg>
-<sc-for list="{{ chartDots }}" as="p" hint-placeholder-count="0">
-<div style="position:absolute;left:{{ p.left }};top:{{ p.top }};width:{{ p.size }};height:{{ p.size }};margin:{{ p.margin }};border-radius:50%;background:{{ p.bg }};border:2px solid #16161A;"></div>
+<sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;line-height:18px;color:#FFFFFF;background:#0A0A0C;border-radius:10px;padding:8px 10px;">{{ selSets }}</div>
+</sc-if>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#0A0A0C;border-radius:12px;padding:4px;">
+<sc-for list="{{ ranges }}" as="r" hint-placeholder-count="3">
+<button onClick="{{ r.onClick }}" style="height:36px;border:none;border-radius:9px;background:{{ r.bg }};color:{{ r.color }};font-size:13px;font-weight:600;">{{ r.label }}</button>
 </sc-for>
 </div>
-<div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;"><span>{{ chartFrom }}</span><span style="display:flex;gap:6px;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#CCFF00;"></span>PR</span><span>{{ chartTo }}</span></div>
+<sc-if value="{{ chartEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="height:160px;display:flex;align-items:center;justify-content:center;color:#9C9CA8;font-size:14px;">No sessions in this range.</div>
+</sc-if>
+<sc-if value="{{ chartHas }}" hint-placeholder-val="{{ true }}">
+<div style="position:relative;height:160px;">
+<svg width="100%" height="160" viewBox="0 0 324 160" preserveAspectRatio="none" style="position:absolute;inset:0;overflow:visible;">
+<defs><linearGradient id="blArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CCFF00" stop-opacity="0.22"></stop><stop offset="1" stop-color="#CCFF00" stop-opacity="0"></stop></linearGradient></defs>
+<line x1="0" y1="152" x2="324" y2="152" stroke="#24242B" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+<line x1="0" y1="80" x2="324" y2="80" stroke="#24242B" stroke-width="1" stroke-dasharray="3 4" vector-effect="non-scaling-stroke"></line>
+<line x1="0" y1="8" x2="324" y2="8" stroke="#24242B" stroke-width="1" stroke-dasharray="3 4" vector-effect="non-scaling-stroke"></line>
+<polygon points="{{ areaPts }}" fill="url(#blArea)"></polygon>
+<polyline points="{{ chartPts }}" fill="none" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="1.5" stroke-linejoin="round" vector-effect="non-scaling-stroke"></polyline>
+<polyline points="{{ trendPts }}" fill="none" stroke="#CCFF00" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"></polyline>
+</svg>
+<sc-for list="{{ chartAxis }}" as="a" hint-placeholder-count="0">
+<span style="position:absolute;left:0;top:{{ a.top }};font-family:'JetBrains Mono',monospace;font-size:11px;color:#9C9CA8;pointer-events:none;">{{ a.label }}</span>
+</sc-for>
+<sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:0;bottom:8px;left:{{ selLeft }};width:1px;background:#55555F;pointer-events:none;"></div>
+</sc-if>
+<sc-for list="{{ chartDots }}" as="p" hint-placeholder-count="0">
+<button onClick="{{ p.onClick }}" style="position:absolute;left:{{ p.left }};top:{{ p.top }};width:36px;height:36px;margin:-18px 0 0 -18px;padding:0;border:none;background:transparent;display:flex;align-items:center;justify-content:center;">
+<span style="width:{{ p.size }};height:{{ p.size }};border-radius:50%;background:{{ p.bg }};border:2px solid #16161A;box-shadow:0 0 0 2px {{ p.halo }};"></span>
+</button>
+</sc-for>
+</div>
+</sc-if>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;"><span>{{ chartFrom }}</span><span style="display:flex;gap:10px;align-items:center;"><span style="display:flex;gap:5px;align-items:center;"><span style="width:14px;height:3px;border-radius:2px;background:#CCFF00;"></span>Trend</span><span style="display:flex;gap:5px;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#CCFF00;"></span>PR</span></span><span>{{ chartTo }}</span></div>
+<span style="font-size:12px;color:#9C9CA8;text-align:center;">Tap a point for details</span>
+</div>
+<sc-if value="{{ stallOn }}" hint-placeholder-val="{{ false }}">
+<div style="margin:0 16px;background:#16161A;border:1px solid #33333C;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;">
+<span style="font-size:15px;font-weight:700;">{{ stallTitle }}</span>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ stallText }}</span>
+</div>
+</sc-if>
+<div style="margin:0 16px;display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Rep records · heaviest weight ({{ curUnit }})</div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
+<sc-for list="{{ repRecs }}" as="rr" hint-placeholder-count="6">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;">
+<span style="font-size:12px;font-weight:600;color:#9C9CA8;">{{ rr.label }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;">{{ rr.value }}</span>
+</div>
+</sc-for>
+</div>
 </div>
 <div style="margin:0 16px;display:flex;flex-direction:column;gap:8px;">
 <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Records · {{ progEx }}</div>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:16px;">
-<sc-for list="{{ records }}" as="rc" hint-placeholder-count="4">
+<sc-for list="{{ records }}" as="rc" hint-placeholder-count="5">
 <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #24242B;gap:8px;">
 <span style="font-size:15px;color:#9C9CA8;">{{ rc.label }}</span>
 <span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;">{{ rc.value }}</span>
@@ -206,7 +255,60 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-for>
 </div>
-<span style="font-size:13px;color:#9C9CA8;">Right column: best estimated 1RM of the session. Lime = PR.</span>
+<span style="font-size:13px;color:#9C9CA8;">Right column: best estimated 1RM of the session. Lime = PR. @n = RIR.</span>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ isStatsView }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:16px;padding:0 16px;">
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Consistency</div>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:16px;">
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
+<sc-for list="{{ statTiles }}" as="t" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;font-weight:600;color:#9C9CA8;">{{ t.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;">{{ t.value }}</span></div>
+</sc-for>
+</div>
+<div style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;align-items:end;height:112px;">
+<sc-for list="{{ weekBars }}" as="b" hint-placeholder-count="8">
+<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%;">
+<span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#FFFFFF;">{{ b.count }}</span>
+<div style="width:100%;height:{{ b.h }};border-radius:6px;background:{{ b.bg }};"></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:{{ b.labelColor }};">{{ b.label }}</span>
+</div>
+</sc-for>
+</div>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ plannedLabel }}</span>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Sets per muscle · weekly avg, last 4 wk</div>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:8px 16px;display:flex;flex-direction:column;">
+<sc-for list="{{ muscleRows }}" as="g" hint-placeholder-count="6">
+<div style="display:grid;grid-template-columns:84px minmax(0,1fr) 44px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #24242B;">
+<div style="display:flex;flex-direction:column;gap:1px;"><span style="font-size:15px;font-weight:600;">{{ g.name }}</span><span style="font-size:11px;color:{{ g.tagColor }};white-space:nowrap;">{{ g.tag }}</span></div>
+<div style="position:relative;height:10px;border-radius:5px;background:#0A0A0C;overflow:hidden;">
+<div style="position:absolute;top:0;bottom:0;left:40%;width:40%;background:rgba(204,255,0,0.14);"></div>
+<div style="position:absolute;top:0;bottom:0;left:0;width:{{ g.w }};border-radius:5px;background:{{ g.color }};"></div>
+</div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;text-align:right;">{{ g.avg }}</span>
+</div>
+</sc-for>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;padding:10px 0 6px;text-wrap:pretty;">Shaded zone = 10–20 work sets per muscle per week, the usual range for muscle growth. Warm-ups excluded.</span>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">e1RM trend · last 4 weeks</div>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;overflow:hidden;">
+<sc-for list="{{ liftTrends }}" as="lt" hint-placeholder-count="6">
+<button onClick="{{ lt.onClick }}" style="width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto 14px;gap:10px;align-items:center;padding:12px 16px;min-height:56px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;text-align:left;" style-active="background:#24242B">
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ lt.name }}</span><sc-if value="{{ lt.hasFlag }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#9C9CA8;">{{ lt.flag }}</span></sc-if></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:{{ lt.color }};">{{ lt.pct }}</span>
+<span style="color:#9C9CA8;font-size:16px;">›</span>
+</button>
+</sc-for>
+</div>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ stalledLine }}</span>
 </div>
 </div>
 </sc-if>
@@ -323,13 +425,19 @@ input::placeholder{color:#9C9CA8}
 <button onClick="{{ s.rMinus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">−1 rep</button>
 <button onClick="{{ s.rPlus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">+1 rep</button>
 </div>
+<div style="display:grid;grid-template-columns:48px repeat(5,minmax(0,1fr));gap:6px;align-items:center;padding:0 12px 12px;">
+<span style="font-size:12px;font-weight:700;letter-spacing:0.06em;color:#9C9CA8;line-height:14px;">RIR<br>opt.</span>
+<sc-for list="{{ s.rirs }}" as="q" hint-placeholder-count="5">
+<button onClick="{{ q.onClick }}" style="height:44px;border-radius:10px;border:1px solid #33333C;background:{{ q.bg }};color:{{ q.color }};font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;">{{ q.label }}</button>
+</sc-for>
+</div>
 </sc-if>
 </div>
 </sc-for>
 <button onClick="{{ ex.onAddSet }}" style="width:100%;height:52px;border:none;border-top:1px solid #24242B;background:transparent;color:#9C9CA8;font-size:15px;font-weight:600;" style-active="background:#24242B">+ Add set</button>
 </div>
 </sc-for>
-<span style="font-size:13px;line-height:18px;color:#9C9CA8;padding:0 4px;text-wrap:pretty;">Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.</span>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;padding:0 4px;text-wrap:pretty;">Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume. RIR (optional) = reps you still had in the tank; 3+ on every set doubles the next weight jump.</span>
 <button onClick="{{ openLibW }}" style="min-height:56px;border-radius:16px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:15px;font-weight:600;">+ Add exercise</button>
 <button onClick="{{ discard }}" style="min-height:48px;border:none;background:transparent;color:#9C9CA8;font-size:14px;font-weight:600;">{{ discardLabel }}</button>
 </div>
@@ -552,7 +660,8 @@ class Component extends DCLogic {
     if (extra.workout) extra.screen = 'workout';
     this.setState({ ...extra, standalone });
     this.iv = setInterval(() => this.tick(), 250);
-    this.onVis = () => { this.save(); this.syncWake(); this.tick(); };
+    this.onVis = () => { this.save(); this.syncWake(); this.tick(); if (document.visibilityState === 'visible') this.checkUpdate(); };
+    this.checkUpdate();
     document.addEventListener('visibilitychange', this.onVis);
     window.addEventListener('pagehide', this.onVis);
     try { if ('serviceWorker' in navigator && location.protocol === 'https:' && window.self === window.top) navigator.serviceWorker.register('./sw.js').catch(() => {}); } catch (e) {}
@@ -593,6 +702,17 @@ class Component extends DCLogic {
     if (s.workout || s.restEnd || now - s.now > 20000) this.setState({ now });
   }
   inc() { return this.state.unit === 'kg' ? 2.5 : 5 / KG_LB; }
+  checkUpdate() {
+    if (location.protocol !== 'https:' || window.self !== window.top || !navigator.onLine) return;
+    const now = Date.now(); if (this.lastUpd && now - this.lastUpd < 60000) return; this.lastUpd = now;
+    fetch('./Barlog.dc.html?v=' + now, { cache: 'no-store' }).then(r => r.ok ? r.text() : null).then(t => {
+      if (!t) return;
+      if (this.ver == null) { this.ver = t; return; }
+      if (t === this.ver) return;
+      const s = this.state;
+      if (!s.workout && s.screen === 'tabs') { this.save(); location.reload(); } else this.setState({ updateReady: true });
+    }).catch(() => {});
+  }
   dispW(kg) { return this.state.unit === 'kg' ? trim(Math.round(kg * 4) / 4) : trim(Math.round(kg * KG_LB * 2) / 2); }
   mkEx(name, n, target, history) {
     const hist = history[name] || [];
@@ -600,7 +720,8 @@ class Component extends DCLogic {
     const lastW = [...hist].reverse().find(se => se.sets.some(x => x.w > 0));
     const ws = last ? work(last.sets).filter(x => x.w > 0) : [];
     const up = !!(target && ws.length && ws.every(x => x.r >= target));
-    const inc = this.inc(); const sets = [];
+    const rirs = ws.map(x => x.rir).filter(v => v != null);
+    const inc = this.inc() * (up && rirs.length === ws.length && rirs.every(v => v >= 3) ? 2 : 1); const sets = [];
     for (let i = 0; i < n; i++) {
       const p = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null;
       const bump = up && p && !p.wu;
@@ -647,6 +768,7 @@ class Component extends DCLogic {
     });
     if (fx === 'pr') { this.buzz([30, 60, 30]); this.tone([[660, 0, 0.1], [990, 0.1, 0.22]]); } else if (fx === 'log') this.buzz(15);
   }
+  setRir(ei, si, v) { this.updW(w => { const x = w.ex[ei].sets[si]; x.rir = x.rir === v ? null : v; }); }
   toggleWarm(ei, si) { this.updW(w => { const x = w.ex[ei].sets[si]; x.warm = !x.warm; if (x.warm) x.isPR = false; }); }
   adj(ei, si, f, d) { this.updW(w => { const x = w.ex[ei].sets[si]; x[f] = Math.max(0, Math.round((x[f] + d) * 1000) / 1000); x.wStr = null; x.rStr = null; }); }
   typeW(ei, si, val) { this.updW((w, s) => { const x = w.ex[ei].sets[si]; x.wStr = val; const v = parseFloat(String(val).replace(',', '.')); if (!isNaN(v)) x.w = s.unit === 'kg' ? v : v / KG_LB; else if (val === '') x.w = 0; }); }
@@ -670,7 +792,7 @@ class Component extends DCLogic {
       const last = (s.history[ex.name] || []).slice(-1)[0];
       if (last) { hasPrev = true; prevVol += work(last.sets).reduce((a, x) => a + x.w * x.r, 0); }
       ds.forEach(x => { if (x.warm) return; vol += x.w * x.r; if (x.isPR && (!prs[ex.name] || e1(x.w, x.r) > prs[ex.name].e)) prs[ex.name] = { name: ex.name, w: x.w, r: x.r, e: e1(x.w, x.r) }; });
-      const entry = ds.map(x => x.warm ? { w: x.w, r: x.r, wu: true } : { w: x.w, r: x.r });
+      const entry = ds.map(x => x.warm ? { w: x.w, r: x.r, wu: true } : x.rir != null ? { w: x.w, r: x.r, rir: x.rir } : { w: x.w, r: x.r });
       h[ex.name] = [...(h[ex.name] || []), { date: w.start, sets: entry }];
       exs.push({ name: ex.name, sets: entry });
     });
@@ -772,6 +894,8 @@ class Component extends DCLogic {
             checkBg: x.done ? '#CCFF00' : 'transparent', checkColor: x.done ? '#0A0A0C' : '#9C9CA8', checkBorder: x.done ? '#CCFF00' : '#33333C',
             onFocus: () => { if (!x.done) this.setState({ focus: { ei, si } }); },
             onWarm: (e) => { e.stopPropagation(); this.toggleWarm(ei, si); },
+            rirs: [0, 1, 2, 3, 4].map(v => ({ label: v === 4 ? '4+' : String(v), bg: x.rir === v ? '#CCFF00' : '#0A0A0C', color: x.rir === v ? '#0A0A0C' : '#FFFFFF', onClick: (e) => { e.stopPropagation(); this.setRir(ei, si, v); } })),
+            rirTag: x.rir != null ? 'RIR ' + (x.rir === 4 ? '4+' : x.rir) : '',
             onSelect: (e) => { const t = e.target; setTimeout(() => { try { t.setSelectionRange(0, t.value.length); } catch (er) {} }, 0); },
             onCheck: (e) => { e.stopPropagation(); this.check(ei, si); },
             onW: (e) => this.typeW(ei, si, e.target.value), onR: (e) => this.typeR(ei, si, e.target.value),
@@ -798,22 +922,54 @@ class Component extends DCLogic {
       repsMinus: () => this.updR(c => { c.ex[i].reps = Math.max(1, c.ex[i].reps - 1); }), repsPlus: () => this.updR(c => { c.ex[i].reps = Math.min(50, c.ex[i].reps + 1); })
     })) : [];
 
-    const histNames = Object.keys(s.history).filter(k => s.history[k].some(se => work(se.sets).some(x => x.w > 0)));
-    const progEx = histNames.includes(s.progEx) ? s.progEx : (histNames[0] || '');
-    const sess = (s.history[progEx] || []).map(se => ({ date: se.date, ws: work(se.sets) })).filter(se => se.ws.length);
+    const hasW = k => (s.history[k] || []).some(se => work(se.sets).some(x => x.w > 0));
+    const progNames = [...new Set(routines.flatMap(r => r.ex.map(e => e.name)))].filter(hasW);
+    const histNames = progNames.length ? progNames : Object.keys(s.history).filter(hasW);
+    const topE = n => Math.max(0, ...(s.history[n] || []).flatMap(se => work(se.sets).map(x => e1(x.w, x.r))));
+    const progEx = histNames.includes(s.progEx) ? s.progEx : (histNames.slice().sort((a, b) => topE(b) - topE(a))[0] || '');
+    const T = Date.now();
+    const fmtD = (t) => new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const setTxt = x => this.dispW(x.w) + '×' + x.r + (x.rir != null ? '@' + x.rir : '');
+    const sessAll = (s.history[progEx] || []).map(se => ({ date: se.date, ws: work(se.sets).filter(x => x.w > 0) })).filter(se => se.ws.length);
+    const RANGES = [['4w', '4 wk', 28], ['3m', '3 mo', 91], ['all', 'All', 0]];
+    const rg = RANGES.find(r => r[0] === s.progRange) || RANGES[2];
+    const cut = rg[2] ? T - rg[2] * DAY : -Infinity;
+    const sess = sessAll.filter(se => se.date >= cut);
     const val = (se) => s.metric === 'e1rm' ? Math.max(...se.ws.map(x => e1(x.w, x.r))) : s.metric === 'vol' ? se.ws.reduce((a, x) => a + x.w * x.r, 0) : Math.max(...se.ws.map(x => x.w));
     const series = sess.map(val);
+    const prior = sessAll.filter(se => se.date < cut).map(val);
     const toU = (v) => s.metric === 'vol' ? Math.round(kg ? v : v * KG_LB).toLocaleString() : this.dispW(v);
-    const mn = Math.min(...series), mx = Math.max(...series);
-    let run = 0;
-    const pts = series.map((v, i) => { const x = series.length > 1 ? 4 + i * 316 / (series.length - 1) : 162; const y = 152 - (mx > mn ? (v - mn) / (mx - mn) : 0.5) * 144; const pr = v > run + 0.01; run = Math.max(run, v); return { x, y, pr }; });
-    const chartDots = pts.map(p => ({ left: (p.x / 324 * 100) + '%', top: p.y + 'px', size: p.pr ? '12px' : '8px', margin: p.pr ? '-6px 0 0 -6px' : '-4px 0 0 -4px', bg: p.pr ? '#CCFF00' : '#FFFFFF' }));
-    const fmtD = (t) => new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const mn0 = series.length ? Math.min(...series) : 0, mx0 = series.length ? Math.max(...series) : 1;
+    const padV = mx0 > mn0 ? (mx0 - mn0) * 0.1 : Math.max(1, mx0 * 0.05);
+    const mn = mn0 - padV, mx = mx0 + padV;
+    const X = i => series.length > 1 ? 44 + i * 270 / (series.length - 1) : 179;
+    const Y = v => 152 - (v - mn) / (mx - mn) * 144;
+    const trend = series.map((v, i) => { const a = series.slice(Math.max(0, i - 1), i + 2); return a.reduce((x, y) => x + y, 0) / a.length; });
+    const pl = a => a.map((v, i) => X(i).toFixed(1) + ',' + Y(v).toFixed(1)).join(' ');
+    const sel = s.progSel != null && s.progSel < series.length ? s.progSel : null;
+    let run = prior.length ? Math.max(...prior) : 0;
+    const pts = series.map((v, i) => { const pr = v > run + 0.01; run = Math.max(run, v); return { x: X(i), y: Y(v), pr }; });
+    const chartDots = pts.map((p, i) => { const on = sel === i; const sz = on ? 14 : p.pr ? 12 : 8; return { left: (p.x / 324 * 100) + '%', top: p.y + 'px', size: sz + 'px', bg: p.pr ? '#CCFF00' : '#FFFFFF', halo: on ? '#FFFFFF' : 'transparent', onClick: () => this.setState({ progSel: on ? null : i }) }; });
+    const axisVals = mx0 > mn0 ? [mx0, (mx0 + mn0) / 2, mn0] : series.length ? [mx0] : [];
+    const chartAxis = axisVals.map(v => ({ label: toU(v), top: (Y(v) - 17) + 'px' }));
     let bestE = 0, bestW = 0, bestV = 0, bestSet = '';
-    sess.forEach(se => { se.ws.forEach(x => { const e = e1(x.w, x.r); if (e > bestE) { bestE = e; bestSet = this.dispW(x.w) + ' × ' + x.r; } bestW = Math.max(bestW, x.w); }); bestV = Math.max(bestV, se.ws.reduce((a, x) => a + x.w * x.r, 0)); });
+    sessAll.forEach(se => { se.ws.forEach(x => { const e = e1(x.w, x.r); if (e > bestE) { bestE = e; bestSet = this.dispW(x.w) + ' × ' + x.r; } bestW = Math.max(bestW, x.w); }); bestV = Math.max(bestV, se.ws.reduce((a, x) => a + x.w * x.r, 0)); });
     const delta = series.length > 1 ? series[series.length - 1] - series[0] : 0;
+    const liftStat = name => {
+      const a = (s.history[name] || []).map(se => ({ date: se.date, e: Math.max(0, ...work(se.sets).map(x => e1(x.w, x.r))) })).filter(x => x.e > 0).sort((p, q) => p.date - q.date);
+      const best = (f0, t0) => Math.max(0, ...a.filter(x => x.date >= f0 && x.date < t0).map(x => x.e));
+      const inWin = a.filter(x => x.date >= T - 28 * DAY);
+      const cur = best(T - 28 * DAY, T + DAY), prev = best(T - 56 * DAY, T - 28 * DAY) || (inWin.length >= 2 ? inWin[0].e : 0);
+      let r0 = 0, lastPR = null; a.forEach(x => { if (x.e > r0 + 0.01) { r0 = x.e; lastPR = x.date; } });
+      const since = lastPR ? a.filter(x => x.date > lastPR).length : 0;
+      const wks = lastPR ? Math.floor((T - lastPR) / (7 * DAY)) : 0;
+      return { pct: cur && prev ? (cur - prev) / prev * 100 : null, stalled: wks >= 3 && since >= 2, wks, since };
+    };
+    const pctTxt = p => p == null ? '—' : (p >= 0 ? '+' : '−') + Math.abs(p).toFixed(1) + '%';
+    const ls = liftStat(progEx);
+    const repRecs = [1, 3, 5, 8, 10, 12].map(n => { let b = 0; sessAll.forEach(se => se.ws.forEach(x => { if (x.r >= n) b = Math.max(b, x.w); })); return { label: n + (n === 1 ? ' rep' : ' reps'), value: b ? this.dispW(b) : '—' }; });
     let runE = 0;
-    const histRows = sess.map(se => { const e = Math.max(...se.ws.map(x => e1(x.w, x.r))); const pr = e > runE + 0.01; runE = Math.max(runE, e); return { date: fmtD(se.date), sets: se.ws.map(x => this.dispW(x.w) + '×' + x.r).join('  '), val: this.dispW(e), color: pr ? '#CCFF00' : '#FFFFFF' }; });
+    const histRows = sessAll.map(se => { const e = Math.max(...se.ws.map(x => e1(x.w, x.r))); const pr = e > runE + 0.01; runE = Math.max(runE, e); return { date: fmtD(se.date), sets: se.ws.map(setTxt).join('  '), val: this.dispW(e), color: pr ? '#CCFF00' : '#FFFFFF' }; });
     const histList = histRows.reverse().slice(0, 12);
 
     const sm = s.summary;
@@ -847,14 +1003,34 @@ class Component extends DCLogic {
     }
     const fmtLong = t => new Date(t).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
     const sd = s.openSess != null ? sessions.find(x => x.date === s.openSess) : null;
+    const wkStart = t => { const d = new Date(t); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - (d.getDay() + 6) % 7); return d.getTime(); };
+    const planned = Math.max(1, routines.length);
+    const w0 = wkStart(T);
+    const wkKey = i => wkStart(w0 - i * 7 * DAY + 3 * DAY);
+    const wkCount = {}; sessions.forEach(se => { const k = wkStart(se.date); wkCount[k] = (wkCount[k] || 0) + 1; });
+    const thisWk = wkCount[w0] || 0;
+    let streak = 0; for (let i = thisWk >= planned ? 0 : 1; i < 520; i++) { if ((wkCount[wkKey(i)] || 0) >= planned) streak++; else break; }
+    let last4 = 0; for (let i = 1; i <= 4; i++) last4 += wkCount[wkKey(i)] || 0;
+    const barMax = Math.max(planned, ...Array.from({ length: 8 }, (_, i) => wkCount[wkKey(i)] || 0));
+    const weekBars = Array.from({ length: 8 }, (_, j) => { const i = 7 - j; const k = wkKey(i); const c = wkCount[k] || 0; const d = new Date(k); return { count: String(c), h: Math.max(3, c / barMax * 72) + 'px', bg: c >= planned ? '#CCFF00' : c ? '#FFFFFF' : '#33333C', label: d.getDate() + '/' + (d.getMonth() + 1), labelColor: i === 0 ? '#FFFFFF' : '#9C9CA8' }; });
+    const GMAP = {}; [...LIB, ...s.custom].forEach(l => { GMAP[l.name] = l.group; });
+    const mg = {}, mgNow = {};
+    Object.entries(s.history).forEach(([name, arr]) => { const g = GMAP[name]; if (!g) return; arr.forEach(se => { const n = work(se.sets).length; const k = wkStart(se.date); if (k >= wkKey(4) && k < w0) mg[g] = (mg[g] || 0) + n; if (k === w0) mgNow[g] = (mgNow[g] || 0) + n; }); });
+    const muscleRows = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core'].map(g => { const avg = (mg[g] || 0) / 4; const ok = avg >= 10 && avg <= 20; return { name: g, avg: String(Math.round(avg * 10) / 10), w: Math.min(100, avg / 25 * 100) + '%', color: ok ? '#CCFF00' : '#FFFFFF', tag: (avg < 10 ? 'Low' : avg > 20 ? 'High' : 'In range') + ' · ' + (mgNow[g] || 0) + ' this week', tagColor: ok ? '#CCFF00' : '#9C9CA8' }; });
+    const liftTrends = histNames.map(n => { const st = liftStat(n); return { name: n, pct: pctTxt(st.pct), color: st.pct == null ? '#9C9CA8' : st.pct > 0.05 ? '#CCFF00' : '#FFFFFF', flag: st.stalled ? 'No PR for ' + st.wks + ' weeks' : '', hasFlag: !!st.stalled, onClick: go({ progView: 'lifts', progEx: n, progSel: null }) }; });
+    const stalledN = liftTrends.filter(x => x.hasFlag).length;
 
     return {
       toastOn: !!s.toast, toast: s.toast,
+      updateOn: !!s.updateReady && !s.workout && s.screen === 'tabs', applyUpdate: () => { this.save(); location.reload(); },
       showInstall: !s.standalone && !s.installSeen, dismissInstall: go({ installSeen: true }),
       isToday: showTabs && s.tab === 'today', isPrograms: showTabs && s.tab === 'programs', isProgress: showTabs && s.tab === 'progress', isProfile: showTabs && s.tab === 'profile',
       isSession: s.screen === 'session' && !!sd,
-      progViews: [['sessions', 'Sessions'], ['lifts', 'Lifts']].map(([k, label]) => ({ label, bg: s.progView === k ? '#24242B' : 'transparent', color: s.progView === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ progView: k }) })),
-      isSessView: s.progView !== 'lifts', isLiftView: s.progView === 'lifts',
+      progViews: [['sessions', 'Sessions'], ['lifts', 'Lifts'], ['stats', 'Stats']].map(([k, label]) => ({ label, bg: s.progView === k ? '#24242B' : 'transparent', color: s.progView === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ progView: k }) })),
+      isSessView: !['lifts', 'stats'].includes(s.progView), isLiftView: s.progView === 'lifts', isStatsView: s.progView === 'stats',
+      statTiles: [{ label: 'This week', value: thisWk + '/' + planned }, { label: 'Last 4 wk', value: Math.round(last4 / (4 * planned) * 100) + '%' }, { label: 'Streak', value: streak + ' wk' }],
+      weekBars, plannedLabel: 'Target: ' + planned + ' sessions per week (one per routine). Streak = weeks in a row at target.',
+      muscleRows, liftTrends, stalledLine: (stalledN ? stalledN + ' lift' + (stalledN > 1 ? 's' : '') + ' without a PR for 3+ weeks.' : 'Every lift has set a PR in the last 3 weeks.') + ' Compared with the 4 weeks before, or with your first session of the period if there is no earlier data.',
       calTitle: cm.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }), calCount: monthCount + ' session' + (monthCount === 1 ? '' : 's'),
       calPrev: go({ calOff: s.calOff - 1 }), calNext: () => { if (s.calOff < 0) this.setState({ calOff: s.calOff + 1 }); }, calNextOpacity: s.calOff < 0 ? 1 : 0.3,
       calDays, noSess: !sessions.length,
@@ -862,7 +1038,7 @@ class Component extends DCLogic {
       sdName: sd ? sd.name : '', sdDate: sd ? fmtLong(sd.date) : '',
       sdStats: sd ? [{ label: 'Time', value: sd.dur ? clock(sd.dur) : '—' }, { label: 'Sets', value: String(sd.sets) }, { label: 'Vol ' + s.unit, value: volU(sd.vol) }] : [],
       sdEx: sd ? sd.ex.map(x => { let n = 0; return { name: x.name, sets: x.sets.map((y, i) => { const k = sd.date + '|' + x.name + '|' + i + '|'; return {
-        num: y.wu ? 'W' : String(++n), text: (y.w ? this.dispW(y.w) + ' ' + s.unit + ' × ' : '') + y.r + (y.w ? '' : ' reps'), e: y.w && !y.wu ? 'e1RM ' + this.dispW(e1(y.w, y.r)) : '',
+        num: y.wu ? 'W' : String(++n), text: (y.w ? this.dispW(y.w) + ' ' + s.unit + ' × ' : '') + y.r + (y.w ? '' : ' reps') + (y.rir != null ? ' · RIR ' + y.rir : ''), e: y.w && !y.wu ? 'e1RM ' + this.dispW(e1(y.w, y.r)) : '',
         wDisp: s.editBuf[k + 'w'] != null ? s.editBuf[k + 'w'] : (y.w ? this.dispW(y.w) : ''), rDisp: s.editBuf[k + 'r'] != null ? s.editBuf[k + 'r'] : String(y.r),
         onW: (e) => this.editSessSet(sd.date, x.name, i, 'w', e.target.value), onR: (e) => this.editSessSet(sd.date, x.name, i, 'r', e.target.value),
         onSelect: (e) => { const t = e.target; setTimeout(() => { try { t.setSelectionRange(0, t.value.length); } catch (er) {} }, 0); } }; }) }; }) : [],
@@ -882,14 +1058,23 @@ class Component extends DCLogic {
       otherRoutines: routines.filter(r => r !== next).map(r => ({ name: r.name, meta: r.ex.length + ' exercises · ' + ago(lastOf(r)), onStart: () => this.start(r.id) })),
       routineCards: routines.map(r => ({ name: r.name, exText: r.ex.length ? r.ex.map(e => e.name + ' ' + e.sets + '×' + e.reps).join(' · ') : 'No exercises yet', nextOpacity: r === next ? 1 : 0, onEdit: go({ editId: r.id, screen: 'routine', deleteArm: false }), onStart: () => this.start(r.id) })),
       newRoutine: () => this.newRoutine(),
-      progEx, progChips: histNames.map(n => ({ name: n, bg: n === progEx ? '#FFFFFF' : 'transparent', color: n === progEx ? '#0A0A0C' : '#FFFFFF', border: n === progEx ? '#FFFFFF' : '#33333C', onClick: go({ progEx: n }) })),
-      metrics: [['e1rm','Est. 1RM'],['vol','Volume'],['top','Top set']].map(([k, label]) => ({ label, bg: s.metric === k ? '#24242B' : 'transparent', color: s.metric === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ metric: k }) })),
-      metricLabel: s.metric === 'e1rm' ? 'Estimated 1RM' : s.metric === 'vol' ? 'Session volume' : 'Heaviest set',
-      curVal: series.length ? toU(series[series.length - 1]) : '—', curUnit: s.unit,
-      delta: series.length > 1 ? (delta >= 0 ? '+' : '−') + toU(Math.abs(delta)) + ' · ' + series.length + ' sessions' : '',
-      chartPts: pts.map(p => p.x.toFixed(1) + ',' + p.y.toFixed(1)).join(' '), chartDots,
+      progEx, progChips: histNames.map(n => ({ name: n, bg: n === progEx ? '#FFFFFF' : 'transparent', color: n === progEx ? '#0A0A0C' : '#FFFFFF', border: n === progEx ? '#FFFFFF' : '#33333C', onClick: go({ progEx: n, progSel: null }) })),
+      metrics: [['e1rm','Est. 1RM'],['vol','Volume'],['top','Top set']].map(([k, label]) => ({ label, bg: s.metric === k ? '#24242B' : 'transparent', color: s.metric === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ metric: k, progSel: null }) })),
+      metricHelp: s.metric === 'e1rm' ? 'Estimated max for 1 rep, from your best set: weight × (1 + reps ÷ 30). Best overall strength gauge.' : s.metric === 'vol' ? 'Total weight × reps over all work sets of the session. Tracks workload — the main driver of muscle growth.' : 'Heaviest weight lifted in the session, regardless of reps.',
+      ranges: RANGES.map(([k, label]) => ({ label, bg: rg[0] === k ? '#24242B' : 'transparent', color: rg[0] === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ progRange: k, progSel: null }) })),
+      metricLabel: (s.metric === 'e1rm' ? 'Estimated 1RM' : s.metric === 'vol' ? 'Session volume' : 'Heaviest set') + (sel != null ? ' · ' + fmtD(sess[sel].date) : ''),
+      curVal: sel != null ? toU(series[sel]) : series.length ? toU(series[series.length - 1]) : '—', curUnit: s.unit,
+      delta: sel == null && series.length > 1 ? (delta >= 0 ? '+' : '−') + toU(Math.abs(delta)) + ' · ' + series.length + ' sessions' : '',
+      hasSel: sel != null, selSets: sel != null ? sess[sel].ws.map(setTxt).join('   ') : '', selLeft: sel != null ? (pts[sel].x / 324 * 100) + '%' : '0%',
+      chartEmpty: !series.length, chartHas: !!series.length,
+      chartPts: series.length ? pl(series) : '', trendPts: series.length > 2 ? pl(trend) : '',
+      areaPts: series.length ? X(0).toFixed(1) + ',152 ' + pl(series) + ' ' + X(series.length - 1).toFixed(1) + ',152' : '',
+      chartDots, chartAxis,
       chartFrom: sess.length ? fmtD(sess[0].date) : '', chartTo: sess.length ? fmtD(sess[sess.length - 1].date) : '',
-      records: [{ label: 'Best e1RM', value: this.dispW(bestE) + ' ' + s.unit }, { label: 'Best set', value: bestSet + ' ' + s.unit }, { label: 'Heaviest weight', value: this.dispW(bestW) + ' ' + s.unit }, { label: 'Best session volume', value: volU(bestV) + ' ' + s.unit }],
+      stallOn: ls.stalled, stallTitle: 'No PR on ' + progEx + ' for ' + ls.wks + ' weeks',
+      stallText: ls.since + ' sessions since your last best. Try a deload week (−10%), a different rep range, or a close variation.',
+      repRecs,
+      records: [{ label: '4-week trend (e1RM)', value: pctTxt(ls.pct) }, { label: 'Best e1RM', value: this.dispW(bestE) + ' ' + s.unit }, { label: 'Best set', value: bestSet + ' ' + s.unit }, { label: 'Heaviest weight', value: this.dispW(bestW) + ' ' + s.unit }, { label: 'Best session volume', value: volU(bestV) + ' ' + s.unit }],
       histList,
       storageLine: sessCount + ' sessions stored offline.',
       kgBg: kg ? '#24242B' : 'transparent', kgColor: kg ? '#fff' : '#9C9CA8', lbBg: kg ? 'transparent' : '#24242B', lbColor: kg ? '#9C9CA8' : '#fff',
