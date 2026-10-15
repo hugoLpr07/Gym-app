@@ -37,6 +37,32 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-if>
 
+<sc-if value="{{ sheetOn }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ closeSheet }}" style="position:fixed;inset:0;z-index:60;background:rgba(0,0,0,0.65);display:flex;align-items:flex-end;justify-content:center;">
+<div onClick="{{ stop }}" style="width:100%;max-width:480px;max-height:88%;overflow-y:auto;box-sizing:border-box;background:#16161A;border-top:1px solid #33333C;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px;">
+<span style="font-size:20px;font-weight:800;">{{ sheetName }}</span>
+<div style="display:flex;flex-direction:column;gap:6px;">
+<span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.nType }}</span>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#0A0A0C;border-radius:12px;padding:4px;">
+<sc-for list="{{ sheetTypes }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.onClick }}" style="height:44px;border:none;border-radius:9px;background:{{ t.bg }};color:{{ t.color }};font-size:14px;font-weight:600;">{{ t.label }}</button></sc-for>
+</div>
+</div>
+<sc-for list="{{ sheetToggles }}" as="t" hint-placeholder-count="2">
+<button onClick="{{ t.onClick }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:6px 0;border:none;background:transparent;color:#fff;text-align:left;">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:600;">{{ t.label }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ t.sub }}</span></div>
+<span style="flex:0 0 auto;width:52px;height:32px;border-radius:999px;background:{{ t.track }};display:flex;justify-content:{{ t.justify }};align-items:center;padding:3px;"><span style="width:26px;height:26px;border-radius:50%;background:{{ t.knob }};"></span></span>
+</button>
+</sc-for>
+<div style="display:flex;flex-direction:column;gap:6px;">
+<span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.nNote }}</span>
+<textarea value="{{ sheetNote }}" onChange="{{ onSheetNote }}" placeholder="{{ tx.nNotePh }}" rows="3" style="width:100%;border-radius:12px;border:1px solid #24242B;background:#0A0A0C;color:#fff;font-size:16px;line-height:22px;padding:12px;font-family:inherit;resize:none;"></textarea>
+<span style="font-size:12px;color:#9C9CA8;">{{ tx.nNoteSub }}</span>
+</div>
+<button onClick="{{ closeSheet }}" style="min-height:56px;border-radius:16px;border:none;background:#CCFF00;color:#0A0A0C;font-size:16px;font-weight:700;">{{ tx.nDone }}</button>
+</div>
+</div>
+</sc-if>
+
 <sc-if value="{{ confirmOn }}" hint-placeholder-val="{{ false }}">
 <div onClick="{{ confirmCancel }}" style="position:fixed;inset:0;z-index:60;background:rgba(0,0,0,0.65);display:flex;align-items:flex-end;justify-content:center;">
 <div onClick="{{ stop }}" style="width:100%;max-width:480px;box-sizing:border-box;background:#16161A;border-top:1px solid #33333C;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;">
@@ -139,14 +165,15 @@ input::placeholder{color:#9C9CA8}
 </sc-for>
 </div>
 <button onClick="{{ newRoutine }}" style="height:56px;border-radius:16px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:16px;font-weight:600;" style-active="background:#16161A">{{ tx.k21 }}</button>
+<button onClick="{{ openTemplates }}" style="min-height:56px;border-radius:16px;border:1px solid #33333C;background:transparent;color:#CCFF00;font-size:15px;font-weight:600;">{{ tx.nFromTpl }}</button>
 </div>
 </sc-if>
 
 <sc-if value="{{ isProgress }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 0 24px;display:flex;flex-direction:column;gap:16px;">
 <div style="padding:8px 16px 0;font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">{{ tx.k22 }}</div>
-<div style="margin:0 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#16161A;border:1px solid #24242B;border-radius:12px;padding:4px;">
-<sc-for list="{{ progViews }}" as="v" hint-placeholder-count="3">
+<div style="margin:0 16px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:#16161A;border:1px solid #24242B;border-radius:12px;padding:4px;">
+<sc-for list="{{ progViews }}" as="v" hint-placeholder-count="4">
 <button onClick="{{ v.onClick }}" style="height:44px;border:none;border-radius:9px;background:{{ v.bg }};color:{{ v.color }};font-size:15px;font-weight:600;">{{ v.label }}</button>
 </sc-for>
 </div>
@@ -301,6 +328,66 @@ input::placeholder{color:#9C9CA8}
 </sc-if>
 </div>
 </sc-if>
+<sc-if value="{{ isBodyView }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:16px;padding:0 16px;">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:14px;">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:8px;">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.nBodyW }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:700;">{{ bwCur }}<span style="font-size:15px;color:#9C9CA8;"> {{ curUnit }}</span></span></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:#CCFF00;padding-bottom:8px;text-align:right;">{{ bwDelta }}</span>
+</div>
+<sc-if value="{{ bwNoChart }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ tx.nBodyEmpty }}</span></sc-if>
+<sc-if value="{{ bwHasChart }}" hint-placeholder-val="{{ false }}">
+<div style="position:relative;height:140px;">
+<svg width="100%" height="140" viewBox="0 0 324 140" preserveAspectRatio="none" style="position:absolute;inset:0;overflow:visible;">
+<defs><linearGradient id="blBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CCFF00" stop-opacity="0.22"></stop><stop offset="1" stop-color="#CCFF00" stop-opacity="0"></stop></linearGradient></defs>
+<line x1="0" y1="132" x2="324" y2="132" stroke="#24242B" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+<polygon points="{{ bwArea }}" fill="url(#blBody)"></polygon>
+<polyline points="{{ bwPts }}" fill="none" stroke="#CCFF00" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"></polyline>
+</svg>
+<sc-for list="{{ bwDots }}" as="p" hint-placeholder-count="0"><span style="position:absolute;left:{{ p.left }};top:{{ p.top }};width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:#FFFFFF;"></span></sc-for>
+</div>
+<div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;"><span>{{ bwFrom }}</span><span>{{ bwTo }}</span></div>
+</sc-if>
+</div>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px;">
+<span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.nLogToday }}</span>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;">
+<sc-for list="{{ bodyFields }}" as="bf" hint-placeholder-count="6">
+<label style="display:flex;flex-direction:column;gap:4px;"><span style="font-size:13px;font-weight:600;color:#9C9CA8;">{{ bf.label }}</span><input type="text" inputmode="decimal" value="{{ bf.val }}" onChange="{{ bf.onChange }}" placeholder="{{ bf.ph }}" style="width:100%;min-width:0;height:48px;border-radius:10px;border:1px solid #24242B;background:#0A0A0C;color:#fff;font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;padding:0 12px;"></label>
+</sc-for>
+</div>
+<button onClick="{{ saveBody }}" style="height:56px;border-radius:14px;border:none;background:#CCFF00;color:#0A0A0C;font-size:16px;font-weight:700;">{{ tx.nSave }}</button>
+<span style="font-size:12px;line-height:17px;color:#9C9CA8;text-wrap:pretty;">{{ tx.nBodyHint }}</span>
+</div>
+<sc-if value="{{ hasMeasures }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.nMeas }}</div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+<sc-for list="{{ measureTiles }}" as="mt" hint-placeholder-count="2">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;">
+<span style="font-size:12px;font-weight:600;color:#9C9CA8;">{{ mt.label }}</span>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:6px;"><span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;">{{ mt.value }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9C9CA8;">{{ mt.delta }}</span></div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ hasBody }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.nEntries }}</div>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;overflow:hidden;">
+<sc-for list="{{ bodyList }}" as="bl" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 8px 8px 16px;border-bottom:1px solid #24242B;min-height:56px;">
+<span style="font-size:14px;font-weight:600;color:#9C9CA8;">{{ bl.date }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;line-height:18px;">{{ bl.text }}</span>
+<button onClick="{{ bl.onDel }}" style="min-width:44px;height:44px;padding:0 10px;border:none;border-radius:10px;background:transparent;color:#9C9CA8;font-size:14px;font-weight:600;">{{ bl.delLabel }}</button>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-if>
 <sc-if value="{{ isStatsView }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;flex-direction:column;gap:16px;padding:0 16px;">
 <div style="display:flex;flex-direction:column;gap:8px;">
@@ -442,23 +529,29 @@ input::placeholder{color:#9C9CA8}
 <div style="flex:1;overflow-y:auto;padding:12px 12px 24px;display:flex;flex-direction:column;gap:12px;">
 <sc-for list="{{ wEx }}" as="ex" hint-placeholder-count="2">
 <div style="flex:0 0 auto;background:#16161A;border:1px solid #24242B;border-radius:16px;overflow:hidden;">
-<div style="display:flex;justify-content:space-between;align-items:baseline;padding:14px 14px 6px;gap:8px;">
+<div style="display:flex;align-items:center;padding:8px 4px 4px 14px;gap:6px;">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
+<sc-if value="{{ ex.hasSS }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:0.08em;color:#CCFF00;border:1px solid #CCFF00;padding:2px 8px;border-radius:999px;">{{ ex.ssTag }}</span></sc-if>
 <span style="font-size:17px;font-weight:700;">{{ ex.name }}</span>
-<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:{{ ex.progColor }};">{{ ex.progress }}</span>
 </div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:{{ ex.progColor }};">{{ ex.progress }}</span>
+<button onClick="{{ ex.onMenu }}" style="width:44px;height:44px;border:none;border-radius:10px;background:transparent;color:#9C9CA8;font-size:20px;font-weight:700;" style-active="background:#24242B">⋯</button>
+</div>
+<sc-if value="{{ ex.hasNote }}" hint-placeholder-val="{{ false }}"><div style="padding:0 14px 8px;font-size:13px;line-height:18px;color:#9C9CA8;white-space:pre-wrap;text-wrap:pretty;">{{ ex.note }}</div></sc-if>
 <sc-if value="{{ ex.up }}" hint-placeholder-val="{{ false }}">
 <div style="padding:0 14px 8px;font-size:13px;font-weight:600;color:#CCFF00;">↑ {{ ex.upText }}</div>
 </sc-if>
-<div style="display:grid;grid-template-columns:36px 56px minmax(0,1fr) minmax(0,1fr) 52px;gap:8px;padding:0 12px 6px;font-size:12px;font-weight:600;letter-spacing:0.06em;color:#9C9CA8;">
-<span style="text-align:center;">{{ tx.k51 }}</span><span>{{ tx.k52 }}</span><span style="text-align:center;">{{ unitUpper }}</span><span style="text-align:center;">REPS</span><span></span>
+<div style="display:grid;grid-template-columns:{{ ex.cols }};gap:8px;padding:0 12px 6px;font-size:12px;font-weight:600;letter-spacing:0.06em;color:#9C9CA8;">
+<span style="text-align:center;">{{ ex.h0 }}</span><span>{{ tx.k52 }}</span><span style="text-align:center;">{{ unitUpper }}</span><span style="text-align:center;">{{ ex.h2 }}</span><sc-if value="{{ ex.isUni }}" hint-placeholder-val="{{ false }}"><span style="text-align:center;">R</span></sc-if><span></span>
 </div>
 <sc-for list="{{ ex.sets }}" as="s" hint-placeholder-count="3">
 <div style="background:{{ s.rowBg }};border-top:1px solid #24242B;">
-<div onClick="{{ s.onFocus }}" style="display:grid;grid-template-columns:36px 56px minmax(0,1fr) minmax(0,1fr) 52px;gap:8px;align-items:center;padding:6px 12px;min-height:62px;">
+<div onClick="{{ s.onFocus }}" style="display:grid;grid-template-columns:{{ s.cols }};gap:8px;align-items:center;padding:6px 12px;min-height:62px;">
 <button onClick="{{ s.onWarm }}" style="height:44px;padding:0;border:none;border-radius:10px;background:{{ s.numBg }};color:{{ s.numColor }};font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;">{{ s.num }}</button>
 <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ s.prev }}</span>
 <input type="text" inputmode="decimal" value="{{ s.wDisp }}" onChange="{{ s.onW }}" onFocus="{{ s.onSelect }}" style="width:100%;min-width:0;height:48px;border-radius:10px;border:1px solid {{ s.inBorder }};background:#0A0A0C;color:#fff;font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:600;text-align:center;">
 <input type="text" inputmode="numeric" value="{{ s.rDisp }}" onChange="{{ s.onR }}" onFocus="{{ s.onSelect }}" style="width:100%;min-width:0;height:48px;border-radius:10px;border:1px solid {{ s.inBorder }};background:#0A0A0C;color:#fff;font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:600;text-align:center;">
+<sc-if value="{{ s.isUni }}" hint-placeholder-val="{{ false }}"><input type="text" inputmode="numeric" value="{{ s.r2Disp }}" onChange="{{ s.onR2 }}" onFocus="{{ s.onSelect }}" style="width:100%;min-width:0;height:48px;border-radius:10px;border:1px solid {{ s.inBorder }};background:#0A0A0C;color:#fff;font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:600;text-align:center;"></sc-if>
 <button onClick="{{ s.onCheck }}" style="width:52px;height:48px;border-radius:12px;border:1px solid {{ s.checkBorder }};background:{{ s.checkBg }};color:{{ s.checkColor }};font-size:20px;font-weight:700;transition:background 120ms, transform 120ms;" style-active="transform:scale(0.92)">✓</button>
 </div>
 <sc-if value="{{ s.isPR }}" hint-placeholder-val="{{ false }}">
@@ -471,9 +564,20 @@ input::placeholder{color:#9C9CA8}
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:0 12px 12px;">
 <button onClick="{{ s.wMinus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">−{{ wStep }}</button>
 <button onClick="{{ s.wPlus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">+{{ wStep }}</button>
-<button onClick="{{ s.rMinus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">{{ tx.k53 }}</button>
-<button onClick="{{ s.rPlus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">{{ tx.k54 }}</button>
+<button onClick="{{ s.rMinus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">{{ s.rmL }}</button>
+<button onClick="{{ s.rPlus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">{{ s.rpL }}</button>
 </div>
+<sc-if value="{{ s.isTime }}" hint-placeholder-val="{{ false }}">
+<div style="padding:0 12px 12px;"><button onClick="{{ s.onHold }}" style="width:100%;height:56px;border-radius:12px;border:none;background:{{ s.holdBg }};color:{{ s.holdColor }};font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;">{{ s.holdLabel }}</button></div>
+</sc-if>
+<sc-if value="{{ s.hasPlates }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:6px;padding:0 12px 12px;">
+<span style="font-size:12px;font-weight:600;letter-spacing:0.06em;color:#9C9CA8;">{{ s.plateHead }}</span>
+<div style="display:flex;flex-wrap:wrap;gap:6px;">
+<sc-for list="{{ s.plates }}" as="p" hint-placeholder-count="3"><span style="min-width:44px;height:36px;padding:0 10px;border-radius:8px;background:{{ p.bg }};color:{{ p.color }};font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;">{{ p.label }}</span></sc-for>
+</div>
+</div>
+</sc-if>
 </sc-if>
 </div>
 </sc-for>
@@ -482,6 +586,7 @@ input::placeholder{color:#9C9CA8}
 </sc-for>
 <span style="font-size:13px;line-height:18px;color:#9C9CA8;padding:0 4px;text-wrap:pretty;">{{ tx.k56 }}</span>
 <button onClick="{{ openLibW }}" style="min-height:56px;border-radius:16px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:15px;font-weight:600;">{{ tx.k57 }}</button>
+<textarea value="{{ wNote }}" onChange="{{ onWNote }}" placeholder="{{ tx.nSessNote }}" rows="2" style="width:100%;border-radius:14px;border:1px solid #24242B;background:#16161A;color:#fff;font-size:16px;line-height:22px;padding:12px 14px;font-family:inherit;resize:none;"></textarea>
 <button onClick="{{ discard }}" style="min-height:48px;border:none;background:transparent;color:#9C9CA8;font-size:14px;font-weight:600;">{{ discardLabel }}</button>
 </div>
 <sc-if value="{{ restOn }}" hint-placeholder-val="{{ false }}">
@@ -543,25 +648,50 @@ input::placeholder{color:#9C9CA8}
 <div style="background:#16161A;border:1px solid #24242B;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;">
 <div style="display:flex;align-items:center;gap:8px;">
 <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9C9CA8;width:18px;">{{ e.num }}</span>
-<span style="flex:1;font-size:16px;font-weight:700;">{{ e.name }}</span>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
+<sc-if value="{{ e.hasSS }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:0.08em;color:#CCFF00;border:1px solid #CCFF00;padding:2px 8px;border-radius:999px;">{{ e.ssTag }}</span></sc-if>
+<span style="font-size:16px;font-weight:700;">{{ e.name }}</span>
+</div>
 <button onClick="{{ e.onUp }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#24242B;color:#fff;font-size:16px;opacity:{{ e.upOpacity }};">↑</button>
 <button onClick="{{ e.onRemove }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#24242B;color:#9C9CA8;font-size:16px;">✕</button>
 </div>
 <div style="display:flex;align-items:center;gap:6px;">
 <button onClick="{{ e.setsMinus }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#0A0A0C;color:#fff;font-size:18px;">−</button>
-<span style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;min-width:58px;text-align:center;">{{ e.sets }} {{ tx.k62 }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;min-width:58px;text-align:center;white-space:nowrap;">{{ e.sets }} {{ tx.k62 }}</span>
 <button onClick="{{ e.setsPlus }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#0A0A0C;color:#fff;font-size:18px;">+</button>
 <span style="flex:1;text-align:center;color:#9C9CA8;">×</span>
 <button onClick="{{ e.repsMinus }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#0A0A0C;color:#fff;font-size:18px;">−</button>
-<span style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;min-width:58px;text-align:center;">{{ e.reps }} {{ tx.k63 }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;min-width:58px;text-align:center;white-space:nowrap;">{{ e.reps }} {{ e.repsUnit }}</span>
 <button onClick="{{ e.repsPlus }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#0A0A0C;color:#fff;font-size:18px;">+</button>
 </div>
+<sc-if value="{{ e.canLink }}" hint-placeholder-val="{{ false }}"><button onClick="{{ e.onLink }}" style="height:44px;border-radius:10px;border:1px solid {{ e.linkBorder }};background:transparent;color:{{ e.linkColor }};font-size:14px;font-weight:600;">{{ e.linkLabel }}</button></sc-if>
 </div>
 </sc-for>
 <button onClick="{{ openLibR }}" style="min-height:56px;border-radius:14px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:15px;font-weight:600;">{{ tx.k57 }}</button>
 </div>
 <div style="padding:12px 12px calc(16px + env(safe-area-inset-bottom));border-top:1px solid #24242B;">
 <button onClick="{{ startEdited }}" style="width:100%;height:60px;border-radius:14px;border:none;background:#CCFF00;color:#0A0A0C;font-size:17px;font-weight:700;">{{ tx.k15 }} {{ rName }}</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isTemplates }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;z-index:7;background:#0A0A0C;">
+<div style="display:flex;align-items:center;gap:8px;padding:8px 12px 12px;border-bottom:1px solid #24242B;">
+<button onClick="{{ templBack }}" style="width:48px;height:48px;border-radius:12px;border:none;background:#16161A;color:#fff;font-size:22px;">‹</button>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;"><span style="font-size:17px;font-weight:700;">{{ tx.nTpl }}</span><span style="font-size:13px;color:#9C9CA8;">{{ tx.nTplSub }}</span></div>
+</div>
+<div style="flex:1;overflow-y:auto;padding:12px 12px calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;">
+<sc-for list="{{ templates }}" as="tp" hint-placeholder-count="4">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px;">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:20px;font-weight:800;">{{ tp.name }}</span><span style="font-size:13px;font-weight:600;color:#CCFF00;">{{ tp.meta }}</span></div>
+<span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ tp.desc }}</span>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<sc-for list="{{ tp.days }}" as="dy" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:14px;font-weight:700;">{{ dy.name }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;">{{ dy.ex }}</span></div></sc-for>
+</div>
+<button onClick="{{ tp.onAdd }}" style="height:52px;border-radius:12px;border:1px solid #CCFF00;background:transparent;color:#CCFF00;font-size:15px;font-weight:700;">{{ tp.addLabel }}</button>
+</div>
+</sc-for>
 </div>
 </div>
 </sc-if>
@@ -583,6 +713,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-for>
 </div>
+<sc-if value="{{ sdHasNote }}" hint-placeholder-val="{{ false }}"><div style="background:#16161A;border:1px solid #24242B;border-radius:14px;padding:12px 14px;font-size:14px;line-height:20px;color:#FFFFFF;white-space:pre-wrap;">{{ sdNote }}</div></sc-if>
 <sc-if value="{{ sdEditing }}" hint-placeholder-val="{{ false }}">
 <div style="font-size:13px;line-height:18px;color:#9C9CA8;padding:0 4px;text-wrap:pretty;">{{ tx.k64 }}</div>
 </sc-if>
@@ -662,12 +793,29 @@ const KG_LB = 2.20462;
 const LIB = [['Bench Press','Chest'],['Incline DB Press','Chest'],['Dumbbell Fly','Chest'],['Push-up','Chest'],['Deadlift','Back'],['Barbell Row','Back'],['Pull-up','Back'],['Lat Pulldown','Back'],['Seated Cable Row','Back'],['Squat','Legs'],['Romanian Deadlift','Legs'],['Leg Press','Legs'],['Leg Curl','Legs'],['Leg Extension','Legs'],['Calf Raise','Legs'],['Bulgarian Split Squat','Legs'],['Overhead Press','Shoulders'],['Lateral Raise','Shoulders'],['Face Pull','Shoulders'],['Barbell Curl','Arms'],['Hammer Curl','Arms'],['Triceps Pushdown','Arms'],['Skull Crusher','Arms'],['Plank','Core'],['Hanging Leg Raise','Core'],['Cable Crunch','Core']].map(([name, group]) => ({ name, group }));
 const GROUPS = ['All','Chest','Back','Legs','Shoulders','Arms','Core','Custom'];
 const BASE = {'Bench Press':80,'Overhead Press':50,'Incline DB Press':30,'Lateral Raise':12,'Triceps Pushdown':30,'Deadlift':160,'Barbell Row':70,'Pull-up':10,'Face Pull':25,'Barbell Curl':35,'Squat':120,'Romanian Deadlift':100,'Leg Press':180,'Leg Curl':45,'Calf Raise':70};
-const PK = ['routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang'];
+const PK = ['routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight'];
 const e1 = (w, r) => w * (1 + r / 30);
 const FR = {"Start anyway":"Lancer quand même","Cancel":"Annuler","New version ready · Tap to update":"Nouvelle version prête · Toucher pour mettre à jour","Install on your iPhone":"Installer sur ton iPhone","In Safari: tap Share, then “Add to Home Screen”. Barlog opens full-screen, works offline, and your data is kept safe from Safari’s cleanup.":"Dans Safari : touche Partager, puis « Sur l’écran d’accueil ». Barlog s’ouvre en plein écran, fonctionne hors ligne et tes données sont protégées du nettoyage de Safari.","Got it":"Compris","Today":"Aujourd’hui","Next up":"À suivre","Last done":"Dernière fois :","This week":"Cette semaine","Other routines":"Autres routines","Start":"Lancer","+ Empty workout":"+ Séance libre","Program · rotates automatically":"Programme · rotation automatique","Routines":"Routines","NEXT":"SUIVANTE","Edit":"Modifier","+ New routine":"+ Nouvelle routine","Progress":"Progrès","All sessions":"Toutes les séances","No sessions yet. Finish a workout and it shows up here.":"Aucune séance. Termine une séance et elle apparaîtra ici.","No weighted exercise matches.":"Aucun exercice avec charge ne correspond.","No sessions in this range.":"Aucune séance sur cette période.","Trend":"Tendance","Tap a point for details":"Touche un point pour les détails","Rep records · heaviest weight (":"Records par reps · charge max (","Records ·":"Records ·","History ·":"Historique ·","Right column: best estimated 1RM of the session. Lime = PR.":"Colonne de droite : meilleur 1RM estimé de la séance. Lime = PR.","Consistency":"Régularité","Sets per muscle · weekly avg, last 4 wk":"Séries par muscle · moyenne/sem. sur 4 sem.","Shaded zone = 10–20 work sets per muscle per week, the usual range for muscle growth. Warm-ups excluded.":"Zone ombrée = 10 à 20 séries de travail par muscle et par semaine, la plage habituelle pour la prise de muscle. Échauffements exclus.","e1RM trend · last 4 weeks":"Tendance e1RM · 4 dernières semaines","Profile":"Profil","No account. No subscription.":"Pas de compte. Pas d’abonnement.","Everything lives on this device.":"Tout est stocké sur cet appareil.","Training":"Entraînement","Language":"Langue","Units":"Unités","Default rest":"Repos par défaut","Your data":"Tes données","Export backup":"Exporter","Import":"Importer","Logging a workout only adds to your history. Import replaces everything with the file’s content — export first if unsure.":"Enregistrer une séance ne fait qu’ajouter à ton historique. Importer remplace tout par le contenu du fichier — exporte d’abord en cas de doute.","Clear history keeps your routines. Erase all also deletes routines and custom exercises. Both ask for a second tap.":"« Effacer l’historique » garde tes routines. « Tout effacer » supprime aussi les routines et les exercices perso. Les deux demandent une deuxième touche.","Resume ›":"Reprendre ›","Finish":"Terminer","SET":"SÉRIE","PREV":"PRÉC.","−1 rep":"−1 rép","+1 rep":"+1 rép","+ Add set":"+ Ajouter une série","Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.":"Touche un numéro de série pour la marquer comme échauffement (W). Les échauffements ne comptent ni dans les PR ni dans le volume.","+ Add exercise":"+ Ajouter un exercice","Skip":"Passer","Add exercise":"Ajouter un exercice","+ Create “":"+ Créer « ","” ·":" » ·","No exercises yet. Add your first movement.":"Aucun exercice. Ajoute ton premier mouvement.","sets":"séries","reps":"reps","Fix any weight or reps. Changes save instantly and update your records and charts.":"Corrige une charge ou des reps. Les changements sont enregistrés tout de suite et mettent à jour tes records et graphiques.","Workout saved":"Séance enregistrée","Exercises":"Exercices","Done":"Terminé","Back up your data":"Sauvegarde tes données","Tap Export, then “Save to Files” → iCloud Drive.":"Touche Exporter, puis « Enregistrer dans Fichiers » → iCloud Drive.","Export now":"Exporter","Later":"Plus tard","Search an exercise":"Chercher un exercice","Search or type a new name":"Chercher ou taper un nouveau nom","Chest":"Pectoraux","Back":"Dos","Legs":"Jambes","Shoulders":"Épaules","Arms":"Bras","Core":"Gainage","All":"Tous","Custom":"Perso","No backup yet. Your data lives only on this phone.":"Aucune sauvegarde. Tes données sont uniquement sur ce téléphone.","Volume":"Volume","Vol ":"Vol ","Quick workout":"Séance libre","New routine":"Nouvelle routine","Backup exported":"Sauvegarde exportée","Data imported":"Données importées","Not a Barlog backup":"Ce n’est pas une sauvegarde Barlog","History cleared":"Historique effacé","All data erased":"Toutes les données effacées","Session deleted":"Séance supprimée"," · you hit every rep last time":" · toutes tes reps réussies la dernière fois"," · custom":" · perso"," · last ":" · dernière "," rep":" rép"," reps":" reps","Workout":"Séance","Low":"Bas","High":"Élevé","In range":"Dans la zone"," this week":" cette semaine","No PR for ":"Aucun PR depuis "," weeks":" semaines","Start today’s: ":"Lancer celle du jour : ","Sessions":"Séances","Lifts":"Exercices","Stats":"Stats","Last 4 wk":"4 dern. sem.","Streak":"Série"," wk":" sem","4 wk":"4 sem","3 mo":"3 mois","Target: ":"Objectif : "," sessions per week (one per routine). Streak = weeks in a row at target.":" séances par semaine (une par routine). Série = semaines d’affilée à l’objectif."," lift":" exercice"," without a PR for 3+ weeks.":" sans PR depuis 3 semaines ou plus.","Every lift has set a PR in the last 3 weeks.":"Chaque exercice a fait un PR ces 3 dernières semaines."," Compared with the 4 weeks before, or with your first session of the period if there is no earlier data.":" Comparé aux 4 semaines précédentes, ou à ta première séance de la période s’il n’y a pas de données plus anciennes."," exercises · ":" exercices · "," sets · ":" séries · ","Time":"Durée","Sets":"Séries","Session updated":"Séance mise à jour","Tap again":"Toucher encore","Delete":"Supprimer","Programs":"Programmes","No routines":"Aucune routine","In progress · ":"En cours · ","Create one in Programs.":"Crées-en une dans Programmes.","Resume workout":"Reprendre la séance","Start workout":"Lancer la séance","No exercises yet":"Aucun exercice","Est. 1RM":"1RM est.","Top set":"Top set","Estimated max for 1 rep, from your best set: weight × (1 + reps ÷ 30). Best overall strength gauge.":"Charge max estimée pour 1 rep, calculée sur ta meilleure série : charge × (1 + reps ÷ 30). Le meilleur indicateur de force.","Total weight × reps over all work sets of the session. Tracks workload — the main driver of muscle growth.":"Charge × reps sur toutes les séries de travail de la séance. Mesure la charge de travail — le moteur principal de la prise de muscle.","Heaviest weight lifted in the session, regardless of reps.":"Charge la plus lourde soulevée dans la séance, peu importe les reps.","Estimated 1RM":"1RM estimé","Session volume":"Volume de la séance","Heaviest set":"Série la plus lourde"," sessions":" séances"," session":" séance","No PR on ":"Aucun PR sur "," for ":" depuis "," sessions since your last best. Try a deload week (−10%), a different rep range, or a close variation.":" séances depuis ton dernier record. Essaie une semaine de décharge (−10 %), une autre plage de reps ou une variante proche.","4-week trend (e1RM)":"Tendance 4 sem. (e1RM)","Best e1RM":"Meilleur e1RM","Best set":"Meilleure série","Heaviest weight":"Charge max","Best session volume":"Meilleur volume de séance"," sessions stored offline.":" séances stockées hors ligne.","Auto-start rest":"Repos automatique","Starts when you log a set":"Démarre quand tu valides une série","Sound at rest end":"Son en fin de repos","Beeps when rest is over. Muted by the iPhone silent switch.":"Bip à la fin du repos. Coupé par le mode silencieux de l’iPhone.","Android only — iPhone doesn’t allow it in web apps":"Android seulement — l’iPhone ne le permet pas dans les apps web","Warn on off-day start":"Alerte hors du jour prévu","Only for routines with a weekday in their name (e.g. “Mardi – …”). Asks before starting one on another day.":"Seulement pour les routines avec un jour dans leur nom (ex. « Mardi – … »). Demande confirmation avant de la lancer un autre jour.","Keep screen on":"Garder l’écran allumé","During a workout, so the timer stays visible":"Pendant une séance, pour garder le minuteur visible","Clear history":"Effacer l’historique","Erase all":"Tout effacer"," sets":" séries","Tap again to discard":"Toucher encore pour abandonner","Discard workout":"Abandonner la séance","Rest over — lift":"Repos terminé — à toi","Rest":"Repos","to ":"à ","Volume ":"Volume ","vs last time":"vs la dernière fois","No PRs this time — consistency counts":"Pas de PR cette fois — la régularité compte","best ":"meilleure "};
 const TX = {"k0":"Start anyway","k1":"Cancel","k2":"New version ready · Tap to update","k3":"Install on your iPhone","k4":"In Safari: tap Share, then “Add to Home Screen”. Barlog opens full-screen, works offline, and your data is kept safe from Safari’s cleanup.","k5":"Got it","k6":"Back up your data","k7":"Tap Export, then “Save to Files” → iCloud Drive.","k8":"Export now","k9":"Later","k10":"Today","k11":"Next up","k12":"Last done","k13":"This week","k14":"Other routines","k15":"Start","k16":"+ Empty workout","k17":"Program · rotates automatically","k18":"Routines","k19":"NEXT","k20":"Edit","k21":"+ New routine","k22":"Progress","k23":"All sessions","k24":"No sessions yet. Finish a workout and it shows up here.","k25":"No weighted exercise matches.","k26":"No sessions in this range.","k27":"Trend","k28":"Tap a point for details","k29":"Rep records · heaviest weight (","k30":"Records ·","k31":"History ·","k32":"Right column: best estimated 1RM of the session. Lime = PR.","k33":"Consistency","k34":"Sets per muscle · weekly avg, last 4 wk","k35":"Shaded zone = 10–20 work sets per muscle per week, the usual range for muscle growth. Warm-ups excluded.","k36":"e1RM trend · last 4 weeks","k37":"Profile","k38":"No account. No subscription.","k39":"Everything lives on this device.","k40":"Training","k41":"Language","k42":"Units","k43":"Default rest","k44":"Your data","k45":"Export backup","k46":"Import","k47":"Logging a workout only adds to your history. Import replaces everything with the file’s content — export first if unsure.","k48":"Clear history keeps your routines. Erase all also deletes routines and custom exercises. Both ask for a second tap.","k49":"Resume ›","k50":"Finish","k51":"SET","k52":"PREV","k53":"−1 rep","k54":"+1 rep","k55":"+ Add set","k56":"Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.","k57":"+ Add exercise","k58":"Skip","k59":"Add exercise","k60":"+ Create “","k61":"No exercises yet. Add your first movement.","k62":"sets","k63":"reps","k64":"Fix any weight or reps. Changes save instantly and update your records and charts.","k65":"Workout saved","k66":"Exercises","k67":"Done","k68":"Search an exercise","k69":"Search or type a new name"};
+Object.assign(TX, { nSessNote: 'Session note (optional)', nFromTpl: '+ Ready-made program', nTpl: 'Ready-made programs', nTplSub: 'Adds routines — yours stay untouched', nType: 'Exercise type', nNote: 'Note', nNotePh: 'Seat height, grip, cues…', nNoteSub: 'Saved with this exercise, shown every session.', nDone: 'Done', nBodyW: 'Body weight', nBodyEmpty: 'Log a weigh-in below to start your chart.', nLogToday: 'Log today', nSave: 'Save', nBodyHint: 'Fill only what you want. Saving again today updates today’s entry.', nMeas: 'Measurements', nEntries: 'Entries' });
+Object.assign(FR, { 'Session note (optional)': 'Note de séance (optionnelle)', '+ Ready-made program': '+ Programme prêt à l’emploi', 'Ready-made programs': 'Programmes prêts à l’emploi', 'Adds routines — yours stay untouched': 'Ajoute des routines — les tiennes restent', 'Exercise type': 'Type d’exercice', 'Note': 'Note', 'Seat height, grip, cues…': 'Réglage du siège, prise, consignes…', 'Saved with this exercise, shown every session.': 'Enregistrée avec l’exercice, affichée à chaque séance.', 'Body weight': 'Poids corporel', 'Log a weigh-in below to start your chart.': 'Enregistre un poids ci-dessous pour démarrer ton graphique.', 'Log today': 'Enregistrer aujourd’hui', 'Save': 'Enregistrer', 'Fill only what you want. Saving again today updates today’s entry.': 'Remplis seulement ce que tu veux. Enregistrer à nouveau aujourd’hui met à jour l’entrée du jour.', 'Measurements': 'Mensurations', 'Entries': 'Entrées',
+  'Body': 'Corps', 'Reps': 'Reps', 'Per side': 'Par côté', 'per side': 'par côté', 'Plate calculator': 'Calculateur de disques', 'Shows the plates to load on each side of the bar.': 'Affiche les disques à mettre de chaque côté de la barre.', 'Superset with next': 'Superset avec le suivant', 'No rest between linked exercises — rest starts after the last one.': 'Pas de repos entre les exercices liés — le repos démarre après le dernier.', 'SUPERSET': 'SUPERSET', 'Stop': 'Stop', '▶ Start ': '▶ Lancer ', 'Below bar weight': 'Sous le poids de la barre', 'Empty bar': 'Barre vide', 'bar': 'barre', '+ Superset with next': '+ Superset avec le suivant', 'Superset ✓ · tap to unlink': 'Superset ✓ · toucher pour délier', 'Light bar (15 kg / 35 lb)': 'Barre légère (15 kg / 35 lb)', 'For the plate calculator. Off = 20 kg / 45 lb.': 'Pour le calculateur de disques. Désactivé = 20 kg / 45 lb.', 'Program added': 'Programme ajouté', 'Saved': 'Enregistré', 'Enter at least one value': 'Entre au moins une valeur', 'SEC': 'SEC' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.4.0';
+const APP_VERSION = '0.5.0';
+const autoType = n => /\(sec\)|\bplank\b|\bhold\b|\biso\b/i.test(n) ? 'time' : /per side/i.test(n) ? 'uni' : 'reps';
+const autoBar = n => !/\b(DB|KB|dumbbell|kettlebell|cable|machine|goblet|split)\b|per side|lat row/i.test(n) && /\b(BB|barbell|bench press|bench|squat|deadlift|RDL|zercher|overhead press)\b/i.test(n);
+const plateCalc = (wd, isKg, light) => { const bar = isKg ? (light ? 15 : 20) : (light ? 35 : 45); const P = isKg ? [25, 20, 15, 10, 5, 2.5, 1.25] : [45, 35, 25, 10, 5, 2.5]; let side = (wd - bar) / 2; if (side < -0.01) return { bar, list: [], below: true, rest: 0 }; const list = []; P.forEach(p => { while (side >= p - 1e-6) { list.push(p); side -= p; } }); return { bar, list, rest: side > 0.01 ? side : 0 }; };
+const ssTags = list => { const t = []; let n = 0, i = 0; while (i < list.length) { let j = i; while (j < list.length - 1 && list[j].ss) j++; if (j > i) { const c = String.fromCharCode(65 + n++); for (let k = i; k <= j; k++) t[k] = c + (k - i + 1); } i = j + 1; } return t; };
+const TEMPLATES = [
+  { id: 'fb', name: 'Full Body', fr: 'Full Body', meta: '3 days / week · Beginner', metaFr: '3 jours / sem. · Débutant', desc: 'Whole body every session. The simplest effective start — alternate A and B.', descFr: 'Tout le corps à chaque séance. Le départ le plus simple et efficace — alterne A et B.',
+    r: [['Full Body A', [['Squat', 3, 5], ['Bench Press', 3, 5], ['Barbell Row', 3, 8], ['Plank', 3, 30]]], ['Full Body B', [['Romanian Deadlift', 3, 8], ['Overhead Press', 3, 8], ['Lat Pulldown', 3, 10], ['Hanging Leg Raise', 3, 10]]]] },
+  { id: 'st', name: 'Strength 5×5', fr: 'Force 5×5', meta: '3 days / week · Beginner–Intermediate', metaFr: '3 jours / sem. · Débutant–Intermédiaire', desc: 'Few big lifts, heavy and often. Add weight every time you complete all reps.', descFr: 'Peu de gros mouvements, lourds et fréquents. Ajoute du poids dès que toutes les reps sont faites.',
+    r: [['5×5 A', [['Squat', 5, 5], ['Bench Press', 5, 5], ['Barbell Row', 5, 5]]], ['5×5 B', [['Squat', 5, 5], ['Overhead Press', 5, 5], ['Deadlift', 1, 5]]]] },
+  { id: 'ul', name: 'Upper / Lower', fr: 'Haut / Bas', meta: '4 days / week · Intermediate', metaFr: '4 jours / sem. · Intermédiaire', desc: 'Each muscle twice a week. Arm and shoulder work done as supersets to save time.', descFr: 'Chaque muscle deux fois par semaine. Bras et épaules en supersets pour gagner du temps.',
+    r: [['Upper A', [['Bench Press', 4, 6], ['Barbell Row', 4, 8], ['Overhead Press', 3, 8], ['Lat Pulldown', 3, 10], ['Barbell Curl', 3, 10, 1], ['Triceps Pushdown', 3, 12]]], ['Lower A', [['Squat', 4, 5], ['Romanian Deadlift', 3, 8], ['Leg Curl', 3, 12], ['Calf Raise', 4, 12]]], ['Upper B', [['Incline DB Press', 4, 8], ['Seated Cable Row', 4, 10], ['Lateral Raise', 3, 15, 1], ['Face Pull', 3, 15], ['Hammer Curl', 3, 12, 1], ['Skull Crusher', 3, 12]]], ['Lower B', [['Deadlift', 3, 5], ['Leg Press', 3, 10], ['Bulgarian Split Squat', 3, 10], ['Leg Extension', 3, 12], ['Hanging Leg Raise', 3, 12]]]] },
+  { id: 'ppl', name: 'Push / Pull / Legs', fr: 'Push / Pull / Legs', meta: '3 or 6 days / week · All levels', metaFr: '3 ou 6 jours / sem. · Tous niveaux', desc: 'Split by movement. Run it once a week, or twice for more volume.', descFr: 'Découpé par type de mouvement. Une fois par semaine, ou deux pour plus de volume.',
+    r: [['Push', [['Bench Press', 4, 6], ['Overhead Press', 3, 8], ['Incline DB Press', 3, 10], ['Lateral Raise', 3, 15, 1], ['Triceps Pushdown', 3, 12]]], ['Pull', [['Deadlift', 3, 5], ['Pull-up', 3, 8], ['Barbell Row', 3, 8], ['Face Pull', 3, 15, 1], ['Barbell Curl', 3, 10]]], ['Legs', [['Squat', 4, 5], ['Romanian Deadlift', 3, 8], ['Leg Press', 3, 10], ['Leg Curl', 3, 12, 1], ['Calf Raise', 3, 12]]]] }
+];
 let LANG = 'en';
 const LOC = () => LANG === 'fr' ? 'fr-CA' : 'en-US';
 const WD_FR = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
@@ -703,7 +851,7 @@ class Component extends DCLogic {
   state = this.initial();
   initial() {
     const routines = seedRoutines();
-    return { tab: 'today', screen: 'tabs', routines, history: seedHistory(routines), lastRoutineId: 'r3', workout: null, focus: null, restEnd: null, restTotal: 90, restAlert: false, now: Date.now(), libCtx: 'workout', libQuery: '', libGroup: 'All', custom: [], editId: null, progEx: 'Bench Press', metric: 'e1rm', unit: 'kg', haptics: true, sound: true, wake: true, autoRest: this.props.autoStartRest ?? true, restDefault: this.props.defaultRest ?? 90, summary: null, toast: null, discardArm: false, deleteArm: false, resetArm: false, installSeen: false, standalone: false, sessMeta: {}, progView: 'sessions', calOff: 0, openSess: null, delSessArm: false, clearArm: false, eraseArm: false, sessEdit: false, editBuf: {}, dayWarn: true, confirmStart: null, lang: (typeof navigator !== 'undefined' && (navigator.language || '').toLowerCase().startsWith('fr')) ? 'fr' : 'en' };
+    return { tab: 'today', screen: 'tabs', routines, history: seedHistory(routines), lastRoutineId: 'r3', workout: null, focus: null, restEnd: null, restTotal: 90, restAlert: false, now: Date.now(), libCtx: 'workout', libQuery: '', libGroup: 'All', custom: [], editId: null, progEx: 'Bench Press', metric: 'e1rm', unit: 'kg', haptics: true, sound: true, wake: true, autoRest: this.props.autoStartRest ?? true, restDefault: this.props.defaultRest ?? 90, summary: null, toast: null, discardArm: false, deleteArm: false, resetArm: false, installSeen: false, standalone: false, sessMeta: {}, progView: 'sessions', calOff: 0, openSess: null, delSessArm: false, clearArm: false, eraseArm: false, sessEdit: false, editBuf: {}, dayWarn: true, confirmStart: null, exMeta: {}, body: [], barLight: false, exSheet: null, hold: null, bodyBuf: {}, bodyDelArm: null, lang: (typeof navigator !== 'undefined' && (navigator.language || '').toLowerCase().startsWith('fr')) ? 'fr' : 'en' };
   }
   componentDidMount() {
     let d = null;
@@ -748,6 +896,10 @@ class Component extends DCLogic {
   flash(msg) { this.setState({ toast: msg }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 1800); }
   tick() {
     const now = Date.now(); const s = this.state;
+    if (s.hold && now >= s.hold.end) {
+      const h = s.hold; this.setState({ hold: null, now }); this.buzz([80, 60, 80]); this.tone([[880, 0, 0.18], [1320, 0.25, 0.3]]);
+      const x = s.workout && s.workout.ex[h.ei] && s.workout.ex[h.ei].sets[h.si]; if (x && !x.done) { this.lastCheck = 0; this.check(h.ei, h.si); } return;
+    }
     if (s.restEnd && !s.restAlert && now >= s.restEnd) {
       const late = now - s.restEnd > 5000;
       this.setState({ now, restAlert: true });
@@ -769,12 +921,44 @@ class Component extends DCLogic {
     }).catch(() => {});
   }
   dispW(kg) { return this.state.unit === 'kg' ? trim(Math.round(kg * 4) / 4) : trim(Math.round(kg * KG_LB * 2) / 2); }
-  mkEx(name, n, target, history) {
+  meta(n) { const m = (this.state.exMeta || {})[n] || {}; return { type: m.type || autoType(n), bar: m.bar != null ? m.bar : autoBar(n), note: m.note || '' }; }
+  setMeta(n, patch) { this.setState(s => ({ exMeta: { ...(s.exMeta || {}), [n]: { ...((s.exMeta || {})[n] || {}), ...patch } } })); }
+  ssGroup(exs, i) { let a = i; while (a > 0 && exs[a - 1].ss) a--; let b = i; while (b < exs.length - 1 && exs[b].ss) b++; return [a, b]; }
+  toggleSS(ei) { this.updW(w => { w.ex[ei].ss = !w.ex[ei].ss; }); }
+  adjBoth(ei, si, d) { this.updW(w => { const x = w.ex[ei].sets[si]; x.r = Math.max(0, x.r + d); x.r2 = Math.max(0, (x.r2 != null ? x.r2 : x.r - d) + d); x.rStr = null; x.r2Str = null; }); }
+  typeR2(ei, si, val) { this.updW(w => { const x = w.ex[ei].sets[si]; x.r2Str = val; const v = parseInt(val, 10); if (!isNaN(v)) x.r2 = v; else if (val === '') x.r2 = 0; }); }
+  holdToggle(ei, si) {
+    const s = this.state; this.unlockAudio(); const h = s.hold;
+    if (h && h.ei === ei && h.si === si) { const el = Math.max(1, Math.round((Date.now() - h.start) / 1000)); this.setState({ hold: null }); this.updW(w => { const x = w.ex[ei].sets[si]; x.r = el; x.rStr = null; }); return; }
+    const x = s.workout.ex[ei].sets[si]; const sec = Math.max(1, x.r || 30); const t = Date.now();
+    this.setState({ hold: { ei, si, start: t, end: t + sec * 1000 }, focus: { ei, si } });
+  }
+  addTemplate(t) {
+    const base = Date.now();
+    const rs = t.r.map(([n, ex], i) => ({ id: 'r' + base + '_' + i, name: n, ex: ex.map(([name, sets, reps, ss]) => ({ name, sets, reps, ss: !!ss })) }));
+    this.setState(s => ({ routines: [...s.routines, ...rs], screen: 'tabs', tab: 'programs' })); this.flash(L('Program added'));
+  }
+  saveBody() {
+    const s = this.state; const b = s.bodyBuf || {}; const kg = s.unit === 'kg';
+    const num = v => { const n = parseFloat(String(v || '').replace(',', '.')); return isNaN(n) || n <= 0 ? null : n; };
+    const e = {}; const wv = num(b.w); if (wv) e.w = kg ? wv : wv / KG_LB;
+    ['waist', 'hips', 'chest', 'arm', 'thigh'].forEach(k => { const v = num(b[k]); if (v) e[k] = kg ? v : v * 2.54; });
+    if (!Object.keys(e).length) { this.flash(L('Enter at least one value')); return; }
+    const d = new Date(); d.setHours(0, 0, 0, 0); const date = d.getTime();
+    const prev = (s.body || []).find(x => x.date === date) || {};
+    this.setState({ body: [...(s.body || []).filter(x => x.date !== date), { ...prev, ...e, date }], bodyBuf: {} }); this.flash(L('Saved'));
+  }
+  delBody(date) {
+    if (this.state.bodyDelArm !== date) { this.setState({ bodyDelArm: date }); clearTimeout(this.bda); this.bda = setTimeout(() => this.setState({ bodyDelArm: null }), 3000); return; }
+    this.setState({ body: (this.state.body || []).filter(x => x.date !== date), bodyDelArm: null });
+  }
+  mkEx(name, n, target, history, ss) {
     const hist = history[name] || [];
     const last = hist.slice(-1)[0];
     const lastW = [...hist].reverse().find(se => se.sets.some(x => x.w > 0));
     const ws = last ? work(last.sets).filter(x => x.w > 0) : [];
-    const up = !!(target && ws.length && ws.every(x => x.r >= target));
+    const ty = this.meta(name).type;
+    const up = ty !== 'time' && !!(target && ws.length && ws.every(x => x.r >= target));
     const inc = this.inc(); const sets = [];
     for (let i = 0; i < n; i++) {
       const p = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null;
@@ -783,7 +967,8 @@ class Component extends DCLogic {
       const bw = p && p.w > 0 ? p.w : q ? q.w : 0;
       sets.push({ w: bw ? bw + (bump ? inc : 0) : 0, r: p ? (bump ? target : p.r) : (target || 8), pw: p ? p.w : null, pr: p ? p.r : null, warm: !!(p && p.wu), done: false });
     }
-    return { name, target: target || null, up, sets };
+    if (ty === 'uni') sets.forEach((x, i) => { const p = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null; x.r2 = up || !p || p.rr == null ? x.r : p.rr; });
+    return { name, target: target || null, up, sets, ss: !!ss };
   }
   start(rid, force) {
     const s = this.state; this.unlockAudio();
@@ -792,7 +977,7 @@ class Component extends DCLogic {
     const wd = r ? wdOf(r) : null;
     if (!force && s.dayWarn !== false && wd != null && wd !== new Date().getDay()) { this.setState({ confirmStart: rid }); return; }
     if (s.confirmStart) this.setState({ confirmStart: null });
-    const ex = r ? r.ex.map(e => this.mkEx(e.name, e.sets, e.reps, s.history)) : [];
+    const ex = r ? r.ex.map(e => this.mkEx(e.name, e.sets, e.reps, s.history, e.ss)) : [];
     this.setState({ workout: { rid: r ? r.id : null, name: r ? r.name : L('Quick workout'), start: Date.now(), ex }, focus: ex.length ? { ei: 0, si: 0 } : null, screen: 'workout', restEnd: null, restAlert: false, discardArm: false });
   }
   updW(fn) {
@@ -815,12 +1000,22 @@ class Component extends DCLogic {
       const ex = w.ex[ei]; const set = ex.sets[si]; set.wStr = null; set.rStr = null;
       if (set.done) { set.done = false; set.isPR = false; return { focus: { ei, si } }; }
       set.done = true;
+      const ty = this.meta(ex.name).type;
+      const er = x => ty === 'uni' ? Math.min(x.r, x.r2 != null ? x.r2 : x.r) : x.r;
       let best = this.bestHist(ex.name, s.history);
-      ex.sets.forEach((x, j) => { if (j !== si && x.done && !x.warm) best = Math.max(best, e1(x.w, x.r)); });
-      set.isPR = !set.warm && set.w > 0 && e1(set.w, set.r) > best + 0.01;
+      ex.sets.forEach((x, j) => { if (j !== si && x.done && !x.warm) best = Math.max(best, e1(x.w, er(x))); });
+      set.isPR = ty !== 'time' && !set.warm && set.w > 0 && e1(set.w, er(set)) > best + 0.01;
       fx = set.isPR ? 'pr' : 'log';
       const o = { focus: this.nextFocus(w, ei, si) };
-      if (s.autoRest) { clearTimeout(this.ra); o.restEnd = Date.now() + s.restDefault * 1000; o.restTotal = s.restDefault; o.restAlert = false; }
+      let rest = true;
+      const [ga, gb] = this.ssGroup(w.ex, ei);
+      if (gb > ga) {
+        let nf = null;
+        for (let k = ei + 1; k <= gb && !nf; k++) { const j = w.ex[k].sets.findIndex(x => !x.done); if (j >= 0) nf = { ei: k, si: j }; }
+        if (nf) { o.focus = nf; rest = false; }
+        else { for (let k = ga; k <= gb && !nf; k++) { const j = w.ex[k].sets.findIndex(x => !x.done); if (j >= 0) nf = { ei: k, si: j }; } if (nf) o.focus = nf; }
+      }
+      if (s.autoRest && rest) { clearTimeout(this.ra); o.restEnd = Date.now() + s.restDefault * 1000; o.restTotal = s.restDefault; o.restAlert = false; }
       return o;
     });
     if (fx === 'pr') { this.buzz([30, 60, 30]); this.tone([[660, 0, 0.1], [990, 0.1, 0.22]]); } else if (fx === 'log') this.buzz(15);
@@ -833,7 +1028,7 @@ class Component extends DCLogic {
     this.updW((w, s) => {
       const ex = w.ex[ei]; const last = ex.sets[ex.sets.length - 1] || { w: 0, r: 8 };
       const hl = (s.history[ex.name] || []).slice(-1)[0]; const p = hl && hl.sets[ex.sets.length];
-      ex.sets.push({ w: last.w, r: last.r, pw: p ? p.w : null, pr: p ? p.r : null, warm: false, done: false });
+      ex.sets.push({ w: last.w, r: last.r, r2: last.r2, pw: p ? p.w : null, pr: p ? p.r : null, warm: false, done: false });
       return { focus: { ei, si: ex.sets.length - 1 } };
     });
   }
@@ -844,22 +1039,24 @@ class Component extends DCLogic {
     let vol = 0, sets = 0, prevVol = 0, hasPrev = false; const prs = {}; const h = { ...s.history }; const exs = [];
     w.ex.forEach(ex => {
       const ds = ex.sets.filter(x => x.done); if (!ds.length) return;
+      const ty = this.meta(ex.name).type;
       sets += ds.length;
       const last = (s.history[ex.name] || []).slice(-1)[0];
-      if (last) { hasPrev = true; prevVol += work(last.sets).reduce((a, x) => a + x.w * x.r, 0); }
-      ds.forEach(x => { if (x.warm) return; vol += x.w * x.r; if (x.isPR && (!prs[ex.name] || e1(x.w, x.r) > prs[ex.name].e)) prs[ex.name] = { name: ex.name, w: x.w, r: x.r, e: e1(x.w, x.r) }; });
-      const entry = ds.map(x => x.warm ? { w: x.w, r: x.r, wu: true } : { w: x.w, r: x.r });
+      if (last) { hasPrev = true; if (ty !== 'time') prevVol += work(last.sets).reduce((a, x) => a + x.w * x.r, 0); }
+      const entry = ds.map(x => { const o = { w: x.w, r: ty === 'uni' ? Math.min(x.r, x.r2 != null ? x.r2 : x.r) : x.r }; if (ty === 'uni') { o.l = x.r; o.rr = x.r2 != null ? x.r2 : x.r; } if (x.warm) o.wu = true; return o; });
+      entry.forEach((x, i) => { if (x.wu) return; if (ty !== 'time') vol += x.w * x.r; if (ds[i].isPR && (!prs[ex.name] || e1(x.w, x.r) > prs[ex.name].e)) prs[ex.name] = { name: ex.name, w: x.w, r: x.r, e: e1(x.w, x.r) }; });
       h[ex.name] = [...(h[ex.name] || []), { date: w.start, sets: entry }];
       exs.push({ name: ex.name, sets: entry });
     });
     clearTimeout(this.ra);
-    if (!sets) { this.setState({ workout: null, focus: null, screen: 'tabs', tab: 'today', restEnd: null, restAlert: false }); return; }
+    if (!sets) { this.setState({ workout: null, focus: null, screen: 'tabs', tab: 'today', restEnd: null, restAlert: false, hold: null, exSheet: null }); return; }
     const dur = Date.now() - w.start;
-    this.setState({ sessMeta: { ...(s.sessMeta || {}), [w.start]: { name: w.name, rid: w.rid, dur } }, history: h, workout: null, focus: null, restEnd: null, restAlert: false, lastRoutineId: w.rid || s.lastRoutineId, summary: { name: w.name, dur: Date.now() - w.start, vol, sets, prevVol, hasPrev, prs: Object.values(prs), ex: exs }, screen: 'summary' });
+    const m = { name: w.name, rid: w.rid, dur }; if (w.note && w.note.trim()) m.note = w.note.trim();
+    this.setState({ sessMeta: { ...(s.sessMeta || {}), [w.start]: m }, history: h, workout: null, focus: null, restEnd: null, restAlert: false, hold: null, exSheet: null, lastRoutineId: w.rid || s.lastRoutineId, summary: { name: w.name, dur, vol, sets, prevVol, hasPrev, prs: Object.values(prs), ex: exs }, screen: 'summary' });
   }
   discard() {
     if (!this.state.discardArm) { this.setState({ discardArm: true }); setTimeout(() => this.setState({ discardArm: false }), 3000); return; }
-    clearTimeout(this.ra); this.setState({ workout: null, focus: null, restEnd: null, restAlert: false, discardArm: false, screen: 'tabs', tab: 'today' });
+    clearTimeout(this.ra); this.setState({ workout: null, focus: null, restEnd: null, restAlert: false, discardArm: false, hold: null, exSheet: null, screen: 'tabs', tab: 'today' });
   }
   pick(name) {
     const s = this.state;
@@ -947,20 +1144,29 @@ class Component extends DCLogic {
     const w = s.workout;
     const wStepKg = this.inc();
     let doneCount = 0, total = 0;
+    const tagsW = w ? ssTags(w.ex) : [];
     const wEx = w ? w.ex.map((ex, ei) => {
       const d = ex.sets.filter(x => x.done).length; doneCount += d; total += ex.sets.length;
+      const m = this.meta(ex.name); const uni = m.type === 'uni', tim = m.type === 'time';
+      const cols = uni ? '30px 44px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 48px' : '36px 52px minmax(0,1fr) minmax(0,1fr) 52px';
       return {
         name: ex.name, progress: d + '/' + ex.sets.length, progColor: d === ex.sets.length && d ? '#CCFF00' : '#9C9CA8',
         up: !!ex.up, upText: '+' + (kg ? '2.5 kg' : '5 lb') + L(' · you hit every rep last time'),
+        hasSS: !!tagsW[ei], ssTag: tagsW[ei] ? L('SUPERSET') + ' ' + tagsW[ei] : '', hasNote: !!m.note, note: m.note,
+        onMenu: go({ exSheet: ei }), cols, isUni: uni, h0: uni ? '#' : L('SET'), h2: tim ? L('SEC') : uni ? 'L' : 'REPS',
         onAddSet: () => this.addSet(ei),
         sets: ex.sets.map((x, si) => {
           const active = !!(s.focus && s.focus.ei === ei && s.focus.si === si && !x.done);
+          const hOn = !!(s.hold && s.hold.ei === ei && s.hold.si === si);
+          const pc = m.bar && active && x.w > 0 ? plateCalc(parseFloat(this.dispW(x.w)), kg, s.barLight) : null;
+          const big = kg ? 20 : 45;
           return {
             num: x.warm ? 'W' : String(si + 1), numBg: x.warm ? '#24242B' : 'transparent',
-            prev: x.pw != null ? this.dispW(x.pw) + '×' + x.pr : '—',
+            prev: x.pw != null ? (tim ? (x.pw ? this.dispW(x.pw) + '·' : '') + x.pr + 's' : this.dispW(x.pw) + '×' + x.pr) : '—',
             wDisp: x.wStr != null ? x.wStr : (x.w ? this.dispW(x.w) : ''), rDisp: x.rStr != null ? x.rStr : String(x.r),
+            r2Disp: x.r2Str != null ? x.r2Str : String(x.r2 != null ? x.r2 : x.r), cols, isUni: uni, isTime: tim,
             isPR: !!x.isPR, active,
-            prText: 'e1RM ' + this.dispW(e1(x.w, x.r)) + ' ' + s.unit,
+            prText: 'e1RM ' + this.dispW(e1(x.w, uni ? Math.min(x.r, x.r2 != null ? x.r2 : x.r) : x.r)) + ' ' + s.unit,
             rowBg: x.done ? 'rgba(204,255,0,0.06)' : active ? '#1B1B20' : 'transparent',
             numColor: x.warm ? '#FFFFFF' : x.done ? '#CCFF00' : '#9C9CA8', inBorder: active ? '#FFFFFF' : '#24242B',
             checkBg: x.done ? '#CCFF00' : 'transparent', checkColor: x.done ? '#0A0A0C' : '#9C9CA8', checkBorder: x.done ? '#CCFF00' : '#33333C',
@@ -968,9 +1174,17 @@ class Component extends DCLogic {
             onWarm: (e) => { e.stopPropagation(); this.toggleWarm(ei, si); },
             onSelect: (e) => { const t = e.target; setTimeout(() => { try { t.setSelectionRange(0, t.value.length); } catch (er) {} }, 0); },
             onCheck: (e) => { e.stopPropagation(); this.check(ei, si); },
-            onW: (e) => this.typeW(ei, si, e.target.value), onR: (e) => this.typeR(ei, si, e.target.value),
+            onW: (e) => this.typeW(ei, si, e.target.value), onR: (e) => this.typeR(ei, si, e.target.value), onR2: (e) => this.typeR2(ei, si, e.target.value),
             wMinus: () => this.adj(ei, si, 'w', -wStepKg), wPlus: () => this.adj(ei, si, 'w', wStepKg),
-            rMinus: () => this.adj(ei, si, 'r', -1), rPlus: () => this.adj(ei, si, 'r', 1)
+            rMinus: tim ? () => this.adj(ei, si, 'r', -5) : uni ? () => this.adjBoth(ei, si, -1) : () => this.adj(ei, si, 'r', -1),
+            rPlus: tim ? () => this.adj(ei, si, 'r', 5) : uni ? () => this.adjBoth(ei, si, 1) : () => this.adj(ei, si, 'r', 1),
+            rmL: tim ? '−5s' : L('−1 rep'), rpL: tim ? '+5s' : L('+1 rep'),
+            holdLabel: hOn ? L('Stop') + ' · ' + clock(s.hold.end - now) : L('▶ Start ') + clock((x.r || 0) * 1000),
+            holdBg: hOn ? '#CCFF00' : '#24242B', holdColor: hOn ? '#0A0A0C' : '#FFFFFF',
+            onHold: (e) => { e.stopPropagation(); this.holdToggle(ei, si); },
+            hasPlates: !!pc, plateHead: pc ? L('Per side') + ' · ' + L('bar') + ' ' + pc.bar + ' ' + s.unit : '',
+            plates: !pc ? [] : pc.below ? [{ label: L('Below bar weight'), bg: 'transparent', color: '#9C9CA8' }] : !pc.list.length ? [{ label: L('Empty bar'), bg: 'transparent', color: '#9C9CA8' }]
+              : pc.list.map(p => ({ label: trim(p), bg: p >= big ? '#FFFFFF' : '#24242B', color: p >= big ? '#0A0A0C' : '#FFFFFF' })).concat(pc.rest ? [{ label: '+' + trim(Math.round(pc.rest * 100) / 100) + '?', bg: 'transparent', color: '#9C9CA8' }] : [])
           };
         })
       };
@@ -985,7 +1199,11 @@ class Component extends DCLogic {
     const canCreate = !!q && !all.some(l => l.name.toLowerCase() === q);
 
     const er = routines.find(r => r.id === s.editId);
+    const tagsR = er ? ssTags(er.ex) : [];
     const rEx = er ? er.ex.map((e, i) => ({ num: String(i + 1), name: e.name, sets: e.sets, reps: e.reps, upOpacity: i ? 1 : 0.3,
+      hasSS: !!tagsR[i], ssTag: tagsR[i] ? L('SUPERSET') + ' ' + tagsR[i] : '', repsUnit: this.meta(e.name).type === 'time' ? 's' : L('reps'),
+      canLink: i < er.ex.length - 1, linkLabel: e.ss ? L('Superset ✓ · tap to unlink') : L('+ Superset with next'), linkColor: e.ss ? '#CCFF00' : '#9C9CA8', linkBorder: e.ss ? '#CCFF00' : '#33333C',
+      onLink: () => this.updR(c => { c.ex[i].ss = !c.ex[i].ss; }),
       onUp: () => i && this.updR(c => { const t = c.ex[i]; c.ex[i] = c.ex[i - 1]; c.ex[i - 1] = t; }),
       onRemove: () => this.updR(c => { c.ex.splice(i, 1); }),
       setsMinus: () => this.updR(c => { c.ex[i].sets = Math.max(1, c.ex[i].sets - 1); }), setsPlus: () => this.updR(c => { c.ex[i].sets = Math.min(10, c.ex[i].sets + 1); }),
@@ -993,7 +1211,7 @@ class Component extends DCLogic {
     })) : [];
 
     const hasW = k => (s.history[k] || []).some(se => work(se.sets).some(x => x.w > 0));
-    const progNames = [...new Set(routines.flatMap(r => r.ex.map(e => e.name)))].filter(hasW);
+    const progNames = [...new Set(routines.flatMap(r => r.ex.map(e => e.name)))].filter(n => hasW(n) && this.meta(n).type !== 'time');
     const histAll = progNames.length ? progNames : Object.keys(s.history).filter(hasW);
     const fR = routines.find(r => r.id === s.progRoutine);
     const pq = (s.progQuery || '').trim().toLowerCase();
@@ -1052,6 +1270,7 @@ class Component extends DCLogic {
     const sessCount = new Set(Object.values(s.history).flatMap(a => a.map(x => x.date))).size;
     const showTabs = s.screen === 'tabs';
     const meta = s.sessMeta || {};
+    const fmtSet = (name, y) => { const t = this.meta(name).type; const wp = y.w ? this.dispW(y.w) + ' ' + s.unit + ' × ' : ''; if (t === 'time') return (y.w ? this.dispW(y.w) + ' ' + s.unit + ' · ' : '') + y.r + ' s'; if (t === 'uni') return wp + (y.l != null ? y.l + ' / ' + y.rr : y.r) + ' ' + L('per side'); return wp + y.r + (y.w ? '' : L(' reps')); };
     const byDate = {};
     Object.entries(s.history).forEach(([name, arr]) => arr.forEach(se => { (byDate[se.date] = byDate[se.date] || []).push({ name, sets: se.sets }); }));
     const sessions = Object.keys(byDate).map(Number).sort((a, b) => b - a).map(date => {
@@ -1059,7 +1278,7 @@ class Component extends DCLogic {
       let r = m.rid ? routines.find(x => x.id === m.rid) : null;
       if (!r && !m.name) { let best = 0; routines.forEach(x => { const o = x.ex.filter(e => ex.some(y => y.name === e.name)).length; if (o > best) { best = o; r = x; } }); }
       if (r) { const ix = n => { const i = r.ex.findIndex(e => e.name === n); return i < 0 ? 99 : i; }; ex.sort((a, b) => ix(a.name) - ix(b.name)); }
-      const vol = ex.reduce((a, x) => a + work(x.sets).reduce((b, y) => b + y.w * y.r, 0), 0);
+      const vol = ex.reduce((a, x) => a + (this.meta(x.name).type === 'time' ? 0 : work(x.sets).reduce((b, y) => b + y.w * y.r, 0)), 0);
       return { date, name: m.name || (r ? r.name : L('Workout')), dur: m.dur, ex, vol, sets: ex.reduce((a, x) => a + x.sets.length, 0) };
     });
     const cm = new Date(d0.getFullYear(), d0.getMonth() + s.calOff, 1);
@@ -1093,7 +1312,36 @@ class Component extends DCLogic {
     const liftTrends = histAll.map(n => { const st = liftStat(n); return { name: n, pct: pctTxt(st.pct), color: st.pct == null ? '#9C9CA8' : st.pct > 0.05 ? '#CCFF00' : '#FFFFFF', flag: st.stalled ? L('No PR for ') + st.wks + L(' weeks') : '', hasFlag: !!st.stalled, onClick: go({ progView: 'lifts', progEx: n, progSel: null }) }; });
     const stalledN = liftTrends.filter(x => x.hasFlag).length;
 
+    const fr = LANG === 'fr';
+    const bodyArr = (s.body || []).slice().sort((a, b) => a.date - b.date);
+    const lenU = kg ? 'cm' : 'in'; const dLen = v => trim(Math.round((kg ? v : v / 2.54) * 10) / 10);
+    const MEAS = [['waist', 'Waist', 'Taille'], ['hips', 'Hips', 'Hanches'], ['chest', 'Chest', 'Poitrine'], ['arm', 'Arm', 'Bras'], ['thigh', 'Thigh', 'Cuisse']];
+    const bws = bodyArr.filter(b => b.w > 0); const bv = bws.map(b => b.w);
+    const bmn0 = bv.length ? Math.min(...bv) : 0, bmx0 = bv.length ? Math.max(...bv) : 1; const bpad = bmx0 > bmn0 ? (bmx0 - bmn0) * 0.15 : 1;
+    const BX = i => bv.length > 1 ? 8 + i * 308 / (bv.length - 1) : 162; const BY = v => 132 - (v - (bmn0 - bpad)) / ((bmx0 + bpad) - (bmn0 - bpad)) * 124;
+    const bwPl = bv.map((v, i) => BX(i).toFixed(1) + ',' + BY(v).toFixed(1)).join(' ');
+    const bTiles = MEAS.map(m => { const a = bodyArr.filter(b => b[m[0]] > 0); if (!a.length) return null; const cur = a[a.length - 1][m[0]], dd = cur - a[0][m[0]]; return { label: fr ? m[2] : m[1], value: dLen(cur) + ' ' + lenU, delta: a.length > 1 ? (dd >= 0 ? '+' : '−') + dLen(Math.abs(dd)) : '' }; }).filter(Boolean);
+    const shEx = w && s.exSheet != null ? w.ex[s.exSheet] : null; const shM = shEx ? this.meta(shEx.name) : null;
+    const tg = (label, sub, on, fn) => ({ label, sub, track: on ? '#CCFF00' : '#24242B', knob: on ? '#0A0A0C' : '#9C9CA8', justify: on ? 'flex-end' : 'flex-start', onClick: fn });
     return {
+      isBodyView: s.progView === 'body',
+      bwCur: bv.length ? this.dispW(bv[bv.length - 1]) : '—',
+      bwDelta: bv.length > 1 ? (bv[bv.length - 1] - bv[0] >= 0 ? '+' : '−') + this.dispW(Math.abs(bv[bv.length - 1] - bv[0])) + ' ' + s.unit + (fr ? ' depuis le ' : ' since ') + fmtD(bws[0].date) : '',
+      bwHasChart: bv.length > 0, bwNoChart: !bv.length, bwPts: bwPl, bwArea: bv.length ? BX(0).toFixed(1) + ',132 ' + bwPl + ' ' + BX(bv.length - 1).toFixed(1) + ',132' : '',
+      bwDots: bv.map((v, i) => ({ left: (BX(i) / 324 * 100) + '%', top: BY(v) + 'px' })), bwFrom: bws.length ? fmtD(bws[0].date) : '', bwTo: bws.length ? fmtD(bws[bws.length - 1].date) : '',
+      bodyFields: [['w', fr ? 'Poids' : 'Weight', s.unit], ...MEAS.map(m => [m[0], fr ? m[2] : m[1], lenU])].map(([k, label, u]) => ({ label: label + ' (' + u + ')', ph: '—', val: (s.bodyBuf || {})[k] || '', onChange: (e) => { const v = e.target.value; this.setState(st => ({ bodyBuf: { ...(st.bodyBuf || {}), [k]: v } })); } })),
+      saveBody: () => this.saveBody(), measureTiles: bTiles, hasMeasures: bTiles.length > 0, hasBody: bodyArr.length > 0,
+      bodyList: bodyArr.slice().reverse().slice(0, 40).map(b => ({ date: fmtD(b.date), text: [b.w ? this.dispW(b.w) + ' ' + s.unit : null, ...MEAS.filter(m => b[m[0]] > 0).map(m => (fr ? m[2] : m[1]) + ' ' + dLen(b[m[0]]))].filter(Boolean).join(' · '), delLabel: s.bodyDelArm === b.date ? L('Tap again') : '✕', onDel: () => this.delBody(b.date) })),
+      sheetOn: !!shEx, sheetName: shEx ? shEx.name : '',
+      sheetTypes: [['reps', L('Reps')], ['time', L('Time')], ['uni', L('Per side')]].map(([k, label]) => ({ label, bg: shM && shM.type === k ? '#24242B' : 'transparent', color: shM && shM.type === k ? '#FFFFFF' : '#9C9CA8', onClick: () => shEx && this.setMeta(shEx.name, { type: k }) })),
+      sheetToggles: shEx ? [tg(L('Plate calculator'), L('Shows the plates to load on each side of the bar.'), shM.bar, () => this.setMeta(shEx.name, { bar: !shM.bar }))].concat(s.exSheet < w.ex.length - 1 ? [tg(L('Superset with next'), L('No rest between linked exercises — rest starts after the last one.'), !!shEx.ss, () => this.toggleSS(s.exSheet))] : []) : [],
+      sheetNote: shM ? shM.note : '', onSheetNote: (e) => shEx && this.setMeta(shEx.name, { note: e.target.value }), closeSheet: go({ exSheet: null }),
+      wNote: w ? (w.note || '') : '', onWNote: (e) => { const v = e.target.value; this.updW(x => { x.note = v; }); },
+      isTemplates: s.screen === 'templates', templBack: go({ screen: 'tabs', tab: 'programs' }), openTemplates: go({ screen: 'templates' }),
+      templates: TEMPLATES.map(t => ({ name: fr ? t.fr : t.name, meta: fr ? t.metaFr : t.meta, desc: fr ? t.descFr : t.desc,
+        days: t.r.map(([n, ex]) => ({ name: n, ex: ex.map((e, i) => (i ? (ex[i - 1][3] ? ' + ' : ', ') : '') + e[0] + ' ' + e[1] + '×' + e[2]).join('') })),
+        addLabel: (fr ? 'Ajouter ' : 'Add ') + t.r.length + ' routines', onAdd: () => this.addTemplate(t) })),
+      sdHasNote: !!(sd && meta[sd.date] && meta[sd.date].note), sdNote: sd && meta[sd.date] ? meta[sd.date].note || '' : '',
       toastOn: !!s.toast, toast: s.toast,
       tx: Object.fromEntries(Object.entries(TX).map(([k, v]) => [k, L(v)])), appLabel: 'Barlog v' + APP_VERSION,
       calHead: LANG === 'fr' ? ['L','M','M','J','V','S','D'] : ['M','T','W','T','F','S','S'],
@@ -1109,8 +1357,8 @@ class Component extends DCLogic {
       showInstall: !s.standalone && !s.installSeen, dismissInstall: go({ installSeen: true }),
       isToday: showTabs && s.tab === 'today', isPrograms: showTabs && s.tab === 'programs', isProgress: showTabs && s.tab === 'progress', isProfile: showTabs && s.tab === 'profile',
       isSession: s.screen === 'session' && !!sd,
-      progViews: [['sessions', L('Sessions')], ['lifts', L('Lifts')], ['stats', L('Stats')]].map(([k, label]) => ({ label, bg: s.progView === k ? '#24242B' : 'transparent', color: s.progView === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ progView: k }) })),
-      isSessView: !['lifts', 'stats'].includes(s.progView), isLiftView: s.progView === 'lifts', isStatsView: s.progView === 'stats',
+      progViews: [['sessions', L('Sessions')], ['lifts', L('Lifts')], ['stats', L('Stats')], ['body', L('Body')]].map(([k, label]) => ({ label, bg: s.progView === k ? '#24242B' : 'transparent', color: s.progView === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ progView: k }) })),
+      isSessView: !['lifts', 'stats', 'body'].includes(s.progView), isLiftView: s.progView === 'lifts', isStatsView: s.progView === 'stats',
       statTiles: [{ label: L('This week'), value: thisWk + '/' + planned }, { label: L('Last 4 wk'), value: Math.round(last4 / (4 * planned) * 100) + '%' }, { label: L('Streak'), value: streak + L(' wk') }],
       weekBars, plannedLabel: L('Target: ') + planned + L(' sessions per week (one per routine). Streak = weeks in a row at target.'),
       muscleRows, liftTrends, stalledLine: (stalledN ? stalledN + L(' lift') + (stalledN > 1 ? 's' : '') + L(' without a PR for 3+ weeks.') : L('Every lift has set a PR in the last 3 weeks.')) + L(' Compared with the 4 weeks before, or with your first session of the period if there is no earlier data.'),
@@ -1121,7 +1369,7 @@ class Component extends DCLogic {
       sdName: sd ? sd.name : '', sdDate: sd ? fmtLong(sd.date) : '',
       sdStats: sd ? [{ label: L('Time'), value: sd.dur ? clock(sd.dur) : '—' }, { label: L('Sets'), value: String(sd.sets) }, { label: 'Vol ' + s.unit, value: volU(sd.vol) }] : [],
       sdEx: sd ? sd.ex.map(x => { let n = 0; return { name: x.name, sets: x.sets.map((y, i) => { const k = sd.date + '|' + x.name + '|' + i + '|'; return {
-        num: y.wu ? 'W' : String(++n), text: (y.w ? this.dispW(y.w) + ' ' + s.unit + ' × ' : '') + y.r + (y.w ? '' : L(' reps')), e: y.w && !y.wu ? 'e1RM ' + this.dispW(e1(y.w, y.r)) : '',
+        num: y.wu ? 'W' : String(++n), text: fmtSet(x.name, y), e: y.w && !y.wu && this.meta(x.name).type !== 'time' ? 'e1RM ' + this.dispW(e1(y.w, y.r)) : '',
         wDisp: s.editBuf[k + 'w'] != null ? s.editBuf[k + 'w'] : (y.w ? this.dispW(y.w) : ''), rDisp: s.editBuf[k + 'r'] != null ? s.editBuf[k + 'r'] : String(y.r),
         onW: (e) => this.editSessSet(sd.date, x.name, i, 'w', e.target.value), onR: (e) => this.editSessSet(sd.date, x.name, i, 'r', e.target.value),
         onSelect: (e) => { const t = e.target; setTimeout(() => { try { t.setSelectionRange(0, t.value.length); } catch (er) {} }, 0); } }; }) }; }) : [],
@@ -1171,6 +1419,7 @@ class Component extends DCLogic {
         toggleRow(L('Sound at rest end'), L('Beeps when rest is over. Muted by the iPhone silent switch.'), s.sound, 'sound'),
         toggleRow('Vibration', L('Android only — iPhone doesn’t allow it in web apps'), s.haptics, 'haptics'),
         toggleRow(L('Warn on off-day start'), L('Only for routines with a weekday in their name (e.g. “Mardi – …”). Asks before starting one on another day.'), s.dayWarn !== false, 'dayWarn'),
+        toggleRow(L('Light bar (15 kg / 35 lb)'), L('For the plate calculator. Off = 20 kg / 45 lb.'), !!s.barLight, 'barLight'),
         toggleRow(L('Keep screen on'), L('During a workout, so the timer stays visible'), s.wake, 'wake')
       ],
       exportData: () => this.exportData(), importData: () => this.importData(),

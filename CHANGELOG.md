@@ -5,6 +5,15 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.5.0 — 2026-10-15
+- Exercices unilatéraux : saisie gauche / droite (détection auto des « per side »).
+- Exercices chronométrés : minuteur intégré par série (détection auto des « (sec) », plank, hold).
+- Supersets : lier des exercices dans l'éditeur de routine ou pendant la séance ; pas de repos entre exercices liés.
+- Calculateur de disques pour les exercices à la barre + réglage barre légère.
+- Notes par exercice (gardées d'une séance à l'autre) + note de séance.
+- 4 programmes prêts à l'emploi (Full Body, Force 5×5, Haut/Bas, Push/Pull/Legs).
+- Suivi du corps : poids corporel (graphique) + mensurations, dans Progrès → Corps.
+
 ## 0.4.0 — 2026-10-15
 - Application bilingue français / anglais (Profil → Langue). Détection automatique selon la langue du téléphone.
 - Rappel de sauvegarde après 14 jours + export vers Fichiers / iCloud Drive.
