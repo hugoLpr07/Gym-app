@@ -37,6 +37,20 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-if>
 
+<sc-if value="{{ confirmOn }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ confirmCancel }}" style="position:fixed;inset:0;z-index:60;background:rgba(0,0,0,0.65);display:flex;align-items:flex-end;justify-content:center;">
+<div onClick="{{ stop }}" style="width:100%;max-width:480px;box-sizing:border-box;background:#16161A;border-top:1px solid #33333C;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;">
+<span style="font-size:20px;font-weight:800;">{{ confirmTitle }}</span>
+<span style="font-size:15px;line-height:21px;color:#9C9CA8;text-wrap:pretty;padding-bottom:6px;">{{ confirmText }}</span>
+<button onClick="{{ confirmGo }}" style="min-height:56px;border-radius:16px;border:none;background:#CCFF00;color:#0A0A0C;font-size:16px;font-weight:700;">Start anyway</button>
+<sc-if value="{{ confirmHasToday }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ confirmToday }}" style="min-height:56px;border-radius:16px;border:none;background:#24242B;color:#FFFFFF;font-size:15px;font-weight:600;padding:0 12px;">{{ confirmTodayLabel }}</button>
+</sc-if>
+<button onClick="{{ confirmCancel }}" style="min-height:52px;border-radius:16px;border:none;background:transparent;color:#9C9CA8;font-size:15px;font-weight:600;">Cancel</button>
+</div>
+</div>
+</sc-if>
+
 <sc-if value="{{ updateOn }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;top:8px;left:16px;right:16px;display:flex;justify-content:center;z-index:41;">
 <button onClick="{{ applyUpdate }}" style="min-height:44px;padding:0 16px;border-radius:999px;border:none;background:#CCFF00;color:#0A0A0C;font-size:14px;font-weight:700;">New version ready · Tap to update</button>
@@ -631,8 +645,11 @@ const KG_LB = 2.20462;
 const LIB = [['Bench Press','Chest'],['Incline DB Press','Chest'],['Dumbbell Fly','Chest'],['Push-up','Chest'],['Deadlift','Back'],['Barbell Row','Back'],['Pull-up','Back'],['Lat Pulldown','Back'],['Seated Cable Row','Back'],['Squat','Legs'],['Romanian Deadlift','Legs'],['Leg Press','Legs'],['Leg Curl','Legs'],['Leg Extension','Legs'],['Calf Raise','Legs'],['Bulgarian Split Squat','Legs'],['Overhead Press','Shoulders'],['Lateral Raise','Shoulders'],['Face Pull','Shoulders'],['Barbell Curl','Arms'],['Hammer Curl','Arms'],['Triceps Pushdown','Arms'],['Skull Crusher','Arms'],['Plank','Core'],['Hanging Leg Raise','Core'],['Cable Crunch','Core']].map(([name, group]) => ({ name, group }));
 const GROUPS = ['All','Chest','Back','Legs','Shoulders','Arms','Core','Custom'];
 const BASE = {'Bench Press':80,'Overhead Press':50,'Incline DB Press':30,'Lateral Raise':12,'Triceps Pushdown':30,'Deadlift':160,'Barbell Row':70,'Pull-up':10,'Face Pull':25,'Barbell Curl':35,'Squat':120,'Romanian Deadlift':100,'Leg Press':180,'Leg Curl':45,'Calf Raise':70};
-const PK = ['routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta'];
+const PK = ['routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn'];
 const e1 = (w, r) => w * (1 + r / 30);
+const WD = { dimanche: 0, lundi: 1, mardi: 2, mercredi: 3, jeudi: 4, vendredi: 5, samedi: 6, sunday: 0, monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6 };
+const WD_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const wdOf = r => { const m = r.name.toLowerCase().match(/[a-zé]+/g) || []; const k = m.find(x => x in WD); return k ? WD[k] : null; };
 const trim = n => String(Math.round(n * 100) / 100);
 const pad = n => String(n).padStart(2, '0');
 const clock = ms => { const t = Math.max(0, Math.ceil(ms / 1000)); const h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), s = t % 60; return h ? h + ':' + pad(m) + ':' + pad(s) : m + ':' + pad(s); };
@@ -662,7 +679,7 @@ class Component extends DCLogic {
   state = this.initial();
   initial() {
     const routines = seedRoutines();
-    return { tab: 'today', screen: 'tabs', routines, history: seedHistory(routines), lastRoutineId: 'r3', workout: null, focus: null, restEnd: null, restTotal: 90, restAlert: false, now: Date.now(), libCtx: 'workout', libQuery: '', libGroup: 'All', custom: [], editId: null, progEx: 'Bench Press', metric: 'e1rm', unit: 'kg', haptics: true, sound: true, wake: true, autoRest: this.props.autoStartRest ?? true, restDefault: this.props.defaultRest ?? 90, summary: null, toast: null, discardArm: false, deleteArm: false, resetArm: false, installSeen: false, standalone: false, sessMeta: {}, progView: 'sessions', calOff: 0, openSess: null, delSessArm: false, clearArm: false, eraseArm: false, sessEdit: false, editBuf: {} };
+    return { tab: 'today', screen: 'tabs', routines, history: seedHistory(routines), lastRoutineId: 'r3', workout: null, focus: null, restEnd: null, restTotal: 90, restAlert: false, now: Date.now(), libCtx: 'workout', libQuery: '', libGroup: 'All', custom: [], editId: null, progEx: 'Bench Press', metric: 'e1rm', unit: 'kg', haptics: true, sound: true, wake: true, autoRest: this.props.autoStartRest ?? true, restDefault: this.props.defaultRest ?? 90, summary: null, toast: null, discardArm: false, deleteArm: false, resetArm: false, installSeen: false, standalone: false, sessMeta: {}, progView: 'sessions', calOff: 0, openSess: null, delSessArm: false, clearArm: false, eraseArm: false, sessEdit: false, editBuf: {}, dayWarn: true, confirmStart: null };
   }
   componentDidMount() {
     let d = null;
@@ -742,10 +759,13 @@ class Component extends DCLogic {
     }
     return { name, target: target || null, up, sets };
   }
-  start(rid) {
+  start(rid, force) {
     const s = this.state; this.unlockAudio();
     if (s.workout) { this.setState({ screen: 'workout' }); return; }
     const r = s.routines.find(x => x.id === rid);
+    const wd = r ? wdOf(r) : null;
+    if (!force && s.dayWarn !== false && wd != null && wd !== new Date().getDay()) { this.setState({ confirmStart: rid }); return; }
+    if (s.confirmStart) this.setState({ confirmStart: null });
     const ex = r ? r.ex.map(e => this.mkEx(e.name, e.sets, e.reps, s.history)) : [];
     this.setState({ workout: { rid: r ? r.id : null, name: r ? r.name : 'Quick workout', start: Date.now(), ex }, focus: ex.length ? { ei: 0, si: 0 } : null, screen: 'workout', restEnd: null, restAlert: false, discardArm: false });
   }
@@ -875,8 +895,6 @@ class Component extends DCLogic {
     const routines = s.routines;
     const ago = (t) => { if (!t) return 'never'; const d = Math.floor((now - t) / DAY); return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d + ' days ago'; };
     const lastOf = (r) => { let t = 0; r.ex.forEach(e => { const l = (s.history[e.name] || []).slice(-1)[0]; if (l) t = Math.max(t, l.date); }); return t; };
-    const WD = { dimanche: 0, lundi: 1, mardi: 2, mercredi: 3, jeudi: 4, vendredi: 5, samedi: 6, sunday: 0, monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6 };
-    const wdOf = r => { const m = r.name.toLowerCase().match(/[a-zé]+/g) || []; const k = m.find(x => x in WD); return k ? WD[k] : null; };
     const dayStart = new Date(now); dayStart.setHours(0, 0, 0, 0);
     let next = null;
     const dated = routines.filter(r => wdOf(r) != null);
@@ -1046,6 +1064,10 @@ class Component extends DCLogic {
 
     return {
       toastOn: !!s.toast, toast: s.toast,
+      ...(() => { const cr = s.confirmStart ? routines.find(r => r.id === s.confirmStart) : null; const tw = new Date(now).getDay(); const tr = routines.find(r => wdOf(r) === tw);
+        return { confirmOn: !!cr, stop: (e) => e.stopPropagation(), confirmTitle: cr ? 'This is your ' + WD_EN[wdOf(cr)] + ' session' : '', confirmText: cr ? 'Today is ' + WD_EN[tw] + '. Start “' + cr.name + '” anyway?' : '',
+          confirmGo: () => cr && this.start(cr.id, true), confirmCancel: go({ confirmStart: null }),
+          confirmHasToday: !!(cr && tr && tr !== cr), confirmTodayLabel: tr ? 'Start today’s: ' + tr.name : '', confirmToday: () => tr && this.start(tr.id, true) }; })(),
       updateOn: !!s.updateReady && !s.workout && s.screen === 'tabs', applyUpdate: () => { this.save(); location.reload(); },
       showInstall: !s.standalone && !s.installSeen, dismissInstall: go({ installSeen: true }),
       isToday: showTabs && s.tab === 'today', isPrograms: showTabs && s.tab === 'programs', isProgress: showTabs && s.tab === 'progress', isProfile: showTabs && s.tab === 'profile',
@@ -1111,6 +1133,7 @@ class Component extends DCLogic {
         toggleRow('Auto-start rest', 'Starts when you log a set', s.autoRest, 'autoRest'),
         toggleRow('Sound at rest end', 'Beeps when rest is over. Muted by the iPhone silent switch.', s.sound, 'sound'),
         toggleRow('Vibration', 'Android only — iPhone doesn’t allow it in web apps', s.haptics, 'haptics'),
+        toggleRow('Warn on off-day start', 'Only for routines with a weekday in their name (e.g. “Mardi – …”). Asks before starting one on another day.', s.dayWarn !== false, 'dayWarn'),
         toggleRow('Keep screen on', 'During a workout, so the timer stays visible', s.wake, 'wake')
       ],
       exportData: () => this.exportData(), importData: () => this.importData(),
