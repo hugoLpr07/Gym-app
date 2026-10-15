@@ -43,8 +43,8 @@ input::placeholder{color:#9C9CA8}
 <span style="font-size:20px;font-weight:800;">{{ sheetName }}</span>
 <div style="display:flex;flex-direction:column;gap:6px;">
 <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.nType }}</span>
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#0A0A0C;border-radius:12px;padding:4px;">
-<sc-for list="{{ sheetTypes }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.onClick }}" style="height:44px;border:none;border-radius:9px;background:{{ t.bg }};color:{{ t.color }};font-size:14px;font-weight:600;">{{ t.label }}</button></sc-for>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:4px;background:#0A0A0C;border-radius:12px;padding:4px;">
+<sc-for list="{{ sheetTypes }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.onClick }}" style="height:44px;border:none;border-radius:9px;background:{{ t.bg }};color:{{ t.color }};font-size:14px;font-weight:600;">{{ t.label }}</button></sc-for>
 </div>
 </div>
 <sc-for list="{{ sheetToggles }}" as="t" hint-placeholder-count="2">
@@ -542,7 +542,7 @@ input::placeholder{color:#9C9CA8}
 <div style="padding:0 14px 8px;font-size:13px;font-weight:600;color:#CCFF00;">↑ {{ ex.upText }}</div>
 </sc-if>
 <div style="display:grid;grid-template-columns:{{ ex.cols }};gap:8px;padding:0 12px 6px;font-size:12px;font-weight:600;letter-spacing:0.06em;color:#9C9CA8;">
-<span style="text-align:center;">{{ ex.h0 }}</span><span>{{ tx.k52 }}</span><span style="text-align:center;">{{ unitUpper }}</span><span style="text-align:center;">{{ ex.h2 }}</span><sc-if value="{{ ex.isUni }}" hint-placeholder-val="{{ false }}"><span style="text-align:center;">R</span></sc-if><span></span>
+<span style="text-align:center;">{{ ex.h0 }}</span><span>{{ tx.k52 }}</span><span style="text-align:center;">{{ unitUpper }}</span><span style="text-align:center;">{{ ex.h2 }}</span><sc-if value="{{ ex.isUni }}" hint-placeholder-val="{{ false }}"><span style="text-align:center;">{{ ex.h3 }}</span></sc-if><span></span>
 </div>
 <sc-for list="{{ ex.sets }}" as="s" hint-placeholder-count="3">
 <div style="background:{{ s.rowBg }};border-top:1px solid #24242B;">
@@ -799,10 +799,12 @@ const FR = {"Start anyway":"Lancer quand même","Cancel":"Annuler","New version 
 const TX = {"k0":"Start anyway","k1":"Cancel","k2":"New version ready · Tap to update","k3":"Install on your iPhone","k4":"In Safari: tap Share, then “Add to Home Screen”. Barlog opens full-screen, works offline, and your data is kept safe from Safari’s cleanup.","k5":"Got it","k6":"Back up your data","k7":"Tap Export, then “Save to Files” → iCloud Drive.","k8":"Export now","k9":"Later","k10":"Today","k11":"Next up","k12":"Last done","k13":"This week","k14":"Other routines","k15":"Start","k16":"+ Empty workout","k17":"Program · rotates automatically","k18":"Routines","k19":"NEXT","k20":"Edit","k21":"+ New routine","k22":"Progress","k23":"All sessions","k24":"No sessions yet. Finish a workout and it shows up here.","k25":"No weighted exercise matches.","k26":"No sessions in this range.","k27":"Trend","k28":"Tap a point for details","k29":"Rep records · heaviest weight (","k30":"Records ·","k31":"History ·","k32":"Right column: best estimated 1RM of the session. Lime = PR.","k33":"Consistency","k34":"Sets per muscle · weekly avg, last 4 wk","k35":"Shaded zone = 10–20 work sets per muscle per week, the usual range for muscle growth. Warm-ups excluded.","k36":"e1RM trend · last 4 weeks","k37":"Profile","k38":"No account. No subscription.","k39":"Everything lives on this device.","k40":"Training","k41":"Language","k42":"Units","k43":"Default rest","k44":"Your data","k45":"Export backup","k46":"Import","k47":"Logging a workout only adds to your history. Import replaces everything with the file’s content — export first if unsure.","k48":"Clear history keeps your routines. Erase all also deletes routines and custom exercises. Both ask for a second tap.","k49":"Resume ›","k50":"Finish","k51":"SET","k52":"PREV","k53":"−1 rep","k54":"+1 rep","k55":"+ Add set","k56":"Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.","k57":"+ Add exercise","k58":"Skip","k59":"Add exercise","k60":"+ Create “","k61":"No exercises yet. Add your first movement.","k62":"sets","k63":"reps","k64":"Fix any weight or reps. Changes save instantly and update your records and charts.","k65":"Workout saved","k66":"Exercises","k67":"Done","k68":"Search an exercise","k69":"Search or type a new name"};
 Object.assign(TX, { nSessNote: 'Session note (optional)', nFromTpl: '+ Ready-made program', nTpl: 'Ready-made programs', nTplSub: 'Adds routines — yours stay untouched', nType: 'Exercise type', nNote: 'Note', nNotePh: 'Seat height, grip, cues…', nNoteSub: 'Saved with this exercise, shown every session.', nDone: 'Done', nBodyW: 'Body weight', nBodyEmpty: 'Log a weigh-in below to start your chart.', nLogToday: 'Log today', nSave: 'Save', nBodyHint: 'Fill only what you want. Saving again today updates today’s entry.', nMeas: 'Measurements', nEntries: 'Entries' });
 Object.assign(FR, { 'Session note (optional)': 'Note de séance (optionnelle)', '+ Ready-made program': '+ Programme prêt à l’emploi', 'Ready-made programs': 'Programmes prêts à l’emploi', 'Adds routines — yours stay untouched': 'Ajoute des routines — les tiennes restent', 'Exercise type': 'Type d’exercice', 'Note': 'Note', 'Seat height, grip, cues…': 'Réglage du siège, prise, consignes…', 'Saved with this exercise, shown every session.': 'Enregistrée avec l’exercice, affichée à chaque séance.', 'Body weight': 'Poids corporel', 'Log a weigh-in below to start your chart.': 'Enregistre un poids ci-dessous pour démarrer ton graphique.', 'Log today': 'Enregistrer aujourd’hui', 'Save': 'Enregistrer', 'Fill only what you want. Saving again today updates today’s entry.': 'Remplis seulement ce que tu veux. Enregistrer à nouveau aujourd’hui met à jour l’entrée du jour.', 'Measurements': 'Mensurations', 'Entries': 'Entrées',
-  'Body': 'Corps', 'Reps': 'Reps', 'Per side': 'Par côté', 'per side': 'par côté', 'Plate calculator': 'Calculateur de disques', 'Shows the plates to load on each side of the bar.': 'Affiche les disques à mettre de chaque côté de la barre.', 'Superset with next': 'Superset avec le suivant', 'No rest between linked exercises — rest starts after the last one.': 'Pas de repos entre les exercices liés — le repos démarre après le dernier.', 'SUPERSET': 'SUPERSET', 'Stop': 'Stop', '▶ Start ': '▶ Lancer ', 'Below bar weight': 'Sous le poids de la barre', 'Empty bar': 'Barre vide', 'bar': 'barre', '+ Superset with next': '+ Superset avec le suivant', 'Superset ✓ · tap to unlink': 'Superset ✓ · toucher pour délier', 'Light bar (15 kg / 35 lb)': 'Barre légère (15 kg / 35 lb)', 'For the plate calculator. Off = 20 kg / 45 lb.': 'Pour le calculateur de disques. Désactivé = 20 kg / 45 lb.', 'Program added': 'Programme ajouté', 'Saved': 'Enregistré', 'Enter at least one value': 'Entre au moins une valeur', 'SEC': 'SEC' });
+  'Body': 'Corps', 'Reps': 'Reps', 'Per side': 'Par côté', 'per side': 'par côté', 'Plate calculator': 'Calculateur de disques', 'Shows the plates to load on each side of the bar.': 'Affiche les disques à mettre de chaque côté de la barre.', 'Superset with next': 'Superset avec le suivant', 'No rest between linked exercises — rest starts after the last one.': 'Pas de repos entre les exercices liés — le repos démarre après le dernier.', 'SUPERSET': 'SUPERSET', 'Stop': 'Stop', '▶ Start ': '▶ Lancer ', 'Below bar weight': 'Sous le poids de la barre', 'Empty bar': 'Barre vide', 'bar': 'barre', '+ Superset with next': '+ Superset avec le suivant', 'Superset ✓ · tap to unlink': 'Superset ✓ · toucher pour délier', 'Light bar (15 kg / 35 lb)': 'Barre légère (15 kg / 35 lb)', 'For the plate calculator. Off = 20 kg / 45 lb.': 'Pour le calculateur de disques. Désactivé = 20 kg / 45 lb.', 'Program added': 'Programme ajouté', 'Saved': 'Enregistré', 'Enter at least one value': 'Entre au moins une valeur', 'SEC': 'SEC', 'SET': 'SÉRIE', 'Left': 'Gauche', 'Right': 'Droite', 'Left and right logged separately.': 'Gauche et droite saisis séparément.' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.5.0';
-const autoType = n => /\(sec\)|\bplank\b|\bhold\b|\biso\b/i.test(n) ? 'time' : /per side/i.test(n) ? 'uni' : 'reps';
+const APP_VERSION = '0.5.1';
+const autoType = n => { const t = /\(sec\)|\bplank\b|\bhold\b|\biso\b/i.test(n), u = /per side/i.test(n); return t && u ? 'timeuni' : t ? 'time' : u ? 'uni' : 'reps'; };
+const isT = t => t === 'time' || t === 'timeuni';
+const isU = t => t === 'uni' || t === 'timeuni';
 const autoBar = n => !/\b(DB|KB|dumbbell|kettlebell|cable|machine|goblet|split)\b|per side|lat row/i.test(n) && /\b(BB|barbell|bench press|bench|squat|deadlift|RDL|zercher|overhead press)\b/i.test(n);
 const plateCalc = (wd, isKg, light) => { const bar = isKg ? (light ? 15 : 20) : (light ? 35 : 45); const P = isKg ? [25, 20, 15, 10, 5, 2.5, 1.25] : [45, 35, 25, 10, 5, 2.5]; let side = (wd - bar) / 2; if (side < -0.01) return { bar, list: [], below: true, rest: 0 }; const list = []; P.forEach(p => { while (side >= p - 1e-6) { list.push(p); side -= p; } }); return { bar, list, rest: side > 0.01 ? side : 0 }; };
 const ssTags = list => { const t = []; let n = 0, i = 0; while (i < list.length) { let j = i; while (j < list.length - 1 && list[j].ss) j++; if (j > i) { const c = String.fromCharCode(65 + n++); for (let k = i; k <= j; k++) t[k] = c + (k - i + 1); } i = j + 1; } return t; };
@@ -897,8 +899,9 @@ class Component extends DCLogic {
   tick() {
     const now = Date.now(); const s = this.state;
     if (s.hold && now >= s.hold.end) {
-      const h = s.hold; this.setState({ hold: null, now }); this.buzz([80, 60, 80]); this.tone([[880, 0, 0.18], [1320, 0.25, 0.3]]);
-      const x = s.workout && s.workout.ex[h.ei] && s.workout.ex[h.ei].sets[h.si]; if (x && !x.done) { this.lastCheck = 0; this.check(h.ei, h.si); } return;
+      const h = s.hold; const x = s.workout && s.workout.ex[h.ei] && s.workout.ex[h.ei].sets[h.si];
+      if (h.side === 'l' && x) { const sec = Math.max(1, x.r2 != null ? x.r2 : x.r); this.setState({ hold: { ...h, side: 'r', start: now, end: now + sec * 1000 }, now }); this.buzz([60]); this.tone([[880, 0, 0.18]]); return; }
+      this.setState({ hold: null, now }); this.buzz([80, 60, 80]); this.tone([[880, 0, 0.18], [1320, 0.25, 0.3]]); if (x && !x.done) { this.lastCheck = 0; this.check(h.ei, h.si); } return;
     }
     if (s.restEnd && !s.restAlert && now >= s.restEnd) {
       const late = now - s.restEnd > 5000;
@@ -929,9 +932,10 @@ class Component extends DCLogic {
   typeR2(ei, si, val) { this.updW(w => { const x = w.ex[ei].sets[si]; x.r2Str = val; const v = parseInt(val, 10); if (!isNaN(v)) x.r2 = v; else if (val === '') x.r2 = 0; }); }
   holdToggle(ei, si) {
     const s = this.state; this.unlockAudio(); const h = s.hold;
-    if (h && h.ei === ei && h.si === si) { const el = Math.max(1, Math.round((Date.now() - h.start) / 1000)); this.setState({ hold: null }); this.updW(w => { const x = w.ex[ei].sets[si]; x.r = el; x.rStr = null; }); return; }
+    if (h && h.ei === ei && h.si === si) { const el = Math.max(1, Math.round((Date.now() - h.start) / 1000)); this.setState({ hold: null }); this.updW(w => { const x = w.ex[ei].sets[si]; if (h.side === 'r') { x.r2 = el; x.r2Str = null; } else { if (h.side === 'l' && x.r2 == null) x.r2 = x.r; x.r = el; x.rStr = null; } }); return; }
     const x = s.workout.ex[ei].sets[si]; const sec = Math.max(1, x.r || 30); const t = Date.now();
-    this.setState({ hold: { ei, si, start: t, end: t + sec * 1000 }, focus: { ei, si } });
+    const side = isU(this.meta(s.workout.ex[ei].name).type) ? 'l' : null;
+    this.setState({ hold: { ei, si, side, start: t, end: t + sec * 1000 }, focus: { ei, si } });
   }
   addTemplate(t) {
     const base = Date.now();
@@ -958,7 +962,7 @@ class Component extends DCLogic {
     const lastW = [...hist].reverse().find(se => se.sets.some(x => x.w > 0));
     const ws = last ? work(last.sets).filter(x => x.w > 0) : [];
     const ty = this.meta(name).type;
-    const up = ty !== 'time' && !!(target && ws.length && ws.every(x => x.r >= target));
+    const up = !isT(ty) && !!(target && ws.length && ws.every(x => x.r >= target));
     const inc = this.inc(); const sets = [];
     for (let i = 0; i < n; i++) {
       const p = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null;
@@ -967,7 +971,7 @@ class Component extends DCLogic {
       const bw = p && p.w > 0 ? p.w : q ? q.w : 0;
       sets.push({ w: bw ? bw + (bump ? inc : 0) : 0, r: p ? (bump ? target : p.r) : (target || 8), pw: p ? p.w : null, pr: p ? p.r : null, warm: !!(p && p.wu), done: false });
     }
-    if (ty === 'uni') sets.forEach((x, i) => { const p = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null; x.r2 = up || !p || p.rr == null ? x.r : p.rr; });
+    if (isU(ty)) sets.forEach((x, i) => { const p = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null; x.r2 = up || !p || p.rr == null ? x.r : p.rr; });
     return { name, target: target || null, up, sets, ss: !!ss };
   }
   start(rid, force) {
@@ -1001,10 +1005,10 @@ class Component extends DCLogic {
       if (set.done) { set.done = false; set.isPR = false; return { focus: { ei, si } }; }
       set.done = true;
       const ty = this.meta(ex.name).type;
-      const er = x => ty === 'uni' ? Math.min(x.r, x.r2 != null ? x.r2 : x.r) : x.r;
+      const er = x => isU(ty) ? Math.min(x.r, x.r2 != null ? x.r2 : x.r) : x.r;
       let best = this.bestHist(ex.name, s.history);
       ex.sets.forEach((x, j) => { if (j !== si && x.done && !x.warm) best = Math.max(best, e1(x.w, er(x))); });
-      set.isPR = ty !== 'time' && !set.warm && set.w > 0 && e1(set.w, er(set)) > best + 0.01;
+      set.isPR = !isT(ty) && !set.warm && set.w > 0 && e1(set.w, er(set)) > best + 0.01;
       fx = set.isPR ? 'pr' : 'log';
       const o = { focus: this.nextFocus(w, ei, si) };
       let rest = true;
@@ -1042,9 +1046,9 @@ class Component extends DCLogic {
       const ty = this.meta(ex.name).type;
       sets += ds.length;
       const last = (s.history[ex.name] || []).slice(-1)[0];
-      if (last) { hasPrev = true; if (ty !== 'time') prevVol += work(last.sets).reduce((a, x) => a + x.w * x.r, 0); }
-      const entry = ds.map(x => { const o = { w: x.w, r: ty === 'uni' ? Math.min(x.r, x.r2 != null ? x.r2 : x.r) : x.r }; if (ty === 'uni') { o.l = x.r; o.rr = x.r2 != null ? x.r2 : x.r; } if (x.warm) o.wu = true; return o; });
-      entry.forEach((x, i) => { if (x.wu) return; if (ty !== 'time') vol += x.w * x.r; if (ds[i].isPR && (!prs[ex.name] || e1(x.w, x.r) > prs[ex.name].e)) prs[ex.name] = { name: ex.name, w: x.w, r: x.r, e: e1(x.w, x.r) }; });
+      if (last) { hasPrev = true; if (!isT(ty)) prevVol += work(last.sets).reduce((a, x) => a + x.w * x.r, 0); }
+      const entry = ds.map(x => { const o = { w: x.w, r: isU(ty) ? Math.min(x.r, x.r2 != null ? x.r2 : x.r) : x.r }; if (isU(ty)) { o.l = x.r; o.rr = x.r2 != null ? x.r2 : x.r; } if (x.warm) o.wu = true; return o; });
+      entry.forEach((x, i) => { if (x.wu) return; if (!isT(ty)) vol += x.w * x.r; if (ds[i].isPR && (!prs[ex.name] || e1(x.w, x.r) > prs[ex.name].e)) prs[ex.name] = { name: ex.name, w: x.w, r: x.r, e: e1(x.w, x.r) }; });
       h[ex.name] = [...(h[ex.name] || []), { date: w.start, sets: entry }];
       exs.push({ name: ex.name, sets: entry });
     });
@@ -1147,13 +1151,13 @@ class Component extends DCLogic {
     const tagsW = w ? ssTags(w.ex) : [];
     const wEx = w ? w.ex.map((ex, ei) => {
       const d = ex.sets.filter(x => x.done).length; doneCount += d; total += ex.sets.length;
-      const m = this.meta(ex.name); const uni = m.type === 'uni', tim = m.type === 'time';
+      const m = this.meta(ex.name); const uni = isU(m.type), tim = isT(m.type);
       const cols = uni ? '30px 44px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 48px' : '36px 52px minmax(0,1fr) minmax(0,1fr) 52px';
       return {
         name: ex.name, progress: d + '/' + ex.sets.length, progColor: d === ex.sets.length && d ? '#CCFF00' : '#9C9CA8',
         up: !!ex.up, upText: '+' + (kg ? '2.5 kg' : '5 lb') + L(' · you hit every rep last time'),
         hasSS: !!tagsW[ei], ssTag: tagsW[ei] ? L('SUPERSET') + ' ' + tagsW[ei] : '', hasNote: !!m.note, note: m.note,
-        onMenu: go({ exSheet: ei }), cols, isUni: uni, h0: uni ? '#' : L('SET'), h2: tim ? L('SEC') : uni ? 'L' : 'REPS',
+        onMenu: go({ exSheet: ei }), cols, isUni: uni, h0: uni ? '#' : L('SET'), h3: tim ? 'R s' : 'R', h2: uni ? (tim ? 'L s' : 'L') : tim ? L('SEC') : 'REPS',
         onAddSet: () => this.addSet(ei),
         sets: ex.sets.map((x, si) => {
           const active = !!(s.focus && s.focus.ei === ei && s.focus.si === si && !x.done);
@@ -1176,10 +1180,10 @@ class Component extends DCLogic {
             onCheck: (e) => { e.stopPropagation(); this.check(ei, si); },
             onW: (e) => this.typeW(ei, si, e.target.value), onR: (e) => this.typeR(ei, si, e.target.value), onR2: (e) => this.typeR2(ei, si, e.target.value),
             wMinus: () => this.adj(ei, si, 'w', -wStepKg), wPlus: () => this.adj(ei, si, 'w', wStepKg),
-            rMinus: tim ? () => this.adj(ei, si, 'r', -5) : uni ? () => this.adjBoth(ei, si, -1) : () => this.adj(ei, si, 'r', -1),
-            rPlus: tim ? () => this.adj(ei, si, 'r', 5) : uni ? () => this.adjBoth(ei, si, 1) : () => this.adj(ei, si, 'r', 1),
+            rMinus: tim && uni ? () => this.adjBoth(ei, si, -5) : tim ? () => this.adj(ei, si, 'r', -5) : uni ? () => this.adjBoth(ei, si, -1) : () => this.adj(ei, si, 'r', -1),
+            rPlus: tim && uni ? () => this.adjBoth(ei, si, 5) : tim ? () => this.adj(ei, si, 'r', 5) : uni ? () => this.adjBoth(ei, si, 1) : () => this.adj(ei, si, 'r', 1),
             rmL: tim ? '−5s' : L('−1 rep'), rpL: tim ? '+5s' : L('+1 rep'),
-            holdLabel: hOn ? L('Stop') + ' · ' + clock(s.hold.end - now) : L('▶ Start ') + clock((x.r || 0) * 1000),
+            holdLabel: hOn ? (s.hold.side ? L(s.hold.side === 'l' ? 'Left' : 'Right') + ' · ' : L('Stop') + ' · ') + clock(s.hold.end - now) : L('▶ Start ') + clock((x.r || 0) * 1000) + (uni ? ' + ' + clock((x.r2 != null ? x.r2 : x.r) * 1000) : ''),
             holdBg: hOn ? '#CCFF00' : '#24242B', holdColor: hOn ? '#0A0A0C' : '#FFFFFF',
             onHold: (e) => { e.stopPropagation(); this.holdToggle(ei, si); },
             hasPlates: !!pc, plateHead: pc ? L('Per side') + ' · ' + L('bar') + ' ' + pc.bar + ' ' + s.unit : '',
@@ -1201,7 +1205,7 @@ class Component extends DCLogic {
     const er = routines.find(r => r.id === s.editId);
     const tagsR = er ? ssTags(er.ex) : [];
     const rEx = er ? er.ex.map((e, i) => ({ num: String(i + 1), name: e.name, sets: e.sets, reps: e.reps, upOpacity: i ? 1 : 0.3,
-      hasSS: !!tagsR[i], ssTag: tagsR[i] ? L('SUPERSET') + ' ' + tagsR[i] : '', repsUnit: this.meta(e.name).type === 'time' ? 's' : L('reps'),
+      hasSS: !!tagsR[i], ssTag: tagsR[i] ? L('SUPERSET') + ' ' + tagsR[i] : '', repsUnit: isT(this.meta(e.name).type) ? 's' : L('reps'),
       canLink: i < er.ex.length - 1, linkLabel: e.ss ? L('Superset ✓ · tap to unlink') : L('+ Superset with next'), linkColor: e.ss ? '#CCFF00' : '#9C9CA8', linkBorder: e.ss ? '#CCFF00' : '#33333C',
       onLink: () => this.updR(c => { c.ex[i].ss = !c.ex[i].ss; }),
       onUp: () => i && this.updR(c => { const t = c.ex[i]; c.ex[i] = c.ex[i - 1]; c.ex[i - 1] = t; }),
@@ -1211,7 +1215,7 @@ class Component extends DCLogic {
     })) : [];
 
     const hasW = k => (s.history[k] || []).some(se => work(se.sets).some(x => x.w > 0));
-    const progNames = [...new Set(routines.flatMap(r => r.ex.map(e => e.name)))].filter(n => hasW(n) && this.meta(n).type !== 'time');
+    const progNames = [...new Set(routines.flatMap(r => r.ex.map(e => e.name)))].filter(n => hasW(n) && !isT(this.meta(n).type));
     const histAll = progNames.length ? progNames : Object.keys(s.history).filter(hasW);
     const fR = routines.find(r => r.id === s.progRoutine);
     const pq = (s.progQuery || '').trim().toLowerCase();
@@ -1270,7 +1274,7 @@ class Component extends DCLogic {
     const sessCount = new Set(Object.values(s.history).flatMap(a => a.map(x => x.date))).size;
     const showTabs = s.screen === 'tabs';
     const meta = s.sessMeta || {};
-    const fmtSet = (name, y) => { const t = this.meta(name).type; const wp = y.w ? this.dispW(y.w) + ' ' + s.unit + ' × ' : ''; if (t === 'time') return (y.w ? this.dispW(y.w) + ' ' + s.unit + ' · ' : '') + y.r + ' s'; if (t === 'uni') return wp + (y.l != null ? y.l + ' / ' + y.rr : y.r) + ' ' + L('per side'); return wp + y.r + (y.w ? '' : L(' reps')); };
+    const fmtSet = (name, y) => { const t = this.meta(name).type; const wp = y.w ? this.dispW(y.w) + ' ' + s.unit + ' × ' : ''; if (t === 'timeuni') return (y.w ? this.dispW(y.w) + ' ' + s.unit + ' · ' : '') + (y.l != null ? y.l + ' / ' + y.rr : y.r) + ' s ' + L('per side'); if (t === 'time') return (y.w ? this.dispW(y.w) + ' ' + s.unit + ' · ' : '') + y.r + ' s'; if (t === 'uni') return wp + (y.l != null ? y.l + ' / ' + y.rr : y.r) + ' ' + L('per side'); return wp + y.r + (y.w ? '' : L(' reps')); };
     const byDate = {};
     Object.entries(s.history).forEach(([name, arr]) => arr.forEach(se => { (byDate[se.date] = byDate[se.date] || []).push({ name, sets: se.sets }); }));
     const sessions = Object.keys(byDate).map(Number).sort((a, b) => b - a).map(date => {
@@ -1278,7 +1282,7 @@ class Component extends DCLogic {
       let r = m.rid ? routines.find(x => x.id === m.rid) : null;
       if (!r && !m.name) { let best = 0; routines.forEach(x => { const o = x.ex.filter(e => ex.some(y => y.name === e.name)).length; if (o > best) { best = o; r = x; } }); }
       if (r) { const ix = n => { const i = r.ex.findIndex(e => e.name === n); return i < 0 ? 99 : i; }; ex.sort((a, b) => ix(a.name) - ix(b.name)); }
-      const vol = ex.reduce((a, x) => a + (this.meta(x.name).type === 'time' ? 0 : work(x.sets).reduce((b, y) => b + y.w * y.r, 0)), 0);
+      const vol = ex.reduce((a, x) => a + (isT(this.meta(x.name).type) ? 0 : work(x.sets).reduce((b, y) => b + y.w * y.r, 0)), 0);
       return { date, name: m.name || (r ? r.name : L('Workout')), dur: m.dur, ex, vol, sets: ex.reduce((a, x) => a + x.sets.length, 0) };
     });
     const cm = new Date(d0.getFullYear(), d0.getMonth() + s.calOff, 1);
@@ -1333,8 +1337,8 @@ class Component extends DCLogic {
       saveBody: () => this.saveBody(), measureTiles: bTiles, hasMeasures: bTiles.length > 0, hasBody: bodyArr.length > 0,
       bodyList: bodyArr.slice().reverse().slice(0, 40).map(b => ({ date: fmtD(b.date), text: [b.w ? this.dispW(b.w) + ' ' + s.unit : null, ...MEAS.filter(m => b[m[0]] > 0).map(m => (fr ? m[2] : m[1]) + ' ' + dLen(b[m[0]]))].filter(Boolean).join(' · '), delLabel: s.bodyDelArm === b.date ? L('Tap again') : '✕', onDel: () => this.delBody(b.date) })),
       sheetOn: !!shEx, sheetName: shEx ? shEx.name : '',
-      sheetTypes: [['reps', L('Reps')], ['time', L('Time')], ['uni', L('Per side')]].map(([k, label]) => ({ label, bg: shM && shM.type === k ? '#24242B' : 'transparent', color: shM && shM.type === k ? '#FFFFFF' : '#9C9CA8', onClick: () => shEx && this.setMeta(shEx.name, { type: k }) })),
-      sheetToggles: shEx ? [tg(L('Plate calculator'), L('Shows the plates to load on each side of the bar.'), shM.bar, () => this.setMeta(shEx.name, { bar: !shM.bar }))].concat(s.exSheet < w.ex.length - 1 ? [tg(L('Superset with next'), L('No rest between linked exercises — rest starts after the last one.'), !!shEx.ss, () => this.toggleSS(s.exSheet))] : []) : [],
+      sheetTypes: [['reps', L('Reps')], ['time', L('Time')]].map(([k, label]) => { const on = shM && (k === 'time') === isT(shM.type); return { label, bg: on ? '#24242B' : 'transparent', color: on ? '#FFFFFF' : '#9C9CA8', onClick: () => shEx && this.setMeta(shEx.name, { type: k === 'time' ? (isU(shM.type) ? 'timeuni' : 'time') : (isU(shM.type) ? 'uni' : 'reps') }) }; }),
+      sheetToggles: shEx ? [tg(L('Per side'), L('Left and right logged separately.'), isU(shM.type), () => this.setMeta(shEx.name, { type: isT(shM.type) ? (isU(shM.type) ? 'time' : 'timeuni') : (isU(shM.type) ? 'reps' : 'uni') })), tg(L('Plate calculator'), L('Shows the plates to load on each side of the bar.'), shM.bar, () => this.setMeta(shEx.name, { bar: !shM.bar }))].concat(s.exSheet < w.ex.length - 1 ? [tg(L('Superset with next'), L('No rest between linked exercises — rest starts after the last one.'), !!shEx.ss, () => this.toggleSS(s.exSheet))] : []) : [],
       sheetNote: shM ? shM.note : '', onSheetNote: (e) => shEx && this.setMeta(shEx.name, { note: e.target.value }), closeSheet: go({ exSheet: null }),
       wNote: w ? (w.note || '') : '', onWNote: (e) => { const v = e.target.value; this.updW(x => { x.note = v; }); },
       isTemplates: s.screen === 'templates', templBack: go({ screen: 'tabs', tab: 'programs' }), openTemplates: go({ screen: 'templates' }),
@@ -1369,7 +1373,7 @@ class Component extends DCLogic {
       sdName: sd ? sd.name : '', sdDate: sd ? fmtLong(sd.date) : '',
       sdStats: sd ? [{ label: L('Time'), value: sd.dur ? clock(sd.dur) : '—' }, { label: L('Sets'), value: String(sd.sets) }, { label: 'Vol ' + s.unit, value: volU(sd.vol) }] : [],
       sdEx: sd ? sd.ex.map(x => { let n = 0; return { name: x.name, sets: x.sets.map((y, i) => { const k = sd.date + '|' + x.name + '|' + i + '|'; return {
-        num: y.wu ? 'W' : String(++n), text: fmtSet(x.name, y), e: y.w && !y.wu && this.meta(x.name).type !== 'time' ? 'e1RM ' + this.dispW(e1(y.w, y.r)) : '',
+        num: y.wu ? 'W' : String(++n), text: fmtSet(x.name, y), e: y.w && !y.wu && !isT(this.meta(x.name).type) ? 'e1RM ' + this.dispW(e1(y.w, y.r)) : '',
         wDisp: s.editBuf[k + 'w'] != null ? s.editBuf[k + 'w'] : (y.w ? this.dispW(y.w) : ''), rDisp: s.editBuf[k + 'r'] != null ? s.editBuf[k + 'r'] : String(y.r),
         onW: (e) => this.editSessSet(sd.date, x.name, i, 'w', e.target.value), onR: (e) => this.editSessSet(sd.date, x.name, i, 'r', e.target.value),
         onSelect: (e) => { const t = e.target; setTimeout(() => { try { t.setSelectionRange(0, t.value.length); } catch (er) {} }, 0); } }; }) }; }) : [],
