@@ -42,18 +42,18 @@ input::placeholder{color:#9C9CA8}
 <div onClick="{{ stop }}" style="width:100%;max-width:480px;box-sizing:border-box;background:#16161A;border-top:1px solid #33333C;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;">
 <span style="font-size:20px;font-weight:800;">{{ confirmTitle }}</span>
 <span style="font-size:15px;line-height:21px;color:#9C9CA8;text-wrap:pretty;padding-bottom:6px;">{{ confirmText }}</span>
-<button onClick="{{ confirmGo }}" style="min-height:56px;border-radius:16px;border:none;background:#CCFF00;color:#0A0A0C;font-size:16px;font-weight:700;">Start anyway</button>
+<button onClick="{{ confirmGo }}" style="min-height:56px;border-radius:16px;border:none;background:#CCFF00;color:#0A0A0C;font-size:16px;font-weight:700;">{{ tx.k0 }}</button>
 <sc-if value="{{ confirmHasToday }}" hint-placeholder-val="{{ false }}">
 <button onClick="{{ confirmToday }}" style="min-height:56px;border-radius:16px;border:none;background:#24242B;color:#FFFFFF;font-size:15px;font-weight:600;padding:0 12px;">{{ confirmTodayLabel }}</button>
 </sc-if>
-<button onClick="{{ confirmCancel }}" style="min-height:52px;border-radius:16px;border:none;background:transparent;color:#9C9CA8;font-size:15px;font-weight:600;">Cancel</button>
+<button onClick="{{ confirmCancel }}" style="min-height:52px;border-radius:16px;border:none;background:transparent;color:#9C9CA8;font-size:15px;font-weight:600;">{{ tx.k1 }}</button>
 </div>
 </div>
 </sc-if>
 
 <sc-if value="{{ updateOn }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;top:8px;left:16px;right:16px;display:flex;justify-content:center;z-index:41;">
-<button onClick="{{ applyUpdate }}" style="min-height:44px;padding:0 16px;border-radius:999px;border:none;background:#CCFF00;color:#0A0A0C;font-size:14px;font-weight:700;">New version ready · Tap to update</button>
+<button onClick="{{ applyUpdate }}" style="min-height:44px;padding:0 16px;border-radius:999px;border:none;background:#CCFF00;color:#0A0A0C;font-size:14px;font-weight:700;">{{ tx.k2 }}</button>
 </div>
 </sc-if>
 
@@ -61,29 +61,29 @@ input::placeholder{color:#9C9CA8}
 <div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 16px 24px;display:flex;flex-direction:column;gap:20px;">
 <sc-if value="{{ showInstall }}" hint-placeholder-val="{{ false }}">
 <div style="background:#16161A;border:1px solid #CCFF00;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
-<span style="font-size:16px;font-weight:700;">Install on your iPhone</span>
-<span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">In Safari: tap Share, then “Add to Home Screen”. Barlog opens full-screen, works offline, and your data is kept safe from Safari’s cleanup.</span>
-<button onClick="{{ dismissInstall }}" style="align-self:flex-start;height:44px;padding:0 16px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">Got it</button>
+<span style="font-size:16px;font-weight:700;">{{ tx.k3 }}</span>
+<span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ tx.k4 }}</span>
+<button onClick="{{ dismissInstall }}" style="align-self:flex-start;height:44px;padding:0 16px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ tx.k5 }}</button>
 </div>
 </sc-if>
 <sc-if value="{{ backupOn }}" hint-placeholder-val="{{ false }}">
 <div style="background:#16161A;border:1px solid #33333C;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
-<span style="font-size:16px;font-weight:700;">Back up your data</span>
-<span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ backupText }} Tap Export, then “Save to Files” → iCloud Drive.</span>
+<span style="font-size:16px;font-weight:700;">{{ tx.k6 }}</span>
+<span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ backupText }} {{ tx.k7 }}</span>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-<button onClick="{{ backupNow }}" style="height:48px;border-radius:12px;border:none;background:#CCFF00;color:#0A0A0C;font-size:15px;font-weight:700;">Export now</button>
-<button onClick="{{ backupLater }}" style="height:48px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">Later</button>
+<button onClick="{{ backupNow }}" style="height:48px;border-radius:12px;border:none;background:#CCFF00;color:#0A0A0C;font-size:15px;font-weight:700;">{{ tx.k8 }}</button>
+<button onClick="{{ backupLater }}" style="height:48px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ tx.k9 }}</button>
 </div>
 </div>
 </sc-if>
 <div style="display:flex;flex-direction:column;gap:4px;padding-top:8px;">
 <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ dateLabel }}</div>
-<div style="font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">Today</div>
+<div style="font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">{{ tx.k10 }}</div>
 </div>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:16px;">
 <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#CCFF00;">Next up</div>
-<div style="font-size:13px;color:#9C9CA8;">Last done {{ nextAgo }}</div>
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#CCFF00;">{{ tx.k11 }}</div>
+<div style="font-size:13px;color:#9C9CA8;">{{ tx.k12 }} {{ nextAgo }}</div>
 </div>
 <div style="display:flex;flex-direction:column;gap:6px;">
 <div style="font-size:28px;font-weight:800;letter-spacing:-0.02em;">{{ nextName }}</div>
@@ -92,7 +92,7 @@ input::placeholder{color:#9C9CA8}
 <button onClick="{{ startNext }}" style="height:60px;border:none;border-radius:14px;background:#CCFF00;color:#0A0A0C;font-size:17px;font-weight:700;" style-active="transform:scale(0.98)">{{ startLabel }}</button>
 </div>
 <div style="display:flex;flex-direction:column;gap:8px;">
-<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">This week</div>
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k13 }}</div>
 <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;">
 <sc-for list="{{ week }}" as="d" hint-placeholder-count="7">
 <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0;border-radius:12px;background:#16161A;border:1px solid {{ d.border }};">
@@ -103,15 +103,15 @@ input::placeholder{color:#9C9CA8}
 </div>
 </div>
 <div style="display:flex;flex-direction:column;gap:8px;">
-<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Other routines</div>
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k14 }}</div>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:16px;overflow:hidden;">
 <sc-for list="{{ otherRoutines }}" as="r" hint-placeholder-count="2">
 <button onClick="{{ r.onStart }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;background:transparent;border:none;border-bottom:1px solid #24242B;color:#fff;text-align:left;min-height:64px;" style-active="background:#24242B">
 <div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:16px;font-weight:700;">{{ r.name }}</span><span style="font-size:13px;color:#9C9CA8;">{{ r.meta }}</span></div>
-<span style="font-size:14px;font-weight:600;color:#CCFF00;">Start</span>
+<span style="font-size:14px;font-weight:600;color:#CCFF00;">{{ tx.k15 }}</span>
 </button>
 </sc-for>
-<button onClick="{{ startEmpty }}" style="width:100%;padding:14px 16px;background:transparent;border:none;color:#9C9CA8;text-align:left;font-size:15px;font-weight:600;min-height:56px;" style-active="background:#24242B">+ Empty workout</button>
+<button onClick="{{ startEmpty }}" style="width:100%;padding:14px 16px;background:transparent;border:none;color:#9C9CA8;text-align:left;font-size:15px;font-weight:600;min-height:56px;" style-active="background:#24242B">{{ tx.k16 }}</button>
 </div>
 </div>
 </div>
@@ -120,31 +120,31 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ isPrograms }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 16px 24px;display:flex;flex-direction:column;gap:20px;">
 <div style="display:flex;flex-direction:column;gap:4px;padding-top:8px;">
-<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Program · rotates automatically</div>
-<div style="font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">Routines</div>
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k17 }}</div>
+<div style="font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">{{ tx.k18 }}</div>
 </div>
 <div style="display:flex;flex-direction:column;gap:12px;">
 <sc-for list="{{ routineCards }}" as="r" hint-placeholder-count="3">
 <div style="background:#16161A;border:1px solid #24242B;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px;">
 <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
 <span style="font-size:20px;font-weight:700;">{{ r.name }}</span>
-<span style="font-size:12px;font-weight:700;letter-spacing:0.08em;color:#0A0A0C;background:#CCFF00;padding:3px 8px;border-radius:999px;opacity:{{ r.nextOpacity }};">NEXT</span>
+<span style="font-size:12px;font-weight:700;letter-spacing:0.08em;color:#0A0A0C;background:#CCFF00;padding:3px 8px;border-radius:999px;opacity:{{ r.nextOpacity }};">{{ tx.k19 }}</span>
 </div>
 <div style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ r.exText }}</div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-<button onClick="{{ r.onEdit }}" style="height:48px;border-radius:12px;background:#24242B;border:none;color:#fff;font-size:15px;font-weight:600;">Edit</button>
-<button onClick="{{ r.onStart }}" style="height:48px;border-radius:12px;background:transparent;border:1px solid #CCFF00;color:#CCFF00;font-size:15px;font-weight:600;">Start</button>
+<button onClick="{{ r.onEdit }}" style="height:48px;border-radius:12px;background:#24242B;border:none;color:#fff;font-size:15px;font-weight:600;">{{ tx.k20 }}</button>
+<button onClick="{{ r.onStart }}" style="height:48px;border-radius:12px;background:transparent;border:1px solid #CCFF00;color:#CCFF00;font-size:15px;font-weight:600;">{{ tx.k15 }}</button>
 </div>
 </div>
 </sc-for>
 </div>
-<button onClick="{{ newRoutine }}" style="height:56px;border-radius:16px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:16px;font-weight:600;" style-active="background:#16161A">+ New routine</button>
+<button onClick="{{ newRoutine }}" style="height:56px;border-radius:16px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:16px;font-weight:600;" style-active="background:#16161A">{{ tx.k21 }}</button>
 </div>
 </sc-if>
 
 <sc-if value="{{ isProgress }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 0 24px;display:flex;flex-direction:column;gap:16px;">
-<div style="padding:8px 16px 0;font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">Progress</div>
+<div style="padding:8px 16px 0;font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">{{ tx.k22 }}</div>
 <div style="margin:0 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#16161A;border:1px solid #24242B;border-radius:12px;padding:4px;">
 <sc-for list="{{ progViews }}" as="v" hint-placeholder-count="3">
 <button onClick="{{ v.onClick }}" style="height:44px;border:none;border-radius:9px;background:{{ v.bg }};color:{{ v.color }};font-size:15px;font-weight:600;">{{ v.label }}</button>
@@ -159,7 +159,7 @@ input::placeholder{color:#9C9CA8}
 <button onClick="{{ calNext }}" style="width:44px;height:44px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:20px;opacity:{{ calNextOpacity }};">›</button>
 </div>
 <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;font-size:12px;font-weight:600;color:#9C9CA8;text-align:center;">
-<span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+<sc-for list="{{ calHead }}" as="h" hint-placeholder-count="7"><span>{{ h }}</span></sc-for>
 </div>
 <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;">
 <sc-for list="{{ calDays }}" as="c" hint-placeholder-count="35">
@@ -168,9 +168,9 @@ input::placeholder{color:#9C9CA8}
 </div>
 </div>
 <div style="display:flex;flex-direction:column;gap:8px;">
-<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">All sessions</div>
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k23 }}</div>
 <sc-if value="{{ noSess }}" hint-placeholder-val="{{ false }}">
-<div style="padding:24px 16px;background:#16161A;border:1px solid #24242B;border-radius:16px;text-align:center;color:#9C9CA8;font-size:15px;">No sessions yet. Finish a workout and it shows up here.</div>
+<div style="padding:24px 16px;background:#16161A;border:1px solid #24242B;border-radius:16px;text-align:center;color:#9C9CA8;font-size:15px;">{{ tx.k24 }}</div>
 </sc-if>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:16px;overflow:hidden;">
 <sc-for list="{{ sessList }}" as="se" hint-placeholder-count="5">
@@ -188,7 +188,7 @@ input::placeholder{color:#9C9CA8}
 <div style="display:flex;flex-direction:column;gap:16px;">
 <div style="display:flex;flex-direction:column;gap:10px;">
 <div style="position:relative;margin:0 16px;">
-<input type="search" value="{{ progQuery }}" onChange="{{ onProgQuery }}" placeholder="Search an exercise" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #24242B;background:#16161A;color:#fff;font-size:16px;padding:0 48px 0 14px;">
+<input type="search" value="{{ progQuery }}" onChange="{{ onProgQuery }}" placeholder="{{ tx.k68 }}" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #24242B;background:#16161A;color:#fff;font-size:16px;padding:0 48px 0 14px;">
 <sc-if value="{{ hasProgQuery }}" hint-placeholder-val="{{ false }}">
 <button onClick="{{ clearProgQuery }}" style="position:absolute;right:2px;top:2px;width:44px;height:44px;border:none;background:transparent;color:#9C9CA8;font-size:20px;">×</button>
 </sc-if>
@@ -205,7 +205,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 </div>
 <sc-if value="{{ noLift }}" hint-placeholder-val="{{ false }}">
-<div style="margin:0 16px;padding:24px 16px;background:#16161A;border:1px solid #24242B;border-radius:16px;text-align:center;color:#9C9CA8;font-size:15px;">No weighted exercise matches.</div>
+<div style="margin:0 16px;padding:24px 16px;background:#16161A;border:1px solid #24242B;border-radius:16px;text-align:center;color:#9C9CA8;font-size:15px;">{{ tx.k25 }}</div>
 </sc-if>
 <sc-if value="{{ hasLift }}" hint-placeholder-val="{{ true }}">
 <div style="margin:0 16px;background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:14px;">
@@ -228,7 +228,7 @@ input::placeholder{color:#9C9CA8}
 </sc-for>
 </div>
 <sc-if value="{{ chartEmpty }}" hint-placeholder-val="{{ false }}">
-<div style="height:160px;display:flex;align-items:center;justify-content:center;color:#9C9CA8;font-size:14px;">No sessions in this range.</div>
+<div style="height:160px;display:flex;align-items:center;justify-content:center;color:#9C9CA8;font-size:14px;">{{ tx.k26 }}</div>
 </sc-if>
 <sc-if value="{{ chartHas }}" hint-placeholder-val="{{ true }}">
 <div style="position:relative;height:160px;">
@@ -254,8 +254,8 @@ input::placeholder{color:#9C9CA8}
 </sc-for>
 </div>
 </sc-if>
-<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;"><span>{{ chartFrom }}</span><span style="display:flex;gap:10px;align-items:center;"><span style="display:flex;gap:5px;align-items:center;"><span style="width:14px;height:3px;border-radius:2px;background:#CCFF00;"></span>Trend</span><span style="display:flex;gap:5px;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#CCFF00;"></span>PR</span></span><span>{{ chartTo }}</span></div>
-<span style="font-size:12px;color:#9C9CA8;text-align:center;">Tap a point for details</span>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;"><span>{{ chartFrom }}</span><span style="display:flex;gap:10px;align-items:center;"><span style="display:flex;gap:5px;align-items:center;"><span style="width:14px;height:3px;border-radius:2px;background:#CCFF00;"></span>{{ tx.k27 }}</span><span style="display:flex;gap:5px;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#CCFF00;"></span>PR</span></span><span>{{ chartTo }}</span></div>
+<span style="font-size:12px;color:#9C9CA8;text-align:center;">{{ tx.k28 }}</span>
 </div>
 <sc-if value="{{ stallOn }}" hint-placeholder-val="{{ false }}">
 <div style="margin:0 16px;background:#16161A;border:1px solid #33333C;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;">
@@ -264,7 +264,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-if>
 <div style="margin:0 16px;display:flex;flex-direction:column;gap:8px;">
-<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Rep records · heaviest weight ({{ curUnit }})</div>
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k29 }}{{ curUnit }})</div>
 <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
 <sc-for list="{{ repRecs }}" as="rr" hint-placeholder-count="6">
 <div style="background:#16161A;border:1px solid #24242B;border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;">
@@ -275,7 +275,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 </div>
 <div style="margin:0 16px;display:flex;flex-direction:column;gap:8px;">
-<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Records · {{ progEx }}</div>
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k30 }} {{ progEx }}</div>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:16px;">
 <sc-for list="{{ records }}" as="rc" hint-placeholder-count="5">
 <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #24242B;gap:8px;">
@@ -286,7 +286,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 </div>
 <div style="margin:0 16px;display:flex;flex-direction:column;gap:8px;">
-<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">History · {{ progEx }}</div>
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k31 }} {{ progEx }}</div>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:16px;">
 <sc-for list="{{ histList }}" as="hl" hint-placeholder-count="5">
 <div style="display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 16px;border-bottom:1px solid #24242B;">
@@ -296,7 +296,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-for>
 </div>
-<span style="font-size:13px;color:#9C9CA8;">Right column: best estimated 1RM of the session. Lime = PR.</span>
+<span style="font-size:13px;color:#9C9CA8;">{{ tx.k32 }}</span>
 </div>
 </sc-if>
 </div>
@@ -304,7 +304,7 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ isStatsView }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;flex-direction:column;gap:16px;padding:0 16px;">
 <div style="display:flex;flex-direction:column;gap:8px;">
-<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Consistency</div>
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k33 }}</div>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:16px;">
 <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
 <sc-for list="{{ statTiles }}" as="t" hint-placeholder-count="3">
@@ -324,7 +324,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 </div>
 <div style="display:flex;flex-direction:column;gap:8px;">
-<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Sets per muscle · weekly avg, last 4 wk</div>
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k34 }}</div>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:8px 16px;display:flex;flex-direction:column;">
 <sc-for list="{{ muscleRows }}" as="g" hint-placeholder-count="6">
 <div style="display:grid;grid-template-columns:84px minmax(0,1fr) 44px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #24242B;">
@@ -336,11 +336,11 @@ input::placeholder{color:#9C9CA8}
 <span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;text-align:right;">{{ g.avg }}</span>
 </div>
 </sc-for>
-<span style="font-size:13px;line-height:18px;color:#9C9CA8;padding:10px 0 6px;text-wrap:pretty;">Shaded zone = 10–20 work sets per muscle per week, the usual range for muscle growth. Warm-ups excluded.</span>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;padding:10px 0 6px;text-wrap:pretty;">{{ tx.k35 }}</span>
 </div>
 </div>
 <div style="display:flex;flex-direction:column;gap:8px;">
-<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">e1RM trend · last 4 weeks</div>
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k36 }}</div>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:16px;overflow:hidden;">
 <sc-for list="{{ liftTrends }}" as="lt" hint-placeholder-count="6">
 <button onClick="{{ lt.onClick }}" style="width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto 14px;gap:10px;align-items:center;padding:12px 16px;min-height:56px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;text-align:left;" style-active="background:#24242B">
@@ -359,23 +359,30 @@ input::placeholder{color:#9C9CA8}
 
 <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 16px 24px;display:flex;flex-direction:column;gap:20px;">
-<div style="padding-top:8px;font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">Profile</div>
+<div style="padding-top:8px;font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">{{ tx.k37 }}</div>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px;">
-<span style="font-size:17px;font-weight:700;">No account. No subscription.</span>
-<span style="font-size:14px;line-height:20px;color:#9C9CA8;">Everything lives on this device. {{ storageLine }}</span>
+<span style="font-size:17px;font-weight:700;">{{ tx.k38 }}</span>
+<span style="font-size:14px;line-height:20px;color:#9C9CA8;">{{ tx.k39 }} {{ storageLine }}</span>
 </div>
 <div style="display:flex;flex-direction:column;gap:8px;">
-<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Training</div>
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k40 }}</div>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:16px;">
 <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #24242B;min-height:64px;gap:8px;">
-<span style="font-size:16px;font-weight:500;">Units</span>
+<span style="font-size:16px;font-weight:500;">{{ tx.k41 }}</span>
+<div style="display:flex;gap:4px;background:#0A0A0C;border-radius:10px;padding:3px;">
+<button onClick="{{ setEn }}" style="width:56px;height:40px;border:none;border-radius:8px;background:{{ enBg }};color:{{ enColor }};font-size:15px;font-weight:600;">EN</button>
+<button onClick="{{ setFr }}" style="width:56px;height:40px;border:none;border-radius:8px;background:{{ frBg }};color:{{ frColor }};font-size:15px;font-weight:600;">FR</button>
+</div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #24242B;min-height:64px;gap:8px;">
+<span style="font-size:16px;font-weight:500;">{{ tx.k42 }}</span>
 <div style="display:flex;gap:4px;background:#0A0A0C;border-radius:10px;padding:3px;">
 <button onClick="{{ setKg }}" style="width:56px;height:40px;border:none;border-radius:8px;background:{{ kgBg }};color:{{ kgColor }};font-size:15px;font-weight:600;">kg</button>
 <button onClick="{{ setLb }}" style="width:56px;height:40px;border:none;border-radius:8px;background:{{ lbBg }};color:{{ lbColor }};font-size:15px;font-weight:600;">lb</button>
 </div>
 </div>
 <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #24242B;min-height:64px;gap:8px;">
-<span style="font-size:16px;font-weight:500;">Default rest</span>
+<span style="font-size:16px;font-weight:500;">{{ tx.k43 }}</span>
 <div style="display:flex;align-items:center;gap:6px;">
 <button onClick="{{ restDown }}" style="width:48px;height:48px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:20px;">−</button>
 <span style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;width:56px;text-align:center;">{{ restDefaultLabel }}</span>
@@ -391,25 +398,25 @@ input::placeholder{color:#9C9CA8}
 </div>
 </div>
 <div style="display:flex;flex-direction:column;gap:8px;">
-<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Your data</div>
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k44 }}</div>
 <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
-<button onClick="{{ exportData }}" style="height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">Export backup</button>
-<button onClick="{{ importData }}" style="height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">Import</button>
+<button onClick="{{ exportData }}" style="height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ tx.k45 }}</button>
+<button onClick="{{ importData }}" style="height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ tx.k46 }}</button>
 </div>
-<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">Logging a workout only adds to your history. Import replaces everything with the file’s content — export first if unsure.</span>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ tx.k47 }}</span>
 <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px;">
 <button onClick="{{ clearHistory }}" style="height:52px;border-radius:12px;border:1px solid {{ clearBorder }};background:transparent;color:{{ clearColor }};font-size:15px;font-weight:600;">{{ clearLabel }}</button>
 <button onClick="{{ eraseAll }}" style="height:52px;border-radius:12px;border:1px solid {{ eraseBorder }};background:transparent;color:{{ eraseColor }};font-size:15px;font-weight:600;">{{ eraseLabel }}</button>
 </div>
-<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">Clear history keeps your routines. Erase all also deletes routines and custom exercises. Both ask for a second tap.</span>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ tx.k48 }}</span>
 </div>
-<div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;text-align:center;">Barlog 0.2 · open source</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;text-align:center;">{{ appLabel }}</div>
 </div>
 </sc-if>
 
 <sc-if value="{{ showResume }}" hint-placeholder-val="{{ false }}">
 <button onClick="{{ resume }}" style="position:absolute;left:12px;right:12px;bottom:calc(68px + env(safe-area-inset-bottom));height:56px;border-radius:14px;border:none;background:#CCFF00;color:#0A0A0C;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:15px;font-weight:700;z-index:4;">
-<span style="display:flex;align-items:center;gap:8px;"><span style="width:8px;height:8px;border-radius:50%;background:#0A0A0C;"></span>{{ wName }}<span style="font-family:'JetBrains Mono',monospace;font-weight:600;">{{ elapsed }}</span></span><span>Resume ›</span>
+<span style="display:flex;align-items:center;gap:8px;"><span style="width:8px;height:8px;border-radius:50%;background:#0A0A0C;"></span>{{ wName }}<span style="font-family:'JetBrains Mono',monospace;font-weight:600;">{{ elapsed }}</span></span><span>{{ tx.k49 }}</span>
 </button>
 </sc-if>
 
@@ -430,7 +437,7 @@ input::placeholder{color:#9C9CA8}
 <span style="font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ wName }}</span>
 <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9C9CA8;">{{ elapsed }} · {{ setsDoneLabel }}</span>
 </div>
-<button onClick="{{ finish }}" style="height:48px;padding:0 18px;border-radius:12px;border:none;background:#CCFF00;color:#0A0A0C;font-size:15px;font-weight:700;">Finish</button>
+<button onClick="{{ finish }}" style="height:48px;padding:0 18px;border-radius:12px;border:none;background:#CCFF00;color:#0A0A0C;font-size:15px;font-weight:700;">{{ tx.k50 }}</button>
 </div>
 <div style="flex:1;overflow-y:auto;padding:12px 12px 24px;display:flex;flex-direction:column;gap:12px;">
 <sc-for list="{{ wEx }}" as="ex" hint-placeholder-count="2">
@@ -443,7 +450,7 @@ input::placeholder{color:#9C9CA8}
 <div style="padding:0 14px 8px;font-size:13px;font-weight:600;color:#CCFF00;">↑ {{ ex.upText }}</div>
 </sc-if>
 <div style="display:grid;grid-template-columns:36px 56px minmax(0,1fr) minmax(0,1fr) 52px;gap:8px;padding:0 12px 6px;font-size:12px;font-weight:600;letter-spacing:0.06em;color:#9C9CA8;">
-<span style="text-align:center;">SET</span><span>PREV</span><span style="text-align:center;">{{ unitUpper }}</span><span style="text-align:center;">REPS</span><span></span>
+<span style="text-align:center;">{{ tx.k51 }}</span><span>{{ tx.k52 }}</span><span style="text-align:center;">{{ unitUpper }}</span><span style="text-align:center;">REPS</span><span></span>
 </div>
 <sc-for list="{{ ex.sets }}" as="s" hint-placeholder-count="3">
 <div style="background:{{ s.rowBg }};border-top:1px solid #24242B;">
@@ -464,17 +471,17 @@ input::placeholder{color:#9C9CA8}
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:0 12px 12px;">
 <button onClick="{{ s.wMinus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">−{{ wStep }}</button>
 <button onClick="{{ s.wPlus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">+{{ wStep }}</button>
-<button onClick="{{ s.rMinus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">−1 rep</button>
-<button onClick="{{ s.rPlus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">+1 rep</button>
+<button onClick="{{ s.rMinus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">{{ tx.k53 }}</button>
+<button onClick="{{ s.rPlus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">{{ tx.k54 }}</button>
 </div>
 </sc-if>
 </div>
 </sc-for>
-<button onClick="{{ ex.onAddSet }}" style="width:100%;height:52px;border:none;border-top:1px solid #24242B;background:transparent;color:#9C9CA8;font-size:15px;font-weight:600;" style-active="background:#24242B">+ Add set</button>
+<button onClick="{{ ex.onAddSet }}" style="width:100%;height:52px;border:none;border-top:1px solid #24242B;background:transparent;color:#9C9CA8;font-size:15px;font-weight:600;" style-active="background:#24242B">{{ tx.k55 }}</button>
 </div>
 </sc-for>
-<span style="font-size:13px;line-height:18px;color:#9C9CA8;padding:0 4px;text-wrap:pretty;">Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.</span>
-<button onClick="{{ openLibW }}" style="min-height:56px;border-radius:16px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:15px;font-weight:600;">+ Add exercise</button>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;padding:0 4px;text-wrap:pretty;">{{ tx.k56 }}</span>
+<button onClick="{{ openLibW }}" style="min-height:56px;border-radius:16px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:15px;font-weight:600;">{{ tx.k57 }}</button>
 <button onClick="{{ discard }}" style="min-height:48px;border:none;background:transparent;color:#9C9CA8;font-size:14px;font-weight:600;">{{ discardLabel }}</button>
 </div>
 <sc-if value="{{ restOn }}" hint-placeholder-val="{{ false }}">
@@ -487,7 +494,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 <button onClick="{{ restMinus }}" style="width:56px;height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;">−15</button>
 <button onClick="{{ restPlus }}" style="width:56px;height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;">+15</button>
-<button onClick="{{ restSkip }}" style="width:64px;height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">Skip</button>
+<button onClick="{{ restSkip }}" style="width:64px;height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ tx.k58 }}</button>
 </div>
 </div>
 </sc-if>
@@ -499,10 +506,10 @@ input::placeholder{color:#9C9CA8}
 <div style="position:absolute;inset:0;display:flex;flex-direction:column;z-index:7;background:#0A0A0C;">
 <div style="display:flex;align-items:center;gap:8px;padding:8px 12px 12px;">
 <button onClick="{{ libBack }}" style="width:48px;height:48px;border-radius:12px;border:none;background:#16161A;color:#fff;font-size:22px;">‹</button>
-<div style="flex:1;display:flex;flex-direction:column;"><span style="font-size:17px;font-weight:700;">Add exercise</span><span style="font-size:13px;color:#9C9CA8;">{{ libCtxLabel }}</span></div>
+<div style="flex:1;display:flex;flex-direction:column;"><span style="font-size:17px;font-weight:700;">{{ tx.k59 }}</span><span style="font-size:13px;color:#9C9CA8;">{{ libCtxLabel }}</span></div>
 </div>
 <div style="padding:0 12px 12px;display:flex;flex-direction:column;gap:12px;">
-<input type="text" value="{{ libQuery }}" onChange="{{ onLibQuery }}" placeholder="Search or type a new name" style="height:48px;border-radius:12px;border:1px solid #24242B;background:#16161A;color:#fff;font-size:16px;padding:0 14px;">
+<input type="text" value="{{ libQuery }}" onChange="{{ onLibQuery }}" placeholder="{{ tx.k69 }}" style="height:48px;border-radius:12px;border:1px solid #24242B;background:#16161A;color:#fff;font-size:16px;padding:0 14px;">
 <div style="display:flex;gap:8px;overflow-x:auto;">
 <sc-for list="{{ groups }}" as="g" hint-placeholder-count="6">
 <button onClick="{{ g.onClick }}" style="flex:0 0 auto;height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ g.border }};background:{{ g.bg }};color:{{ g.color }};font-size:14px;font-weight:600;">{{ g.name }}</button>
@@ -511,7 +518,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 <div style="flex:1;overflow-y:auto;padding:0 12px calc(32px + env(safe-area-inset-bottom));display:flex;flex-direction:column;">
 <sc-if value="{{ canCreate }}" hint-placeholder-val="{{ false }}">
-<button onClick="{{ createCustom }}" style="min-height:56px;margin-bottom:8px;border-radius:14px;border:1px solid #CCFF00;background:transparent;color:#CCFF00;font-size:15px;font-weight:700;text-align:left;padding:0 16px;">+ Create “{{ libQuery }}” · {{ createGroup }}</button>
+<button onClick="{{ createCustom }}" style="min-height:56px;margin-bottom:8px;border-radius:14px;border:1px solid #CCFF00;background:transparent;color:#CCFF00;font-size:15px;font-weight:700;text-align:left;padding:0 16px;">{{ tx.k60 }}{{ libQuery }}” · {{ createGroup }}</button>
 </sc-if>
 <sc-for list="{{ libList }}" as="l" hint-placeholder-count="8">
 <button onClick="{{ l.onPick }}" style="display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:60px;padding:0 4px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;text-align:left;" style-active="background:#16161A">
@@ -531,7 +538,7 @@ input::placeholder{color:#9C9CA8}
 <button onClick="{{ deleteRoutine }}" style="height:48px;padding:0 12px;border-radius:12px;border:none;background:transparent;color:#9C9CA8;font-size:14px;font-weight:600;">{{ deleteLabel }}</button>
 </div>
 <div style="flex:1;overflow-y:auto;padding:12px 12px 16px;display:flex;flex-direction:column;gap:10px;">
-<sc-if value="{{ rEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:24px 8px;text-align:center;color:#9C9CA8;font-size:15px;">No exercises yet. Add your first movement.</div></sc-if>
+<sc-if value="{{ rEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:24px 8px;text-align:center;color:#9C9CA8;font-size:15px;">{{ tx.k61 }}</div></sc-if>
 <sc-for list="{{ rEx }}" as="e" hint-placeholder-count="4">
 <div style="background:#16161A;border:1px solid #24242B;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;">
 <div style="display:flex;align-items:center;gap:8px;">
@@ -542,19 +549,19 @@ input::placeholder{color:#9C9CA8}
 </div>
 <div style="display:flex;align-items:center;gap:6px;">
 <button onClick="{{ e.setsMinus }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#0A0A0C;color:#fff;font-size:18px;">−</button>
-<span style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;min-width:58px;text-align:center;">{{ e.sets }} sets</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;min-width:58px;text-align:center;">{{ e.sets }} {{ tx.k62 }}</span>
 <button onClick="{{ e.setsPlus }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#0A0A0C;color:#fff;font-size:18px;">+</button>
 <span style="flex:1;text-align:center;color:#9C9CA8;">×</span>
 <button onClick="{{ e.repsMinus }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#0A0A0C;color:#fff;font-size:18px;">−</button>
-<span style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;min-width:58px;text-align:center;">{{ e.reps }} reps</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;min-width:58px;text-align:center;">{{ e.reps }} {{ tx.k63 }}</span>
 <button onClick="{{ e.repsPlus }}" style="width:44px;height:44px;border-radius:10px;border:none;background:#0A0A0C;color:#fff;font-size:18px;">+</button>
 </div>
 </div>
 </sc-for>
-<button onClick="{{ openLibR }}" style="min-height:56px;border-radius:14px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:15px;font-weight:600;">+ Add exercise</button>
+<button onClick="{{ openLibR }}" style="min-height:56px;border-radius:14px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:15px;font-weight:600;">{{ tx.k57 }}</button>
 </div>
 <div style="padding:12px 12px calc(16px + env(safe-area-inset-bottom));border-top:1px solid #24242B;">
-<button onClick="{{ startEdited }}" style="width:100%;height:60px;border-radius:14px;border:none;background:#CCFF00;color:#0A0A0C;font-size:17px;font-weight:700;">Start {{ rName }}</button>
+<button onClick="{{ startEdited }}" style="width:100%;height:60px;border-radius:14px;border:none;background:#CCFF00;color:#0A0A0C;font-size:17px;font-weight:700;">{{ tx.k15 }} {{ rName }}</button>
 </div>
 </div>
 </sc-if>
@@ -577,7 +584,7 @@ input::placeholder{color:#9C9CA8}
 </sc-for>
 </div>
 <sc-if value="{{ sdEditing }}" hint-placeholder-val="{{ false }}">
-<div style="font-size:13px;line-height:18px;color:#9C9CA8;padding:0 4px;text-wrap:pretty;">Fix any weight or reps. Changes save instantly and update your records and charts.</div>
+<div style="font-size:13px;line-height:18px;color:#9C9CA8;padding:0 4px;text-wrap:pretty;">{{ tx.k64 }}</div>
 </sc-if>
 <sc-for list="{{ sdEx }}" as="x" hint-placeholder-count="4">
 <div style="flex:0 0 auto;background:#16161A;border:1px solid #24242B;border-radius:16px;overflow:hidden;">
@@ -594,7 +601,7 @@ input::placeholder{color:#9C9CA8}
 <div style="display:grid;grid-template-columns:28px minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:center;padding:8px 14px;border-top:1px solid #24242B;">
 <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#9C9CA8;text-align:center;">{{ y.num }}</span>
 <div style="display:flex;align-items:center;gap:6px;"><input type="text" inputmode="decimal" value="{{ y.wDisp }}" onChange="{{ y.onW }}" onFocus="{{ y.onSelect }}" style="width:100%;min-width:0;height:48px;border-radius:10px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;text-align:center;"><span style="font-size:13px;color:#9C9CA8;">{{ unit }}</span></div>
-<div style="display:flex;align-items:center;gap:6px;"><input type="text" inputmode="numeric" value="{{ y.rDisp }}" onChange="{{ y.onR }}" onFocus="{{ y.onSelect }}" style="width:100%;min-width:0;height:48px;border-radius:10px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;text-align:center;"><span style="font-size:13px;color:#9C9CA8;">reps</span></div>
+<div style="display:flex;align-items:center;gap:6px;"><input type="text" inputmode="numeric" value="{{ y.rDisp }}" onChange="{{ y.onR }}" onFocus="{{ y.onSelect }}" style="width:100%;min-width:0;height:48px;border-radius:10px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;text-align:center;"><span style="font-size:13px;color:#9C9CA8;">{{ tx.k63 }}</span></div>
 </div>
 </sc-if>
 </sc-for>
@@ -608,7 +615,7 @@ input::placeholder{color:#9C9CA8}
 <div style="position:absolute;inset:0;display:flex;flex-direction:column;z-index:8;background:#0A0A0C;">
 <div style="flex:1;overflow-y:auto;padding:28px 16px 16px;display:flex;flex-direction:column;gap:24px;">
 <div style="display:flex;flex-direction:column;gap:6px;">
-<span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#CCFF00;">Workout saved</span>
+<span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#CCFF00;">{{ tx.k65 }}</span>
 <span style="font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">{{ sumName }}</span>
 </div>
 <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
@@ -629,7 +636,7 @@ input::placeholder{color:#9C9CA8}
 </sc-for>
 </div>
 <div style="display:flex;flex-direction:column;gap:8px;">
-<span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">Exercises</span>
+<span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k66 }}</span>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:16px;">
 <sc-for list="{{ sumEx }}" as="x" hint-placeholder-count="4">
 <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #24242B;">
@@ -641,7 +648,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 </div>
 <div style="padding:12px 16px calc(16px + env(safe-area-inset-bottom));">
-<button onClick="{{ closeSummary }}" style="width:100%;height:60px;border-radius:14px;border:none;background:#CCFF00;color:#0A0A0C;font-size:17px;font-weight:700;">Done</button>
+<button onClick="{{ closeSummary }}" style="width:100%;height:60px;border-radius:14px;border:none;background:#CCFF00;color:#0A0A0C;font-size:17px;font-weight:700;">{{ tx.k67 }}</button>
 </div>
 </div>
 </sc-if>
@@ -655,8 +662,15 @@ const KG_LB = 2.20462;
 const LIB = [['Bench Press','Chest'],['Incline DB Press','Chest'],['Dumbbell Fly','Chest'],['Push-up','Chest'],['Deadlift','Back'],['Barbell Row','Back'],['Pull-up','Back'],['Lat Pulldown','Back'],['Seated Cable Row','Back'],['Squat','Legs'],['Romanian Deadlift','Legs'],['Leg Press','Legs'],['Leg Curl','Legs'],['Leg Extension','Legs'],['Calf Raise','Legs'],['Bulgarian Split Squat','Legs'],['Overhead Press','Shoulders'],['Lateral Raise','Shoulders'],['Face Pull','Shoulders'],['Barbell Curl','Arms'],['Hammer Curl','Arms'],['Triceps Pushdown','Arms'],['Skull Crusher','Arms'],['Plank','Core'],['Hanging Leg Raise','Core'],['Cable Crunch','Core']].map(([name, group]) => ({ name, group }));
 const GROUPS = ['All','Chest','Back','Legs','Shoulders','Arms','Core','Custom'];
 const BASE = {'Bench Press':80,'Overhead Press':50,'Incline DB Press':30,'Lateral Raise':12,'Triceps Pushdown':30,'Deadlift':160,'Barbell Row':70,'Pull-up':10,'Face Pull':25,'Barbell Curl':35,'Squat':120,'Romanian Deadlift':100,'Leg Press':180,'Leg Curl':45,'Calf Raise':70};
-const PK = ['routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze'];
+const PK = ['routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang'];
 const e1 = (w, r) => w * (1 + r / 30);
+const FR = {"Start anyway":"Lancer quand même","Cancel":"Annuler","New version ready · Tap to update":"Nouvelle version prête · Toucher pour mettre à jour","Install on your iPhone":"Installer sur ton iPhone","In Safari: tap Share, then “Add to Home Screen”. Barlog opens full-screen, works offline, and your data is kept safe from Safari’s cleanup.":"Dans Safari : touche Partager, puis « Sur l’écran d’accueil ». Barlog s’ouvre en plein écran, fonctionne hors ligne et tes données sont protégées du nettoyage de Safari.","Got it":"Compris","Today":"Aujourd’hui","Next up":"À suivre","Last done":"Dernière fois :","This week":"Cette semaine","Other routines":"Autres routines","Start":"Lancer","+ Empty workout":"+ Séance libre","Program · rotates automatically":"Programme · rotation automatique","Routines":"Routines","NEXT":"SUIVANTE","Edit":"Modifier","+ New routine":"+ Nouvelle routine","Progress":"Progrès","All sessions":"Toutes les séances","No sessions yet. Finish a workout and it shows up here.":"Aucune séance. Termine une séance et elle apparaîtra ici.","No weighted exercise matches.":"Aucun exercice avec charge ne correspond.","No sessions in this range.":"Aucune séance sur cette période.","Trend":"Tendance","Tap a point for details":"Touche un point pour les détails","Rep records · heaviest weight (":"Records par reps · charge max (","Records ·":"Records ·","History ·":"Historique ·","Right column: best estimated 1RM of the session. Lime = PR.":"Colonne de droite : meilleur 1RM estimé de la séance. Lime = PR.","Consistency":"Régularité","Sets per muscle · weekly avg, last 4 wk":"Séries par muscle · moyenne/sem. sur 4 sem.","Shaded zone = 10–20 work sets per muscle per week, the usual range for muscle growth. Warm-ups excluded.":"Zone ombrée = 10 à 20 séries de travail par muscle et par semaine, la plage habituelle pour la prise de muscle. Échauffements exclus.","e1RM trend · last 4 weeks":"Tendance e1RM · 4 dernières semaines","Profile":"Profil","No account. No subscription.":"Pas de compte. Pas d’abonnement.","Everything lives on this device.":"Tout est stocké sur cet appareil.","Training":"Entraînement","Language":"Langue","Units":"Unités","Default rest":"Repos par défaut","Your data":"Tes données","Export backup":"Exporter","Import":"Importer","Logging a workout only adds to your history. Import replaces everything with the file’s content — export first if unsure.":"Enregistrer une séance ne fait qu’ajouter à ton historique. Importer remplace tout par le contenu du fichier — exporte d’abord en cas de doute.","Clear history keeps your routines. Erase all also deletes routines and custom exercises. Both ask for a second tap.":"« Effacer l’historique » garde tes routines. « Tout effacer » supprime aussi les routines et les exercices perso. Les deux demandent une deuxième touche.","Resume ›":"Reprendre ›","Finish":"Terminer","SET":"SÉRIE","PREV":"PRÉC.","−1 rep":"−1 rép","+1 rep":"+1 rép","+ Add set":"+ Ajouter une série","Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.":"Touche un numéro de série pour la marquer comme échauffement (W). Les échauffements ne comptent ni dans les PR ni dans le volume.","+ Add exercise":"+ Ajouter un exercice","Skip":"Passer","Add exercise":"Ajouter un exercice","+ Create “":"+ Créer « ","” ·":" » ·","No exercises yet. Add your first movement.":"Aucun exercice. Ajoute ton premier mouvement.","sets":"séries","reps":"reps","Fix any weight or reps. Changes save instantly and update your records and charts.":"Corrige une charge ou des reps. Les changements sont enregistrés tout de suite et mettent à jour tes records et graphiques.","Workout saved":"Séance enregistrée","Exercises":"Exercices","Done":"Terminé","Back up your data":"Sauvegarde tes données","Tap Export, then “Save to Files” → iCloud Drive.":"Touche Exporter, puis « Enregistrer dans Fichiers » → iCloud Drive.","Export now":"Exporter","Later":"Plus tard","Search an exercise":"Chercher un exercice","Search or type a new name":"Chercher ou taper un nouveau nom","Chest":"Pectoraux","Back":"Dos","Legs":"Jambes","Shoulders":"Épaules","Arms":"Bras","Core":"Gainage","All":"Tous","Custom":"Perso","No backup yet. Your data lives only on this phone.":"Aucune sauvegarde. Tes données sont uniquement sur ce téléphone.","Volume":"Volume","Vol ":"Vol ","Quick workout":"Séance libre","New routine":"Nouvelle routine","Backup exported":"Sauvegarde exportée","Data imported":"Données importées","Not a Barlog backup":"Ce n’est pas une sauvegarde Barlog","History cleared":"Historique effacé","All data erased":"Toutes les données effacées","Session deleted":"Séance supprimée"," · you hit every rep last time":" · toutes tes reps réussies la dernière fois"," · custom":" · perso"," · last ":" · dernière "," rep":" rép"," reps":" reps","Workout":"Séance","Low":"Bas","High":"Élevé","In range":"Dans la zone"," this week":" cette semaine","No PR for ":"Aucun PR depuis "," weeks":" semaines","Start today’s: ":"Lancer celle du jour : ","Sessions":"Séances","Lifts":"Exercices","Stats":"Stats","Last 4 wk":"4 dern. sem.","Streak":"Série"," wk":" sem","4 wk":"4 sem","3 mo":"3 mois","Target: ":"Objectif : "," sessions per week (one per routine). Streak = weeks in a row at target.":" séances par semaine (une par routine). Série = semaines d’affilée à l’objectif."," lift":" exercice"," without a PR for 3+ weeks.":" sans PR depuis 3 semaines ou plus.","Every lift has set a PR in the last 3 weeks.":"Chaque exercice a fait un PR ces 3 dernières semaines."," Compared with the 4 weeks before, or with your first session of the period if there is no earlier data.":" Comparé aux 4 semaines précédentes, ou à ta première séance de la période s’il n’y a pas de données plus anciennes."," exercises · ":" exercices · "," sets · ":" séries · ","Time":"Durée","Sets":"Séries","Session updated":"Séance mise à jour","Tap again":"Toucher encore","Delete":"Supprimer","Programs":"Programmes","No routines":"Aucune routine","In progress · ":"En cours · ","Create one in Programs.":"Crées-en une dans Programmes.","Resume workout":"Reprendre la séance","Start workout":"Lancer la séance","No exercises yet":"Aucun exercice","Est. 1RM":"1RM est.","Top set":"Top set","Estimated max for 1 rep, from your best set: weight × (1 + reps ÷ 30). Best overall strength gauge.":"Charge max estimée pour 1 rep, calculée sur ta meilleure série : charge × (1 + reps ÷ 30). Le meilleur indicateur de force.","Total weight × reps over all work sets of the session. Tracks workload — the main driver of muscle growth.":"Charge × reps sur toutes les séries de travail de la séance. Mesure la charge de travail — le moteur principal de la prise de muscle.","Heaviest weight lifted in the session, regardless of reps.":"Charge la plus lourde soulevée dans la séance, peu importe les reps.","Estimated 1RM":"1RM estimé","Session volume":"Volume de la séance","Heaviest set":"Série la plus lourde"," sessions":" séances"," session":" séance","No PR on ":"Aucun PR sur "," for ":" depuis "," sessions since your last best. Try a deload week (−10%), a different rep range, or a close variation.":" séances depuis ton dernier record. Essaie une semaine de décharge (−10 %), une autre plage de reps ou une variante proche.","4-week trend (e1RM)":"Tendance 4 sem. (e1RM)","Best e1RM":"Meilleur e1RM","Best set":"Meilleure série","Heaviest weight":"Charge max","Best session volume":"Meilleur volume de séance"," sessions stored offline.":" séances stockées hors ligne.","Auto-start rest":"Repos automatique","Starts when you log a set":"Démarre quand tu valides une série","Sound at rest end":"Son en fin de repos","Beeps when rest is over. Muted by the iPhone silent switch.":"Bip à la fin du repos. Coupé par le mode silencieux de l’iPhone.","Android only — iPhone doesn’t allow it in web apps":"Android seulement — l’iPhone ne le permet pas dans les apps web","Warn on off-day start":"Alerte hors du jour prévu","Only for routines with a weekday in their name (e.g. “Mardi – …”). Asks before starting one on another day.":"Seulement pour les routines avec un jour dans leur nom (ex. « Mardi – … »). Demande confirmation avant de la lancer un autre jour.","Keep screen on":"Garder l’écran allumé","During a workout, so the timer stays visible":"Pendant une séance, pour garder le minuteur visible","Clear history":"Effacer l’historique","Erase all":"Tout effacer"," sets":" séries","Tap again to discard":"Toucher encore pour abandonner","Discard workout":"Abandonner la séance","Rest over — lift":"Repos terminé — à toi","Rest":"Repos","to ":"à ","Volume ":"Volume ","vs last time":"vs la dernière fois","No PRs this time — consistency counts":"Pas de PR cette fois — la régularité compte","best ":"meilleure "};
+const TX = {"k0":"Start anyway","k1":"Cancel","k2":"New version ready · Tap to update","k3":"Install on your iPhone","k4":"In Safari: tap Share, then “Add to Home Screen”. Barlog opens full-screen, works offline, and your data is kept safe from Safari’s cleanup.","k5":"Got it","k6":"Back up your data","k7":"Tap Export, then “Save to Files” → iCloud Drive.","k8":"Export now","k9":"Later","k10":"Today","k11":"Next up","k12":"Last done","k13":"This week","k14":"Other routines","k15":"Start","k16":"+ Empty workout","k17":"Program · rotates automatically","k18":"Routines","k19":"NEXT","k20":"Edit","k21":"+ New routine","k22":"Progress","k23":"All sessions","k24":"No sessions yet. Finish a workout and it shows up here.","k25":"No weighted exercise matches.","k26":"No sessions in this range.","k27":"Trend","k28":"Tap a point for details","k29":"Rep records · heaviest weight (","k30":"Records ·","k31":"History ·","k32":"Right column: best estimated 1RM of the session. Lime = PR.","k33":"Consistency","k34":"Sets per muscle · weekly avg, last 4 wk","k35":"Shaded zone = 10–20 work sets per muscle per week, the usual range for muscle growth. Warm-ups excluded.","k36":"e1RM trend · last 4 weeks","k37":"Profile","k38":"No account. No subscription.","k39":"Everything lives on this device.","k40":"Training","k41":"Language","k42":"Units","k43":"Default rest","k44":"Your data","k45":"Export backup","k46":"Import","k47":"Logging a workout only adds to your history. Import replaces everything with the file’s content — export first if unsure.","k48":"Clear history keeps your routines. Erase all also deletes routines and custom exercises. Both ask for a second tap.","k49":"Resume ›","k50":"Finish","k51":"SET","k52":"PREV","k53":"−1 rep","k54":"+1 rep","k55":"+ Add set","k56":"Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.","k57":"+ Add exercise","k58":"Skip","k59":"Add exercise","k60":"+ Create “","k61":"No exercises yet. Add your first movement.","k62":"sets","k63":"reps","k64":"Fix any weight or reps. Changes save instantly and update your records and charts.","k65":"Workout saved","k66":"Exercises","k67":"Done","k68":"Search an exercise","k69":"Search or type a new name"};
+const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
+const APP_VERSION = '0.4.0';
+let LANG = 'en';
+const LOC = () => LANG === 'fr' ? 'fr-CA' : 'en-US';
+const WD_FR = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
 const WD = { dimanche: 0, lundi: 1, mardi: 2, mercredi: 3, jeudi: 4, vendredi: 5, samedi: 6, sunday: 0, monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6 };
 const WD_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const wdOf = r => { const m = r.name.toLowerCase().match(/[a-zé]+/g) || []; const k = m.find(x => x in WD); return k ? WD[k] : null; };
@@ -689,7 +703,7 @@ class Component extends DCLogic {
   state = this.initial();
   initial() {
     const routines = seedRoutines();
-    return { tab: 'today', screen: 'tabs', routines, history: seedHistory(routines), lastRoutineId: 'r3', workout: null, focus: null, restEnd: null, restTotal: 90, restAlert: false, now: Date.now(), libCtx: 'workout', libQuery: '', libGroup: 'All', custom: [], editId: null, progEx: 'Bench Press', metric: 'e1rm', unit: 'kg', haptics: true, sound: true, wake: true, autoRest: this.props.autoStartRest ?? true, restDefault: this.props.defaultRest ?? 90, summary: null, toast: null, discardArm: false, deleteArm: false, resetArm: false, installSeen: false, standalone: false, sessMeta: {}, progView: 'sessions', calOff: 0, openSess: null, delSessArm: false, clearArm: false, eraseArm: false, sessEdit: false, editBuf: {}, dayWarn: true, confirmStart: null };
+    return { tab: 'today', screen: 'tabs', routines, history: seedHistory(routines), lastRoutineId: 'r3', workout: null, focus: null, restEnd: null, restTotal: 90, restAlert: false, now: Date.now(), libCtx: 'workout', libQuery: '', libGroup: 'All', custom: [], editId: null, progEx: 'Bench Press', metric: 'e1rm', unit: 'kg', haptics: true, sound: true, wake: true, autoRest: this.props.autoStartRest ?? true, restDefault: this.props.defaultRest ?? 90, summary: null, toast: null, discardArm: false, deleteArm: false, resetArm: false, installSeen: false, standalone: false, sessMeta: {}, progView: 'sessions', calOff: 0, openSess: null, delSessArm: false, clearArm: false, eraseArm: false, sessEdit: false, editBuf: {}, dayWarn: true, confirmStart: null, lang: (typeof navigator !== 'undefined' && (navigator.language || '').toLowerCase().startsWith('fr')) ? 'fr' : 'en' };
   }
   componentDidMount() {
     let d = null;
@@ -707,9 +721,11 @@ class Component extends DCLogic {
     try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch (e) {}
   }
   componentWillUnmount() { clearInterval(this.iv); clearTimeout(this.ra); clearTimeout(this.tt); document.removeEventListener('visibilitychange', this.onVis); window.removeEventListener('pagehide', this.onVis); if (this.wl) this.wl.release(); }
-  componentDidUpdate(_, prev) {
-    if (PK.some(k => prev[k] !== this.state[k])) this.save();
-    if (prev.workout !== this.state.workout || prev.wake !== this.state.wake) this.syncWake();
+  componentDidUpdate(_, prevState) {
+    const prev = prevState || this._snap || {}; const st = this.state;
+    this._snap = { ...st };
+    if (PK.some(k => prev[k] !== st[k])) this.save();
+    if (prev.workout !== st.workout || prev.wake !== st.wake) this.syncWake();
   }
   save() { const o = {}; PK.forEach(k => o[k] = this.state[k]); try { localStorage.setItem('barlog-v1', JSON.stringify(o)); } catch (e) {} }
   syncWake() {
@@ -777,7 +793,7 @@ class Component extends DCLogic {
     if (!force && s.dayWarn !== false && wd != null && wd !== new Date().getDay()) { this.setState({ confirmStart: rid }); return; }
     if (s.confirmStart) this.setState({ confirmStart: null });
     const ex = r ? r.ex.map(e => this.mkEx(e.name, e.sets, e.reps, s.history)) : [];
-    this.setState({ workout: { rid: r ? r.id : null, name: r ? r.name : 'Quick workout', start: Date.now(), ex }, focus: ex.length ? { ei: 0, si: 0 } : null, screen: 'workout', restEnd: null, restAlert: false, discardArm: false });
+    this.setState({ workout: { rid: r ? r.id : null, name: r ? r.name : L('Quick workout'), start: Date.now(), ex }, focus: ex.length ? { ei: 0, si: 0 } : null, screen: 'workout', restEnd: null, restAlert: false, discardArm: false });
   }
   updW(fn) {
     const s = this.state; if (!s.workout) return {};
@@ -856,7 +872,7 @@ class Component extends DCLogic {
     this.setState({ custom: [...s.custom, { name, group, custom: true }] }, () => this.pick(name));
   }
   updR(fn) { const s = this.state; this.setState({ routines: s.routines.map(r => { if (r.id !== s.editId) return r; const c = JSON.parse(JSON.stringify(r)); fn(c); return c; }) }); }
-  newRoutine() { const id = 'r' + Date.now(); this.setState(s => ({ routines: [...s.routines, { id, name: 'New routine', ex: [] }], editId: id, screen: 'routine', deleteArm: false })); }
+  newRoutine() { const id = 'r' + Date.now(); this.setState(s => ({ routines: [...s.routines, { id, name: L('New routine'), ex: [] }], editId: id, screen: 'routine', deleteArm: false })); }
   deleteRoutine() {
     const s = this.state;
     if (!s.deleteArm) { this.setState({ deleteArm: true }); setTimeout(() => this.setState({ deleteArm: false }), 3000); return; }
@@ -867,7 +883,7 @@ class Component extends DCLogic {
     const s = this.state; const o = {}; PK.forEach(k => o[k] = s[k]);
     const name = 'barlog-' + new Date().toISOString().slice(0, 10) + '.json';
     const json = JSON.stringify(o, null, 2);
-    const done = () => { this.setState({ lastExport: Date.now(), backupSnooze: null }); this.flash('Backup exported'); };
+    const done = () => { this.setState({ lastExport: Date.now(), backupSnooze: null }); this.flash(L('Backup exported')); };
     try { const file = new File([json], name, { type: 'application/json' }); if (navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file], title: 'Barlog backup' }).then(done).catch(() => {}); return; } } catch (e) {}
     const blob = new Blob([json], { type: 'application/json' });
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'barlog-' + new Date().toISOString().slice(0, 10) + '.json'; document.body.appendChild(a); a.click(); a.remove();
@@ -875,15 +891,15 @@ class Component extends DCLogic {
   }
   importData() {
     const i = document.createElement('input'); i.type = 'file'; i.accept = 'application/json,.json';
-    i.onchange = () => { const f = i.files && i.files[0]; if (!f) return; f.text().then(t => { const d = JSON.parse(t); if (!d || !d.routines || !d.history) throw 0; this.setState({ ...d, sessMeta: d.sessMeta || {}, custom: d.custom || [], screen: d.workout ? 'workout' : 'tabs', tab: 'today', restAlert: false, calOff: 0 }); this.flash('Data imported'); }).catch(() => this.flash('Not a Barlog backup')); };
+    i.onchange = () => { const f = i.files && i.files[0]; if (!f) return; f.text().then(t => { const d = JSON.parse(t); if (!d || !d.routines || !d.history) throw 0; this.setState({ ...d, sessMeta: d.sessMeta || {}, custom: d.custom || [], screen: d.workout ? 'workout' : 'tabs', tab: 'today', restAlert: false, calOff: 0 }); this.flash(L('Data imported')); }).catch(() => this.flash(L('Not a Barlog backup'))); };
     i.click();
   }
   arm(key, fn) {
     if (!this.state[key]) { this.setState({ [key]: true }); setTimeout(() => this.setState({ [key]: false }), 3000); return; }
     this.setState({ [key]: false }); fn();
   }
-  clearHistory() { this.arm('clearArm', () => { clearTimeout(this.ra); this.setState({ history: {}, sessMeta: {}, workout: null, focus: null, restEnd: null, restAlert: false, summary: null }); this.flash('History cleared'); }); }
-  eraseAll() { this.arm('eraseArm', () => { clearTimeout(this.ra); this.setState({ history: {}, sessMeta: {}, routines: [], custom: [], lastRoutineId: null, workout: null, focus: null, restEnd: null, restAlert: false, summary: null, tab: 'today', screen: 'tabs' }); this.flash('All data erased'); }); }
+  clearHistory() { this.arm('clearArm', () => { clearTimeout(this.ra); this.setState({ history: {}, sessMeta: {}, workout: null, focus: null, restEnd: null, restAlert: false, summary: null }); this.flash(L('History cleared')); }); }
+  eraseAll() { this.arm('eraseArm', () => { clearTimeout(this.ra); this.setState({ history: {}, sessMeta: {}, routines: [], custom: [], lastRoutineId: null, workout: null, focus: null, restEnd: null, restAlert: false, summary: null, tab: 'today', screen: 'tabs' }); this.flash(L('All data erased')); }); }
   editSessSet(date, name, i, field, val) {
     const s = this.state; const key = date + '|' + name + '|' + i + '|' + field;
     let v = field === 'w' ? parseFloat(String(val).replace(',', '.')) : parseInt(val, 10);
@@ -900,14 +916,15 @@ class Component extends DCLogic {
       const s = this.state; const h = {};
       Object.entries(s.history).forEach(([k, a]) => { const f = a.filter(x => x.date !== date); if (f.length) h[k] = f; });
       const m = { ...(s.sessMeta || {}) }; delete m[date];
-      this.setState({ history: h, sessMeta: m, screen: 'tabs', tab: 'progress', openSess: null }); this.flash('Session deleted');
+      this.setState({ history: h, sessMeta: m, screen: 'tabs', tab: 'progress', openSess: null }); this.flash(L('Session deleted'));
     });
   }
   renderVals() {
     const s = this.state; const now = s.now; const kg = s.unit === 'kg';
+    LANG = s.lang === 'fr' ? 'fr' : 'en'; try { document.documentElement.lang = LANG; } catch (e) {}
     const go = (p) => () => this.setState(p);
     const routines = s.routines;
-    const ago = (t) => { if (!t) return 'never'; const d = Math.floor((now - t) / DAY); return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d + ' days ago'; };
+    const ago = (t) => { const fr = LANG === 'fr'; if (!t) return fr ? 'jamais' : 'never'; const d = Math.floor((now - t) / DAY); return d <= 0 ? (fr ? 'aujourd’hui' : 'today') : d === 1 ? (fr ? 'hier' : 'yesterday') : fr ? 'il y a ' + d + ' jours' : d + ' days ago'; };
     const lastOf = (r) => { let t = 0; r.ex.forEach(e => { const l = (s.history[e.name] || []).slice(-1)[0]; if (l) t = Math.max(t, l.date); }); return t; };
     const dayStart = new Date(now); dayStart.setHours(0, 0, 0, 0);
     let next = null;
@@ -925,7 +942,7 @@ class Component extends DCLogic {
     const d0 = new Date(now);
     const monday = new Date(d0.getFullYear(), d0.getMonth(), d0.getDate() - ((d0.getDay() + 6) % 7));
     const dayKeys = new Set(); Object.values(s.history).forEach(a => a.forEach(x => dayKeys.add(new Date(x.date).toDateString())));
-    const week = ['M','T','W','T','F','S','S'].map((label, i) => { const d = new Date(monday.getTime() + i * DAY); const done = dayKeys.has(d.toDateString()); const today = d.toDateString() === d0.toDateString(); return { label, dot: done ? '#CCFF00' : '#24242B', border: today ? '#9C9CA8' : '#24242B' }; });
+    const week = (LANG === 'fr' ? ['L','M','M','J','V','S','D'] : ['M','T','W','T','F','S','S']).map((label, i) => { const d = new Date(monday.getTime() + i * DAY); const done = dayKeys.has(d.toDateString()); const today = d.toDateString() === d0.toDateString(); return { label, dot: done ? '#CCFF00' : '#24242B', border: today ? '#9C9CA8' : '#24242B' }; });
 
     const w = s.workout;
     const wStepKg = this.inc();
@@ -934,7 +951,7 @@ class Component extends DCLogic {
       const d = ex.sets.filter(x => x.done).length; doneCount += d; total += ex.sets.length;
       return {
         name: ex.name, progress: d + '/' + ex.sets.length, progColor: d === ex.sets.length && d ? '#CCFF00' : '#9C9CA8',
-        up: !!ex.up, upText: '+' + (kg ? '2.5 kg' : '5 lb') + ' · you hit every rep last time',
+        up: !!ex.up, upText: '+' + (kg ? '2.5 kg' : '5 lb') + L(' · you hit every rep last time'),
         onAddSet: () => this.addSet(ei),
         sets: ex.sets.map((x, si) => {
           const active = !!(s.focus && s.focus.ei === ei && s.focus.si === si && !x.done);
@@ -964,7 +981,7 @@ class Component extends DCLogic {
     const all = [...LIB, ...s.custom];
     const q = s.libQuery.trim().toLowerCase();
     const libList = all.filter(l => (s.libGroup === 'All' || (s.libGroup === 'Custom' ? l.custom : l.group === s.libGroup)) && (!q || l.name.toLowerCase().includes(q)))
-      .map(l => { const h = s.history[l.name]; const last = h && h.length ? h[h.length - 1] : null; return { name: l.name, meta: l.group + (l.custom ? ' · custom' : '') + (last ? ' · last ' + this.dispW(last.sets[0].w) + ' ' + s.unit + ' × ' + last.sets[0].r : ''), onPick: () => this.pick(l.name) }; });
+      .map(l => { const h = s.history[l.name]; const last = h && h.length ? h[h.length - 1] : null; return { name: l.name, meta: L(l.group) + (l.custom ? L(' · custom') : '') + (last ? L(' · last ') + this.dispW(last.sets[0].w) + ' ' + s.unit + ' × ' + last.sets[0].r : ''), onPick: () => this.pick(l.name) }; });
     const canCreate = !!q && !all.some(l => l.name.toLowerCase() === q);
 
     const er = routines.find(r => r.id === s.editId);
@@ -984,10 +1001,10 @@ class Component extends DCLogic {
     const topE = n => Math.max(0, ...(s.history[n] || []).flatMap(se => work(se.sets).map(x => e1(x.w, x.r))));
     const progEx = histNames.includes(s.progEx) ? s.progEx : (histNames.slice().sort((a, b) => topE(b) - topE(a))[0] || '');
     const T = Date.now();
-    const fmtD = (t) => new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const fmtD = (t) => new Date(t).toLocaleDateString(LOC(), { month: 'short', day: 'numeric' });
     const setTxt = x => this.dispW(x.w) + '×' + x.r;
     const sessAll = (s.history[progEx] || []).map(se => ({ date: se.date, ws: work(se.sets).filter(x => x.w > 0) })).filter(se => se.ws.length);
-    const RANGES = [['4w', '4 wk', 28], ['3m', '3 mo', 91], ['all', 'All', 0]];
+    const RANGES = [['4w', L('4 wk'), 28], ['3m', L('3 mo'), 91], ['all', L('All'), 0]];
     const rg = RANGES.find(r => r[0] === s.progRange) || RANGES[2];
     const cut = rg[2] ? T - rg[2] * DAY : -Infinity;
     const sess = sessAll.filter(se => se.date >= cut);
@@ -1023,7 +1040,7 @@ class Component extends DCLogic {
     };
     const pctTxt = p => p == null ? '—' : (p >= 0 ? '+' : '−') + Math.abs(p).toFixed(1) + '%';
     const ls = liftStat(progEx);
-    const repRecs = [1, 3, 5, 8, 10, 12].map(n => { let b = 0; sessAll.forEach(se => se.ws.forEach(x => { if (x.r >= n) b = Math.max(b, x.w); })); return { label: n + (n === 1 ? ' rep' : ' reps'), value: b ? this.dispW(b) : '—' }; });
+    const repRecs = [1, 3, 5, 8, 10, 12].map(n => { let b = 0; sessAll.forEach(se => se.ws.forEach(x => { if (x.r >= n) b = Math.max(b, x.w); })); return { label: n + (n === 1 ? L(' rep') : L(' reps')), value: b ? this.dispW(b) : '—' }; });
     let runE = 0;
     const histRows = sessAll.map(se => { const e = Math.max(...se.ws.map(x => e1(x.w, x.r))); const pr = e > runE + 0.01; runE = Math.max(runE, e); return { date: fmtD(se.date), sets: se.ws.map(setTxt).join('  '), val: this.dispW(e), color: pr ? '#CCFF00' : '#FFFFFF' }; });
     const histList = histRows.reverse().slice(0, 12);
@@ -1043,7 +1060,7 @@ class Component extends DCLogic {
       if (!r && !m.name) { let best = 0; routines.forEach(x => { const o = x.ex.filter(e => ex.some(y => y.name === e.name)).length; if (o > best) { best = o; r = x; } }); }
       if (r) { const ix = n => { const i = r.ex.findIndex(e => e.name === n); return i < 0 ? 99 : i; }; ex.sort((a, b) => ix(a.name) - ix(b.name)); }
       const vol = ex.reduce((a, x) => a + work(x.sets).reduce((b, y) => b + y.w * y.r, 0), 0);
-      return { date, name: m.name || (r ? r.name : 'Workout'), dur: m.dur, ex, vol, sets: ex.reduce((a, x) => a + x.sets.length, 0) };
+      return { date, name: m.name || (r ? r.name : L('Workout')), dur: m.dur, ex, vol, sets: ex.reduce((a, x) => a + x.sets.length, 0) };
     });
     const cm = new Date(d0.getFullYear(), d0.getMonth() + s.calOff, 1);
     const dim = new Date(cm.getFullYear(), cm.getMonth() + 1, 0).getDate();
@@ -1057,7 +1074,7 @@ class Component extends DCLogic {
       if (se) monthCount += sessions.filter(x => new Date(x.date).toDateString() === dt.toDateString()).length;
       calDays.push({ label: String(dd), bg: se ? '#CCFF00' : 'transparent', color: se ? '#0A0A0C' : dt > d0 ? '#55555F' : '#FFFFFF', border: isT ? '#FFFFFF' : 'transparent', weight: se ? 700 : 500, opacity: 1, onClick: se ? go({ openSess: se.date, screen: 'session', delSessArm: false, sessEdit: false, editBuf: {} }) : () => {} });
     }
-    const fmtLong = t => new Date(t).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+    const fmtLong = t => new Date(t).toLocaleDateString(LOC(), { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
     const sd = s.openSess != null ? sessions.find(x => x.date === s.openSess) : null;
     const wkStart = t => { const d = new Date(t); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - (d.getDay() + 6) % 7); return d.getTime(); };
     const planned = Math.max(1, routines.length);
@@ -1072,119 +1089,123 @@ class Component extends DCLogic {
     const GMAP = {}; [...LIB, ...s.custom].forEach(l => { GMAP[l.name] = l.group; });
     const mg = {}, mgNow = {};
     Object.entries(s.history).forEach(([name, arr]) => { const g = GMAP[name]; if (!g) return; arr.forEach(se => { const n = work(se.sets).length; const k = wkStart(se.date); if (k >= wkKey(4) && k < w0) mg[g] = (mg[g] || 0) + n; if (k === w0) mgNow[g] = (mgNow[g] || 0) + n; }); });
-    const muscleRows = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core'].map(g => { const avg = (mg[g] || 0) / 4; const ok = avg >= 10 && avg <= 20; return { name: g, avg: String(Math.round(avg * 10) / 10), w: Math.min(100, avg / 25 * 100) + '%', color: ok ? '#CCFF00' : '#FFFFFF', tag: (avg < 10 ? 'Low' : avg > 20 ? 'High' : 'In range') + ' · ' + (mgNow[g] || 0) + ' this week', tagColor: ok ? '#CCFF00' : '#9C9CA8' }; });
-    const liftTrends = histAll.map(n => { const st = liftStat(n); return { name: n, pct: pctTxt(st.pct), color: st.pct == null ? '#9C9CA8' : st.pct > 0.05 ? '#CCFF00' : '#FFFFFF', flag: st.stalled ? 'No PR for ' + st.wks + ' weeks' : '', hasFlag: !!st.stalled, onClick: go({ progView: 'lifts', progEx: n, progSel: null }) }; });
+    const muscleRows = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core'].map(g => { const avg = (mg[g] || 0) / 4; const ok = avg >= 10 && avg <= 20; return { name: L(g), avg: String(Math.round(avg * 10) / 10), w: Math.min(100, avg / 25 * 100) + '%', color: ok ? '#CCFF00' : '#FFFFFF', tag: (avg < 10 ? L('Low') : avg > 20 ? L('High') : L('In range')) + ' · ' + (mgNow[g] || 0) + L(' this week'), tagColor: ok ? '#CCFF00' : '#9C9CA8' }; });
+    const liftTrends = histAll.map(n => { const st = liftStat(n); return { name: n, pct: pctTxt(st.pct), color: st.pct == null ? '#9C9CA8' : st.pct > 0.05 ? '#CCFF00' : '#FFFFFF', flag: st.stalled ? L('No PR for ') + st.wks + L(' weeks') : '', hasFlag: !!st.stalled, onClick: go({ progView: 'lifts', progEx: n, progSel: null }) }; });
     const stalledN = liftTrends.filter(x => x.hasFlag).length;
 
     return {
       toastOn: !!s.toast, toast: s.toast,
+      tx: Object.fromEntries(Object.entries(TX).map(([k, v]) => [k, L(v)])), appLabel: 'Barlog v' + APP_VERSION,
+      calHead: LANG === 'fr' ? ['L','M','M','J','V','S','D'] : ['M','T','W','T','F','S','S'],
+      enBg: LANG === 'en' ? '#24242B' : 'transparent', enColor: LANG === 'en' ? '#fff' : '#9C9CA8', frBg: LANG === 'fr' ? '#24242B' : 'transparent', frColor: LANG === 'fr' ? '#fff' : '#9C9CA8',
+      setEn: go({ lang: 'en' }), setFr: go({ lang: 'fr' }),
       ...(() => { const cr = s.confirmStart ? routines.find(r => r.id === s.confirmStart) : null; const tw = new Date(now).getDay(); const tr = routines.find(r => wdOf(r) === tw);
-        return { confirmOn: !!cr, stop: (e) => e.stopPropagation(), confirmTitle: cr ? 'This is your ' + WD_EN[wdOf(cr)] + ' session' : '', confirmText: cr ? 'Today is ' + WD_EN[tw] + '. Start “' + cr.name + '” anyway?' : '',
+        return { confirmOn: !!cr, stop: (e) => e.stopPropagation(), confirmTitle: cr ? (LANG === 'fr' ? 'C’est ta séance du ' + WD_FR[wdOf(cr)] : 'This is your ' + WD_EN[wdOf(cr)] + L(' session')) : '', confirmText: cr ? (LANG === 'fr' ? 'On est ' + WD_FR[tw] + '. Lancer « ' + cr.name + ' » quand même ?' : 'Today is ' + WD_EN[tw] + '. Start “' + cr.name + '” anyway?') : '',
           confirmGo: () => cr && this.start(cr.id, true), confirmCancel: go({ confirmStart: null }),
-          confirmHasToday: !!(cr && tr && tr !== cr), confirmTodayLabel: tr ? 'Start today’s: ' + tr.name : '', confirmToday: () => tr && this.start(tr.id, true) }; })(),
+          confirmHasToday: !!(cr && tr && tr !== cr), confirmTodayLabel: tr ? L('Start today’s: ') + tr.name : '', confirmToday: () => tr && this.start(tr.id, true) }; })(),
       updateOn: !!s.updateReady && !s.workout && s.screen === 'tabs', applyUpdate: () => { this.save(); location.reload(); },
       ...(() => { const n = sessions.length; const le = s.lastExport; const due = n >= 3 && (!le || now - le > 14 * DAY) && !(s.backupSnooze && now < s.backupSnooze);
-        return { backupOn: due, backupText: le ? 'Last backup ' + Math.floor((now - le) / DAY) + ' days ago. Your data lives only on this phone.' : 'No backup yet. Your data lives only on this phone.', backupNow: () => this.exportData(), backupLater: go({ backupSnooze: now + 3 * DAY }) }; })(),
+        return { backupOn: due, backupText: le ? (LANG === 'fr' ? 'Dernière sauvegarde il y a ' + Math.floor((now - le) / DAY) + ' jours. Tes données sont uniquement sur ce téléphone.' : 'Last backup ' + Math.floor((now - le) / DAY) + ' days ago. Your data lives only on this phone.') : L('No backup yet. Your data lives only on this phone.'), backupNow: () => this.exportData(), backupLater: go({ backupSnooze: now + 3 * DAY }) }; })(),
       showInstall: !s.standalone && !s.installSeen, dismissInstall: go({ installSeen: true }),
       isToday: showTabs && s.tab === 'today', isPrograms: showTabs && s.tab === 'programs', isProgress: showTabs && s.tab === 'progress', isProfile: showTabs && s.tab === 'profile',
       isSession: s.screen === 'session' && !!sd,
-      progViews: [['sessions', 'Sessions'], ['lifts', 'Lifts'], ['stats', 'Stats']].map(([k, label]) => ({ label, bg: s.progView === k ? '#24242B' : 'transparent', color: s.progView === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ progView: k }) })),
+      progViews: [['sessions', L('Sessions')], ['lifts', L('Lifts')], ['stats', L('Stats')]].map(([k, label]) => ({ label, bg: s.progView === k ? '#24242B' : 'transparent', color: s.progView === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ progView: k }) })),
       isSessView: !['lifts', 'stats'].includes(s.progView), isLiftView: s.progView === 'lifts', isStatsView: s.progView === 'stats',
-      statTiles: [{ label: 'This week', value: thisWk + '/' + planned }, { label: 'Last 4 wk', value: Math.round(last4 / (4 * planned) * 100) + '%' }, { label: 'Streak', value: streak + ' wk' }],
-      weekBars, plannedLabel: 'Target: ' + planned + ' sessions per week (one per routine). Streak = weeks in a row at target.',
-      muscleRows, liftTrends, stalledLine: (stalledN ? stalledN + ' lift' + (stalledN > 1 ? 's' : '') + ' without a PR for 3+ weeks.' : 'Every lift has set a PR in the last 3 weeks.') + ' Compared with the 4 weeks before, or with your first session of the period if there is no earlier data.',
-      calTitle: cm.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }), calCount: monthCount + ' session' + (monthCount === 1 ? '' : 's'),
+      statTiles: [{ label: L('This week'), value: thisWk + '/' + planned }, { label: L('Last 4 wk'), value: Math.round(last4 / (4 * planned) * 100) + '%' }, { label: L('Streak'), value: streak + L(' wk') }],
+      weekBars, plannedLabel: L('Target: ') + planned + L(' sessions per week (one per routine). Streak = weeks in a row at target.'),
+      muscleRows, liftTrends, stalledLine: (stalledN ? stalledN + L(' lift') + (stalledN > 1 ? 's' : '') + L(' without a PR for 3+ weeks.') : L('Every lift has set a PR in the last 3 weeks.')) + L(' Compared with the 4 weeks before, or with your first session of the period if there is no earlier data.'),
+      calTitle: cm.toLocaleDateString(LOC(), { month: 'long', year: 'numeric' }), calCount: monthCount + L(' session') + (monthCount === 1 ? '' : 's'),
       calPrev: go({ calOff: s.calOff - 1 }), calNext: () => { if (s.calOff < 0) this.setState({ calOff: s.calOff + 1 }); }, calNextOpacity: s.calOff < 0 ? 1 : 0.3,
       calDays, noSess: !sessions.length,
-      sessList: sessions.slice(0, 100).map(se => { const dt = new Date(se.date); return { day: String(dt.getDate()), mon: dt.toLocaleDateString('en-US', { month: 'short' }), name: se.name, meta: se.ex.length + ' exercises · ' + se.sets + ' sets · ' + volU(se.vol) + ' ' + s.unit + (se.dur ? ' · ' + clock(se.dur) : ''), onClick: go({ openSess: se.date, screen: 'session', delSessArm: false, sessEdit: false, editBuf: {} }) }; }),
+      sessList: sessions.slice(0, 100).map(se => { const dt = new Date(se.date); return { day: String(dt.getDate()), mon: dt.toLocaleDateString(LOC(), { month: 'short' }), name: se.name, meta: se.ex.length + L(' exercises · ') + se.sets + L(' sets · ') + volU(se.vol) + ' ' + s.unit + (se.dur ? ' · ' + clock(se.dur) : ''), onClick: go({ openSess: se.date, screen: 'session', delSessArm: false, sessEdit: false, editBuf: {} }) }; }),
       sdName: sd ? sd.name : '', sdDate: sd ? fmtLong(sd.date) : '',
-      sdStats: sd ? [{ label: 'Time', value: sd.dur ? clock(sd.dur) : '—' }, { label: 'Sets', value: String(sd.sets) }, { label: 'Vol ' + s.unit, value: volU(sd.vol) }] : [],
+      sdStats: sd ? [{ label: L('Time'), value: sd.dur ? clock(sd.dur) : '—' }, { label: L('Sets'), value: String(sd.sets) }, { label: 'Vol ' + s.unit, value: volU(sd.vol) }] : [],
       sdEx: sd ? sd.ex.map(x => { let n = 0; return { name: x.name, sets: x.sets.map((y, i) => { const k = sd.date + '|' + x.name + '|' + i + '|'; return {
-        num: y.wu ? 'W' : String(++n), text: (y.w ? this.dispW(y.w) + ' ' + s.unit + ' × ' : '') + y.r + (y.w ? '' : ' reps'), e: y.w && !y.wu ? 'e1RM ' + this.dispW(e1(y.w, y.r)) : '',
+        num: y.wu ? 'W' : String(++n), text: (y.w ? this.dispW(y.w) + ' ' + s.unit + ' × ' : '') + y.r + (y.w ? '' : L(' reps')), e: y.w && !y.wu ? 'e1RM ' + this.dispW(e1(y.w, y.r)) : '',
         wDisp: s.editBuf[k + 'w'] != null ? s.editBuf[k + 'w'] : (y.w ? this.dispW(y.w) : ''), rDisp: s.editBuf[k + 'r'] != null ? s.editBuf[k + 'r'] : String(y.r),
         onW: (e) => this.editSessSet(sd.date, x.name, i, 'w', e.target.value), onR: (e) => this.editSessSet(sd.date, x.name, i, 'r', e.target.value),
         onSelect: (e) => { const t = e.target; setTimeout(() => { try { t.setSelectionRange(0, t.value.length); } catch (er) {} }, 0); } }; }) }; }) : [],
       sdView: !s.sessEdit, sdEditing: !!s.sessEdit, unit: s.unit,
-      toggleSessEdit: () => { if (s.sessEdit) this.flash('Session updated'); this.setState({ sessEdit: !s.sessEdit, editBuf: {}, delSessArm: false }); },
-      editBtnLabel: s.sessEdit ? 'Done' : 'Edit', editBtnBg: s.sessEdit ? '#CCFF00' : '#24242B', editBtnColor: s.sessEdit ? '#0A0A0C' : '#FFFFFF', editBtnBorder: 'none',
+      toggleSessEdit: () => { if (s.sessEdit) this.flash(L('Session updated')); this.setState({ sessEdit: !s.sessEdit, editBuf: {}, delSessArm: false }); },
+      editBtnLabel: s.sessEdit ? L('Done') : L('Edit'), editBtnBg: s.sessEdit ? '#CCFF00' : '#24242B', editBtnColor: s.sessEdit ? '#0A0A0C' : '#FFFFFF', editBtnBorder: 'none',
       sessBack: go({ screen: 'tabs', tab: 'progress', openSess: null, sessEdit: false, editBuf: {} }),
-      deleteSess: () => sd && this.deleteSession(sd.date), delSessLabel: s.delSessArm ? 'Tap again' : 'Delete', delSessColor: s.delSessArm ? '#FFFFFF' : '#9C9CA8',
+      deleteSess: () => sd && this.deleteSession(sd.date), delSessLabel: s.delSessArm ? L('Tap again') : L('Delete'), delSessColor: s.delSessArm ? '#FFFFFF' : '#9C9CA8',
       isWorkout: s.screen === 'workout' && !!w, isLibrary: s.screen === 'library', isRoutine: s.screen === 'routine' && !!er, isSummary: s.screen === 'summary' && !!sm,
       showTabs, showResume: showTabs && !!w, tabBottom: showTabs && w ? 'calc(132px + env(safe-area-inset-bottom))' : 'calc(60px + env(safe-area-inset-bottom))',
-      tabs: [['today','Today'],['programs','Programs'],['progress','Progress'],['profile','Profile']].map(([k, label]) => ({ label, color: s.tab === k ? '#FFFFFF' : '#9C9CA8', bar: s.tab === k ? '#CCFF00' : 'transparent', onClick: go({ tab: k }) })),
-      dateLabel: d0.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }),
-      nextName: w ? w.name : next ? next.name : 'No routines', nextEx: w ? 'In progress · ' + clock(now - w.start) : next ? next.ex.map(e => e.name).join(' · ') : 'Create one in Programs.',
-      nextAgo: next ? ago(lastOf(next)) : '—', startLabel: w ? 'Resume workout' : 'Start workout',
+      tabs: [['today',L('Today')],['programs',L('Programs')],['progress',L('Progress')],['profile',L('Profile')]].map(([k, label]) => ({ label, color: s.tab === k ? '#FFFFFF' : '#9C9CA8', bar: s.tab === k ? '#CCFF00' : 'transparent', onClick: go({ tab: k }) })),
+      dateLabel: d0.toLocaleDateString(LOC(), { weekday: 'long', month: 'short', day: 'numeric' }),
+      nextName: w ? w.name : next ? next.name : L('No routines'), nextEx: w ? L('In progress · ') + clock(now - w.start) : next ? next.ex.map(e => e.name).join(' · ') : L('Create one in Programs.'),
+      nextAgo: next ? ago(lastOf(next)) : '—', startLabel: w ? L('Resume workout') : L('Start workout'),
       startNext: () => next || w ? this.start(next && next.id) : this.setState({ tab: 'programs' }),
       startEmpty: () => this.start(null), week,
-      otherRoutines: routines.filter(r => r !== next).map(r => ({ name: r.name, meta: r.ex.length + ' exercises · ' + ago(lastOf(r)), onStart: () => this.start(r.id) })),
-      routineCards: routines.map(r => ({ name: r.name, exText: r.ex.length ? r.ex.map(e => e.name + ' ' + e.sets + '×' + e.reps).join(' · ') : 'No exercises yet', nextOpacity: r === next ? 1 : 0, onEdit: go({ editId: r.id, screen: 'routine', deleteArm: false }), onStart: () => this.start(r.id) })),
+      otherRoutines: routines.filter(r => r !== next).map(r => ({ name: r.name, meta: r.ex.length + L(' exercises · ') + ago(lastOf(r)), onStart: () => this.start(r.id) })),
+      routineCards: routines.map(r => ({ name: r.name, exText: r.ex.length ? r.ex.map(e => e.name + ' ' + e.sets + '×' + e.reps).join(' · ') : L('No exercises yet'), nextOpacity: r === next ? 1 : 0, onEdit: go({ editId: r.id, screen: 'routine', deleteArm: false }), onStart: () => this.start(r.id) })),
       newRoutine: () => this.newRoutine(),
       progQuery: s.progQuery || '', onProgQuery: (e) => this.setState({ progQuery: e.target.value, progSel: null }), clearProgQuery: go({ progQuery: '', progSel: null }), hasProgQuery: !!pq,
       noLift: !progEx, hasLift: !!progEx,
-      routineFilters: [{ id: null, name: 'All' }, ...routines.filter(r => r.ex.some(e => histAll.includes(e.name)))].map(r => { const on = (s.progRoutine || null) === r.id || (!fR && r.id === null); return { name: r.name, bg: on ? '#24242B' : 'transparent', color: on ? '#FFFFFF' : '#9C9CA8', border: on ? '#55555F' : '#24242B', onClick: go({ progRoutine: r.id, progSel: null }) }; }),
+      routineFilters: [{ id: null, name: L('All') }, ...routines.filter(r => r.ex.some(e => histAll.includes(e.name)))].map(r => { const on = (s.progRoutine || null) === r.id || (!fR && r.id === null); return { name: r.name, bg: on ? '#24242B' : 'transparent', color: on ? '#FFFFFF' : '#9C9CA8', border: on ? '#55555F' : '#24242B', onClick: go({ progRoutine: r.id, progSel: null }) }; }),
       progEx, progChips: histNames.map(n => ({ name: n, bg: n === progEx ? '#FFFFFF' : 'transparent', color: n === progEx ? '#0A0A0C' : '#FFFFFF', border: n === progEx ? '#FFFFFF' : '#33333C', onClick: go({ progEx: n, progSel: null }) })),
-      metrics: [['e1rm','Est. 1RM'],['vol','Volume'],['top','Top set']].map(([k, label]) => ({ label, bg: s.metric === k ? '#24242B' : 'transparent', color: s.metric === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ metric: k, progSel: null }) })),
-      metricHelp: s.metric === 'e1rm' ? 'Estimated max for 1 rep, from your best set: weight × (1 + reps ÷ 30). Best overall strength gauge.' : s.metric === 'vol' ? 'Total weight × reps over all work sets of the session. Tracks workload — the main driver of muscle growth.' : 'Heaviest weight lifted in the session, regardless of reps.',
+      metrics: [['e1rm',L('Est. 1RM')],['vol','Volume'],['top',L('Top set')]].map(([k, label]) => ({ label, bg: s.metric === k ? '#24242B' : 'transparent', color: s.metric === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ metric: k, progSel: null }) })),
+      metricHelp: s.metric === 'e1rm' ? L('Estimated max for 1 rep, from your best set: weight × (1 + reps ÷ 30). Best overall strength gauge.') : s.metric === 'vol' ? L('Total weight × reps over all work sets of the session. Tracks workload — the main driver of muscle growth.') : L('Heaviest weight lifted in the session, regardless of reps.'),
       ranges: RANGES.map(([k, label]) => ({ label, bg: rg[0] === k ? '#24242B' : 'transparent', color: rg[0] === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ progRange: k, progSel: null }) })),
-      metricLabel: (s.metric === 'e1rm' ? 'Estimated 1RM' : s.metric === 'vol' ? 'Session volume' : 'Heaviest set') + (sel != null ? ' · ' + fmtD(sess[sel].date) : ''),
+      metricLabel: (s.metric === 'e1rm' ? L('Estimated 1RM') : s.metric === 'vol' ? L('Session volume') : L('Heaviest set')) + (sel != null ? ' · ' + fmtD(sess[sel].date) : ''),
       curVal: sel != null ? toU(series[sel]) : series.length ? toU(series[series.length - 1]) : '—', curUnit: s.unit,
-      delta: sel == null && series.length > 1 ? (delta >= 0 ? '+' : '−') + toU(Math.abs(delta)) + ' · ' + series.length + ' sessions' : '',
+      delta: sel == null && series.length > 1 ? (delta >= 0 ? '+' : '−') + toU(Math.abs(delta)) + ' · ' + series.length + L(' sessions') : '',
       hasSel: sel != null, selSets: sel != null ? sess[sel].ws.map(setTxt).join('   ') : '', selLeft: sel != null ? (pts[sel].x / 324 * 100) + '%' : '0%',
       chartEmpty: !series.length, chartHas: !!series.length,
       chartPts: series.length ? pl(series) : '', trendPts: series.length > 2 ? pl(trend) : '',
       areaPts: series.length ? X(0).toFixed(1) + ',152 ' + pl(series) + ' ' + X(series.length - 1).toFixed(1) + ',152' : '',
       chartDots, chartAxis,
       chartFrom: sess.length ? fmtD(sess[0].date) : '', chartTo: sess.length ? fmtD(sess[sess.length - 1].date) : '',
-      stallOn: ls.stalled, stallTitle: 'No PR on ' + progEx + ' for ' + ls.wks + ' weeks',
-      stallText: ls.since + ' sessions since your last best. Try a deload week (−10%), a different rep range, or a close variation.',
+      stallOn: ls.stalled, stallTitle: L('No PR on ') + progEx + L(' for ') + ls.wks + L(' weeks'),
+      stallText: ls.since + L(' sessions since your last best. Try a deload week (−10%), a different rep range, or a close variation.'),
       repRecs,
-      records: [{ label: '4-week trend (e1RM)', value: pctTxt(ls.pct) }, { label: 'Best e1RM', value: this.dispW(bestE) + ' ' + s.unit }, { label: 'Best set', value: bestSet + ' ' + s.unit }, { label: 'Heaviest weight', value: this.dispW(bestW) + ' ' + s.unit }, { label: 'Best session volume', value: volU(bestV) + ' ' + s.unit }],
+      records: [{ label: L('4-week trend (e1RM)'), value: pctTxt(ls.pct) }, { label: L('Best e1RM'), value: this.dispW(bestE) + ' ' + s.unit }, { label: L('Best set'), value: bestSet + ' ' + s.unit }, { label: L('Heaviest weight'), value: this.dispW(bestW) + ' ' + s.unit }, { label: L('Best session volume'), value: volU(bestV) + ' ' + s.unit }],
       histList,
-      storageLine: sessCount + ' sessions stored offline.',
+      storageLine: sessCount + L(' sessions stored offline.'),
       kgBg: kg ? '#24242B' : 'transparent', kgColor: kg ? '#fff' : '#9C9CA8', lbBg: kg ? 'transparent' : '#24242B', lbColor: kg ? '#9C9CA8' : '#fff',
       setKg: go({ unit: 'kg' }), setLb: go({ unit: 'lb' }),
       restDefaultLabel: clock(s.restDefault * 1000), restDown: go({ restDefault: Math.max(15, s.restDefault - 15) }), restUp: go({ restDefault: Math.min(600, s.restDefault + 15) }),
       toggles: [
-        toggleRow('Auto-start rest', 'Starts when you log a set', s.autoRest, 'autoRest'),
-        toggleRow('Sound at rest end', 'Beeps when rest is over. Muted by the iPhone silent switch.', s.sound, 'sound'),
-        toggleRow('Vibration', 'Android only — iPhone doesn’t allow it in web apps', s.haptics, 'haptics'),
-        toggleRow('Warn on off-day start', 'Only for routines with a weekday in their name (e.g. “Mardi – …”). Asks before starting one on another day.', s.dayWarn !== false, 'dayWarn'),
-        toggleRow('Keep screen on', 'During a workout, so the timer stays visible', s.wake, 'wake')
+        toggleRow(L('Auto-start rest'), L('Starts when you log a set'), s.autoRest, 'autoRest'),
+        toggleRow(L('Sound at rest end'), L('Beeps when rest is over. Muted by the iPhone silent switch.'), s.sound, 'sound'),
+        toggleRow('Vibration', L('Android only — iPhone doesn’t allow it in web apps'), s.haptics, 'haptics'),
+        toggleRow(L('Warn on off-day start'), L('Only for routines with a weekday in their name (e.g. “Mardi – …”). Asks before starting one on another day.'), s.dayWarn !== false, 'dayWarn'),
+        toggleRow(L('Keep screen on'), L('During a workout, so the timer stays visible'), s.wake, 'wake')
       ],
       exportData: () => this.exportData(), importData: () => this.importData(),
-      clearHistory: () => this.clearHistory(), clearLabel: s.clearArm ? 'Tap again' : 'Clear history', clearBorder: s.clearArm ? '#FFFFFF' : '#33333C', clearColor: s.clearArm ? '#FFFFFF' : '#9C9CA8',
-      eraseAll: () => this.eraseAll(), eraseLabel: s.eraseArm ? 'Tap again' : 'Erase all', eraseBorder: s.eraseArm ? '#FFFFFF' : '#33333C', eraseColor: s.eraseArm ? '#FFFFFF' : '#9C9CA8',
+      clearHistory: () => this.clearHistory(), clearLabel: s.clearArm ? L('Tap again') : L('Clear history'), clearBorder: s.clearArm ? '#FFFFFF' : '#33333C', clearColor: s.clearArm ? '#FFFFFF' : '#9C9CA8',
+      eraseAll: () => this.eraseAll(), eraseLabel: s.eraseArm ? L('Tap again') : L('Erase all'), eraseBorder: s.eraseArm ? '#FFFFFF' : '#33333C', eraseColor: s.eraseArm ? '#FFFFFF' : '#9C9CA8',
       resume: go({ screen: 'workout' }),
-      wName: w ? w.name : '', elapsed: w ? clock(now - w.start) : '', setsDoneLabel: doneCount + '/' + total + ' sets',
+      wName: w ? w.name : '', elapsed: w ? clock(now - w.start) : '', setsDoneLabel: doneCount + '/' + total + L(' sets'),
       minimize: go({ screen: 'tabs', tab: 'today' }), finish: () => this.finish(),
       wEx, unitUpper: s.unit.toUpperCase(), wStep: kg ? '2.5' : '5',
       openLibW: go({ screen: 'library', libCtx: 'workout', libQuery: '', libGroup: 'All' }),
-      discard: () => this.discard(), discardLabel: s.discardArm ? 'Tap again to discard' : 'Discard workout',
+      discard: () => this.discard(), discardLabel: s.discardArm ? L('Tap again to discard') : L('Discard workout'),
       restOn, restOff: !restOn,
       restPct: s.restAlert ? '100%' : Math.min(100, Math.max(0, 100 - remain / (s.restTotal * 10))) + '%',
       restBg: s.restAlert ? '#CCFF00' : '#16161A', restColor: s.restAlert ? '#0A0A0C' : '#FFFFFF', restSub: s.restAlert ? '#0A0A0C' : '#9C9CA8',
-      restLabel: s.restAlert ? 'Rest over — lift' : 'Rest', restClock: s.restAlert ? '0:00' : clock(remain),
+      restLabel: s.restAlert ? L('Rest over — lift') : L('Rest'), restClock: s.restAlert ? '0:00' : clock(remain),
       restMinus: () => this.restAdj(-15), restPlus: () => this.restAdj(15), restSkip: () => this.restSkip(),
-      libBack: go({ screen: s.libCtx === 'workout' ? 'workout' : 'routine' }), libCtxLabel: s.libCtx === 'workout' ? 'to ' + (w ? w.name : 'workout') : 'to ' + (er ? er.name : 'routine'),
+      libBack: go({ screen: s.libCtx === 'workout' ? 'workout' : 'routine' }), libCtxLabel: s.libCtx === 'workout' ? L('to ') + (w ? w.name : 'workout') : L('to ') + (er ? er.name : 'routine'),
       libQuery: s.libQuery, onLibQuery: (e) => this.setState({ libQuery: e.target.value }),
-      groups: GROUPS.map(g => ({ name: g, bg: s.libGroup === g ? '#FFFFFF' : 'transparent', color: s.libGroup === g ? '#0A0A0C' : '#FFFFFF', border: s.libGroup === g ? '#FFFFFF' : '#33333C', onClick: go({ libGroup: g }) })),
-      libList, canCreate, createGroup: s.libGroup === 'All' ? 'Custom' : s.libGroup, createCustom: () => this.createCustom(),
+      groups: GROUPS.map(g => ({ name: L(g), bg: s.libGroup === g ? '#FFFFFF' : 'transparent', color: s.libGroup === g ? '#0A0A0C' : '#FFFFFF', border: s.libGroup === g ? '#FFFFFF' : '#33333C', onClick: go({ libGroup: g }) })),
+      libList, canCreate, createGroup: L(s.libGroup === 'All' ? 'Custom' : s.libGroup), createCustom: () => this.createCustom(),
       rName: er ? er.name : '', onRName: (e) => { const v = e.target.value; this.updR(c => { c.name = v; }); },
       rEx, rEmpty: !!er && !er.ex.length, routineBack: go({ screen: 'tabs', tab: 'programs' }),
-      deleteRoutine: () => this.deleteRoutine(), deleteLabel: s.deleteArm ? 'Tap again' : 'Delete',
+      deleteRoutine: () => this.deleteRoutine(), deleteLabel: s.deleteArm ? L('Tap again') : L('Delete'),
       openLibR: go({ screen: 'library', libCtx: 'routine', libQuery: '', libGroup: 'All' }),
       startEdited: () => { if (!er || !er.ex.length) return; if (s.workout) { this.setState({ screen: 'workout' }); return; } this.start(er.id); },
       sumName: sm ? sm.name : '',
       sumStats: sm ? [
-        { label: 'Time', value: clock(sm.dur), color: '#FFFFFF' },
-        { label: 'Sets', value: String(sm.sets), color: '#FFFFFF' },
-        { label: 'Volume ' + s.unit, value: volU(sm.vol), color: '#FFFFFF' },
-        { label: 'vs last time', value: sm.hasPrev ? (dv >= 0 ? '+' : '−') + volU(Math.abs(dv)) : '—', color: sm.hasPrev && dv > 0 ? '#CCFF00' : '#FFFFFF' }
+        { label: L('Time'), value: clock(sm.dur), color: '#FFFFFF' },
+        { label: L('Sets'), value: String(sm.sets), color: '#FFFFFF' },
+        { label: L('Volume ') + s.unit, value: volU(sm.vol), color: '#FFFFFF' },
+        { label: L('vs last time'), value: sm.hasPrev ? (dv >= 0 ? '+' : '−') + volU(Math.abs(dv)) : '—', color: sm.hasPrev && dv > 0 ? '#CCFF00' : '#FFFFFF' }
       ] : [],
-      sumPrTitle: sm && sm.prs.length ? sm.prs.length + ' personal record' + (sm.prs.length > 1 ? 's' : '') : 'No PRs this time — consistency counts',
+      sumPrTitle: sm && sm.prs.length ? sm.prs.length + (LANG === 'fr' ? ' record' + (sm.prs.length > 1 ? 's personnels' : ' personnel') : ' personal record' + (sm.prs.length > 1 ? 's' : '')) : L('No PRs this time — consistency counts'),
       sumPrs: sm ? sm.prs.map(p => ({ name: p.name, text: this.dispW(p.w) + ' ' + s.unit + ' × ' + p.r + ' · e1RM ' + this.dispW(p.e) })) : [],
-      sumEx: sm ? (sm.ex || []).map(x => { const ws = work(x.sets); const b = ws.reduce((a, y) => (!a || e1(y.w, y.r) > e1(a.w, a.r)) ? y : a, null); const wu = x.sets.length - ws.length; return { name: x.name, text: ws.length + ' × ' + (b ? 'best ' + this.dispW(b.w) + '×' + b.r : '—') + (wu ? ' · ' + wu + ' W' : '') }; }) : [],
+      sumEx: sm ? (sm.ex || []).map(x => { const ws = work(x.sets); const b = ws.reduce((a, y) => (!a || e1(y.w, y.r) > e1(a.w, a.r)) ? y : a, null); const wu = x.sets.length - ws.length; return { name: x.name, text: ws.length + ' × ' + (b ? L('best ') + this.dispW(b.w) + '×' + b.r : '—') + (wu ? ' · ' + wu + ' W' : '') }; }) : [],
       closeSummary: go({ screen: 'tabs', tab: 'today', summary: null })
     };
   }

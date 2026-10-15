@@ -1,0 +1,23 @@
+# Barlog — Changelog
+
+Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
+- CORRECTIF : petite correction de bug
+- MINEUR : nouvelle fonctionnalité
+- MAJEUR : 1.0 = première version publique sur l'App Store
+
+## 0.4.0 — 2026-10-15
+- Application bilingue français / anglais (Profil → Langue). Détection automatique selon la langue du téléphone.
+- Rappel de sauvegarde après 14 jours + export vers Fichiers / iCloud Drive.
+- Correctif : sauvegarde automatique des données plus fiable.
+
+## 0.3.0 — 2026-10-15
+- Progress → Lifts : recherche, filtre par séance, période (4 sem / 3 mois / tout), axe, tendance lissée, détails au toucher, records par reps, alerte de stagnation.
+- Nouvel onglet Stats : régularité, séries par muscle, tendance par exercice.
+- Séance proposée selon le jour de la semaine + alerte si lancée un autre jour.
+- Mises à jour automatiques sans réinstaller l'app.
+
+## 0.2.0
+- Modification des séances passées, calendrier, résumé de séance, échauffements, propositions de charge.
+
+## 0.1.0
+- Première version : enregistrement rapide, routines, minuteur de repos, historique hors ligne.
