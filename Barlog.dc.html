@@ -626,9 +626,9 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-for>
 <span style="font-size:13px;line-height:18px;color:#9C9CA8;padding:0 4px;text-wrap:pretty;">{{ tx.k56 }}</span>
-<button onClick="{{ openLibW }}" style="min-height:56px;border-radius:16px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:15px;font-weight:600;">{{ tx.k57 }}</button>
-<textarea value="{{ wNote }}" onChange="{{ onWNote }}" placeholder="{{ tx.nSessNote }}" rows="2" style="width:100%;border-radius:14px;border:1px solid #24242B;background:#16161A;color:#fff;font-size:16px;line-height:22px;padding:12px 14px;font-family:inherit;resize:none;"></textarea>
-<button onClick="{{ discard }}" style="min-height:48px;border:none;background:transparent;color:#9C9CA8;font-size:14px;font-weight:600;">{{ discardLabel }}</button>
+<button onClick="{{ openLibW }}" style="flex:none;min-height:56px;border-radius:16px;border:1px dashed #33333C;background:transparent;color:#fff;font-size:15px;font-weight:600;">{{ tx.k57 }}</button>
+<textarea value="{{ wNote }}" onChange="{{ onWNote }}" placeholder="{{ tx.nSessNote }}" rows="2" style="flex:none;box-sizing:border-box;height:72px;min-height:72px;display:block;width:100%;border-radius:14px;border:1px solid #24242B;background:#16161A;color:#fff;font-size:16px;line-height:22px;padding:12px 14px;font-family:inherit;resize:none;"></textarea>
+<button onClick="{{ discard }}" style="flex:none;min-height:48px;border:none;background:transparent;color:#9C9CA8;font-size:14px;font-weight:600;">{{ discardLabel }}</button>
 </div>
 <sc-if value="{{ restOn }}" hint-placeholder-val="{{ false }}">
 <div style="margin:0 10px calc(10px + env(safe-area-inset-bottom));border-radius:18px;border:1px solid #33333C;background:{{ restBg }};position:relative;overflow:hidden;">
@@ -896,7 +896,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.7.1';
+const APP_VERSION = '0.7.2';
 let ACC = '#CCFF00';
 const ACCENTS = [['#CCFF00', 'Lime'], ['#FF7A1A', 'Orange'], ['#FF4D8D', 'Pink'], ['#A78BFA', 'Violet'], ['#22D3EE', 'Cyan'], ['#FFC83D', 'Gold']];
 const hexRgb = h => { h = h.replace('#', ''); return [0, 2, 4].map(i => parseInt(h.substr(i, 2), 16)); };

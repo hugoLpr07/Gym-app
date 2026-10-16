@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.7.2 — 2026-10-16
+- Séance : la note de séance n'est plus écrasée/chevauchée par « Abandonner la séance » et reste accessible.
+
 ## 0.7.1 — 2026-10-15
 - Barre d'onglets du bas : les 4 onglets sont maintenant espacés à distance égale.
 
