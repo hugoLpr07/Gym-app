@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.9.3 — 2026-10-17
+- Historique : touche un muscle (sur le corps ou dans les puces) pour le surligner et voir quels exercices de la séance l’ont travaillé, avec le nombre de séries.
+
 ## 0.9.2 — 2026-10-17
 - Historique : chaque séance terminée affiche maintenant la carte du corps avec les muscles travaillés et les séries par muscle.
 
