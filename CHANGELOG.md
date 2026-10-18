@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.13.4 — 2026-10-18
+- Apple Health : supprimer une séance dans Barlog la supprime aussi de Santé (entraînement, calories et distance).
+
 ## 0.13.3 — 2026-10-18
 - Apple Health : correction, le plugin Santé est maintenant trouvé dans l’app iPhone.
 

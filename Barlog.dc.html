@@ -1067,7 +1067,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.13.3';
+const APP_VERSION = '0.13.4';
 const PRO_TPL = ['st', 'ul'];
 let ACC = '#CCFF00';
 const ACCENTS = [['#CCFF00', 'Lime'], ['#FF7A1A', 'Orange'], ['#FF4D8D', 'Pink'], ['#A78BFA', 'Violet'], ['#22D3EE', 'Cyan'], ['#FFC83D', 'Gold']];
@@ -1598,6 +1598,7 @@ class Component extends DCLogic {
   deleteSession(date) {
     this.arm('delSessArm', () => {
       const s = this.state; const h = {};
+      if (s.healthOn && this.hk()) { try { this.hk().deleteWorkout({ start: date }).catch(() => {}); } catch (e) {} }
       Object.entries(s.history).forEach(([k, a]) => { const f = a.filter(x => x.date !== date); if (f.length) h[k] = f; });
       const m = { ...(s.sessMeta || {}) }; delete m[date];
       this.setState({ history: h, sessMeta: m, screen: 'tabs', tab: 'progress', openSess: null }); this.flash(L('Session deleted'));
