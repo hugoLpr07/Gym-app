@@ -1067,7 +1067,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.13.1';
+const APP_VERSION = '0.13.2';
 const PRO_TPL = ['st', 'ul'];
 let ACC = '#CCFF00';
 const ACCENTS = [['#CCFF00', 'Lime'], ['#FF7A1A', 'Orange'], ['#FF4D8D', 'Pink'], ['#A78BFA', 'Violet'], ['#22D3EE', 'Cyan'], ['#FFC83D', 'Gold']];
@@ -1664,9 +1664,14 @@ class Component extends DCLogic {
   hk() { if (!this.nat()) return null; if (!this._hk) { try { this._hk = window.Capacitor.registerPlugin('BarlogHealth'); } catch (e) {} } return this._hk || null; }
   toggleHealth() {
     const fr = LANG === 'fr'; if (this.state.healthOn) { this.setState({ healthOn: false }); return; }
-    const H = this.hk(); if (!H) return;
-    H.request().then(r => { if (r && r.ok) { this.setState({ healthOn: true }); this.flash(fr ? 'Apple Health connecté' : 'Apple Health connected'); } else this.flash('Apple Health : ' + ((r && r.why) || (fr ? 'refusé' : 'denied'))); })
-      .catch(e => this.flash('Apple Health : ' + ((e && e.message) || 'plugin introuvable')));
+    const H = this.hk(); if (!H) { this.flash(fr ? 'Apple Health : disponible seulement dans l’app iPhone' : 'Apple Health: iPhone app only'); return; }
+    this.flash(fr ? 'Connexion à Santé…' : 'Connecting to Health…');
+    const fail = e => { const m = (e && (e.message || e.code)) || String(e); try { console.log('BARLOG health error: ' + m); } catch (x) {} this.flash('Apple Health : ' + m); };
+    let to = setTimeout(() => this.flash(fr ? 'Apple Health : pas de réponse de l’iPhone' : 'Apple Health: no response'), 8000);
+    try {
+      Promise.resolve(H.request()).then(r => { clearTimeout(to); if (r && r.ok) { this.setState({ healthOn: true }); this.flash(fr ? 'Apple Health connecté' : 'Apple Health connected'); } else this.flash('Apple Health : ' + ((r && r.why) || (fr ? 'refusé' : 'denied'))); })
+        .catch(e => { clearTimeout(to); fail(e); });
+    } catch (e) { clearTimeout(to); fail(e); }
   }
   pushHealth(start, dur, exs) {
     const H = this.hk(); const s = this.state; if (!H || !s.healthOn || !exs.length) return;

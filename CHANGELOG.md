@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.13.2 — 2026-10-18
+- Apple Health : messages clairs à chaque étape de la connexion (diagnostic quand rien ne se passe).
+
 ## 0.13.1 — 2026-10-18
 - Exercices chronométrés (planche, GHD hold…) : le compte à rebours du maintien s’affiche aussi sur l’écran verrouillé, avec le côté (gauche / droite) pour les exercices par côté.
 
