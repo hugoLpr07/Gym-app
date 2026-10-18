@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.17.0 — 2026-10-18
+- Pro : nouvelle couleur d’accent Rouge (7 couleurs au choix).
+
 ## 0.16.0 — 2026-10-18
 - Progrès → Corps : graphique refait. Axe Y gradué avec les valeurs et lignes de repère, axe X avec 4 dates, points placés selon la vraie date.
 - Un seul graphique, choix de la donnée à afficher : poids, masse grasse, masse maigre, IMC, tour de taille, hanches, poitrine, bras, cuisse (seulement celles qui ont des mesures).
