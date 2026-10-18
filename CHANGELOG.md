@@ -5,6 +5,11 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.18.0 — 2026-10-18
+- Version Android : le bouton / geste retour ferme la fenêtre ouverte ou revient à l’écran précédent (sans jamais abandonner la séance en cours), puis met l’app en arrière-plan.
+- Android : Apple Health et ses mentions sont masqués.
+- Android : minuteur de repos sur l’écran verrouillé, via une notification avec chrono.
+
 ## 0.17.0 — 2026-10-18
 - Pro : nouvelle couleur d’accent Rouge (7 couleurs au choix).
 

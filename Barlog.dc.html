@@ -1090,7 +1090,8 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.17.0';
+const APP_VERSION = '0.18.0';
+const plat = () => { try { const C = window.Capacitor; return (C && C.getPlatform && C.getPlatform()) || 'web'; } catch (e) { return 'web'; } };
 const PRO_TPL = ['st', 'ul'];
 let ACC = '#CCFF00';
 const ACCENTS = [['#CCFF00', 'Lime'], ['#FF7A1A', 'Orange'], ['#FF4D8D', 'Pink'], ['#A78BFA', 'Violet'], ['#22D3EE', 'Cyan'], ['#FFC83D', 'Gold'], ['#FF3B3B', 'Red']];
@@ -1289,6 +1290,7 @@ class Component extends DCLogic {
     window.addEventListener('pagehide', this.onVis);
     try { if ('serviceWorker' in navigator && location.protocol === 'https:' && window.self === window.top) navigator.serviceWorker.register('./sw.js').catch(() => {}); } catch (e) {}
     try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch (e) {}
+    try { const A = this.nat() && this.nat().App; if (A && plat() === 'android' && !this._backL) { this._backL = true; A.addListener('backButton', () => this.goBack()); } } catch (e) {}
   }
   componentWillUnmount() { clearInterval(this.iv); clearTimeout(this.ra); clearTimeout(this.tt); document.removeEventListener('visibilitychange', this.onVis); window.removeEventListener('pagehide', this.onVis); if (this.wl) this.wl.release(); }
   componentDidUpdate(_, prevState) {
@@ -1637,6 +1639,29 @@ class Component extends DCLogic {
     this.buzz([30, 40, 60]); this.flash(LANG === 'fr' ? 'Barlog Pro activé (mode test)' : 'Barlog Pro unlocked (test mode)');
     if (then) setTimeout(then, 60);
   }
+  goBack() {
+    const s = this.state; const set = p => { this.setState(p); return true; };
+    if (s.pw) { this._pwThen = null; return set({ pw: null }); }
+    if (s.onboarded === false) { const st = (s.ob && s.ob.step) || 0; if (st > 0) return set({ ob: { ...(s.ob || { step: 0 }), step: st - 1 } }); return this.minimizeApp(); }
+    if (s.prFx) { clearTimeout(this.prT); return set({ prFx: null }); }
+    if (s.confirmStart) return set({ confirmStart: null });
+    if ((s.screen === 'workout' && s.workout && s.exSheet != null) || (s.screen === 'routine' && s.rSheet != null)) return set({ exSheet: null, rSheet: null });
+    if (s.bmBig) return set({ bmBig: false });
+    const arms = ['discardArm', 'deleteArm', 'clearArm', 'eraseArm', 'delSessArm', 'proArm', 'bodyDelArm', 'mediaDelArm'].filter(k => s[k]);
+    if (arms.length) return set(Object.fromEntries(arms.map(k => [k, k === 'bodyDelArm' || k === 'mediaDelArm' ? null : false])));
+    const sc = s.screen;
+    if (sc === 'exinfo') return set({ screen: s.infoFrom || 'tabs' });
+    if (sc === 'session') { if (s.sessEdit) { this.flash(L('Session updated')); return set({ sessEdit: false, editBuf: {}, delSessArm: false }); } if (s.sdSel && s.sdSel.d === s.openSess) return set({ sdSel: null }); return set({ screen: 'tabs', tab: 'progress', openSess: null, sessEdit: false, editBuf: {} }); }
+    if (sc === 'library') return set(s.libCtx === 'browse' ? { screen: 'tabs', tab: 'programs' } : { screen: s.libCtx === 'workout' ? 'workout' : 'routine' });
+    if (sc === 'routine' || sc === 'templates') return set({ screen: 'tabs', tab: 'programs' });
+    if (sc === 'summary') return set({ screen: 'tabs', tab: 'today', summary: null });
+    if (sc === 'workout') return set({ screen: 'tabs', tab: 'today' });
+    if (sc !== 'tabs') return set({ screen: 'tabs' });
+    if (s.tab === 'progress') { const pv = s.progView || 'sessions'; if (pv === 'stats' && this.isPro() && s.bmSel) return set({ bmSel: null }); if (pv === 'lifts' && s.progSel != null) return set({ progSel: null }); if (pv !== 'sessions') return set({ progView: 'sessions' }); }
+    if (s.tab !== 'today') return set({ tab: 'today' });
+    return this.minimizeApp();
+  }
+  minimizeApp() { try { const A = this.nat() && this.nat().App; if (A && A.minimizeApp) A.minimizeApp(); } catch (e) {} return false; }
   nat() { try { const C = window.Capacitor; return C && C.isNativePlatform && C.isNativePlatform() ? (C.Plugins || {}) : null; } catch (e) { return null; } }
   swMsg(m) { try { navigator.serviceWorker && navigator.serviceWorker.controller && navigator.serviceWorker.controller.postMessage(m); } catch (e) {} }
   askNotif() {
@@ -1658,7 +1683,7 @@ class Component extends DCLogic {
     if (LN) { LN.cancel({ notifications: [{ id: 1001 }] }).catch(() => {}).then(() => { if (at) LN.schedule({ notifications: [{ id: 1001, title, body, schedule: { at: new Date(at), allowWhileIdle: true } }] }).catch(() => {}); }); return; }
     this.swMsg(at && document.visibilityState === 'hidden' ? { type: 'rest', at, title, body } : { type: 'rest-cancel' });
   }
-  liveAct() { if (!this.nat()) return null; if (!this._la) { try { const C = window.Capacitor; this._la = (C.Plugins || {}).RestActivity || (C.registerPlugin ? C.registerPlugin('RestActivity') : null); } catch (e) {} } return this._la || null; }
+  liveAct() { if (!this.nat()) return null; if (!this._la) { try { const C = window.Capacitor; this._la = (C.Plugins || {}).RestActivity || (plat() === 'ios' && C.registerPlugin ? C.registerPlugin('RestActivity') : null); } catch (e) {} } return this._la || null; }
   syncLive() {
     const LA = this.liveAct(); if (!LA) return; const s = this.state; const fr = LANG === 'fr'; const w = s.workout; const now = Date.now();
     let run = null; if (w) w.ex.forEach(ex => ex.sets.forEach(x => { if (x.run && !run) run = { ex, x }; }));
@@ -1671,7 +1696,7 @@ class Component extends DCLogic {
       p = { mode: 'down', start: s.restEnd - s.restTotal * 1000, end: s.restEnd, title: fr ? 'Repos' : 'Rest', done: fr ? 'Repos terminé · à toi' : 'Rest over · lift', next: f ? f.name + (fr ? ' · série ' : ' · set ') + (s.focus.si + 1) : '' }; }
     const key = p ? p.mode + p.start + '|' + p.end : null; if (this._laKey === key) return; this._laKey = key;
     if (!p) { try { LA.stop().catch(() => {}); } catch (e) {} return; }
-    const warn = m => { if (!this._laWarned) { this._laWarned = true; this.flash('Live Activity : ' + m); } };
+    const warn = m => { if (!this._laWarned) { this._laWarned = true; this.flash((plat() === 'ios' ? 'Live Activity : ' : (LANG === 'fr' ? 'Minuteur : ' : 'Timer: ')) + m); } };
     try { LA.start(p).then(r => { if (r && r.ok === false) warn(r.why || 'indisponible'); }).catch(e => warn((e && e.message) || 'plugin introuvable')); } catch (e) { warn(e.message); }
   }
   cardioRun(ei, si) {
@@ -1686,7 +1711,7 @@ class Component extends DCLogic {
     return { hasEff: active && !x.warm, hasEffTag: !active && cur != null, effTag: (mode === 'rpe' ? 'RPE ' : 'RIR ') + (cur === 5 && mode === 'rir' ? '5+' : cur), effName: mode.toUpperCase(),
       effOpts: vals.map(v => { const on = cur === v; return { label: mode === 'rir' && v === 5 ? '5+' : String(v), bg: on ? ACC : 'transparent', color: on ? '#0A0A0C' : '#FFFFFF', border: on ? ACC : '#33333C', onClick: (e) => { e.stopPropagation(); this.updW(w => { const y = w.ex[ei].sets[si]; y[mode] = y[mode] === v ? null : v; }); } }; }) };
   }
-  hk() { if (!this.nat()) return null; if (!this._hk) { try { const C = window.Capacitor; this._hk = (C.Plugins || {}).BarlogHealth || (C.registerPlugin ? C.registerPlugin('BarlogHealth') : null); } catch (e) {} } return this._hk || null; }
+  hk() { if (!this.nat() || plat() !== 'ios') return null; if (!this._hk) { try { const C = window.Capacitor; this._hk = (C.Plugins || {}).BarlogHealth || (C.registerPlugin ? C.registerPlugin('BarlogHealth') : null); } catch (e) {} } return this._hk || null; }
   toggleHealth() {
     const fr = LANG === 'fr'; if (this.state.healthOn) { this.setState({ healthOn: false }); return; }
     const H = this.hk(); if (!H) { this.flash(fr ? 'Apple Health : disponible seulement dans l’app iPhone' : 'Apple Health: iPhone app only'); return; }
@@ -1786,7 +1811,7 @@ class Component extends DCLogic {
           h('span', { style: { fontFamily: M, fontSize: 13, fontWeight: 600, opacity: 0.75 } }, 'e1RM ' + this.dispW(p.e) + (p.prev > 0 ? '  ·  +' + this.dispW(p.e - p.prev) + ' ' + this.state.unit : '')))));
   }
   extraVals(s) {
-    const fr = LANG === 'fr'; const P = this.nat(); const native = !!(P && P.LocalNotifications);
+    const fr = LANG === 'fr'; const P = this.nat(); const native = !!(P && P.LocalNotifications); const ios = !!P && plat() === 'ios';
     const tgl = (label, sub, on, fn) => ({ label, sub, track: on ? ACC : '#24242B', knob: on ? '#0A0A0C' : '#9C9CA8', justify: on ? 'flex-end' : 'flex-start', onClick: fn });
     const rm = { on: false, days: [1, 3, 5], t: '18:00', ...(s.remind || {}) }; const setRm = p => this.setState(st => ({ remind: { ...rm, ...(st.remind || {}), ...p } }));
     const DL = fr ? ['L', 'M', 'M', 'J', 'V', 'S', 'D'] : ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -1835,7 +1860,7 @@ class Component extends DCLogic {
           ['program', fr ? 'Tous les programmes' : 'Every program', fr ? 'Force 5×5, Haut / Bas, et les prochains' : 'Strength 5×5, Upper / Lower, and more to come', ['program']],
           ['accent', fr ? 'Couleurs d’accent' : 'Accent colors', fr ? '7 thèmes pour l’app' : '7 themes for the app', ['accent']],
           ['health', fr ? 'Composition depuis Santé' : 'Composition from Health', fr ? 'Masse grasse, masse maigre, IMC' : 'Body fat, lean mass, BMI', ['health']],
-          ['soon', fr ? 'Bientôt : widget, sync iCloud' : 'Coming: widget, iCloud sync', fr ? 'Inclus dans ton abonnement dès leur sortie' : 'Included in your plan as they ship', []]];
+          ['soon', fr ? 'Bientôt : widget, sync iCloud' : 'Coming: widget, iCloud sync', fr ? 'Inclus dans ton abonnement dès leur sortie' : 'Included in your plan as they ship', []]].filter(x => x[0] !== 'health' || plat() !== 'android');
         const P = { month: [fr ? 'Mensuel' : 'Monthly', fr ? '2,99 €' : '$2.99', fr ? 'par mois' : 'per month', null], year: [fr ? 'Annuel' : 'Yearly', fr ? '19,99 €' : '$19.99', fr ? '1,67 € / mois' : '$1.67 / month', '−44 %'], life: [fr ? 'À vie' : 'Lifetime', fr ? '49,99 €' : '$49.99', fr ? 'une fois' : 'one time', null] };
         const CTA = { month: fr ? 'S’abonner · 2,99 € / mois' : 'Subscribe · $2.99 / month', year: fr ? 'Essayer 7 jours gratuitement' : 'Try 7 days free', life: fr ? 'Acheter · 49,99 €' : 'Buy · $49.99' };
         const PN = { month: fr ? 'Mensuel' : 'Monthly', year: fr ? 'Annuel' : 'Yearly', life: fr ? 'À vie' : 'Lifetime' };
@@ -1853,12 +1878,12 @@ class Component extends DCLogic {
           proCardClick: () => { if (!pro) return this.need(null); if (!s.proArm) { this.setState({ proArm: true }); clearTimeout(this.proArmT); this.proArmT = setTimeout(() => this.setState({ proArm: false }), 3000); return; } this.setState({ pro: null, proArm: false }); this.flash(fr ? 'Pro désactivé (test)' : 'Pro turned off (test)'); }
         };
       })(),
-      nfTitle: native ? (fr ? 'Notifications et Santé' : 'Notifications & Health') : 'Notifications',
+      nfTitle: native && ios ? (fr ? 'Notifications et Santé' : 'Notifications & Health') : 'Notifications',
       effLabel: fr ? 'Effort par série' : 'Effort per set', effSub: fr ? 'Option avancée : note l’effort de chaque série.' : 'Advanced: rate the effort of each set.',
       effModes: [['off', fr ? 'Non' : 'Off'], ['rpe', 'RPE'], ['rir', 'RIR']].map(([k, label]) => { const on = (s.effort || 'off') === k; return { label, bg: on ? '#24242B' : 'transparent', color: on ? '#FFFFFF' : '#9C9CA8', onClick: () => this.setState({ effort: k === 'off' ? null : k }) }; }),
       nfToggles: [tgl(fr ? 'Fin de repos' : 'Rest finished', fr ? 'Une notification quand le repos est fini, même écran verrouillé.' : 'A notification when rest is over, even with the screen locked.', !!s.restNotif, () => this.toggleRestNotif()),
-        ...(native ? [tgl(fr ? 'Minuteur sur l’écran verrouillé' : 'Lock screen timer', fr ? 'Le repos défile en direct sur l’écran verrouillé (Live Activity).' : 'Rest counts down live on the lock screen (Live Activity).', s.liveRest !== false, () => this.setState({ liveRest: s.liveRest === false }))] : []),
-        ...(native ? [tgl('Apple Health', (fr ? 'Envoie tes séances dans Santé et récupère ton poids.' : 'Sends workouts to Health and pulls in your weight.') + (this.isPro() ? (fr ? ' Pro : masse grasse, masse maigre, IMC.' : ' Pro: body fat, lean mass, BMI.') : (fr ? ' ✦ Pro : masse grasse, IMC…' : ' ✦ Pro: body fat, BMI…')), !!s.healthOn, () => this.toggleHealth())] : []),
+        ...(native ? [tgl(fr ? 'Minuteur sur l’écran verrouillé' : 'Lock screen timer', ios ? (fr ? 'Le repos défile en direct sur l’écran verrouillé (Live Activity).' : 'Rest counts down live on the lock screen (Live Activity).') : (fr ? 'Le repos défile en direct sur l’écran verrouillé et dans les notifications.' : 'Rest counts down live on the lock screen and in your notifications.'), s.liveRest !== false, () => this.setState({ liveRest: s.liveRest === false }))] : []),
+        ...(native && ios ? [tgl('Apple Health', (fr ? 'Envoie tes séances dans Santé et récupère ton poids.' : 'Sends workouts to Health and pulls in your weight.') + (this.isPro() ? (fr ? ' Pro : masse grasse, masse maigre, IMC.' : ' Pro: body fat, lean mass, BMI.') : (fr ? ' ✦ Pro : masse grasse, IMC…' : ' ✦ Pro: body fat, BMI…')), !!s.healthOn, () => this.toggleHealth())] : []),
         tgl(fr ? 'Rappels d’entraînement' : 'Training reminders', fr ? 'Les jours choisis, à l’heure choisie.' : 'On the days and at the time you pick.', !!rm.on, () => this.toggleRemind())],
       rmOn: !!rm.on, rmDays: [1, 2, 3, 4, 5, 6, 0].map((d, i) => { const on = (rm.days || []).includes(d); return { label: DL[i], bg: on ? ACC : 'transparent', color: on ? '#0A0A0C' : '#9C9CA8', border: on ? ACC : '#33333C', onClick: () => setRm({ days: on ? rm.days.filter(x => x !== d) : [...(rm.days || []), d] }) }; }),
       rmTimeLabel: fr ? 'Heure' : 'Time', rmTime: rm.t || '18:00', onRmTime: e => setRm({ t: e.target.value || '18:00' }),
@@ -2271,7 +2296,7 @@ class Component extends DCLogic {
       repRecs,
       records: [{ label: L('4-week trend (e1RM)'), value: pctTxt(ls.pct) }, { label: L('Best e1RM'), value: this.dispW(bestE) + ' ' + s.unit }, { label: L('Best set'), value: bestSet + ' ' + s.unit }, { label: L('Heaviest weight'), value: this.dispW(bestW) + ' ' + s.unit }, { label: L('Best session volume'), value: volU(bestV) + ' ' + s.unit }],
       histList,
-      storageLine: sessCount + L(' sessions stored offline.') + (this.fs() ? (LANG === 'fr' ? ' Stockage natif sécurisé, inclus dans la sauvegarde iCloud de l’iPhone.' : ' Secure native storage, included in your iPhone’s iCloud backup.') : ''),
+      storageLine: sessCount + L(' sessions stored offline.') + (this.fs() ? (plat() === 'ios' ? (LANG === 'fr' ? ' Stockage natif sécurisé, inclus dans la sauvegarde iCloud de l’iPhone.' : ' Secure native storage, included in your iPhone’s iCloud backup.') : (LANG === 'fr' ? ' Stockage natif sécurisé sur le téléphone.' : ' Secure native storage on your phone.')) : ''),
       kgBg: kg ? '#24242B' : 'transparent', kgColor: kg ? '#fff' : '#9C9CA8', lbBg: kg ? 'transparent' : '#24242B', lbColor: kg ? '#9C9CA8' : '#fff',
       setKg: go({ unit: 'kg' }), setLb: go({ unit: 'lb' }),
       restDefaultLabel: clock(s.restDefault * 1000), restDown: go({ restDefault: Math.max(15, s.restDefault - 15) }), restUp: go({ restDefault: Math.min(600, s.restDefault + 15) }),
