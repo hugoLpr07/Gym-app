@@ -5,6 +5,14 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.13.1 — 2026-10-18
+- Exercices chronométrés (planche, GHD hold…) : le compte à rebours du maintien s’affiche aussi sur l’écran verrouillé, avec le côté (gauche / droite) pour les exercices par côté.
+
+## 0.13.0 — 2026-10-18
+- Cardio : chronomètre intégré à la série (lancer / arrêter / reprendre), les minutes se remplissent seules. Sur l’écran verrouillé : chrono qui monte, avec barre vers l’objectif.
+- RPE / RIR (option, désactivé par défaut) : Profil → Entraînement → Effort par série. Petite rangée de choix sous la série active, affiché dans l’historique.
+- Apple Health (Pro, app native) : séances (musculation ou type de cardio, durée, kcal estimées, distance) et pesées envoyées dans Santé. Profil → Notifications et Santé.
+
 ## 0.12.1 — 2026-10-18
 - Profil : la carte Barlog Pro n’est plus écrasée.
 - Chronomètre écran verrouillé : message d’erreur clair s’il ne peut pas démarrer (pour diagnostiquer).

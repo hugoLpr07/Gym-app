@@ -634,6 +634,10 @@ input::placeholder{color:#9C9CA8}
 <div style="flex:0 0 auto;width:52px;height:32px;border-radius:999px;background:{{ t.track }};padding:3px;display:flex;justify-content:{{ t.justify }};"><div style="width:26px;height:26px;border-radius:50%;background:{{ t.knob }};"></div></div>
 </button>
 </sc-for>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;min-height:64px;gap:10px;">
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:16px;font-weight:500;">{{ effLabel }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ effSub }}</span></div>
+<div style="flex:none;display:flex;gap:3px;background:#0A0A0C;border-radius:10px;padding:3px;"><sc-for list="{{ effModes }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.onClick }}" style="height:38px;padding:0 10px;border:none;border-radius:8px;background:{{ o.bg }};color:{{ o.color }};font-size:13px;font-weight:700;">{{ o.label }}</button></sc-for></div>
+</div>
 </div>
 </div>
 <div style="display:flex;flex-direction:column;gap:8px;">
@@ -726,6 +730,7 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ s.isUni }}" hint-placeholder-val="{{ false }}"><input type="text" inputmode="numeric" value="{{ s.r2Disp }}" onChange="{{ s.onR2 }}" onFocus="{{ s.onSelect }}" style="width:100%;min-width:0;height:48px;border-radius:10px;border:1px solid {{ s.inBorder }};background:#0A0A0C;color:#fff;font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:600;text-align:center;"></sc-if>
 <button onClick="{{ s.onCheck }}" style="width:52px;height:48px;border-radius:12px;border:1px solid {{ s.checkBorder }};background:{{ s.checkBg }};color:{{ s.checkColor }};font-size:20px;font-weight:700;transition:background 120ms, transform 120ms;" style-active="transform:scale(0.92)">✓</button>
 </div>
+<sc-if value="{{ s.hasEffTag }}" hint-placeholder-val="{{ false }}"><div style="padding:0 12px 8px 56px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;">{{ s.effTag }}</div></sc-if>
 <sc-if value="{{ s.isPR }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;align-items:center;gap:8px;padding:0 12px 10px 56px;">
 <span style="font-size:12px;font-weight:800;letter-spacing:0.08em;background:var(--acc);color:#0A0A0C;padding:3px 8px;border-radius:999px;">PR</span>
@@ -748,6 +753,12 @@ input::placeholder{color:#9C9CA8}
 <div style="display:flex;flex-wrap:wrap;gap:6px;">
 <sc-for list="{{ s.plates }}" as="p" hint-placeholder-count="3"><span style="min-width:44px;height:36px;padding:0 10px;border-radius:8px;background:{{ p.bg }};color:{{ p.color }};font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;">{{ p.label }}</span></sc-for>
 </div>
+</div>
+</sc-if>
+<sc-if value="{{ s.hasEff }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:8px;padding:0 12px 12px;">
+<span style="flex:none;width:34px;font-size:11px;font-weight:700;letter-spacing:0.06em;color:#9C9CA8;">{{ s.effName }}</span>
+<div style="flex:1;min-width:0;display:flex;gap:4px;overflow-x:auto;"><sc-for list="{{ s.effOpts }}" as="o" hint-placeholder-count="8"><button onClick="{{ o.onClick }}" style="flex:none;min-width:40px;height:40px;padding:0 6px;border-radius:10px;border:1px solid {{ o.border }};background:{{ o.bg }};color:{{ o.color }};font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;">{{ o.label }}</button></sc-for></div>
 </div>
 </sc-if>
 </sc-if>
@@ -1044,7 +1055,7 @@ const KG_LB = 2.20462;
 const LIB = [['Bench Press','Chest'],['Incline DB Press','Chest'],['Dumbbell Fly','Chest'],['Push-up','Chest'],['Deadlift','Back'],['Barbell Row','Back'],['Pull-up','Back'],['Lat Pulldown','Back'],['Seated Cable Row','Back'],['Squat','Legs'],['Romanian Deadlift','Legs'],['Leg Press','Legs'],['Leg Curl','Legs'],['Leg Extension','Legs'],['Calf Raise','Legs'],['Bulgarian Split Squat','Legs'],['Overhead Press','Shoulders'],['Lateral Raise','Shoulders'],['Face Pull','Shoulders'],['Barbell Curl','Arms'],['Hammer Curl','Arms'],['Triceps Pushdown','Arms'],['Skull Crusher','Arms'],['Plank','Core'],['Hanging Leg Raise','Core'],['Cable Crunch','Core'],['Running','Cardio'],['Cycling','Cardio'],['Rowing machine','Cardio'],['Elliptical','Cardio'],['Stair climber','Cardio'],['Walking','Cardio'],['Jump rope','Cardio']].map(([name, group]) => ({ name, group }));
 const GROUPS = ['All','Chest','Back','Legs','Shoulders','Arms','Core','Cardio','Custom'];
 const BASE = {'Bench Press':80,'Overhead Press':50,'Incline DB Press':30,'Lateral Raise':12,'Triceps Pushdown':30,'Deadlift':160,'Barbell Row':70,'Pull-up':10,'Face Pull':25,'Barbell Curl':35,'Squat':120,'Romanian Deadlift':100,'Leg Press':180,'Leg Curl':45,'Calf Raise':70};
-const PK = ['bodyRange','bodyU','lenU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight','accent','onboarded','restNotif','remind','goal','level','liveRest','pro'];
+const PK = ['bodyRange','bodyU','lenU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight','accent','onboarded','restNotif','remind','goal','level','liveRest','pro','effort','healthOn'];
 const e1 = (w, r) => w * (1 + r / 30);
 const FR = {"Start anyway":"Lancer quand même","Cancel":"Annuler","New version ready · Tap to update":"Nouvelle version prête · Toucher pour mettre à jour","Install on your iPhone":"Installer sur ton iPhone","In Safari: tap Share, then “Add to Home Screen”. Barlog opens full-screen, works offline, and your data is kept safe from Safari’s cleanup.":"Dans Safari : touche Partager, puis « Sur l’écran d’accueil ». Barlog s’ouvre en plein écran, fonctionne hors ligne et tes données sont protégées du nettoyage de Safari.","Got it":"Compris","Today":"Aujourd’hui","Next up":"À suivre","Last done":"Dernière fois :","This week":"Cette semaine","Other routines":"Autres routines","Start":"Lancer","+ Empty workout":"+ Séance libre","Program · rotates automatically":"Programme · rotation automatique","Routines":"Routines","NEXT":"SUIVANTE","Edit":"Modifier","+ New routine":"+ Nouvelle routine","Progress":"Progrès","All sessions":"Toutes les séances","No sessions yet. Finish a workout and it shows up here.":"Aucune séance. Termine une séance et elle apparaîtra ici.","No weighted exercise matches.":"Aucun exercice avec charge ne correspond.","No sessions in this range.":"Aucune séance sur cette période.","Trend":"Tendance","Tap a point for details":"Touche un point pour les détails","Rep records · heaviest weight (":"Records par reps · charge max (","Records ·":"Records ·","History ·":"Historique ·","Right column: best estimated 1RM of the session. Lime = PR.":"Colonne de droite : meilleur 1RM estimé de la séance. Lime = PR.","Consistency":"Régularité","Sets per muscle · weekly avg, last 4 wk":"Séries par muscle · moyenne/sem. sur 4 sem.","Shaded zone = 10–20 work sets per muscle per week, the usual range for muscle growth. Warm-ups excluded.":"Zone ombrée = 10 à 20 séries de travail par muscle et par semaine, la plage habituelle pour la prise de muscle. Échauffements exclus.","e1RM trend · last 4 weeks":"Tendance e1RM · 4 dernières semaines","Profile":"Profil","No account. Your data stays on your phone.":"Pas de compte. Tes données restent sur ton téléphone.","Everything lives on this device.":"Tout est stocké sur cet appareil.","Training":"Entraînement","Language":"Langue","Units":"Unités","Default rest":"Repos par défaut","Your data":"Tes données","Export backup":"Exporter","Import":"Importer","Logging a workout only adds to your history. Import replaces everything with the file’s content — export first if unsure.":"Enregistrer une séance ne fait qu’ajouter à ton historique. Importer remplace tout par le contenu du fichier — exporte d’abord en cas de doute.","Clear history keeps your routines. Erase all also deletes routines and custom exercises. Both ask for a second tap.":"« Effacer l’historique » garde tes routines. « Tout effacer » supprime aussi les routines et les exercices perso. Les deux demandent une deuxième touche.","Resume ›":"Reprendre ›","Finish":"Terminer","SET":"SÉRIE","PREV":"PRÉC.","−1 rep":"−1 rép","+1 rep":"+1 rép","+ Add set":"+ Ajouter une série","Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.":"Touche un numéro de série pour la marquer comme échauffement (W). Les échauffements ne comptent ni dans les PR ni dans le volume.","+ Add exercise":"+ Ajouter un exercice","Skip":"Passer","Add exercise":"Ajouter un exercice","+ Create “":"+ Créer « ","” ·":" » ·","No exercises yet. Add your first movement.":"Aucun exercice. Ajoute ton premier mouvement.","sets":"séries","reps":"reps","Fix any weight or reps. Changes save instantly and update your records and charts.":"Corrige une charge ou des reps. Les changements sont enregistrés tout de suite et mettent à jour tes records et graphiques.","Workout saved":"Séance enregistrée","Exercises":"Exercices","Done":"Terminé","Back up your data":"Sauvegarde tes données","Tap Export, then “Save to Files” → iCloud Drive.":"Touche Exporter, puis « Enregistrer dans Fichiers » → iCloud Drive.","Export now":"Exporter","Later":"Plus tard","Search an exercise":"Chercher un exercice","Search or type a new name":"Chercher ou taper un nouveau nom","Chest":"Pectoraux","Back":"Dos","Legs":"Jambes","Shoulders":"Épaules","Arms":"Bras","Core":"Gainage","All":"Tous","Custom":"Perso","No backup yet. Your data lives only on this phone.":"Aucune sauvegarde. Tes données sont uniquement sur ce téléphone.","Volume":"Volume","Vol ":"Vol ","Quick workout":"Séance libre","New routine":"Nouvelle routine","Backup exported":"Sauvegarde exportée","Data imported":"Données importées","Not a Barlog backup":"Ce n’est pas une sauvegarde Barlog","History cleared":"Historique effacé","All data erased":"Toutes les données effacées","Session deleted":"Séance supprimée"," · you hit every rep last time":" · toutes tes reps réussies la dernière fois"," · custom":" · perso"," · last ":" · dernière "," rep":" rép"," reps":" reps","Workout":"Séance","Low":"Bas","High":"Élevé","In range":"Dans la zone"," this week":" cette semaine","No PR for ":"Aucun PR depuis "," weeks":" semaines","Start today’s: ":"Lancer celle du jour : ","Sessions":"Séances","Lifts":"Exercices","Stats":"Stats","Last 4 wk":"4 dern. sem.","Streak":"Série"," wk":" sem","4 wk":"4 sem","3 mo":"3 mois","Target: ":"Objectif : "," sessions per week (one per routine). Streak = weeks in a row at target.":" séances par semaine (une par routine). Série = semaines d’affilée à l’objectif."," lift":" exercice"," without a PR for 3+ weeks.":" sans PR depuis 3 semaines ou plus.","Every lift has set a PR in the last 3 weeks.":"Chaque exercice a fait un PR ces 3 dernières semaines."," Compared with the 4 weeks before, or with your first session of the period if there is no earlier data.":" Comparé aux 4 semaines précédentes, ou à ta première séance de la période s’il n’y a pas de données plus anciennes."," exercises · ":" exercices · "," sets · ":" séries · ","Time":"Durée","Sets":"Séries","Session updated":"Séance mise à jour","Tap again":"Toucher encore","Delete":"Supprimer","Programs":"Programmes","No routines":"Aucune routine","In progress · ":"En cours · ","Create one in Programs.":"Crées-en une dans Programmes.","Resume workout":"Reprendre la séance","Start workout":"Lancer la séance","No exercises yet":"Aucun exercice","Est. 1RM":"1RM est.","Top set":"Top set","Estimated max for 1 rep, from your best set: weight × (1 + reps ÷ 30). Best overall strength gauge.":"Charge max estimée pour 1 rep, calculée sur ta meilleure série : charge × (1 + reps ÷ 30). Le meilleur indicateur de force.","Total weight × reps over all work sets of the session. Tracks workload — the main driver of muscle growth.":"Charge × reps sur toutes les séries de travail de la séance. Mesure la charge de travail — le moteur principal de la prise de muscle.","Heaviest weight lifted in the session, regardless of reps.":"Charge la plus lourde soulevée dans la séance, peu importe les reps.","Estimated 1RM":"1RM estimé","Session volume":"Volume de la séance","Heaviest set":"Série la plus lourde"," sessions":" séances"," session":" séance","No PR on ":"Aucun PR sur "," for ":" depuis "," sessions since your last best. Try a deload week (−10%), a different rep range, or a close variation.":" séances depuis ton dernier record. Essaie une semaine de décharge (−10 %), une autre plage de reps ou une variante proche.","4-week trend (e1RM)":"Tendance 4 sem. (e1RM)","Best e1RM":"Meilleur e1RM","Best set":"Meilleure série","Heaviest weight":"Charge max","Best session volume":"Meilleur volume de séance"," sessions stored offline.":" séances stockées hors ligne.","Auto-start rest":"Repos automatique","Starts when you log a set":"Démarre quand tu valides une série","Sound at rest end":"Son en fin de repos","Beeps when rest is over. Muted by the iPhone silent switch.":"Bip à la fin du repos. Coupé par le mode silencieux de l’iPhone.","Android only — iPhone doesn’t allow it in web apps":"Android seulement — l’iPhone ne le permet pas dans les apps web","Warn on off-day start":"Alerte hors du jour prévu","Only for routines with a weekday in their name (e.g. “Mardi – …”). Asks before starting one on another day.":"Seulement pour les routines avec un jour dans leur nom (ex. « Mardi – … »). Demande confirmation avant de la lancer un autre jour.","Keep screen on":"Garder l’écran allumé","During a workout, so the timer stays visible":"Pendant une séance, pour garder le minuteur visible","Clear history":"Effacer l’historique","Erase all":"Tout effacer"," sets":" séries","Tap again to discard":"Toucher encore pour abandonner","Discard workout":"Abandonner la séance","Rest over — lift":"Repos terminé — à toi","Rest":"Repos","to ":"à ","Volume ":"Volume ","vs last time":"vs la dernière fois","No PRs this time — consistency counts":"Pas de PR cette fois — la régularité compte","best ":"meilleure "};
 const TX = {"k0":"Start anyway","k1":"Cancel","k2":"New version ready · Tap to update","k3":"Install on your iPhone","k4":"In Safari: tap Share, then “Add to Home Screen”. Barlog opens full-screen, works offline, and your data is kept safe from Safari’s cleanup.","k5":"Got it","k6":"Back up your data","k7":"Tap Export, then “Save to Files” → iCloud Drive.","k8":"Export now","k9":"Later","k10":"Today","k11":"Next up","k12":"Last done","k13":"This week","k14":"Other routines","k15":"Start","k16":"+ Empty workout","k17":"Program · rotates automatically","k18":"Routines","k19":"NEXT","k20":"Edit","k21":"+ New routine","k22":"Progress","k23":"All sessions","k24":"No sessions yet. Finish a workout and it shows up here.","k25":"No weighted exercise matches.","k26":"No sessions in this range.","k27":"Trend","k28":"Tap a point for details","k29":"Rep records · heaviest weight (","k30":"Records ·","k31":"History ·","k32":"Right column: best estimated 1RM of the session. Lime = PR.","k33":"Consistency","k34":"Sets per muscle · weekly avg, last 4 wk","k35":"Shaded zone = 10–20 work sets per muscle per week, the usual range for muscle growth. Warm-ups excluded.","k36":"e1RM trend · last 4 weeks","k37":"Profile","k38":"No account. Your data stays on your phone.","k39":"Everything lives on this device.","k40":"Training","k41":"Language","k42":"Units","k43":"Default rest","k44":"Your data","k45":"Export backup","k46":"Import","k47":"Logging a workout only adds to your history. Import replaces everything with the file’s content — export first if unsure.","k48":"Clear history keeps your routines. Erase all also deletes routines and custom exercises. Both ask for a second tap.","k49":"Resume ›","k50":"Finish","k51":"SET","k52":"PREV","k53":"−1 rep","k54":"+1 rep","k55":"+ Add set","k56":"Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.","k57":"+ Add exercise","k58":"Skip","k59":"Add exercise","k60":"+ Create “","k61":"No exercises yet. Add your first movement.","k62":"sets","k63":"reps","k64":"Fix any weight or reps. Changes save instantly and update your records and charts.","k65":"Workout saved","k66":"Exercises","k67":"Done","k68":"Search an exercise","k69":"Search or type a new name"};
@@ -1056,7 +1067,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.12.1';
+const APP_VERSION = '0.13.1';
 const PRO_TPL = ['st', 'ul'];
 let ACC = '#CCFF00';
 const ACCENTS = [['#CCFF00', 'Lime'], ['#FF7A1A', 'Orange'], ['#FF4D8D', 'Pink'], ['#A78BFA', 'Violet'], ['#22D3EE', 'Cyan'], ['#FFC83D', 'Gold']];
@@ -1262,7 +1273,7 @@ class Component extends DCLogic {
     if (PK.some(k => prev[k] !== st[k])) this.save();
     if (prev.workout !== st.workout || prev.wake !== st.wake) this.syncWake();
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.workout !== st.workout || prev.restNotif !== st.restNotif) this.syncRestNotif();
-    if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.restTotal !== st.restTotal || !!prev.workout !== !!st.workout || prev.liveRest !== st.liveRest) this.syncLive();
+    if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.restTotal !== st.restTotal || prev.workout !== st.workout || prev.hold !== st.hold || prev.liveRest !== st.liveRest) this.syncLive();
     if (prev.remind !== st.remind || prev.lang !== st.lang) this.syncReminders();
   }
   save(flush) { const o = {}; PK.forEach(k => o[k] = this.state[k]); o.savedAt = Date.now(); const j = JSON.stringify(o); try { localStorage.setItem('barlog-v1', j); } catch (e) {} this.saveNative(j, flush); }
@@ -1292,6 +1303,7 @@ class Component extends DCLogic {
   flash(msg) { this.setState({ toast: msg }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 1800); }
   tick() {
     const now = Date.now(); const s = this.state;
+    if (s.workout && now - (this._cRunT || 0) >= 1000 && s.workout.ex.some(e => e.sets.some(y => y.run))) { this._cRunT = now; this.setState({ now }); }
     if (s.hold && now >= s.hold.end) {
       const h = s.hold; const x = s.workout && s.workout.ex[h.ei] && s.workout.ex[h.ei].sets[h.si];
       if (h.side === 'l' && x) { const sec = Math.max(1, x.r2 != null ? x.r2 : x.r); this.setState({ hold: { ...h, side: 'r', start: now, end: now + sec * 1000 }, now }); this.buzz([60]); this.tone([[880, 0, 0.18]]); return; }
@@ -1365,7 +1377,7 @@ class Component extends DCLogic {
   saveBody() {
     const s = this.state; const b = s.bodyBuf || {}; const kg = (s.bodyU || s.unit) === 'kg'; const lu = s.lenU || (s.unit === 'kg' ? 'cm' : 'in');
     const num = v => { const n = parseFloat(String(v || '').replace(',', '.')); return isNaN(n) || n <= 0 ? null : n; };
-    const e = {}; const wv = num(b.w); if (wv) e.w = kg ? wv : wv / KG_LB;
+    const e = {}; const wv = num(b.w); if (wv) e.w = kg ? wv : wv / KG_LB; if (wv && this.state.healthOn && this.hk()) this.hk().saveWeight({ kg: e.w, date: Date.now() }).catch(() => {});
     const len = v => { const t = String(v || '').trim().replace(/,/g, '.'); if (!t) return null; if (lu === 'ft') { const m = t.match(/^(\d+(?:\.\d+)?)\s*(?:['′’]|ft|\s)\s*(\d+(?:\.\d+)?)?\s*(?:["″”]|in)?$/i); const tot = m ? parseFloat(m[1]) * 12 + (m[2] ? parseFloat(m[2]) : 0) : parseFloat(t) * 12; return isNaN(tot) || tot <= 0 ? null : tot * 2.54; } const n = parseFloat(t); return isNaN(n) || n <= 0 ? null : lu === 'cm' ? n : n * 2.54; };
     ['waist', 'hips', 'chest', 'arm', 'thigh'].forEach(k => { const v = len(b[k]); if (v) e[k] = v; });
     if (!Object.keys(e).length) { this.flash(L('Enter at least one value')); return; }
@@ -1495,7 +1507,7 @@ class Component extends DCLogic {
       sets += ds.length;
       const last = (s.history[ex.name] || []).slice(-1)[0];
       if (last) { hasPrev = true; if (!isT(ty)) prevVol += work(last.sets).reduce((a, x) => a + x.w * x.r, 0); }
-      const entry = ds.map(x => { const o = { w: x.w, r: isU(ty) ? Math.min(x.r, x.r2 != null ? x.r2 : x.r) : x.r }; if (isU(ty)) { o.l = x.r; o.rr = x.r2 != null ? x.r2 : x.r; } if (ty === 'cardio') { o.w = 0; o.r = x.r; o.d = x.d || 0; o.c = x.c || 0; } if (x.warm) o.wu = true; return o; });
+      const entry = ds.map(x => { const o = { w: x.w, r: isU(ty) ? Math.min(x.r, x.r2 != null ? x.r2 : x.r) : x.r }; if (isU(ty)) { o.l = x.r; o.rr = x.r2 != null ? x.r2 : x.r; } if (ty === 'cardio') { o.w = 0; o.r = x.r; o.d = x.d || 0; o.c = x.c || 0; } if (x.warm) o.wu = true; if (x.rpe != null) o.rpe = x.rpe; if (x.rir != null) o.rir = x.rir; return o; });
       entry.forEach((x, i) => { if (x.wu) return; if (!isT(ty)) vol += x.w * x.r; if (ds[i].isPR && (!prs[ex.name] || e1(x.w, x.r) > prs[ex.name].e)) prs[ex.name] = { name: ex.name, w: x.w, r: x.r, e: e1(x.w, x.r) }; });
       h[ex.name] = [...(h[ex.name] || []), { date: w.start, sets: entry }];
       exs.push({ name: ex.name, sets: entry });
@@ -1503,7 +1515,7 @@ class Component extends DCLogic {
     clearTimeout(this.ra);
     if (!sets) { this.setState({ workout: null, focus: null, screen: 'tabs', tab: 'today', restEnd: null, restAlert: false, hold: null, exSheet: null }); return; }
     const dur = Date.now() - w.start;
-    const m = { name: w.name, rid: w.rid, dur }; if (w.note && w.note.trim()) m.note = w.note.trim();
+    const m = { name: w.name, rid: w.rid, dur }; this.pushHealth(w.start, dur, exs); if (w.note && w.note.trim()) m.note = w.note.trim();
     this.setState({ sessMeta: { ...(s.sessMeta || {}), [w.start]: m }, history: h, workout: null, focus: null, restEnd: null, restAlert: false, hold: null, exSheet: null, lastRoutineId: w.rid || s.lastRoutineId, summary: { name: w.name, dur, vol, sets, prevVol, hasPrev, prs: Object.values(prs), ex: exs }, screen: 'summary' });
   }
   discard() {
@@ -1623,12 +1635,49 @@ class Component extends DCLogic {
   }
   liveAct() { if (!this.nat()) return null; if (!this._la) { try { const C = window.Capacitor; this._la = C.registerPlugin ? C.registerPlugin('RestActivity') : (C.Plugins || {}).RestActivity; } catch (e) {} } return this._la || null; }
   syncLive() {
-    const LA = this.liveAct(); if (!LA) return; const s = this.state;
-    const at = s.liveRest !== false && s.workout && s.restEnd && !s.restAlert && s.restEnd > Date.now() + 1000 ? s.restEnd : null;
-    const key = at ? at + '|' + s.restTotal : null; if (this._laKey === key) return; this._laKey = key;
-    if (!at) { try { LA.stop().catch(() => {}); } catch (e) {} return; }
-    const fr = LANG === 'fr'; const f = s.focus && s.workout.ex[s.focus.ei];
-    try { LA.start({ start: at - s.restTotal * 1000, end: at, title: fr ? 'Repos' : 'Rest', done: fr ? 'Repos terminé · à toi' : 'Rest over · lift', next: f ? f.name + (fr ? ' · série ' : ' · set ') + (s.focus.si + 1) : '' }).then(r => { if (r && r.ok === false && !this._laWarned) { this._laWarned = true; this.flash('Live Activity : ' + (r.why || 'indisponible')); } }).catch(e => { if (!this._laWarned) { this._laWarned = true; this.flash('Live Activity : ' + ((e && e.message) || 'plugin introuvable')); } }); } catch (e) { this.flash('Live Activity : ' + e.message); }
+    const LA = this.liveAct(); if (!LA) return; const s = this.state; const fr = LANG === 'fr'; const w = s.workout; const now = Date.now();
+    let run = null; if (w) w.ex.forEach(ex => ex.sets.forEach(x => { if (x.run && !run) run = { ex, x }; }));
+    let p = null; const hd = s.hold; const hx = hd && w && w.ex[hd.ei];
+    if (s.liveRest !== false && hx && hd.end > now + 500) { const sd = hd.side ? (hd.side === 'l' ? (fr ? ' · gauche' : ' · left') : (fr ? ' · droite' : ' · right')) : '';
+      p = { mode: 'down', start: hd.start || now, end: hd.end, title: fr ? 'Maintien' : 'Hold', done: fr ? 'Terminé' : 'Done', next: hx.name + sd + (fr ? ' · série ' : ' · set ') + (hd.si + 1) }; }
+    else if (s.liveRest !== false && run) { const st = run.x.run - (run.x.r || 0) * 60000; const g = run.ex.target ? st + run.ex.target * 60000 : 0;
+      p = { mode: 'up', start: st, end: g || st + 3600000, title: 'Cardio', done: '', next: run.ex.name + (run.ex.target ? (fr ? ' · objectif ' : ' · goal ') + run.ex.target + ' min' : '') }; }
+    else if (s.liveRest !== false && w && s.restEnd && !s.restAlert && s.restEnd > now + 1000) { const f = s.focus && w.ex[s.focus.ei];
+      p = { mode: 'down', start: s.restEnd - s.restTotal * 1000, end: s.restEnd, title: fr ? 'Repos' : 'Rest', done: fr ? 'Repos terminé · à toi' : 'Rest over · lift', next: f ? f.name + (fr ? ' · série ' : ' · set ') + (s.focus.si + 1) : '' }; }
+    const key = p ? p.mode + p.start + '|' + p.end : null; if (this._laKey === key) return; this._laKey = key;
+    if (!p) { try { LA.stop().catch(() => {}); } catch (e) {} return; }
+    const warn = m => { if (!this._laWarned) { this._laWarned = true; this.flash('Live Activity : ' + m); } };
+    try { LA.start(p).then(r => { if (r && r.ok === false) warn(r.why || 'indisponible'); }).catch(e => warn((e && e.message) || 'plugin introuvable')); } catch (e) { warn(e.message); }
+  }
+  cardioRun(ei, si) {
+    const now = Date.now(); const stop = y => { y.r = Math.round(((y.r || 0) + (now - y.run) / 60000) * 10) / 10; y.rStr = null; y.run = null; };
+    this.updW(w => { w.ex.forEach((ex, a) => ex.sets.forEach((y, b) => { if (y.run && !(a === ei && b === si)) stop(y); }));
+      const x = w.ex[ei].sets[si]; if (x.run) stop(x); else { if (!x.runUsed) { x.r = 0; x.rStr = null; } x.runUsed = true; x.run = now; }
+      return { focus: { ei, si } }; });
+  }
+  effVals(ei, si, x, active) {
+    const mode = this.state.effort; if (mode !== 'rpe' && mode !== 'rir') return { hasEff: false, hasEffTag: false };
+    const vals = mode === 'rpe' ? [6, 7, 7.5, 8, 8.5, 9, 9.5, 10] : [0, 1, 2, 3, 4, 5]; const cur = x[mode];
+    return { hasEff: active && !x.warm, hasEffTag: !active && cur != null, effTag: (mode === 'rpe' ? 'RPE ' : 'RIR ') + (cur === 5 && mode === 'rir' ? '5+' : cur), effName: mode.toUpperCase(),
+      effOpts: vals.map(v => { const on = cur === v; return { label: mode === 'rir' && v === 5 ? '5+' : String(v), bg: on ? ACC : 'transparent', color: on ? '#0A0A0C' : '#FFFFFF', border: on ? ACC : '#33333C', onClick: (e) => { e.stopPropagation(); this.updW(w => { const y = w.ex[ei].sets[si]; y[mode] = y[mode] === v ? null : v; }); } }; }) };
+  }
+  hk() { if (!this.nat()) return null; if (!this._hk) { try { this._hk = window.Capacitor.registerPlugin('BarlogHealth'); } catch (e) {} } return this._hk || null; }
+  toggleHealth() {
+    const fr = LANG === 'fr'; if (this.state.healthOn) { this.setState({ healthOn: false }); return; }
+    const H = this.hk(); if (!H) return;
+    H.request().then(r => { if (r && r.ok) { this.setState({ healthOn: true }); this.flash(fr ? 'Apple Health connecté' : 'Apple Health connected'); } else this.flash('Apple Health : ' + ((r && r.why) || (fr ? 'refusé' : 'denied'))); })
+      .catch(e => this.flash('Apple Health : ' + ((e && e.message) || 'plugin introuvable')));
+  }
+  pushHealth(start, dur, exs) {
+    const H = this.hk(); const s = this.state; if (!H || !s.healthOn || !exs.length) return;
+    const car = exs.filter(x => this.meta(x.name).type === 'cardio'); const sum = (k) => car.reduce((a, x) => a + x.sets.reduce((b, y) => b + (y[k] || 0), 0), 0);
+    const cMin = sum('r'), cKcal = sum('c'); const bw = ((s.body || []).filter(b => b.w).slice(-1)[0] || {}).w || 75; const allC = car.length === exs.length;
+    const MAP = [[/run|course|treadmill|tapis/i, 'running'], [/cycl|bike|v[ée]lo/i, 'cycling'], [/row|rameur/i, 'rowing'], [/ellip/i, 'elliptical'], [/stair|escalier/i, 'stairs'], [/walk|marche/i, 'walking'], [/rope|corde/i, 'jumprope']];
+    const kind = n => (MAP.find(m => m[0].test(n)) || [0, 'mixed'])[1];
+    const type = allC ? (new Set(car.map(x => kind(x.name))).size === 1 ? kind(car[0].name) : 'mixed') : 'strength';
+    const km = ['running', 'walking', 'cycling'].includes(type) ? sum('d') : 0;
+    const kcal = Math.round(cKcal + (allC ? (cKcal ? 0 : 7 * bw * cMin / 60) : 4.5 * bw * Math.max(0, dur / 60000 - cMin) / 60));
+    H.saveWorkout({ start, end: start + dur, kcal, km, type }).then(r => { if (r && r.ok === false) this.flash('Apple Health : ' + (r.why || 'erreur')); }).catch(() => {});
   }
   syncReminders() {
     const P = this.nat(); const LN = P && P.LocalNotifications; if (!LN) return;
@@ -1663,8 +1712,12 @@ class Component extends DCLogic {
   adjC(ei, si, f, d) { this.updW(w => { const x = w.ex[ei].sets[si]; x[f] = Math.max(0, Math.round(((x[f] || 0) + d) * 1000) / 1000); x[f + 'Str'] = null; }); }
   cardioSet(ei, si, x, kg) {
     const mi = !kg; const dd = v => trim(Math.round((mi ? v / 1.60934 : v) * 100) / 100); const step = mi ? 0.25 * 1.60934 : 0.5; const sl = mi ? '0.25 mi' : '0.5 km';
-    return { isUni: true, isTime: false, hasPlates: false, isPR: false, rIm: 'decimal',
-      wDisp: x.rStr != null ? x.rStr : (x.r ? trim(x.r) : ''), rDisp: x.dStr != null ? x.dStr : (x.d ? dd(x.d) : ''), r2Disp: x.cStr != null ? x.cStr : (x.c ? String(x.c) : ''),
+    const fr = LANG === 'fr'; const run = x.run; const el = run ? (x.r || 0) * 60000 + (Date.now() - run) : 0;
+    return { isUni: true, isTime: true, hasPlates: false, isPR: false, rIm: 'decimal', hasEff: false, hasEffTag: false,
+      holdLabel: run ? (fr ? '■ Arrêter · ' : '■ Stop · ') + clock(el) : x.runUsed && x.r ? (fr ? '▶ Reprendre · ' : '▶ Resume · ') + clock(x.r * 60000) : (fr ? '▶ Lancer le chrono' : '▶ Start stopwatch'),
+      holdBg: run ? ACC : '#24242B', holdColor: run ? '#0A0A0C' : '#FFFFFF', onHold: (e) => { e.stopPropagation(); this.cardioRun(ei, si); },
+      onCheck: (e) => { e.stopPropagation(); if (x.run) { this.cardioRun(ei, si); setTimeout(() => this.check(ei, si), 40); } else this.check(ei, si); },
+      wDisp: run ? trim(Math.floor(el / 6000) / 10) : x.rStr != null ? x.rStr : (x.r ? trim(x.r) : ''), rDisp: x.dStr != null ? x.dStr : (x.d ? dd(x.d) : ''), r2Disp: x.cStr != null ? x.cStr : (x.c ? String(x.c) : ''),
       onW: e => this.typeC(ei, si, 'r', e.target.value), onR: e => this.typeC(ei, si, 'd', e.target.value), onR2: e => this.typeC(ei, si, 'c', e.target.value),
       prev: x.pr != null ? trim(x.pr) + '′' + (x.pd ? ' ' + dd(x.pd) : '') : '—',
       wMinus: () => this.adjC(ei, si, 'r', -1), wPlus: () => this.adjC(ei, si, 'r', 1), rMinus: () => this.adjC(ei, si, 'd', -step), rPlus: () => this.adjC(ei, si, 'd', step),
@@ -1723,6 +1776,7 @@ class Component extends DCLogic {
           muscle: fr ? ['Trouve le bon exercice', 'Touche un muscle et ajoute un exercice qui le cible, en un geste.'] : ['Find the right exercise', 'Tap a muscle and add an exercise that targets it, in one tap.'],
           history: fr ? ['Revis chaque séance', 'Touche un muscle dans l’historique pour voir les exercices qui l’ont travaillé.'] : ['Relive every session', 'Tap a muscle in history to see which exercises worked it.'],
           program: fr ? ['Tous les programmes', 'Force 5×5, Haut / Bas et tous les programmes à venir.'] : ['Every program', 'Strength 5×5, Upper / Lower and every program to come.'],
+          health: fr ? ['Apple Health', 'Tes séances et tes pesées enregistrées automatiquement dans Santé.'] : ['Apple Health', 'Your workouts and weigh-ins saved to Health automatically.'],
           accent: fr ? ['Ta couleur', 'Choisis parmi 6 couleurs d’accent pour personnaliser Barlog.'] : ['Your color', 'Pick from 6 accent colors to make Barlog yours.'] };
         const hd = H[f] || (fr ? ['Passe à Barlog Pro', 'L’essentiel reste gratuit. Pro débloque tout le reste.'] : ['Go Barlog Pro', 'The essentials stay free. Pro unlocks everything else.']);
         const PK2 = [['stats', fr ? 'Stats avancées' : 'Advanced stats', fr ? 'Volume par muscle, tendances, records par reps' : 'Muscle volume, trends, rep records', ['stats']],
@@ -1730,7 +1784,8 @@ class Component extends DCLogic {
           ['muscle', fr ? 'Muscle → exercices' : 'Muscle → exercises', fr ? 'Ajoute un exercice ciblé en un geste' : 'Add a targeted exercise in one tap', ['muscle']],
           ['program', fr ? 'Tous les programmes' : 'Every program', fr ? 'Force 5×5, Haut / Bas, et les prochains' : 'Strength 5×5, Upper / Lower, and more to come', ['program']],
           ['accent', fr ? 'Couleurs d’accent' : 'Accent colors', fr ? '6 thèmes pour l’app' : '6 themes for the app', ['accent']],
-          ['soon', fr ? 'Bientôt : Apple Health, widget, sync iCloud' : 'Coming: Apple Health, widget, iCloud sync', fr ? 'Inclus dans ton abonnement dès leur sortie' : 'Included in your plan as they ship', []]];
+          ['health', 'Apple Health', fr ? 'Séances et pesées envoyées dans Santé' : 'Workouts and weigh-ins sent to Health', ['health']],
+          ['soon', fr ? 'Bientôt : widget, sync iCloud' : 'Coming: widget, iCloud sync', fr ? 'Inclus dans ton abonnement dès leur sortie' : 'Included in your plan as they ship', []]];
         const P = { month: [fr ? 'Mensuel' : 'Monthly', fr ? '2,99 €' : '$2.99', fr ? 'par mois' : 'per month', null], year: [fr ? 'Annuel' : 'Yearly', fr ? '19,99 €' : '$19.99', fr ? '1,67 € / mois' : '$1.67 / month', '−44 %'], life: [fr ? 'À vie' : 'Lifetime', fr ? '49,99 €' : '$49.99', fr ? 'une fois' : 'one time', null] };
         const CTA = { month: fr ? 'S’abonner · 2,99 € / mois' : 'Subscribe · $2.99 / month', year: fr ? 'Essayer 7 jours gratuitement' : 'Try 7 days free', life: fr ? 'Acheter · 49,99 €' : 'Buy · $49.99' };
         const PN = { month: fr ? 'Mensuel' : 'Monthly', year: fr ? 'Annuel' : 'Yearly', life: fr ? 'À vie' : 'Lifetime' };
@@ -1748,9 +1803,12 @@ class Component extends DCLogic {
           proCardClick: () => { if (!pro) return this.need(null); if (!s.proArm) { this.setState({ proArm: true }); clearTimeout(this.proArmT); this.proArmT = setTimeout(() => this.setState({ proArm: false }), 3000); return; } this.setState({ pro: null, proArm: false }); this.flash(fr ? 'Pro désactivé (test)' : 'Pro turned off (test)'); }
         };
       })(),
-      nfTitle: 'Notifications',
+      nfTitle: native ? (fr ? 'Notifications et Santé' : 'Notifications & Health') : 'Notifications',
+      effLabel: fr ? 'Effort par série' : 'Effort per set', effSub: fr ? 'Option avancée : note l’effort de chaque série.' : 'Advanced: rate the effort of each set.',
+      effModes: [['off', fr ? 'Non' : 'Off'], ['rpe', 'RPE'], ['rir', 'RIR']].map(([k, label]) => { const on = (s.effort || 'off') === k; return { label, bg: on ? '#24242B' : 'transparent', color: on ? '#FFFFFF' : '#9C9CA8', onClick: () => this.setState({ effort: k === 'off' ? null : k }) }; }),
       nfToggles: [tgl(fr ? 'Fin de repos' : 'Rest finished', fr ? 'Une notification quand le repos est fini, même écran verrouillé.' : 'A notification when rest is over, even with the screen locked.', !!s.restNotif, () => this.toggleRestNotif()),
         ...(native ? [tgl(fr ? 'Minuteur sur l’écran verrouillé' : 'Lock screen timer', fr ? 'Le repos défile en direct sur l’écran verrouillé (Live Activity).' : 'Rest counts down live on the lock screen (Live Activity).', s.liveRest !== false, () => this.setState({ liveRest: s.liveRest === false }))] : []),
+        ...(native ? [tgl('Apple Health' + (this.isPro() ? '' : ' ✦'), fr ? 'Enregistre tes séances et tes pesées dans Santé.' : 'Saves your workouts and weigh-ins to Health.', !!s.healthOn, s.healthOn ? () => this.toggleHealth() : this.gate('health', () => this.toggleHealth()))] : []),
         tgl(fr ? 'Rappels d’entraînement' : 'Training reminders', fr ? 'Les jours choisis, à l’heure choisie.' : 'On the days and at the time you pick.', !!rm.on, () => this.toggleRemind())],
       rmOn: !!rm.on, rmDays: [1, 2, 3, 4, 5, 6, 0].map((d, i) => { const on = (rm.days || []).includes(d); return { label: DL[i], bg: on ? ACC : 'transparent', color: on ? '#0A0A0C' : '#9C9CA8', border: on ? ACC : '#33333C', onClick: () => setRm({ days: on ? rm.days.filter(x => x !== d) : [...(rm.days || []), d] }) }; }),
       rmTimeLabel: fr ? 'Heure' : 'Time', rmTime: rm.t || '18:00', onRmTime: e => setRm({ t: e.target.value || '18:00' }),
@@ -1805,7 +1863,7 @@ class Component extends DCLogic {
           const pc = m.bar && active && x.w > 0 ? plateCalc(parseFloat(this.dispW(x.w)), kg, s.barLight) : null;
           const big = kg ? 20 : 45;
           const o = {
-            wmL: '−' + (kg ? '2.5' : '5'), wpL: '+' + (kg ? '2.5' : '5'), rIm: 'numeric',
+            wmL: '−' + (kg ? '2.5' : '5'), wpL: '+' + (kg ? '2.5' : '5'), rIm: 'numeric', ...this.effVals(ei, si, x, active),
             num: x.warm ? 'W' : String(si + 1), numBg: x.warm ? '#24242B' : 'transparent',
             prev: x.pw != null ? (tim ? (x.pw ? this.dispW(x.pw) + '·' : '') + x.pr + 's' : this.dispW(x.pw) + '×' + x.pr) : '—',
             wDisp: x.wStr != null ? x.wStr : (x.w ? this.dispW(x.w) : ''), rDisp: x.rStr != null ? x.rStr : String(x.r),
@@ -1916,7 +1974,7 @@ class Component extends DCLogic {
     const sessCount = new Set(Object.values(s.history).flatMap(a => a.map(x => x.date))).size;
     const showTabs = s.screen === 'tabs';
     const meta = s.sessMeta || {};
-    const fmtSet = (name, y) => { const t = this.meta(name).type; if (t === 'cardio') return this.cardioTxt(y); const wp = y.w ? this.dispW(y.w) + ' ' + s.unit + ' × ' : ''; if (t === 'timeuni') return (y.w ? this.dispW(y.w) + ' ' + s.unit + ' · ' : '') + (y.l != null ? y.l + ' / ' + y.rr : y.r) + ' s ' + L('per side'); if (t === 'time') return (y.w ? this.dispW(y.w) + ' ' + s.unit + ' · ' : '') + y.r + ' s'; if (t === 'uni') return wp + (y.l != null ? y.l + ' / ' + y.rr : y.r) + ' ' + L('per side'); return wp + y.r + (y.w ? '' : L(' reps')); };
+    const fmtSet = (name, y) => fmtSetB(name, y) + (y.rpe != null ? ' @' + y.rpe : y.rir != null ? ' · RIR ' + (y.rir === 5 ? '5+' : y.rir) : ''); const fmtSetB = (name, y) => { const t = this.meta(name).type; if (t === 'cardio') return this.cardioTxt(y); const wp = y.w ? this.dispW(y.w) + ' ' + s.unit + ' × ' : ''; if (t === 'timeuni') return (y.w ? this.dispW(y.w) + ' ' + s.unit + ' · ' : '') + (y.l != null ? y.l + ' / ' + y.rr : y.r) + ' s ' + L('per side'); if (t === 'time') return (y.w ? this.dispW(y.w) + ' ' + s.unit + ' · ' : '') + y.r + ' s'; if (t === 'uni') return wp + (y.l != null ? y.l + ' / ' + y.rr : y.r) + ' ' + L('per side'); return wp + y.r + (y.w ? '' : L(' reps')); };
     const byDate = {};
     Object.entries(s.history).forEach(([name, arr]) => arr.forEach(se => { (byDate[se.date] = byDate[se.date] || []).push({ name, sets: se.sets }); }));
     const sessions = Object.keys(byDate).map(Number).sort((a, b) => b - a).map(date => {
