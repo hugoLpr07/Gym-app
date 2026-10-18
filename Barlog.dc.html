@@ -1067,7 +1067,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.13.2';
+const APP_VERSION = '0.13.3';
 const PRO_TPL = ['st', 'ul'];
 let ACC = '#CCFF00';
 const ACCENTS = [['#CCFF00', 'Lime'], ['#FF7A1A', 'Orange'], ['#FF4D8D', 'Pink'], ['#A78BFA', 'Violet'], ['#22D3EE', 'Cyan'], ['#FFC83D', 'Gold']];
@@ -1633,7 +1633,7 @@ class Component extends DCLogic {
     if (LN) { LN.cancel({ notifications: [{ id: 1001 }] }).catch(() => {}).then(() => { if (at) LN.schedule({ notifications: [{ id: 1001, title, body, schedule: { at: new Date(at), allowWhileIdle: true } }] }).catch(() => {}); }); return; }
     this.swMsg(at && document.visibilityState === 'hidden' ? { type: 'rest', at, title, body } : { type: 'rest-cancel' });
   }
-  liveAct() { if (!this.nat()) return null; if (!this._la) { try { const C = window.Capacitor; this._la = C.registerPlugin ? C.registerPlugin('RestActivity') : (C.Plugins || {}).RestActivity; } catch (e) {} } return this._la || null; }
+  liveAct() { if (!this.nat()) return null; if (!this._la) { try { const C = window.Capacitor; this._la = (C.Plugins || {}).RestActivity || (C.registerPlugin ? C.registerPlugin('RestActivity') : null); } catch (e) {} } return this._la || null; }
   syncLive() {
     const LA = this.liveAct(); if (!LA) return; const s = this.state; const fr = LANG === 'fr'; const w = s.workout; const now = Date.now();
     let run = null; if (w) w.ex.forEach(ex => ex.sets.forEach(x => { if (x.run && !run) run = { ex, x }; }));
@@ -1661,7 +1661,7 @@ class Component extends DCLogic {
     return { hasEff: active && !x.warm, hasEffTag: !active && cur != null, effTag: (mode === 'rpe' ? 'RPE ' : 'RIR ') + (cur === 5 && mode === 'rir' ? '5+' : cur), effName: mode.toUpperCase(),
       effOpts: vals.map(v => { const on = cur === v; return { label: mode === 'rir' && v === 5 ? '5+' : String(v), bg: on ? ACC : 'transparent', color: on ? '#0A0A0C' : '#FFFFFF', border: on ? ACC : '#33333C', onClick: (e) => { e.stopPropagation(); this.updW(w => { const y = w.ex[ei].sets[si]; y[mode] = y[mode] === v ? null : v; }); } }; }) };
   }
-  hk() { if (!this.nat()) return null; if (!this._hk) { try { this._hk = window.Capacitor.registerPlugin('BarlogHealth'); } catch (e) {} } return this._hk || null; }
+  hk() { if (!this.nat()) return null; if (!this._hk) { try { const C = window.Capacitor; this._hk = (C.Plugins || {}).BarlogHealth || (C.registerPlugin ? C.registerPlugin('BarlogHealth') : null); } catch (e) {} } return this._hk || null; }
   toggleHealth() {
     const fr = LANG === 'fr'; if (this.state.healthOn) { this.setState({ healthOn: false }); return; }
     const H = this.hk(); if (!H) { this.flash(fr ? 'Apple Health : disponible seulement dans l’app iPhone' : 'Apple Health: iPhone app only'); return; }
