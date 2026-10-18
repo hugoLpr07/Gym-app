@@ -1081,7 +1081,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.15.1';
+const APP_VERSION = '0.15.2';
 const PRO_TPL = ['st', 'ul'];
 let ACC = '#CCFF00';
 const ACCENTS = [['#CCFF00', 'Lime'], ['#FF7A1A', 'Orange'], ['#FF4D8D', 'Pink'], ['#A78BFA', 'Violet'], ['#22D3EE', 'Cyan'], ['#FFC83D', 'Gold']];
@@ -2064,7 +2064,7 @@ class Component extends DCLogic {
     const dLen = v => { if (lenU === 'cm') return trim(Math.round(v * 10) / 10); if (lenU === 'in') return trim(Math.round(v / 2.54 * 10) / 10); let i = Math.round(v / 2.54 * 2) / 2, f = Math.floor(i / 12); i = trim(i - f * 12); return (f ? f + '′' : '') + i + '″'; };
     const lenSfx = lenU === 'ft' ? '' : ' ' + lenU;
     const seg = (cur, k, label, patch) => ({ label, bg: cur === k ? '#24242B' : 'transparent', color: cur === k ? '#FFFFFF' : '#9C9CA8', onClick: () => this.setState({ ...patch, bodyBuf: {} }) });
-    const MEAS = [['waist', 'Waist', 'Taille'], ['hips', 'Hips', 'Hanches'], ['chest', 'Chest', 'Poitrine'], ['arm', 'Arm', 'Bras'], ['thigh', 'Thigh', 'Cuisse']];
+    const MEAS = [['waist', 'Waist', 'Tour de taille'], ['hips', 'Hips', 'Hanches'], ['chest', 'Chest', 'Poitrine'], ['arm', 'Arm', 'Bras'], ['thigh', 'Thigh', 'Cuisse']];
     const BR = [['1w', fr ? '7 j' : '7 d', 7], ['1m', fr ? '1 m' : '1 mo', 30], ['3m', fr ? '3 m' : '3 mo', 91], ['1y', fr ? '1 an' : '1 yr', 365], ['all', fr ? 'Tout' : 'All', 0]];
     const br = BR.find(r => r[0] === (s.bodyRange || '3m')) || BR[2];
     const bAllW = bodyArr.filter(b => b.w > 0); const bCut = br[2] ? (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime() - (br[2] - 1) * 86400000; })() : 0;

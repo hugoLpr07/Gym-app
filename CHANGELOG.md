@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.15.2 — 2026-10-18
+- Mensurations : « Taille » devient « Tour de taille » pour éviter la confusion avec la hauteur.
+
 ## 0.15.1 — 2026-10-18
 - Santé : correction, la composition (masse grasse, IMC…) est relue sur tout l’historique après avoir donné l’autorisation. Réactiver Apple Health relance une lecture complète.
 
