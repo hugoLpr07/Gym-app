@@ -1,0 +1,41 @@
+# Publie le site : branche main à la racine, branche dev dans /dev/
+#   main → https://hugolpr07.github.io/Gym-app/
+#   dev  → https://hugolpr07.github.io/Gym-app/dev/
+name: Pages (main + dev)
+
+on:
+  push:
+    branches: [main, dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: site
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          path: site/dev
+      - run: rm -rf site/.git site/.github site/dev/.git site/dev/.github
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4
