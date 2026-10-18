@@ -5,6 +5,13 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.11.0 — 2026-10-17
+- App native : minuteur de repos en direct sur l’écran verrouillé et dans la Dynamic Island (Live Activity), avec l’exercice suivant. Réglage dans Profil → Notifications. Nécessite les fichiers Swift du dossier ios-native.
+
+## 0.10.1 — 2026-10-17
+- App native : données enregistrées dans un fichier natif sécurisé (plus de risque d’effacement par iOS), inclus dans la sauvegarde iCloud de l’iPhone. Copie de secours de la session précédente. Migration automatique depuis l’ancien stockage.
+- App native : la bulle « Installer via Safari » n’apparaît plus.
+
 ## 0.10.0 — 2026-10-17
 - Accueil (1re ouverture) : objectif, niveau, séances/semaine, unités → programme recommandé, en 30 secondes. Option « J’ai déjà un historique » ou « Explorer avec des données d’exemple ».
 - Import Strong / Hevy (CSV) : Profil → Tes données. Séances, séries, échauffements et durée ajoutés à l’historique, noms d’exercices reconnus automatiquement, doublons ignorés.
