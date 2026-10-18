@@ -5,6 +5,13 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.10.0 — 2026-10-17
+- Accueil (1re ouverture) : objectif, niveau, séances/semaine, unités → programme recommandé, en 30 secondes. Option « J’ai déjà un historique » ou « Explorer avec des données d’exemple ».
+- Import Strong / Hevy (CSV) : Profil → Tes données. Séances, séries, échauffements et durée ajoutés à l’historique, noms d’exercices reconnus automatiquement, doublons ignorés.
+- Record battu en direct : carte « Nouveau record » animée, son et vibration au moment de valider la série.
+- Cardio : nouveau type d’exercice (minutes, distance, kcal) + 7 exercices cardio dans la bibliothèque. Pas de minuteur de repos après le cardio.
+- Notifications (Profil) : fin de repos écran verrouillé et rappels les jours d’entraînement. Complet dans la future app native ; en web, fin de repos sur Android seulement.
+
 ## 0.9.3 — 2026-10-17
 - Historique : touche un muscle (sur le corps ou dans les puces) pour le surligner et voir quels exercices de la séance l’ont travaillé, avec le nombre de séries.
 

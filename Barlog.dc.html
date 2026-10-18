@@ -27,6 +27,8 @@ button{font-family:inherit;cursor:pointer;touch-action:manipulation;-webkit-user
 input{font-family:inherit;outline:none}
 input::placeholder{color:#9C9CA8}
 ::-webkit-scrollbar{width:0;height:0}
+@keyframes blPrIn{0%{opacity:0;transform:scale(.6) translateY(14px)}10%{opacity:1;transform:scale(1.06) translateY(0)}18%{transform:scale(1)}82%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.96) translateY(-14px)}}
+@keyframes blSpark{0%{opacity:0;transform:rotate(var(--a)) translateY(-40px) scaleY(.3)}15%{opacity:1}100%{opacity:0;transform:rotate(var(--a)) translateY(-175px) scaleY(1)}}
 </style>
 </helmet>
 <div style="position:fixed;inset:0;background:#0A0A0C;">
@@ -35,6 +37,51 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ toastOn }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;top:8px;left:0;right:0;display:flex;justify-content:center;z-index:40;pointer-events:none;">
 <div style="padding:8px 14px;border-radius:999px;background:#16161A;border:1px solid #33333C;font-size:14px;font-weight:600;color:#FFFFFF;display:flex;gap:8px;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:var(--acc);"></span>{{ toast }}</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ prOn }}" hint-placeholder-val="{{ false }}">{{ prEl }}</sc-if>
+
+<sc-if value="{{ obOn }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:80;background:#0A0A0C;display:flex;justify-content:center;">
+<div style="width:100%;max-width:480px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:20px;padding:calc(env(safe-area-inset-top) + 16px) 20px calc(env(safe-area-inset-bottom) + 20px);">
+<sc-if value="{{ obCanBack }}" hint-placeholder-val="{{ false }}">
+<div style="flex:none;display:flex;align-items:center;gap:14px;">
+<button onClick="{{ obBack }}" style="flex:none;width:44px;height:44px;border-radius:12px;border:none;background:#16161A;color:#FFFFFF;font-size:22px;">‹</button>
+<div style="flex:1;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;"><sc-for list="{{ obDots }}" as="d" hint-placeholder-count="5"><span style="height:4px;border-radius:2px;background:{{ d.bg }};"></span></sc-for></div>
+</div>
+</sc-if>
+<sc-if value="{{ obIsWelcome }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:16px;">
+<span style="font-size:14px;font-weight:800;letter-spacing:0.18em;color:var(--acc);">BARLOG</span>
+<span style="font-size:44px;font-weight:800;letter-spacing:-0.03em;line-height:46px;text-wrap:balance;">{{ obWTitle }}</span>
+<span style="font-size:16px;line-height:23px;color:#9C9CA8;text-wrap:pretty;">{{ obWSub }}</span>
+<div style="align-self:flex-start;display:flex;gap:4px;background:#16161A;border:1px solid #24242B;border-radius:12px;padding:3px;">
+<button onClick="{{ setEn }}" style="width:56px;height:40px;border:none;border-radius:9px;background:{{ enBg }};color:{{ enColor }};font-size:14px;font-weight:700;">EN</button>
+<button onClick="{{ setFr }}" style="width:56px;height:40px;border:none;border-radius:9px;background:{{ frBg }};color:{{ frColor }};font-size:14px;font-weight:700;">FR</button>
+</div>
+</div>
+<div style="flex:none;display:flex;flex-direction:column;gap:8px;">
+<button onClick="{{ obNext }}" style="height:60px;border-radius:16px;border:none;background:var(--acc);color:#0A0A0C;font-size:17px;font-weight:700;" style-active="transform:scale(0.98)">{{ obStartLabel }}</button>
+<button onClick="{{ obImportApp }}" style="min-height:52px;border-radius:16px;border:1px solid #33333C;background:transparent;color:#FFFFFF;font-size:15px;font-weight:600;padding:0 12px;">{{ obImportLabel }}</button>
+<button onClick="{{ obDemo }}" style="min-height:44px;border:none;background:transparent;color:#9C9CA8;font-size:14px;font-weight:600;">{{ obDemoLabel }}</button>
+</div>
+</sc-if>
+<sc-if value="{{ obIsChoice }}" hint-placeholder-val="{{ false }}">
+<div style="flex:none;display:flex;flex-direction:column;gap:6px;"><span style="font-size:30px;font-weight:800;letter-spacing:-0.02em;line-height:36px;text-wrap:balance;">{{ obTitle }}</span><span style="font-size:15px;line-height:21px;color:#9C9CA8;text-wrap:pretty;">{{ obSub }}</span></div>
+<div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px;">
+<sc-for list="{{ obOpts }}" as="o" hint-placeholder-count="4"><button onClick="{{ o.onClick }}" style="flex:none;min-height:72px;border-radius:16px;border:1px solid {{ o.border }};background:{{ o.bg }};color:#FFFFFF;text-align:left;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;" style-active="transform:scale(0.98)"><div style="display:flex;flex-direction:column;gap:3px;min-width:0;"><span style="font-size:17px;font-weight:700;">{{ o.label }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ o.sub }}</span></div><span style="flex:none;width:22px;height:22px;border-radius:50%;border:2px solid {{ o.border }};background:{{ o.dot }};"></span></button></sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ obIsFinal }}" hint-placeholder-val="{{ false }}">
+<div style="flex:none;display:flex;flex-direction:column;gap:6px;"><span style="font-size:30px;font-weight:800;letter-spacing:-0.02em;line-height:36px;">{{ obFTitle }}</span><span style="font-size:15px;line-height:21px;color:#9C9CA8;text-wrap:pretty;">{{ obFSub }}</span></div>
+<div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px;">
+<sc-for list="{{ obProgs }}" as="p" hint-placeholder-count="4"><button onClick="{{ p.onClick }}" style="flex:none;border-radius:16px;border:1px solid {{ p.border }};background:{{ p.bg }};color:#FFFFFF;text-align:left;padding:14px 16px;display:flex;flex-direction:column;gap:6px;"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;"><span style="font-size:18px;font-weight:800;">{{ p.name }}</span><sc-if value="{{ p.rec }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:11px;font-weight:800;letter-spacing:0.08em;background:var(--acc);color:#0A0A0C;padding:3px 8px;border-radius:999px;">{{ p.recLabel }}</span></sc-if></div><span style="font-size:13px;color:#9C9CA8;">{{ p.meta }}</span><span style="font-size:13px;line-height:18px;color:#C8C8D0;text-wrap:pretty;">{{ p.days }}</span></button></sc-for>
+<button onClick="{{ obNone }}" style="flex:none;min-height:56px;border-radius:16px;border:1px solid {{ obNoneBorder }};background:{{ obNoneBg }};color:#FFFFFF;font-size:15px;font-weight:600;padding:0 14px;">{{ obNoneLabel }}</button>
+</div>
+<button onClick="{{ obFinish }}" style="flex:none;height:60px;border-radius:16px;border:none;background:var(--acc);color:#0A0A0C;font-size:17px;font-weight:700;" style-active="transform:scale(0.98)">{{ obFinishLabel }}</button>
+</sc-if>
+</div>
 </div>
 </sc-if>
 
@@ -63,7 +110,7 @@ input::placeholder{color:#9C9CA8}
 <span style="font-size:20px;font-weight:800;">{{ sheetName }}</span>
 <div style="display:flex;flex-direction:column;gap:6px;">
 <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.nType }}</span>
-<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:4px;background:#0A0A0C;border-radius:12px;padding:4px;">
+<div style="display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:4px;background:#0A0A0C;border-radius:12px;padding:4px;">
 <sc-for list="{{ sheetTypes }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.onClick }}" style="height:44px;border:none;border-radius:9px;background:{{ t.bg }};color:{{ t.color }};font-size:14px;font-weight:600;">{{ t.label }}</button></sc-for>
 </div>
 </div>
@@ -546,12 +593,32 @@ input::placeholder{color:#9C9CA8}
 </div>
 </div>
 <div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ nfTitle }}</div>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;">
+<sc-for list="{{ nfToggles }}" as="t" hint-placeholder-count="2">
+<button onClick="{{ t.onClick }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">{{ t.label }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;">{{ t.sub }}</span></div>
+<div style="flex:0 0 auto;width:52px;height:32px;border-radius:999px;background:{{ t.track }};padding:3px;display:flex;justify-content:{{ t.justify }};"><div style="width:26px;height:26px;border-radius:50%;background:{{ t.knob }};"></div></div>
+</button>
+</sc-for>
+<sc-if value="{{ rmOn }}" hint-placeholder-val="{{ false }}">
+<div style="padding:12px 16px 14px;display:flex;flex-direction:column;gap:12px;">
+<div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;"><sc-for list="{{ rmDays }}" as="d" hint-placeholder-count="7"><button onClick="{{ d.onClick }}" style="height:44px;border-radius:10px;border:1px solid {{ d.border }};background:{{ d.bg }};color:{{ d.color }};font-size:14px;font-weight:700;">{{ d.label }}</button></sc-for></div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span style="font-size:16px;font-weight:500;">{{ rmTimeLabel }}</span><input type="time" value="{{ rmTime }}" onChange="{{ onRmTime }}" style="height:44px;border-radius:10px;border:1px solid #33333C;background:#0A0A0C;color:#FFFFFF;font-family:'JetBrains Mono',monospace;font-size:16px;padding:0 10px;color-scheme:dark;"></div>
+</div>
+</sc-if>
+</div>
+<sc-if value="{{ nfHasHint }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ nfHint }}</span></sc-if>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
 <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k44 }}</div>
 <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
 <button onClick="{{ exportData }}" style="height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ tx.k45 }}</button>
 <button onClick="{{ importData }}" style="height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ tx.k46 }}</button>
 </div>
 <span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ tx.k47 }}</span>
+<button onClick="{{ importLifts }}" style="min-height:52px;margin-top:4px;border-radius:12px;border:1px solid #33333C;background:transparent;color:var(--acc);font-size:15px;font-weight:600;padding:0 12px;">{{ ilLabel }}</button>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ ilHint }}</span>
 <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px;">
 <button onClick="{{ clearHistory }}" style="height:52px;border-radius:12px;border:1px solid {{ clearBorder }};background:transparent;color:{{ clearColor }};font-size:15px;font-weight:600;">{{ clearLabel }}</button>
 <button onClick="{{ eraseAll }}" style="height:52px;border-radius:12px;border:1px solid {{ eraseBorder }};background:transparent;color:{{ eraseColor }};font-size:15px;font-weight:600;">{{ eraseLabel }}</button>
@@ -603,7 +670,7 @@ input::placeholder{color:#9C9CA8}
 <div style="padding:0 14px 8px;font-size:13px;font-weight:600;color:var(--acc);">↑ {{ ex.upText }}</div>
 </sc-if>
 <div style="display:grid;grid-template-columns:{{ ex.cols }};gap:8px;padding:0 12px 6px;font-size:12px;font-weight:600;letter-spacing:0.06em;color:#9C9CA8;">
-<span style="text-align:center;">{{ ex.h0 }}</span><span>{{ tx.k52 }}</span><span style="text-align:center;">{{ unitUpper }}</span><span style="text-align:center;">{{ ex.h2 }}</span><sc-if value="{{ ex.isUni }}" hint-placeholder-val="{{ false }}"><span style="text-align:center;">{{ ex.h3 }}</span></sc-if><span></span>
+<span style="text-align:center;">{{ ex.h0 }}</span><span>{{ tx.k52 }}</span><span style="text-align:center;">{{ ex.h1 }}</span><span style="text-align:center;">{{ ex.h2 }}</span><sc-if value="{{ ex.isUni }}" hint-placeholder-val="{{ false }}"><span style="text-align:center;">{{ ex.h3 }}</span></sc-if><span></span>
 </div>
 <sc-for list="{{ ex.sets }}" as="s" hint-placeholder-count="3">
 <div style="background:{{ s.rowBg }};border-top:1px solid #24242B;">
@@ -611,7 +678,7 @@ input::placeholder{color:#9C9CA8}
 <button onClick="{{ s.onWarm }}" style="height:44px;padding:0;border:none;border-radius:10px;background:{{ s.numBg }};color:{{ s.numColor }};font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;">{{ s.num }}</button>
 <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ s.prev }}</span>
 <input type="text" inputmode="decimal" value="{{ s.wDisp }}" onChange="{{ s.onW }}" onFocus="{{ s.onSelect }}" style="width:100%;min-width:0;height:48px;border-radius:10px;border:1px solid {{ s.inBorder }};background:#0A0A0C;color:#fff;font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:600;text-align:center;">
-<input type="text" inputmode="numeric" value="{{ s.rDisp }}" onChange="{{ s.onR }}" onFocus="{{ s.onSelect }}" style="width:100%;min-width:0;height:48px;border-radius:10px;border:1px solid {{ s.inBorder }};background:#0A0A0C;color:#fff;font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:600;text-align:center;">
+<input type="text" inputmode="{{ s.rIm }}" value="{{ s.rDisp }}" onChange="{{ s.onR }}" onFocus="{{ s.onSelect }}" style="width:100%;min-width:0;height:48px;border-radius:10px;border:1px solid {{ s.inBorder }};background:#0A0A0C;color:#fff;font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:600;text-align:center;">
 <sc-if value="{{ s.isUni }}" hint-placeholder-val="{{ false }}"><input type="text" inputmode="numeric" value="{{ s.r2Disp }}" onChange="{{ s.onR2 }}" onFocus="{{ s.onSelect }}" style="width:100%;min-width:0;height:48px;border-radius:10px;border:1px solid {{ s.inBorder }};background:#0A0A0C;color:#fff;font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:600;text-align:center;"></sc-if>
 <button onClick="{{ s.onCheck }}" style="width:52px;height:48px;border-radius:12px;border:1px solid {{ s.checkBorder }};background:{{ s.checkBg }};color:{{ s.checkColor }};font-size:20px;font-weight:700;transition:background 120ms, transform 120ms;" style-active="transform:scale(0.92)">✓</button>
 </div>
@@ -623,8 +690,8 @@ input::placeholder{color:#9C9CA8}
 </sc-if>
 <sc-if value="{{ s.active }}" hint-placeholder-val="{{ false }}">
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:0 12px 12px;">
-<button onClick="{{ s.wMinus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">−{{ wStep }}</button>
-<button onClick="{{ s.wPlus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">+{{ wStep }}</button>
+<button onClick="{{ s.wMinus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">{{ s.wmL }}</button>
+<button onClick="{{ s.wPlus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">{{ s.wpL }}</button>
 <button onClick="{{ s.rMinus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">{{ s.rmL }}</button>
 <button onClick="{{ s.rPlus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">{{ s.rpL }}</button>
 </div>
@@ -930,10 +997,10 @@ input::placeholder{color:#9C9CA8}
 <script type="text/x-dc" data-dc-script data-props="{&quot;defaultRest&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:90,&quot;min&quot;:15,&quot;max&quot;:600,&quot;step&quot;:15,&quot;unit&quot;:&quot;s&quot;,&quot;tsType&quot;:&quot;number&quot;},&quot;autoStartRest&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
 const DAY = 864e5;
 const KG_LB = 2.20462;
-const LIB = [['Bench Press','Chest'],['Incline DB Press','Chest'],['Dumbbell Fly','Chest'],['Push-up','Chest'],['Deadlift','Back'],['Barbell Row','Back'],['Pull-up','Back'],['Lat Pulldown','Back'],['Seated Cable Row','Back'],['Squat','Legs'],['Romanian Deadlift','Legs'],['Leg Press','Legs'],['Leg Curl','Legs'],['Leg Extension','Legs'],['Calf Raise','Legs'],['Bulgarian Split Squat','Legs'],['Overhead Press','Shoulders'],['Lateral Raise','Shoulders'],['Face Pull','Shoulders'],['Barbell Curl','Arms'],['Hammer Curl','Arms'],['Triceps Pushdown','Arms'],['Skull Crusher','Arms'],['Plank','Core'],['Hanging Leg Raise','Core'],['Cable Crunch','Core']].map(([name, group]) => ({ name, group }));
-const GROUPS = ['All','Chest','Back','Legs','Shoulders','Arms','Core','Custom'];
+const LIB = [['Bench Press','Chest'],['Incline DB Press','Chest'],['Dumbbell Fly','Chest'],['Push-up','Chest'],['Deadlift','Back'],['Barbell Row','Back'],['Pull-up','Back'],['Lat Pulldown','Back'],['Seated Cable Row','Back'],['Squat','Legs'],['Romanian Deadlift','Legs'],['Leg Press','Legs'],['Leg Curl','Legs'],['Leg Extension','Legs'],['Calf Raise','Legs'],['Bulgarian Split Squat','Legs'],['Overhead Press','Shoulders'],['Lateral Raise','Shoulders'],['Face Pull','Shoulders'],['Barbell Curl','Arms'],['Hammer Curl','Arms'],['Triceps Pushdown','Arms'],['Skull Crusher','Arms'],['Plank','Core'],['Hanging Leg Raise','Core'],['Cable Crunch','Core'],['Running','Cardio'],['Cycling','Cardio'],['Rowing machine','Cardio'],['Elliptical','Cardio'],['Stair climber','Cardio'],['Walking','Cardio'],['Jump rope','Cardio']].map(([name, group]) => ({ name, group }));
+const GROUPS = ['All','Chest','Back','Legs','Shoulders','Arms','Core','Cardio','Custom'];
 const BASE = {'Bench Press':80,'Overhead Press':50,'Incline DB Press':30,'Lateral Raise':12,'Triceps Pushdown':30,'Deadlift':160,'Barbell Row':70,'Pull-up':10,'Face Pull':25,'Barbell Curl':35,'Squat':120,'Romanian Deadlift':100,'Leg Press':180,'Leg Curl':45,'Calf Raise':70};
-const PK = ['bodyRange','bodyU','lenU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight','accent'];
+const PK = ['bodyRange','bodyU','lenU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight','accent','onboarded','restNotif','remind','goal','level'];
 const e1 = (w, r) => w * (1 + r / 30);
 const FR = {"Start anyway":"Lancer quand même","Cancel":"Annuler","New version ready · Tap to update":"Nouvelle version prête · Toucher pour mettre à jour","Install on your iPhone":"Installer sur ton iPhone","In Safari: tap Share, then “Add to Home Screen”. Barlog opens full-screen, works offline, and your data is kept safe from Safari’s cleanup.":"Dans Safari : touche Partager, puis « Sur l’écran d’accueil ». Barlog s’ouvre en plein écran, fonctionne hors ligne et tes données sont protégées du nettoyage de Safari.","Got it":"Compris","Today":"Aujourd’hui","Next up":"À suivre","Last done":"Dernière fois :","This week":"Cette semaine","Other routines":"Autres routines","Start":"Lancer","+ Empty workout":"+ Séance libre","Program · rotates automatically":"Programme · rotation automatique","Routines":"Routines","NEXT":"SUIVANTE","Edit":"Modifier","+ New routine":"+ Nouvelle routine","Progress":"Progrès","All sessions":"Toutes les séances","No sessions yet. Finish a workout and it shows up here.":"Aucune séance. Termine une séance et elle apparaîtra ici.","No weighted exercise matches.":"Aucun exercice avec charge ne correspond.","No sessions in this range.":"Aucune séance sur cette période.","Trend":"Tendance","Tap a point for details":"Touche un point pour les détails","Rep records · heaviest weight (":"Records par reps · charge max (","Records ·":"Records ·","History ·":"Historique ·","Right column: best estimated 1RM of the session. Lime = PR.":"Colonne de droite : meilleur 1RM estimé de la séance. Lime = PR.","Consistency":"Régularité","Sets per muscle · weekly avg, last 4 wk":"Séries par muscle · moyenne/sem. sur 4 sem.","Shaded zone = 10–20 work sets per muscle per week, the usual range for muscle growth. Warm-ups excluded.":"Zone ombrée = 10 à 20 séries de travail par muscle et par semaine, la plage habituelle pour la prise de muscle. Échauffements exclus.","e1RM trend · last 4 weeks":"Tendance e1RM · 4 dernières semaines","Profile":"Profil","No account. No subscription.":"Pas de compte. Pas d’abonnement.","Everything lives on this device.":"Tout est stocké sur cet appareil.","Training":"Entraînement","Language":"Langue","Units":"Unités","Default rest":"Repos par défaut","Your data":"Tes données","Export backup":"Exporter","Import":"Importer","Logging a workout only adds to your history. Import replaces everything with the file’s content — export first if unsure.":"Enregistrer une séance ne fait qu’ajouter à ton historique. Importer remplace tout par le contenu du fichier — exporte d’abord en cas de doute.","Clear history keeps your routines. Erase all also deletes routines and custom exercises. Both ask for a second tap.":"« Effacer l’historique » garde tes routines. « Tout effacer » supprime aussi les routines et les exercices perso. Les deux demandent une deuxième touche.","Resume ›":"Reprendre ›","Finish":"Terminer","SET":"SÉRIE","PREV":"PRÉC.","−1 rep":"−1 rép","+1 rep":"+1 rép","+ Add set":"+ Ajouter une série","Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.":"Touche un numéro de série pour la marquer comme échauffement (W). Les échauffements ne comptent ni dans les PR ni dans le volume.","+ Add exercise":"+ Ajouter un exercice","Skip":"Passer","Add exercise":"Ajouter un exercice","+ Create “":"+ Créer « ","” ·":" » ·","No exercises yet. Add your first movement.":"Aucun exercice. Ajoute ton premier mouvement.","sets":"séries","reps":"reps","Fix any weight or reps. Changes save instantly and update your records and charts.":"Corrige une charge ou des reps. Les changements sont enregistrés tout de suite et mettent à jour tes records et graphiques.","Workout saved":"Séance enregistrée","Exercises":"Exercices","Done":"Terminé","Back up your data":"Sauvegarde tes données","Tap Export, then “Save to Files” → iCloud Drive.":"Touche Exporter, puis « Enregistrer dans Fichiers » → iCloud Drive.","Export now":"Exporter","Later":"Plus tard","Search an exercise":"Chercher un exercice","Search or type a new name":"Chercher ou taper un nouveau nom","Chest":"Pectoraux","Back":"Dos","Legs":"Jambes","Shoulders":"Épaules","Arms":"Bras","Core":"Gainage","All":"Tous","Custom":"Perso","No backup yet. Your data lives only on this phone.":"Aucune sauvegarde. Tes données sont uniquement sur ce téléphone.","Volume":"Volume","Vol ":"Vol ","Quick workout":"Séance libre","New routine":"Nouvelle routine","Backup exported":"Sauvegarde exportée","Data imported":"Données importées","Not a Barlog backup":"Ce n’est pas une sauvegarde Barlog","History cleared":"Historique effacé","All data erased":"Toutes les données effacées","Session deleted":"Séance supprimée"," · you hit every rep last time":" · toutes tes reps réussies la dernière fois"," · custom":" · perso"," · last ":" · dernière "," rep":" rép"," reps":" reps","Workout":"Séance","Low":"Bas","High":"Élevé","In range":"Dans la zone"," this week":" cette semaine","No PR for ":"Aucun PR depuis "," weeks":" semaines","Start today’s: ":"Lancer celle du jour : ","Sessions":"Séances","Lifts":"Exercices","Stats":"Stats","Last 4 wk":"4 dern. sem.","Streak":"Série"," wk":" sem","4 wk":"4 sem","3 mo":"3 mois","Target: ":"Objectif : "," sessions per week (one per routine). Streak = weeks in a row at target.":" séances par semaine (une par routine). Série = semaines d’affilée à l’objectif."," lift":" exercice"," without a PR for 3+ weeks.":" sans PR depuis 3 semaines ou plus.","Every lift has set a PR in the last 3 weeks.":"Chaque exercice a fait un PR ces 3 dernières semaines."," Compared with the 4 weeks before, or with your first session of the period if there is no earlier data.":" Comparé aux 4 semaines précédentes, ou à ta première séance de la période s’il n’y a pas de données plus anciennes."," exercises · ":" exercices · "," sets · ":" séries · ","Time":"Durée","Sets":"Séries","Session updated":"Séance mise à jour","Tap again":"Toucher encore","Delete":"Supprimer","Programs":"Programmes","No routines":"Aucune routine","In progress · ":"En cours · ","Create one in Programs.":"Crées-en une dans Programmes.","Resume workout":"Reprendre la séance","Start workout":"Lancer la séance","No exercises yet":"Aucun exercice","Est. 1RM":"1RM est.","Top set":"Top set","Estimated max for 1 rep, from your best set: weight × (1 + reps ÷ 30). Best overall strength gauge.":"Charge max estimée pour 1 rep, calculée sur ta meilleure série : charge × (1 + reps ÷ 30). Le meilleur indicateur de force.","Total weight × reps over all work sets of the session. Tracks workload — the main driver of muscle growth.":"Charge × reps sur toutes les séries de travail de la séance. Mesure la charge de travail — le moteur principal de la prise de muscle.","Heaviest weight lifted in the session, regardless of reps.":"Charge la plus lourde soulevée dans la séance, peu importe les reps.","Estimated 1RM":"1RM estimé","Session volume":"Volume de la séance","Heaviest set":"Série la plus lourde"," sessions":" séances"," session":" séance","No PR on ":"Aucun PR sur "," for ":" depuis "," sessions since your last best. Try a deload week (−10%), a different rep range, or a close variation.":" séances depuis ton dernier record. Essaie une semaine de décharge (−10 %), une autre plage de reps ou une variante proche.","4-week trend (e1RM)":"Tendance 4 sem. (e1RM)","Best e1RM":"Meilleur e1RM","Best set":"Meilleure série","Heaviest weight":"Charge max","Best session volume":"Meilleur volume de séance"," sessions stored offline.":" séances stockées hors ligne.","Auto-start rest":"Repos automatique","Starts when you log a set":"Démarre quand tu valides une série","Sound at rest end":"Son en fin de repos","Beeps when rest is over. Muted by the iPhone silent switch.":"Bip à la fin du repos. Coupé par le mode silencieux de l’iPhone.","Android only — iPhone doesn’t allow it in web apps":"Android seulement — l’iPhone ne le permet pas dans les apps web","Warn on off-day start":"Alerte hors du jour prévu","Only for routines with a weekday in their name (e.g. “Mardi – …”). Asks before starting one on another day.":"Seulement pour les routines avec un jour dans leur nom (ex. « Mardi – … »). Demande confirmation avant de la lancer un autre jour.","Keep screen on":"Garder l’écran allumé","During a workout, so the timer stays visible":"Pendant une séance, pour garder le minuteur visible","Clear history":"Effacer l’historique","Erase all":"Tout effacer"," sets":" séries","Tap again to discard":"Toucher encore pour abandonner","Discard workout":"Abandonner la séance","Rest over — lift":"Repos terminé — à toi","Rest":"Repos","to ":"à ","Volume ":"Volume ","vs last time":"vs la dernière fois","No PRs this time — consistency counts":"Pas de PR cette fois — la régularité compte","best ":"meilleure "};
 const TX = {"k0":"Start anyway","k1":"Cancel","k2":"New version ready · Tap to update","k3":"Install on your iPhone","k4":"In Safari: tap Share, then “Add to Home Screen”. Barlog opens full-screen, works offline, and your data is kept safe from Safari’s cleanup.","k5":"Got it","k6":"Back up your data","k7":"Tap Export, then “Save to Files” → iCloud Drive.","k8":"Export now","k9":"Later","k10":"Today","k11":"Next up","k12":"Last done","k13":"This week","k14":"Other routines","k15":"Start","k16":"+ Empty workout","k17":"Program · rotates automatically","k18":"Routines","k19":"NEXT","k20":"Edit","k21":"+ New routine","k22":"Progress","k23":"All sessions","k24":"No sessions yet. Finish a workout and it shows up here.","k25":"No weighted exercise matches.","k26":"No sessions in this range.","k27":"Trend","k28":"Tap a point for details","k29":"Rep records · heaviest weight (","k30":"Records ·","k31":"History ·","k32":"Right column: best estimated 1RM of the session. Lime = PR.","k33":"Consistency","k34":"Sets per muscle · weekly avg, last 4 wk","k35":"Shaded zone = 10–20 work sets per muscle per week, the usual range for muscle growth. Warm-ups excluded.","k36":"e1RM trend · last 4 weeks","k37":"Profile","k38":"No account. No subscription.","k39":"Everything lives on this device.","k40":"Training","k41":"Language","k42":"Units","k43":"Default rest","k44":"Your data","k45":"Export backup","k46":"Import","k47":"Logging a workout only adds to your history. Import replaces everything with the file’s content — export first if unsure.","k48":"Clear history keeps your routines. Erase all also deletes routines and custom exercises. Both ask for a second tap.","k49":"Resume ›","k50":"Finish","k51":"SET","k52":"PREV","k53":"−1 rep","k54":"+1 rep","k55":"+ Add set","k56":"Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.","k57":"+ Add exercise","k58":"Skip","k59":"Add exercise","k60":"+ Create “","k61":"No exercises yet. Add your first movement.","k62":"sets","k63":"reps","k64":"Fix any weight or reps. Changes save instantly and update your records and charts.","k65":"Workout saved","k66":"Exercises","k67":"Done","k68":"Search an exercise","k69":"Search or type a new name"};
@@ -945,7 +1012,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.9.3';
+const APP_VERSION = '0.10.0';
 let ACC = '#CCFF00';
 const ACCENTS = [['#CCFF00', 'Lime'], ['#FF7A1A', 'Orange'], ['#FF4D8D', 'Pink'], ['#A78BFA', 'Violet'], ['#22D3EE', 'Cyan'], ['#FFC83D', 'Gold']];
 const hexRgb = h => { h = h.replace('#', ''); return [0, 2, 4].map(i => parseInt(h.substr(i, 2), 16)); };
@@ -1015,13 +1082,14 @@ const bodyFig = (parts, styleOf, onPick, dimAll, o) => {
 };
 const exStyleOf = mus => k => mus.p.includes(k) ? { fill: ACC, glow: true, glowC: ACC, op: 1 } : mus.s.includes(k) ? { fill: mixC(FIG_BASE, ACC, 0.38), stroke: mixC(FIG_BASE, ACC, 0.85), sw: 0.9, dash: '2.5 2', op: 1 } : { fill: FIG_BASE, op: 1 };
 const MUS = [['chest', 'Chest', 'Pectoraux'], ['shoulders', 'Front delts', 'Deltoïdes avant'], ['reardelts', 'Rear delts', 'Deltoïdes arrière'], ['traps', 'Traps', 'Trapèzes'], ['lats', 'Lats', 'Dorsaux'], ['biceps', 'Biceps', 'Biceps'], ['triceps', 'Triceps', 'Triceps'], ['forearms', 'Forearms', 'Avant-bras'], ['abs', 'Abs', 'Abdos'], ['obliques', 'Obliques', 'Obliques'], ['lowerback', 'Lower back', 'Lombaires'], ['glutes', 'Glutes', 'Fessiers'], ['quads', 'Quads', 'Quadriceps'], ['hamstrings', 'Hamstrings', 'Ischios'], ['calves', 'Calves', 'Mollets']];
-const MUS_LIB = { 'Bench Press': ['chest', 'triceps shoulders'], 'Incline DB Press': ['chest shoulders', 'triceps'], 'Dumbbell Fly': ['chest', 'shoulders'], 'Push-up': ['chest', 'triceps shoulders abs'], 'Deadlift': ['hamstrings glutes lowerback', 'traps lats forearms quads'], 'Barbell Row': ['lats', 'reardelts biceps lowerback'], 'Pull-up': ['lats', 'biceps reardelts'], 'Lat Pulldown': ['lats', 'biceps'], 'Seated Cable Row': ['lats', 'reardelts biceps traps'], 'Squat': ['quads glutes', 'lowerback hamstrings'], 'Romanian Deadlift': ['hamstrings glutes', 'lowerback'], 'Leg Press': ['quads', 'glutes'], 'Leg Curl': ['hamstrings', ''], 'Leg Extension': ['quads', ''], 'Calf Raise': ['calves', ''], 'Bulgarian Split Squat': ['quads glutes', 'hamstrings'], 'Overhead Press': ['shoulders', 'triceps traps'], 'Lateral Raise': ['shoulders', ''], 'Face Pull': ['reardelts', 'traps'], 'Barbell Curl': ['biceps', 'forearms'], 'Hammer Curl': ['biceps forearms', ''], 'Triceps Pushdown': ['triceps', ''], 'Skull Crusher': ['triceps', ''], 'Plank': ['abs', 'obliques'], 'Hanging Leg Raise': ['abs', 'obliques'], 'Cable Crunch': ['abs', ''] };
+const MUS_LIB = { 'Bench Press': ['chest', 'triceps shoulders'], 'Incline DB Press': ['chest shoulders', 'triceps'], 'Dumbbell Fly': ['chest', 'shoulders'], 'Push-up': ['chest', 'triceps shoulders abs'], 'Deadlift': ['hamstrings glutes lowerback', 'traps lats forearms quads'], 'Barbell Row': ['lats', 'reardelts biceps lowerback'], 'Pull-up': ['lats', 'biceps reardelts'], 'Lat Pulldown': ['lats', 'biceps'], 'Seated Cable Row': ['lats', 'reardelts biceps traps'], 'Squat': ['quads glutes', 'lowerback hamstrings'], 'Romanian Deadlift': ['hamstrings glutes', 'lowerback'], 'Leg Press': ['quads', 'glutes'], 'Leg Curl': ['hamstrings', ''], 'Leg Extension': ['quads', ''], 'Calf Raise': ['calves', ''], 'Bulgarian Split Squat': ['quads glutes', 'hamstrings'], 'Overhead Press': ['shoulders', 'triceps traps'], 'Lateral Raise': ['shoulders', ''], 'Face Pull': ['reardelts', 'traps'], 'Barbell Curl': ['biceps', 'forearms'], 'Hammer Curl': ['biceps forearms', ''], 'Triceps Pushdown': ['triceps', ''], 'Skull Crusher': ['triceps', ''], 'Plank': ['abs', 'obliques'], 'Hanging Leg Raise': ['abs', 'obliques'], 'Cable Crunch': ['abs', ''], 'Running': ['', ''], 'Cycling': ['', ''], 'Rowing machine': ['', ''], 'Elliptical': ['', ''], 'Stair climber': ['', ''], 'Walking': ['', ''], 'Jump rope': ['', ''] };
 const MUS_RULES = [[/nordic|leg curl/i, 'hamstrings', 'glutes'], [/ghd hold|back ext|hyperext/i, 'lowerback glutes', 'hamstrings'], [/rdl|romanian|deadlift|good morning/i, 'hamstrings glutes', 'lowerback'], [/zottman/i, 'biceps forearms', ''], [/curl/i, 'biceps', 'forearms'], [/overhead|ohp|military/i, 'shoulders', 'triceps traps'], [/pull-?up|chin|pulldown|row/i, 'lats', 'biceps reardelts'], [/jump|cmj|drop|hop|bound/i, 'quads glutes calves', ''], [/squat|zercher|lunge|leg press|split/i, 'quads glutes', 'hamstrings'], [/calf/i, 'calves', ''], [/face pull|rear delt|er\/ir|ir\/er|screw|arm bar|rotation/i, 'reardelts', 'shoulders'], [/lateral raise/i, 'shoulders', ''], [/extension|ffe|skull|pushdown|triceps|kickback|dip/i, 'triceps', ''], [/bench|press|push-?up|fly/i, 'chest', 'triceps shoulders'], [/shrug/i, 'traps', ''], [/plank|chop|windmill|crunch|leg raise|hold|iso|core/i, 'abs obliques', '']];
 const sp = x => x ? x.split(' ').filter(Boolean) : [];
 const autoMus = n => { const l = MUS_LIB[n]; if (l) return { p: sp(l[0]), s: sp(l[1]) }; const r = MUS_RULES.find(x => x[0].test(n)); return r ? { p: sp(r[1]), s: sp(r[2]) } : { p: [], s: [] }; };
 const idb = () => new Promise((res, rej) => { const r = indexedDB.open('barlog-media', 1); r.onupgradeneeded = () => r.result.createObjectStore('m'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
 const idbTx = (fn) => idb().then(db => new Promise((res, rej) => { const t = db.transaction('m', 'readwrite'); fn(t.objectStore('m')); t.oncomplete = () => res(); t.onerror = () => rej(t.error); }));
-const autoType = n => { const t = /\(sec\)|\bplank\b|\bhold\b|\biso\b/i.test(n), u = /per side/i.test(n); return t && u ? 'timeuni' : t ? 'time' : u ? 'uni' : 'reps'; };
+const CARDIO_RX = /\b(running|run|jogging|jog|treadmill|cycling|bike|biking|v[ée]lo|rowing machine|rower|rameur|elliptical|elliptique|stair ?climber|stairmaster|jump rope|corde [àa] sauter|swimming|swim|natation|walking|walk|marche|cardio|course|hiit|sprint)\b/i;
+const autoType = n => { if (CARDIO_RX.test(n) && !/lunge|fente|carry|farmer|plank/i.test(n)) return 'cardio'; const t = /\(sec\)|\bplank\b|\bhold\b|\biso\b/i.test(n), u = /per side/i.test(n); return t && u ? 'timeuni' : t ? 'time' : u ? 'uni' : 'reps'; };
 const isT = t => t === 'time' || t === 'timeuni';
 const isU = t => t === 'uni' || t === 'timeuni';
 const autoBar = n => !/\b(DB|KB|dumbbell|kettlebell|cable|machine|goblet|split)\b|per side|lat row/i.test(n) && /\b(BB|barbell|bench press|bench|squat|deadlift|RDL|zercher|overhead press)\b/i.test(n);
@@ -1038,6 +1106,51 @@ const TEMPLATES = [
     r: [['Push', [['Bench Press', 4, 6], ['Overhead Press', 3, 8], ['Incline DB Press', 3, 10], ['Lateral Raise', 3, 15, 1], ['Triceps Pushdown', 3, 12]]], ['Pull', [['Deadlift', 3, 5], ['Pull-up', 3, 8], ['Barbell Row', 3, 8], ['Face Pull', 3, 15, 1], ['Barbell Curl', 3, 10]]], ['Legs', [['Squat', 4, 5], ['Romanian Deadlift', 3, 8], ['Leg Press', 3, 10], ['Leg Curl', 3, 12, 1], ['Calf Raise', 3, 12]]]] }
 ];
 let LANG = 'en';
+const csvRows = t => { const nl = t.indexOf('\n'); const first = nl < 0 ? t : t.slice(0, nl); const sep = (first.match(/;/g) || []).length > (first.match(/,/g) || []).length ? ';' : ','; const rows = []; let row = [], cur = '', q = false;
+  for (let i = 0; i < t.length; i++) { const ch = t[i]; if (q) { if (ch === '"') { if (t[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += ch; } else if (ch === '"') q = true; else if (ch === sep) { row.push(cur); cur = ''; } else if (ch === '\n' || ch === '\r') { if (ch === '\r' && t[i + 1] === '\n') i++; row.push(cur); rows.push(row); row = []; cur = ''; } else cur += ch; }
+  if (cur || row.length) { row.push(cur); rows.push(row); } return rows.filter(r => r.some(c => c.trim())); };
+const MON = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11, janv: 0, 'févr': 1, fevr: 1, mars: 2, avr: 3, mai: 4, juin: 5, juil: 6, 'août': 7, aout: 7, sept: 8, 'déc': 11 };
+const parseDT = v => { v = String(v || '').trim(); let m = v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T](\d{1,2}):(\d{2}))?/); if (m) return new Date(+m[1], m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0)).getTime();
+  m = v.match(/^(\d{1,2})\s+([A-Za-zéûÉ]+)\.?\s+(\d{4}),?\s*(?:(\d{1,2}):(\d{2}))?/); if (m) { const k = m[2].toLowerCase(); const mo = MON[k.slice(0, 4)] != null ? MON[k.slice(0, 4)] : MON[k.slice(0, 3)]; if (mo != null) return new Date(+m[3], mo, +m[1], +(m[4] || 0), +(m[5] || 0)).getTime(); }
+  const d = Date.parse(v); return isNaN(d) ? null : d; };
+const parseDur = v => { v = String(v || '').trim(); if (!v) return 0; if (/^\d+(\.\d+)?$/.test(v)) { const n = +v; return (n > 300 ? n : n * 60) * 1000; } let ms = 0; const h = v.match(/(\d+)\s*h/), mi = v.match(/(\d+)\s*m(?!s)/), se = v.match(/(\d+)\s*s/); if (h) ms += h[1] * 3600e3; if (mi) ms += mi[1] * 60e3; if (se) ms += se[1] * 1e3; return ms; };
+const numV = v => { const n = parseFloat(String(v || '').replace(',', '.')); return isNaN(n) ? 0 : n; };
+const EXMAP = [[/^bench press( \(barbell\))?$/i, 'Bench Press'], [/incline.*(dumbbell|db)/i, 'Incline DB Press'], [/^(chest )?fly.*dumbbell|^dumbbell fly/i, 'Dumbbell Fly'], [/^push[ -]?ups?$/i, 'Push-up'], [/^romanian deadlift|^rdl/i, 'Romanian Deadlift'], [/^deadlift( \(barbell\))?$/i, 'Deadlift'], [/^bent over row.*barbell|^barbell row|^bent over row$/i, 'Barbell Row'], [/^pull[ -]?ups?$/i, 'Pull-up'], [/lat pulldown/i, 'Lat Pulldown'], [/^seated (cable )?row/i, 'Seated Cable Row'], [/^(back )?squat( \(barbell\))?$/i, 'Squat'], [/^leg press/i, 'Leg Press'], [/leg curl/i, 'Leg Curl'], [/leg extension/i, 'Leg Extension'], [/calf raise/i, 'Calf Raise'], [/bulgarian split squat/i, 'Bulgarian Split Squat'], [/^(overhead|shoulder|military) press( \(barbell\))?$/i, 'Overhead Press'], [/lateral raise/i, 'Lateral Raise'], [/face pull/i, 'Face Pull'], [/^bicep curl \(barbell\)|^barbell curl/i, 'Barbell Curl'], [/hammer curl/i, 'Hammer Curl'], [/triceps? push ?down/i, 'Triceps Pushdown'], [/skull ?crusher/i, 'Skull Crusher'], [/^plank$/i, 'Plank'], [/hanging (knee|leg) raise/i, 'Hanging Leg Raise'], [/cable crunch/i, 'Cable Crunch'], [/^(running|run)\b|treadmill/i, 'Running'], [/^cycling|bike/i, 'Cycling'], [/rowing|rower/i, 'Rowing machine'], [/elliptical/i, 'Elliptical'], [/stair/i, 'Stair climber'], [/^walking$/i, 'Walking'], [/jump rope/i, 'Jump rope']];
+const mapEx = n => { const c = n.trim(); const hit = EXMAP.find(x => x[0].test(c)); if (hit) return hit[1]; const lib = LIB.find(l => l.name.toLowerCase() === c.toLowerCase()); return lib ? lib.name : c; };
+function parseLifts(t, unit) {
+  const rows = csvRows(t); if (rows.length < 2) return null;
+  const hd = rows[0].map(x => x.trim().toLowerCase()); const ix = (...a) => hd.findIndex(h => a.includes(h));
+  const hevy = ix('exercise_title') >= 0, strong = !hevy && ix('exercise name') >= 0; if (!hevy && !strong) return null;
+  const I = hevy ? { d: ix('start_time'), e: ix('end_time'), n: ix('title'), x: ix('exercise_title'), t: ix('set_type'), w: ix('weight_kg', 'weight_lbs'), r: ix('reps'), k: ix('distance_km', 'distance_miles'), s: ix('duration_seconds') }
+    : { d: ix('date'), n: ix('workout name'), du: ix('duration', 'workout duration'), x: ix('exercise name'), t: ix('set order'), w: ix('weight'), wu: ix('weight unit'), r: ix('reps'), k: ix('distance'), ku: ix('distance unit'), s: ix('seconds') };
+  if (I.d < 0 || I.x < 0) return null;
+  const wLb = hevy ? hd[I.w] === 'weight_lbs' : unit === 'lb', kMi = hevy ? hd[I.k] === 'distance_miles' : unit === 'lb'; const S = {};
+  rows.slice(1).forEach(c => { const g = k => I[k] != null && I[k] >= 0 ? String(c[I[k]] == null ? '' : c[I[k]]).trim() : '';
+    const date = parseDT(g('d')), raw = g('x'); if (!date || !raw) return;
+    const reps = numV(g('r')), sec = numV(g('s')); let dist = numV(g('k')), w = numV(g('w'));
+    if (strong && I.wu >= 0 ? /lb/i.test(g('wu')) : wLb) w = w / KG_LB;
+    if (strong && I.ku >= 0 ? /mi/i.test(g('ku')) : kMi) dist *= 1.60934;
+    if (!reps && !sec && !dist) return;
+    const name = mapEx(raw), key = date + '|' + g('n');
+    const se = S[key] || (S[key] = { date, name: g('n') || 'Workout', dur: hevy ? Math.max(0, (parseDT(g('e')) || date) - date) : parseDur(g('du')), ex: {}, order: [] });
+    const ty = dist > 0 || (sec > 0 && autoType(name) === 'cardio') ? 'cardio' : sec > 0 && !reps ? 'time' : 'reps';
+    const x = se.ex[name] || (se.ex[name] = { name, type: ty, sets: [] }); if (!se.order.includes(name)) se.order.push(name);
+    const o = ty === 'cardio' ? { w: 0, r: Math.round(sec / 6) / 10, d: Math.round(dist * 100) / 100, c: 0 } : { w: Math.round(w * 100) / 100, r: Math.round(ty === 'time' ? sec : reps) };
+    if (hevy ? /warm/i.test(g('t')) : /^w$/i.test(g('t'))) o.wu = true; x.sets.push(o); });
+  const sessions = Object.values(S).map(se => ({ date: se.date, name: se.name, dur: se.dur, ex: se.order.map(n => se.ex[n]) })).sort((a, b) => a.date - b.date);
+  return sessions.length ? { sessions, src: hevy ? 'Hevy' : 'Strong' } : null;
+}
+function mergeLifts(s, res, fresh) {
+  const h = fresh ? {} : { ...s.history }, sm = fresh ? {} : { ...(s.sessMeta || {}) }, custom = [...(s.custom || [])], exMeta = { ...(s.exMeta || {}) };
+  const known = new Set([...LIB, ...custom].map(l => l.name)); let n = 0, dup = 0;
+  res.sessions.forEach(se => { let added = false;
+    se.ex.forEach(x => { const arr = h[x.name] || []; if (arr.some(y => Math.abs(y.date - se.date) < 60000)) return; h[x.name] = [...arr, { date: se.date, sets: x.sets }]; added = true;
+      if (!known.has(x.name)) { known.add(x.name); custom.push({ name: x.name, group: x.type === 'cardio' ? 'Cardio' : 'Custom', custom: true }); }
+      if (x.type !== 'reps' && autoType(x.name) !== x.type && !(exMeta[x.name] && exMeta[x.name].type)) exMeta[x.name] = { ...(exMeta[x.name] || {}), type: x.type }; });
+    if (added) { n++; sm[se.date] = se.dur ? { name: se.name, dur: se.dur } : { name: se.name }; } else dup++; });
+  Object.keys(h).forEach(k => { h[k] = h[k].slice().sort((a, b) => a.date - b.date); });
+  return { patch: { history: h, sessMeta: sm, custom, exMeta }, n, dup };
+}
 const LOC = () => LANG === 'fr' ? 'fr-CA' : 'en-US';
 const WD_FR = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
 const WD = { dimanche: 0, lundi: 1, mardi: 2, mercredi: 3, jeudi: 4, vendredi: 5, samedi: 6, sunday: 0, monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6 };
@@ -1072,19 +1185,20 @@ class Component extends DCLogic {
   state = this.initial();
   initial() {
     const routines = seedRoutines();
-    return { tab: 'today', screen: 'tabs', routines, history: seedHistory(routines), lastRoutineId: 'r3', workout: null, focus: null, restEnd: null, restTotal: 90, restAlert: false, now: Date.now(), libCtx: 'workout', libQuery: '', libGroup: 'All', custom: [], editId: null, progEx: 'Bench Press', metric: 'e1rm', unit: 'kg', haptics: true, sound: true, wake: true, autoRest: this.props.autoStartRest ?? true, restDefault: this.props.defaultRest ?? 90, summary: null, toast: null, discardArm: false, deleteArm: false, resetArm: false, installSeen: false, standalone: false, sessMeta: {}, progView: 'sessions', calOff: 0, openSess: null, delSessArm: false, clearArm: false, eraseArm: false, sessEdit: false, editBuf: {}, dayWarn: true, confirmStart: null, exMeta: {}, body: [], barLight: false, exSheet: null, hold: null, media: {}, infoName: null, infoFrom: null, bmRange: '7d', bodyBuf: {}, bodyDelArm: null, lang: (typeof navigator !== 'undefined' && (navigator.language || '').toLowerCase().startsWith('fr')) ? 'fr' : 'en' };
+    return { tab: 'today', screen: 'tabs', routines, history: seedHistory(routines), lastRoutineId: 'r3', workout: null, focus: null, restEnd: null, restTotal: 90, restAlert: false, now: Date.now(), libCtx: 'workout', libQuery: '', libGroup: 'All', custom: [], editId: null, progEx: 'Bench Press', metric: 'e1rm', unit: 'kg', haptics: true, sound: true, wake: true, autoRest: this.props.autoStartRest ?? true, restDefault: this.props.defaultRest ?? 90, summary: null, toast: null, discardArm: false, deleteArm: false, resetArm: false, installSeen: false, standalone: false, sessMeta: {}, progView: 'sessions', calOff: 0, openSess: null, delSessArm: false, clearArm: false, eraseArm: false, sessEdit: false, editBuf: {}, dayWarn: true, confirmStart: null, exMeta: {}, body: [], barLight: false, exSheet: null, hold: null, media: {}, infoName: null, infoFrom: null, bmRange: '7d', bodyBuf: {}, bodyDelArm: null, onboarded: true, remind: { on: false, days: [1, 3, 5], t: '18:00' }, lang: (typeof navigator !== 'undefined' && (navigator.language || '').toLowerCase().startsWith('fr')) ? 'fr' : 'en' };
   }
   componentDidMount() {
     let d = null;
     try { d = JSON.parse(localStorage.getItem('barlog-v1') || 'null'); } catch (e) {}
     const standalone = !!(window.navigator.standalone || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches));
-    const extra = d && d.routines ? { ...d, restAlert: false } : {};
+    const extra = d && d.routines ? { ...d, restAlert: false, onboarded: d.onboarded !== false } : { onboarded: false, ob: { step: 0 } };
     if (extra.workout) extra.screen = 'workout';
     this.setState({ ...extra, standalone });
     this.iv = setInterval(() => this.tick(), 250);
-    this.onVis = () => { this.save(); this.syncWake(); this.tick(); if (document.visibilityState === 'visible') this.checkUpdate(); };
+    this.onVis = () => { this.save(); this.syncWake(); this.tick(); this._rnAt = undefined; this.syncRestNotif(); if (document.visibilityState === 'visible') this.checkUpdate(); };
     this.checkUpdate();
     this.loadMedia();
+    setTimeout(() => this.syncReminders(), 600);
     document.addEventListener('visibilitychange', this.onVis);
     window.addEventListener('pagehide', this.onVis);
     try { if ('serviceWorker' in navigator && location.protocol === 'https:' && window.self === window.top) navigator.serviceWorker.register('./sw.js').catch(() => {}); } catch (e) {}
@@ -1096,6 +1210,8 @@ class Component extends DCLogic {
     this._snap = { ...st };
     if (PK.some(k => prev[k] !== st[k])) this.save();
     if (prev.workout !== st.workout || prev.wake !== st.wake) this.syncWake();
+    if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.workout !== st.workout || prev.restNotif !== st.restNotif) this.syncRestNotif();
+    if (prev.remind !== st.remind || prev.lang !== st.lang) this.syncReminders();
   }
   save() { const o = {}; PK.forEach(k => o[k] = this.state[k]); try { localStorage.setItem('barlog-v1', JSON.stringify(o)); } catch (e) {} }
   syncWake() {
@@ -1209,6 +1325,7 @@ class Component extends DCLogic {
     const lastW = [...hist].reverse().find(se => se.sets.some(x => x.w > 0));
     const ws = last ? work(last.sets).filter(x => x.w > 0) : [];
     const ty = this.meta(name).type;
+    if (ty === 'cardio') { const k = target == null && !last ? 1 : n; const cs = []; for (let i = 0; i < k; i++) { const q = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null; cs.push({ w: 0, r: q ? q.r : (target || 20), d: q ? q.d || 0 : 0, c: q ? q.c || 0 : 0, pw: q ? 0 : null, pr: q ? q.r : null, pd: q ? q.d || 0 : 0, warm: false, done: false }); } return { name, target: target || null, up: false, sets: cs, ss: !!ss }; }
     const up = !isT(ty) && !!(target && ws.length && ws.every(x => x.r >= target));
     const inc = this.inc(); const sets = [];
     for (let i = 0; i < n; i++) {
@@ -1271,7 +1388,7 @@ class Component extends DCLogic {
   check(ei, si) {
     const t = Date.now(); if (this.lastCheck && t - this.lastCheck < 300) return; this.lastCheck = t;
     this.unlockAudio();
-    let fx = null;
+    let fx = null, prInfo = null;
     this.updW((w, s) => {
       const ex = w.ex[ei]; const set = ex.sets[si]; set.wStr = null; set.rStr = null;
       if (set.done) { set.done = false; set.isPR = false; return { focus: { ei, si } }; }
@@ -1281,6 +1398,7 @@ class Component extends DCLogic {
       let best = this.bestHist(ex.name, s.history);
       ex.sets.forEach((x, j) => { if (j !== si && x.done && !x.warm) best = Math.max(best, e1(x.w, er(x))); });
       set.isPR = !isT(ty) && !set.warm && set.w > 0 && e1(set.w, er(set)) > best + 0.01;
+      if (set.isPR) prInfo = { name: ex.name, w: set.w, r: er(set), e: e1(set.w, er(set)), prev: best };
       fx = set.isPR ? 'pr' : 'log';
       const o = { focus: this.nextFocus(w, ei, si) };
       let rest = true;
@@ -1291,10 +1409,10 @@ class Component extends DCLogic {
         if (nf) { o.focus = nf; rest = false; }
         else { for (let k = ga; k <= gb && !nf; k++) { const j = w.ex[k].sets.findIndex(x => !x.done); if (j >= 0) nf = { ei: k, si: j }; } if (nf) o.focus = nf; }
       }
-      if (s.autoRest && rest) { clearTimeout(this.ra); o.restEnd = Date.now() + s.restDefault * 1000; o.restTotal = s.restDefault; o.restAlert = false; }
+      if (s.autoRest && rest && ty !== 'cardio') { clearTimeout(this.ra); o.restEnd = Date.now() + s.restDefault * 1000; o.restTotal = s.restDefault; o.restAlert = false; }
       return o;
     });
-    if (fx === 'pr') { this.buzz([30, 60, 30]); this.tone([[660, 0, 0.1], [990, 0.1, 0.22]]); } else if (fx === 'log') this.buzz(15);
+    if (fx === 'pr') { this.buzz([40, 50, 40, 50, 120]); this.tone([[660, 0, 0.1], [880, 0.1, 0.1], [1320, 0.2, 0.4]]); this.setState({ prFx: { ...prInfo, t: Date.now() } }); clearTimeout(this.prT); this.prT = setTimeout(() => this.setState({ prFx: null }), 2700); } else if (fx === 'log') this.buzz(15);
   }
   toggleWarm(ei, si) { this.updW(w => { const x = w.ex[ei].sets[si]; x.warm = !x.warm; if (x.warm) x.isPR = false; }); }
   adj(ei, si, f, d) { this.updW(w => { const x = w.ex[ei].sets[si]; x[f] = Math.max(0, Math.round((x[f] + d) * 1000) / 1000); x.wStr = null; x.rStr = null; }); }
@@ -1304,7 +1422,7 @@ class Component extends DCLogic {
     this.updW((w, s) => {
       const ex = w.ex[ei]; const last = ex.sets[ex.sets.length - 1] || { w: 0, r: 8 };
       const hl = (s.history[ex.name] || []).slice(-1)[0]; const p = hl && hl.sets[ex.sets.length];
-      ex.sets.push({ w: last.w, r: last.r, r2: last.r2, pw: p ? p.w : null, pr: p ? p.r : null, warm: false, done: false });
+      ex.sets.push({ w: last.w, r: last.r, r2: last.r2, d: last.d, c: last.c, pw: p ? p.w : null, pr: p ? p.r : null, warm: false, done: false });
       return { focus: { ei, si: ex.sets.length - 1 } };
     });
   }
@@ -1319,7 +1437,7 @@ class Component extends DCLogic {
       sets += ds.length;
       const last = (s.history[ex.name] || []).slice(-1)[0];
       if (last) { hasPrev = true; if (!isT(ty)) prevVol += work(last.sets).reduce((a, x) => a + x.w * x.r, 0); }
-      const entry = ds.map(x => { const o = { w: x.w, r: isU(ty) ? Math.min(x.r, x.r2 != null ? x.r2 : x.r) : x.r }; if (isU(ty)) { o.l = x.r; o.rr = x.r2 != null ? x.r2 : x.r; } if (x.warm) o.wu = true; return o; });
+      const entry = ds.map(x => { const o = { w: x.w, r: isU(ty) ? Math.min(x.r, x.r2 != null ? x.r2 : x.r) : x.r }; if (isU(ty)) { o.l = x.r; o.rr = x.r2 != null ? x.r2 : x.r; } if (ty === 'cardio') { o.w = 0; o.r = x.r; o.d = x.d || 0; o.c = x.c || 0; } if (x.warm) o.wu = true; return o; });
       entry.forEach((x, i) => { if (x.wu) return; if (!isT(ty)) vol += x.w * x.r; if (ds[i].isPR && (!prs[ex.name] || e1(x.w, x.r) > prs[ex.name].e)) prs[ex.name] = { name: ex.name, w: x.w, r: x.r, e: e1(x.w, x.r) }; });
       h[ex.name] = [...(h[ex.name] || []), { date: w.start, sets: entry }];
       exs.push({ name: ex.name, sets: entry });
@@ -1415,6 +1533,123 @@ class Component extends DCLogic {
       this.setState({ history: h, sessMeta: m, screen: 'tabs', tab: 'progress', openSess: null }); this.flash(L('Session deleted'));
     });
   }
+  nat() { try { const C = window.Capacitor; return C && C.isNativePlatform && C.isNativePlatform() ? (C.Plugins || {}) : null; } catch (e) { return null; } }
+  swMsg(m) { try { navigator.serviceWorker && navigator.serviceWorker.controller && navigator.serviceWorker.controller.postMessage(m); } catch (e) {} }
+  askNotif() {
+    const P = this.nat(); if (P && P.LocalNotifications) return P.LocalNotifications.requestPermissions().then(r => r.display === 'granted').catch(() => false);
+    if (typeof Notification === 'undefined') return Promise.resolve(false); if (Notification.permission === 'granted') return Promise.resolve(true);
+    return Promise.resolve(Notification.requestPermission()).then(p => p === 'granted').catch(() => false);
+  }
+  toggleRestNotif() {
+    if (this.state.restNotif) { this.setState({ restNotif: false }); return; }
+    this.askNotif().then(ok => { if (ok) { this.setState({ restNotif: true }); this.flash(LANG === 'fr' ? 'Notifications activées' : 'Notifications on'); } else this.flash(LANG === 'fr' ? 'Notifications indisponibles (installe l’app sur l’écran d’accueil)' : 'Notifications unavailable (install the app to your home screen)'); });
+  }
+  toggleRemind() { const on = !(this.state.remind || {}).on; if (on && this.nat()) this.askNotif(); this.setState(st => ({ remind: { days: [1, 3, 5], t: '18:00', ...(st.remind || {}), on } })); }
+  syncRestNotif() {
+    const s = this.state; const at = s.restNotif && s.workout && s.restEnd && !s.restAlert && s.restEnd > Date.now() + 1500 ? s.restEnd : null;
+    if (this._rnAt === at) return; this._rnAt = at;
+    const fr = LANG === 'fr'; const f = s.focus && s.workout && s.workout.ex[s.focus.ei];
+    const title = fr ? 'Repos terminé' : 'Rest over'; const body = f ? (fr ? 'À toi : ' : 'Up next: ') + f.name + (fr ? ', série ' : ', set ') + (s.focus.si + 1) : (fr ? 'Prochaine série' : 'Next set');
+    const P = this.nat(); const LN = P && P.LocalNotifications;
+    if (LN) { LN.cancel({ notifications: [{ id: 1001 }] }).catch(() => {}).then(() => { if (at) LN.schedule({ notifications: [{ id: 1001, title, body, schedule: { at: new Date(at), allowWhileIdle: true } }] }).catch(() => {}); }); return; }
+    this.swMsg(at && document.visibilityState === 'hidden' ? { type: 'rest', at, title, body } : { type: 'rest-cancel' });
+  }
+  syncReminders() {
+    const P = this.nat(); const LN = P && P.LocalNotifications; if (!LN) return;
+    const r = this.state.remind || {}; const key = JSON.stringify(r) + LANG; if (this._rmKey === key) return; this._rmKey = key;
+    const fr = LANG === 'fr'; const [hh, mm] = String(r.t || '18:00').split(':').map(Number);
+    LN.cancel({ notifications: [0, 1, 2, 3, 4, 5, 6].map(d => ({ id: 2000 + d })) }).catch(() => {}).then(() => { if (!r.on || !(r.days || []).length) return;
+      LN.schedule({ notifications: r.days.map(d => ({ id: 2000 + d, title: 'Barlog', body: fr ? 'C’est jour d’entraînement. Ta séance t’attend.' : 'Training day. Your session is ready.', schedule: { on: { weekday: d + 1, hour: hh || 0, minute: mm || 0 }, allowWhileIdle: true } })) }).catch(() => {}); });
+  }
+  importLifts() {
+    const i = document.createElement('input'); i.type = 'file'; i.accept = '.csv,text/csv,text/plain,.json,application/json';
+    i.onchange = () => { const f = i.files && i.files[0]; if (!f) return; f.text().then(t => { t = t.replace(/^\uFEFF/, ''); const fr = LANG === 'fr'; const s = this.state;
+      if (/^\s*\{/.test(t)) { const d = JSON.parse(t); if (!d || !d.routines || !d.history) throw 0; this.setState({ ...d, sessMeta: d.sessMeta || {}, custom: d.custom || [], screen: d.workout ? 'workout' : 'tabs', tab: 'today', restAlert: false, calOff: 0, onboarded: true, ob: null }); this.flash(L('Data imported')); return; }
+      const res = parseLifts(t, s.unit); if (!res) throw 0;
+      const inOb = s.onboarded === false; const m = mergeLifts(s, res, inOb && !(s.ob && s.ob.imported));
+      this.setState({ ...m.patch, ...(inOb ? { ob: { ...(s.ob || {}), imported: true, step: Math.max(1, (s.ob || {}).step || 0) } } : {}) });
+      this.flash(m.n + (fr ? ' séances importées · ' : ' sessions imported · ') + res.src + (m.dup ? ' · ' + m.dup + (fr ? ' déjà là' : ' already there') : ''));
+    }).catch(() => this.flash(LANG === 'fr' ? 'Fichier non reconnu (CSV Strong ou Hevy attendu)' : 'File not recognized (Strong or Hevy CSV expected)')); };
+    i.click();
+  }
+  finishOb(pick) {
+    const s = this.state; const ob = s.ob || {}; const t = TEMPLATES.find(x => x.id === pick); const base = Date.now();
+    const rs = t ? t.r.map(([n, ex], i) => ({ id: 'r' + base + '_' + i, name: n, ex: ex.map(([name, sets, reps, ss]) => ({ name, sets, reps, ss: !!ss })) })) : [];
+    const DAYS = { 2: [1, 4], 3: [1, 3, 5], 4: [1, 2, 4, 5], 5: [1, 2, 3, 4, 5], 6: [1, 2, 3, 4, 5, 6] };
+    const keep = !!ob.imported;
+    this.setState({ onboarded: true, ob: null, routines: rs, lastRoutineId: rs.length ? rs[rs.length - 1].id : null, history: keep ? s.history : {}, sessMeta: keep ? s.sessMeta : {}, body: keep ? s.body : [],
+      restDefault: { strength: 180, muscle: 90, fit: 75, lean: 60 }[ob.goal] || 90, goal: ob.goal || null, level: ob.level || null,
+      remind: { ...(s.remind || {}), on: false, days: DAYS[ob.days] || [1, 3, 5], t: (s.remind && s.remind.t) || '18:00' }, screen: 'tabs', tab: 'today' });
+    this.flash(t ? L('Program added') : (LANG === 'fr' ? 'C’est parti' : 'Let’s go'));
+  }
+  cardioTxt(y) { const kg = this.state.unit === 'kg'; return [y.r ? trim(y.r) + ' min' : null, y.d ? trim(Math.round((kg ? y.d : y.d / 1.60934) * 100) / 100) + (kg ? ' km' : ' mi') : null, y.c ? y.c + ' kcal' : null].filter(Boolean).join(' · ') || '—'; }
+  typeC(ei, si, f, val) { this.updW((w, s) => { const x = w.ex[ei].sets[si]; x[f + 'Str'] = val; let v = parseFloat(String(val).replace(',', '.')); if (val === '') v = 0; if (isNaN(v)) return; if (f === 'd' && s.unit !== 'kg') v *= 1.60934; x[f] = f === 'c' ? Math.round(v) : v; }); }
+  adjC(ei, si, f, d) { this.updW(w => { const x = w.ex[ei].sets[si]; x[f] = Math.max(0, Math.round(((x[f] || 0) + d) * 1000) / 1000); x[f + 'Str'] = null; }); }
+  cardioSet(ei, si, x, kg) {
+    const mi = !kg; const dd = v => trim(Math.round((mi ? v / 1.60934 : v) * 100) / 100); const step = mi ? 0.25 * 1.60934 : 0.5; const sl = mi ? '0.25 mi' : '0.5 km';
+    return { isUni: true, isTime: false, hasPlates: false, isPR: false, rIm: 'decimal',
+      wDisp: x.rStr != null ? x.rStr : (x.r ? trim(x.r) : ''), rDisp: x.dStr != null ? x.dStr : (x.d ? dd(x.d) : ''), r2Disp: x.cStr != null ? x.cStr : (x.c ? String(x.c) : ''),
+      onW: e => this.typeC(ei, si, 'r', e.target.value), onR: e => this.typeC(ei, si, 'd', e.target.value), onR2: e => this.typeC(ei, si, 'c', e.target.value),
+      prev: x.pr != null ? trim(x.pr) + '′' + (x.pd ? ' ' + dd(x.pd) : '') : '—',
+      wMinus: () => this.adjC(ei, si, 'r', -1), wPlus: () => this.adjC(ei, si, 'r', 1), rMinus: () => this.adjC(ei, si, 'd', -step), rPlus: () => this.adjC(ei, si, 'd', step),
+      wmL: '−1′', wpL: '+1′', rmL: '−' + sl, rpL: '+' + sl };
+  }
+  prEl(p) {
+    const h = React.createElement; const fr = LANG === 'fr'; const M = "'JetBrains Mono', monospace";
+    const sparks = Array.from({ length: 16 }, (_, i) => h('span', { key: i, style: { position: 'absolute', left: -2, top: -11, width: 4, height: i % 2 ? 14 : 22, borderRadius: 2, background: i % 3 ? ACC : '#FFFFFF', '--a': (i * 22.5) + 'deg', animation: 'blSpark 950ms cubic-bezier(.15,.7,.3,1) ' + (i % 2 ? 70 : 0) + 'ms both' } }));
+    return h('div', { key: p.t, style: { position: 'fixed', left: 0, right: 0, top: 'calc(env(safe-area-inset-top) + 90px)', display: 'flex', justifyContent: 'center', zIndex: 70, pointerEvents: 'none' } },
+      h('div', { style: { position: 'relative', animation: 'blPrIn 2600ms cubic-bezier(.2,.8,.2,1) both' } },
+        h('div', { style: { position: 'absolute', left: '50%', top: '50%', width: 0, height: 0 } }, sparks),
+        h('div', { style: { position: 'relative', minWidth: 260, maxWidth: 340, padding: '18px 24px', borderRadius: 24, background: ACC, color: '#0A0A0C', boxShadow: '0 20px 60px rgba(0,0,0,.65), 0 0 0 6px ' + accA(0.2), display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, textAlign: 'center' } },
+          h('span', { style: { fontSize: 12, fontWeight: 800, letterSpacing: '0.18em' } }, fr ? 'NOUVEAU RECORD' : 'NEW RECORD'),
+          h('span', { style: { fontSize: 20, fontWeight: 800, lineHeight: '24px' } }, p.name),
+          h('span', { style: { fontFamily: M, fontSize: 30, fontWeight: 700, lineHeight: '36px' } }, this.dispW(p.w) + ' ' + this.state.unit + ' × ' + p.r),
+          h('span', { style: { fontFamily: M, fontSize: 13, fontWeight: 600, opacity: 0.75 } }, 'e1RM ' + this.dispW(p.e) + (p.prev > 0 ? '  ·  +' + this.dispW(p.e - p.prev) + ' ' + this.state.unit : '')))));
+  }
+  extraVals(s) {
+    const fr = LANG === 'fr'; const P = this.nat(); const native = !!(P && P.LocalNotifications);
+    const tgl = (label, sub, on, fn) => ({ label, sub, track: on ? ACC : '#24242B', knob: on ? '#0A0A0C' : '#9C9CA8', justify: on ? 'flex-end' : 'flex-start', onClick: fn });
+    const rm = { on: false, days: [1, 3, 5], t: '18:00', ...(s.remind || {}) }; const setRm = p => this.setState(st => ({ remind: { ...rm, ...(st.remind || {}), ...p } }));
+    const DL = fr ? ['L', 'M', 'M', 'J', 'V', 'S', 'D'] : ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    const ob = s.onboarded === false ? (s.ob || { step: 0 }) : null; const st = ob ? ob.step || 0 : 0;
+    const obSet = p => this.setState(x => ({ ob: { ...(x.ob || { step: 0 }), ...p } }));
+    const GO = [['strength', fr ? 'Force' : 'Strength', fr ? 'Soulever plus lourd sur les gros mouvements' : 'Lift heavier on the big lifts'], ['muscle', fr ? 'Prise de muscle' : 'Build muscle', fr ? 'Volume et hypertrophie' : 'Volume and hypertrophy'], ['fit', fr ? 'Forme générale' : 'General fitness', fr ? 'Rester fort et en santé' : 'Stay strong and healthy'], ['lean', fr ? 'Sèche / perte de poids' : 'Lose fat', fr ? 'Garder le muscle, suivre ton poids' : 'Keep muscle, track your weight']];
+    const LV = [['beg', fr ? 'Débutant' : 'Beginner', fr ? 'Moins d’un an de musculation' : 'Less than a year of lifting'], ['int', fr ? 'Intermédiaire' : 'Intermediate', fr ? '1 à 3 ans, tu maîtrises les mouvements' : '1–3 years, you know the lifts'], ['adv', fr ? 'Avancé' : 'Advanced', fr ? 'Plus de 3 ans, programmes structurés' : '3+ years, structured programs']];
+    const DS = { 2: fr ? 'Le minimum efficace' : 'The effective minimum', 3: fr ? 'Le classique, facile à tenir' : 'The classic, easy to stick to', 4: fr ? 'Chaque muscle 2× par semaine' : 'Each muscle twice a week', 5: fr ? 'Beaucoup de volume' : 'Lots of volume', 6: fr ? 'Pour les mordus' : 'For the dedicated' };
+    const DY = [2, 3, 4, 5, 6].map(n => [n, n + (fr ? ' jours / semaine' : ' days / week'), DS[n]]);
+    const UN = [['kg', fr ? 'Kilogrammes (kg)' : 'Kilograms (kg)', fr ? 'Disques de 20, 10, 5, 2,5 kg' : 'Plates of 20, 10, 5, 2.5 kg'], ['lb', fr ? 'Livres (lb)' : 'Pounds (lb)', fr ? 'Disques de 45, 25, 10, 5 lb' : 'Plates of 45, 25, 10, 5 lb']];
+    const STEPS = { 1: ['goal', fr ? 'Ton objectif ?' : 'Your goal?', fr ? 'Ça règle ton temps de repos par défaut.' : 'Sets your default rest time.', GO], 2: ['level', fr ? 'Ton niveau ?' : 'Your level?', fr ? 'Pour te proposer le bon programme.' : 'To suggest the right program.', LV], 3: ['days', fr ? 'Combien de séances par semaine ?' : 'How many sessions a week?', fr ? 'Tu pourras changer à tout moment.' : 'You can change this anytime.', DY], 4: ['unit', fr ? 'Tes unités ?' : 'Your units?', fr ? 'Pour les charges et le calculateur de disques.' : 'For loads and the plate calculator.', UN] };
+    const cur = ob ? STEPS[st] : null;
+    const rec = (() => { const d = (ob && ob.days) || 3, lv = (ob && ob.level) || 'beg', g = (ob && ob.goal) || 'muscle'; if (d <= 2) return 'fb'; if (d === 3) return g === 'strength' && lv !== 'adv' ? 'st' : lv === 'beg' ? 'fb' : 'ppl'; if (d === 4) return 'ul'; return 'ppl'; })();
+    const pick = ob && ob.pick !== undefined ? ob.pick : rec; const pickT = TEMPLATES.find(t => t.id === pick);
+    const lab = (arr, k) => { const x = arr.find(a => a[0] === k); return x ? x[1] : null; };
+    const selStyle = on => ({ bg: on ? accA(0.08) : '#16161A', border: on ? ACC : '#24242B', dot: on ? ACC : 'transparent' });
+    return {
+      prOn: !!s.prFx, prEl: s.prFx ? this.prEl(s.prFx) : null,
+      obOn: !!ob, obIsWelcome: !!ob && st === 0, obIsChoice: !!cur, obIsFinal: !!ob && st === 5, obCanBack: !!ob && st > 0,
+      obBack: () => obSet({ step: Math.max(0, st - 1) }), obDots: [1, 2, 3, 4, 5].map(i => ({ bg: st >= i ? ACC : '#24242B' })),
+      obWTitle: fr ? 'Note tes séances. Vois tes progrès.' : 'Log your lifts. Watch yourself progress.',
+      obWSub: fr ? 'Quatre questions et ton programme est prêt. Tout reste sur ton téléphone, sans compte.' : 'Four questions and your program is ready. Everything stays on your phone, no account.',
+      obStartLabel: fr ? 'Commencer' : 'Get started', obNext: () => obSet({ step: 1 }),
+      obImportLabel: fr ? 'J’ai déjà un historique (Strong, Hevy, Barlog)' : 'I have history (Strong, Hevy, Barlog)', obImportApp: () => this.importLifts(),
+      obDemoLabel: fr ? 'Explorer avec des données d’exemple' : 'Explore with sample data', obDemo: () => this.setState({ onboarded: true, ob: null }),
+      obTitle: cur ? cur[1] : '', obSub: cur ? (ob.imported && st === 1 ? (fr ? 'Historique importé ✓ · ' : 'History imported ✓ · ') : '') + cur[2] : '',
+      obOpts: cur ? cur[3].map(([k, label, sub]) => { const v = ob[cur[0]] != null ? ob[cur[0]] : cur[0] === 'unit' ? s.unit : null; return { label, sub, ...selStyle(v === k), onClick: () => { const p = { [cur[0]]: k, step: st + 1 }; if (cur[0] !== 'unit') p.pick = undefined; else this.setState({ unit: k }); obSet(p); } }; }) : [],
+      obFTitle: fr ? 'Ton programme' : 'Your program',
+      obFSub: ob ? [lab(GO, ob.goal), lab(LV, ob.level), (ob.days || 3) + (fr ? ' j / sem.' : ' d / wk')].filter(Boolean).join(' · ') + (fr ? '. Choisis celui que tu veux.' : '. Pick the one you want.') : '',
+      obProgs: TEMPLATES.map(t => ({ name: fr ? t.fr : t.name, meta: fr ? t.metaFr : t.meta, days: t.r.map(r => r[0]).join(' · ') + ' — ' + (fr ? t.descFr : t.desc), rec: t.id === rec, recLabel: fr ? 'RECOMMANDÉ' : 'RECOMMENDED', ...selStyle(pick === t.id), onClick: () => obSet({ pick: t.id }) })),
+      obNoneLabel: fr ? 'Partir de zéro (je crée mes routines)' : 'Start from scratch (I’ll build my own)', obNoneBorder: pick === null ? ACC : '#24242B', obNoneBg: pick === null ? accA(0.08) : 'transparent', obNone: () => obSet({ pick: null }),
+      obFinishLabel: pickT ? (fr ? 'Commencer avec ' + pickT.fr : 'Start with ' + pickT.name) : (fr ? 'Commencer' : 'Start'), obFinish: () => this.finishOb(pick),
+      nfTitle: 'Notifications',
+      nfToggles: [tgl(fr ? 'Fin de repos' : 'Rest finished', fr ? 'Une notification quand le repos est fini, même écran verrouillé.' : 'A notification when rest is over, even with the screen locked.', !!s.restNotif, () => this.toggleRestNotif()),
+        tgl(fr ? 'Rappels d’entraînement' : 'Training reminders', fr ? 'Les jours choisis, à l’heure choisie.' : 'On the days and at the time you pick.', !!rm.on, () => this.toggleRemind())],
+      rmOn: !!rm.on, rmDays: [1, 2, 3, 4, 5, 6, 0].map((d, i) => { const on = (rm.days || []).includes(d); return { label: DL[i], bg: on ? ACC : 'transparent', color: on ? '#0A0A0C' : '#9C9CA8', border: on ? ACC : '#33333C', onClick: () => setRm({ days: on ? rm.days.filter(x => x !== d) : [...(rm.days || []), d] }) }; }),
+      rmTimeLabel: fr ? 'Heure' : 'Time', rmTime: rm.t || '18:00', onRmTime: e => setRm({ t: e.target.value || '18:00' }),
+      nfHasHint: !native, nfHint: fr ? 'Version web : la notification de fin de repos marche sur Android quand l’app est installée. Sur iPhone, Apple bloque les notifications programmées des web-apps — repos et rappels fonctionneront dans l’app App Store.' : 'Web version: the rest notification works on Android when the app is installed. On iPhone, Apple blocks scheduled notifications for web apps — rest and reminders will work in the App Store app.',
+      importLifts: () => this.importLifts(), ilLabel: fr ? 'Importer depuis Strong ou Hevy (CSV)' : 'Import from Strong or Hevy (CSV)',
+      ilHint: fr ? 'Strong : Profil → Réglages → Exporter les données. Hevy : Profil → Réglages → Exporter et importer → Exporter les entraînements. Ton historique est ajouté, rien n’est effacé. Si le fichier n’indique pas l’unité, tes réglages (' + s.unit + ') sont utilisés.' : 'Strong: Profile → Settings → Export data. Hevy: Profile → Settings → Export & import → Export workouts. History is added, nothing is erased. If the file has no unit, your setting (' + s.unit + ') is used.'
+    };
+  }
   renderVals() {
     ACC = this.state.accent || '#CCFF00'; try { document.documentElement.style.setProperty('--acc', ACC); } catch (e) {}
     const s = this.state; const now = s.now; const kg = s.unit === 'kg';
@@ -1447,20 +1682,21 @@ class Component extends DCLogic {
     const tagsW = w ? ssTags(w.ex) : [];
     const wEx = w ? w.ex.map((ex, ei) => {
       const d = ex.sets.filter(x => x.done).length; doneCount += d; total += ex.sets.length;
-      const m = this.meta(ex.name); const uni = isU(m.type), tim = isT(m.type);
-      const cols = uni ? '30px 44px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 48px' : '36px 52px minmax(0,1fr) minmax(0,1fr) 52px';
+      const m = this.meta(ex.name); const uni = isU(m.type), tim = isT(m.type), car = m.type === 'cardio';
+      const cols = uni || car ? '30px 44px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 48px' : '36px 52px minmax(0,1fr) minmax(0,1fr) 52px';
       return {
         name: ex.name, progress: d + '/' + ex.sets.length, progColor: d === ex.sets.length && d ? ACC : '#9C9CA8',
         up: !!ex.up, upText: '+' + (kg ? '2.5 kg' : '5 lb') + L(' · you hit every rep last time'),
         hasSS: !!tagsW[ei], ssTag: tagsW[ei] ? L('SUPERSET') + ' ' + tagsW[ei] : '', hasNote: !!m.note, note: m.note,
-        onMenu: go({ exSheet: ei }), cols, isUni: uni, h0: uni ? '#' : L('SET'), h3: tim ? 'R s' : 'R', h2: uni ? (tim ? 'L s' : 'L') : tim ? L('SEC') : 'REPS',
+        onMenu: go({ exSheet: ei }), cols, isUni: uni || car, h0: uni || car ? '#' : L('SET'), h1: car ? 'MIN' : s.unit.toUpperCase(), h3: car ? 'KCAL' : tim ? 'R s' : 'R', h2: car ? (kg ? 'KM' : 'MI') : uni ? (tim ? 'L s' : 'L') : tim ? L('SEC') : 'REPS',
         onAddSet: () => this.addSet(ei),
         sets: ex.sets.map((x, si) => {
           const active = !!(s.focus && s.focus.ei === ei && s.focus.si === si && !x.done);
           const hOn = !!(s.hold && s.hold.ei === ei && s.hold.si === si);
           const pc = m.bar && active && x.w > 0 ? plateCalc(parseFloat(this.dispW(x.w)), kg, s.barLight) : null;
           const big = kg ? 20 : 45;
-          return {
+          const o = {
+            wmL: '−' + (kg ? '2.5' : '5'), wpL: '+' + (kg ? '2.5' : '5'), rIm: 'numeric',
             num: x.warm ? 'W' : String(si + 1), numBg: x.warm ? '#24242B' : 'transparent',
             prev: x.pw != null ? (tim ? (x.pw ? this.dispW(x.pw) + '·' : '') + x.pr + 's' : this.dispW(x.pw) + '×' + x.pr) : '—',
             wDisp: x.wStr != null ? x.wStr : (x.w ? this.dispW(x.w) : ''), rDisp: x.rStr != null ? x.rStr : String(x.r),
@@ -1486,6 +1722,7 @@ class Component extends DCLogic {
             plates: !pc ? [] : pc.below ? [{ label: L('Below bar weight'), bg: 'transparent', color: '#9C9CA8' }] : !pc.list.length ? [{ label: L('Empty bar'), bg: 'transparent', color: '#9C9CA8' }]
               : pc.list.map(p => ({ label: trim(p), bg: p >= big ? '#FFFFFF' : '#24242B', color: p >= big ? '#0A0A0C' : '#FFFFFF' })).concat(pc.rest ? [{ label: '+' + trim(Math.round(pc.rest * 100) / 100) + '?', bg: 'transparent', color: '#9C9CA8' }] : [])
           };
+          return car ? Object.assign(o, this.cardioSet(ei, si, x, kg)) : o;
         })
       };
     }) : [];
@@ -1501,7 +1738,7 @@ class Component extends DCLogic {
     const er = routines.find(r => r.id === s.editId);
     const tagsR = er ? ssTags(er.ex) : [];
     const rEx = er ? er.ex.map((e, i) => ({ num: String(i + 1), name: e.name, sets: e.sets, reps: e.reps, upOpacity: i ? 1 : 0.3,
-      hasSS: !!tagsR[i], ssTag: tagsR[i] ? L('SUPERSET') + ' ' + tagsR[i] : '', repsUnit: isT(this.meta(e.name).type) ? 's' : L('reps'),
+      hasSS: !!tagsR[i], ssTag: tagsR[i] ? L('SUPERSET') + ' ' + tagsR[i] : '', repsUnit: this.meta(e.name).type === 'cardio' ? 'min' : isT(this.meta(e.name).type) ? 's' : L('reps'),
       canLink: i < er.ex.length - 1, linkLabel: e.ss ? L('Superset ✓ · tap to unlink') : L('+ Superset with next'), linkColor: e.ss ? ACC : '#9C9CA8', linkBorder: e.ss ? ACC : '#33333C',
       onLink: () => this.updR(c => { c.ex[i].ss = !c.ex[i].ss; }), onMenu: go({ rSheet: i }), onInfo: () => this.openInfo(e.name),
       onUp: () => i && this.updR(c => { const t = c.ex[i]; c.ex[i] = c.ex[i - 1]; c.ex[i - 1] = t; }),
@@ -1570,7 +1807,7 @@ class Component extends DCLogic {
     const sessCount = new Set(Object.values(s.history).flatMap(a => a.map(x => x.date))).size;
     const showTabs = s.screen === 'tabs';
     const meta = s.sessMeta || {};
-    const fmtSet = (name, y) => { const t = this.meta(name).type; const wp = y.w ? this.dispW(y.w) + ' ' + s.unit + ' × ' : ''; if (t === 'timeuni') return (y.w ? this.dispW(y.w) + ' ' + s.unit + ' · ' : '') + (y.l != null ? y.l + ' / ' + y.rr : y.r) + ' s ' + L('per side'); if (t === 'time') return (y.w ? this.dispW(y.w) + ' ' + s.unit + ' · ' : '') + y.r + ' s'; if (t === 'uni') return wp + (y.l != null ? y.l + ' / ' + y.rr : y.r) + ' ' + L('per side'); return wp + y.r + (y.w ? '' : L(' reps')); };
+    const fmtSet = (name, y) => { const t = this.meta(name).type; if (t === 'cardio') return this.cardioTxt(y); const wp = y.w ? this.dispW(y.w) + ' ' + s.unit + ' × ' : ''; if (t === 'timeuni') return (y.w ? this.dispW(y.w) + ' ' + s.unit + ' · ' : '') + (y.l != null ? y.l + ' / ' + y.rr : y.r) + ' s ' + L('per side'); if (t === 'time') return (y.w ? this.dispW(y.w) + ' ' + s.unit + ' · ' : '') + y.r + ' s'; if (t === 'uni') return wp + (y.l != null ? y.l + ' / ' + y.rr : y.r) + ' ' + L('per side'); return wp + y.r + (y.w ? '' : L(' reps')); };
     const byDate = {};
     Object.entries(s.history).forEach(([name, arr]) => arr.forEach(se => { (byDate[se.date] = byDate[se.date] || []).push({ name, sets: se.sets }); }));
     const sessions = Object.keys(byDate).map(Number).sort((a, b) => b - a).map(date => {
@@ -1709,8 +1946,8 @@ class Component extends DCLogic {
       importBodyHint: fr ? 'Withings : healthmate.withings.com → Paramètres → Télécharger mes données, puis choisis weight.csv. Tout CSV avec une colonne date et poids fonctionne.' : 'Withings: healthmate.withings.com → Settings → Download my data, then pick weight.csv. Any CSV with a date and weight column works.', measureTiles: bTiles, hasMeasures: bTiles.length > 0, hasBody: bodyArr.length > 0,
       bodyList: bodyArr.slice().reverse().slice(0, 40).map(b => ({ date: fmtD(b.date), text: [b.w ? dBW(b.w) + ' ' + bU : null, ...MEAS.filter(m => b[m[0]] > 0).map(m => (fr ? m[2] : m[1]) + ' ' + dLen(b[m[0]]))].filter(Boolean).join(' · '), delLabel: s.bodyDelArm === b.date ? L('Tap again') : '✕', onDel: () => this.delBody(b.date) })),
       sheetOn: !!shEx, sheetName: shEx ? shEx.name : '',
-      sheetTypes: [['reps', L('Reps')], ['time', L('Time')]].map(([k, label]) => { const on = shM && (k === 'time') === isT(shM.type); return { label, bg: on ? '#24242B' : 'transparent', color: on ? '#FFFFFF' : '#9C9CA8', onClick: () => shEx && this.setMeta(shEx.name, { type: k === 'time' ? (isU(shM.type) ? 'timeuni' : 'time') : (isU(shM.type) ? 'uni' : 'reps') }) }; }),
-      sheetToggles: shEx ? [tg(L('Per side'), L('Left and right logged separately.'), isU(shM.type), () => this.setMeta(shEx.name, { type: isT(shM.type) ? (isU(shM.type) ? 'time' : 'timeuni') : (isU(shM.type) ? 'reps' : 'uni') })), tg(L('Plate calculator'), L('Shows the plates to load on each side of the bar.'), shM.bar, () => this.setMeta(shEx.name, { bar: !shM.bar }))].concat(shCtx.i < shCtx.list.length - 1 ? [tg(L('Superset with next'), L('No rest between linked exercises — rest starts after the last one.'), !!shEx.ss, () => shCtx.r ? this.updR(c => { c.ex[shCtx.i].ss = !c.ex[shCtx.i].ss; }) : this.toggleSS(shCtx.i))] : []) : [],
+      sheetTypes: [['reps', L('Reps')], ['time', L('Time')], ['cardio', 'Cardio']].map(([k, label]) => { const c = shM && shM.type === 'cardio'; const on = shM && (k === 'cardio' ? c : !c && (k === 'time') === isT(shM.type)); return { label, bg: on ? '#24242B' : 'transparent', color: on ? '#FFFFFF' : '#9C9CA8', onClick: () => shEx && this.setMeta(shEx.name, { type: k === 'cardio' ? 'cardio' : k === 'time' ? (isU(shM.type) ? 'timeuni' : 'time') : (isU(shM.type) ? 'uni' : 'reps') }) }; }),
+      sheetToggles: shEx ? (shM.type === 'cardio' ? [] : [tg(L('Per side'), L('Left and right logged separately.'), isU(shM.type), () => this.setMeta(shEx.name, { type: isT(shM.type) ? (isU(shM.type) ? 'time' : 'timeuni') : (isU(shM.type) ? 'reps' : 'uni') })), tg(L('Plate calculator'), L('Shows the plates to load on each side of the bar.'), shM.bar, () => this.setMeta(shEx.name, { bar: !shM.bar }))]).concat(shCtx.i < shCtx.list.length - 1 ? [tg(L('Superset with next'), L('No rest between linked exercises — rest starts after the last one.'), !!shEx.ss, () => shCtx.r ? this.updR(c => { c.ex[shCtx.i].ss = !c.ex[shCtx.i].ss; }) : this.toggleSS(shCtx.i))] : []) : [],
       sheetNote: shM ? shM.note : '', onSheetNote: (e) => shEx && this.setMeta(shEx.name, { note: e.target.value }), closeSheet: go({ exSheet: null, rSheet: null }), sheetInfo: () => shEx && this.openInfo(shEx.name),
       wNote: w ? (w.note || '') : '', onWNote: (e) => { const v = e.target.value; this.updW(x => { x.note = v; }); },
       isTemplates: s.screen === 'templates', templBack: go({ screen: 'tabs', tab: 'programs' }), openTemplates: go({ screen: 'templates' }),
@@ -1831,8 +2068,9 @@ class Component extends DCLogic {
       ] : [],
       sumPrTitle: sm && sm.prs.length ? sm.prs.length + (LANG === 'fr' ? ' record' + (sm.prs.length > 1 ? 's personnels' : ' personnel') : ' personal record' + (sm.prs.length > 1 ? 's' : '')) : L('No PRs this time — consistency counts'),
       sumPrs: sm ? sm.prs.map(p => ({ name: p.name, text: this.dispW(p.w) + ' ' + s.unit + ' × ' + p.r + ' · e1RM ' + this.dispW(p.e) })) : [],
-      sumEx: sm ? (sm.ex || []).map(x => { const ws = work(x.sets); const b = ws.reduce((a, y) => (!a || e1(y.w, y.r) > e1(a.w, a.r)) ? y : a, null); const wu = x.sets.length - ws.length; return { name: x.name, text: ws.length + ' × ' + (b ? L('best ') + this.dispW(b.w) + '×' + b.r : '—') + (wu ? ' · ' + wu + ' W' : '') }; }) : [],
-      closeSummary: go({ screen: 'tabs', tab: 'today', summary: null })
+      sumEx: sm ? (sm.ex || []).map(x => { if (this.meta(x.name).type === 'cardio') return { name: x.name, text: x.sets.map(y => this.cardioTxt(y)).join(' + ') }; const ws = work(x.sets); const b = ws.reduce((a, y) => (!a || e1(y.w, y.r) > e1(a.w, a.r)) ? y : a, null); const wu = x.sets.length - ws.length; return { name: x.name, text: ws.length + ' × ' + (b ? L('best ') + this.dispW(b.w) + '×' + b.r : '—') + (wu ? ' · ' + wu + ' W' : '') }; }) : [],
+      closeSummary: go({ screen: 'tabs', tab: 'today', summary: null }),
+      ...this.extraVals(s)
     };
   }
 }
