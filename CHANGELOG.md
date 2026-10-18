@@ -5,6 +5,13 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.15.1 — 2026-10-18
+- Santé : correction, la composition (masse grasse, IMC…) est relue sur tout l’historique après avoir donné l’autorisation. Réactiver Apple Health relance une lecture complète.
+
+## 0.15.0 — 2026-10-18
+- Apple Health devient gratuit : séances envoyées dans Santé et poids récupéré.
+- Pro : masse grasse, masse maigre et IMC (et tour de taille) récupérés depuis Santé. Nouvelle section « Composition » dans Progrès → Corps, avec l’évolution depuis la mesure précédente.
+
 ## 0.14.0 — 2026-10-18
 - Apple Health : Barlog lit tes pesées depuis Santé (Withings, balance connectée, autre app) à l’ouverture et à chaque retour dans l’app. Une pesée par jour, tes saisies manuelles ne sont jamais écrasées, celles de Barlog ne sont pas relues.
 
