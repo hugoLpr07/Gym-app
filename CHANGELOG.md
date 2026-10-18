@@ -5,6 +5,10 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.12.1 — 2026-10-18
+- Profil : la carte Barlog Pro n’est plus écrasée.
+- Chronomètre écran verrouillé : message d’erreur clair s’il ne peut pas démarrer (pour diagnostiquer).
+
 ## 0.12.0 — 2026-10-18
 - Barlog Pro (mode test, sans paiement réel) : écran d’offres (mensuel 2,99 €, annuel 19,99 € avec 7 jours d’essai, à vie 49,99 €) et carte Pro en haut du Profil.
 - Réservé à Pro : onglet Stats, moyenne 4 semaines de la body map, muscle → exercices, muscles cliquables dans l’historique, programmes Force 5×5 et Haut / Bas, couleurs d’accent. Marqués ✦.
