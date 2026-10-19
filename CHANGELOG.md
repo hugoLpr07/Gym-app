@@ -5,6 +5,10 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.26.0 — 2026-10-19
+- Partage (bêta) : signaler une séance, un commentaire ou un compte ; bloquer quelqu'un (il ne voit plus rien de toi, et toi plus rien de lui) ; liste des comptes bloqués avec Débloquer.
+- Nouvelle politique de confidentialité (compte Barlog, Loi 25 : responsable, données stockées, hébergement à Montréal, droits, suppression). Compte réservé aux 14 ans et plus.
+
 ## 0.25.0 — 2026-10-19
 - Partage (bêta) : recherche de comptes, pages profil, abonnements (demande à accepter pour les profils privés), demandes reçues, listes d'abonnés et d'abonnements.
 - React, ReactDOM et Babel sont maintenant intégrés à l’app (dossier vendor) : plus aucun téléchargement depuis unpkg.com, l’app démarre même sans connexion dès la première fois.

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Barlog — Confidentialité / Privacy</title>
-<meta name="description" content="Politique de confidentialité de Barlog : tes données restent sur ton téléphone. / Barlog privacy policy: your data stays on your phone.">
+<meta name="description" content="Politique de confidentialité de Barlog : sans compte, tout reste sur ton téléphone ; avec le compte optionnel, seul ce que tu publies est partagé. / Barlog privacy policy.">
 <link rel="icon" href="icon-192.png">
 <style>
   :root { --bg: #0A0A0C; --card: #16161A; --line: #24242B; --text: #FFFFFF; --muted: #9C9CA8; --acc: #CCFF00; }
@@ -24,6 +24,9 @@
   .summary { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--acc); border-radius: 12px; padding: 16px 18px; margin: 20px 0; }
   .summary ul { margin: 0; padding-left: 20px; }
   a { color: var(--acc); }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 15px; }
+  td, th { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); color: #E4E4EA; }
+  th { color: var(--muted); font-weight: 600; font-size: 13px; }
   section + section { border-top: 1px solid var(--line); margin-top: 56px; padding-top: 24px; }
 </style>
 </head>
@@ -34,104 +37,158 @@
 
   <section id="fr" lang="fr">
     <h1>Politique de confidentialité</h1>
-    <p class="muted">En vigueur le 18 octobre 2026 · s’applique à l’app Barlog sur iPhone, sur Android et à sa version web.</p>
+    <p class="muted">En vigueur le 19 octobre 2026 · s’applique à l’app Barlog sur iPhone, sur Android et à sa version web.</p>
 
     <div class="summary">
       <ul>
-        <li><strong>Pas de compte.</strong> Barlog fonctionne sans inscription.</li>
-        <li><strong>Tes données restent sur ton téléphone.</strong> Le développeur de Barlog ne reçoit et ne stocke aucune de tes données.</li>
-        <li><strong>Aucune publicité, aucun traceur, aucune statistique d’utilisation.</strong></li>
-        <li><strong>Données de santé</strong> utilisées uniquement avec ton accord, et jamais partagées.</li>
+        <li><strong>Sans compte</strong>, Barlog fonctionne entièrement sur ton téléphone : aucune de tes données n’est envoyée au développeur.</li>
+        <li><strong>Le compte Barlog est optionnel.</strong> Il sert uniquement au partage (fil, abonnements, bravos, commentaires). Seul ce que tu choisis de publier est partagé.</li>
+        <li><strong>Aucune publicité, aucun traceur, aucune statistique d’utilisation</strong>, aucune vente de données.</li>
+        <li><strong>Données de santé</strong> utilisées uniquement avec ton accord, jamais publiées et jamais partagées.</li>
+        <li>Tu peux <strong>supprimer ton compte et toutes ses données</strong> à tout moment, depuis l’app.</li>
       </ul>
     </div>
 
-    <h2>1. Les données que tu enregistres</h2>
-    <p>Séances, séries, charges, routines, programmes, exercices personnalisés, notes, poids et mensurations, ainsi que tes réglages. Ces données sont enregistrées uniquement sur ton appareil, dans l’espace privé de l’app. Elles ne sont envoyées à aucun serveur.</p>
-    <p>Elles peuvent être incluses dans la sauvegarde automatique de ton téléphone (sauvegarde iCloud sur iPhone, sauvegarde Google ou Samsung Cloud sur Android), selon tes propres réglages. Ces sauvegardes sont gérées par Apple, Google ou Samsung, pas par Barlog.</p>
+    <h2>1. Responsable et contact</h2>
+    <p>Barlog est développée par un développeur indépendant au Québec. Le <strong>responsable de la protection des renseignements personnels</strong> est le développeur de Barlog, joignable à <a href="mailto:barlog.gym.app@gmail.com">barlog.gym.app@gmail.com</a>. Pour toute question, demande d’accès, de correction ou de suppression, ou pour signaler un problème, écris à cette adresse.</p>
 
-    <h2>2. Données de santé</h2>
+    <h2>2. Sans compte : tes données restent sur ton téléphone</h2>
+    <p>Séances, séries, charges, routines, programmes, exercices personnalisés, notes, poids et mensurations, ainsi que tes réglages, sont enregistrés uniquement sur ton appareil, dans l’espace privé de l’app. Ils ne sont envoyés à aucun serveur.</p>
+    <p>Ils peuvent être inclus dans la sauvegarde automatique de ton téléphone (iCloud sur iPhone, Google ou Samsung Cloud sur Android), selon tes propres réglages. Ces sauvegardes sont gérées par Apple, Google ou Samsung, pas par Barlog.</p>
+
+    <h2>3. Avec un compte Barlog (optionnel)</h2>
+    <p>Si tu crées un compte, ces renseignements sont conservés sur nos serveurs :</p>
+    <table>
+      <tr><th>Renseignement</th><th>Pourquoi</th><th>Qui le voit</th></tr>
+      <tr><td>Adresse e-mail</td><td>Te connecter (code à 6 chiffres)</td><td>Toi seul·e (et le développeur pour l’assistance)</td></tr>
+      <tr><td>Pseudo, nom affiché, profil public ou privé, visibilité par défaut</td><td>Ton profil</td><td>Les utilisateurs connectés (le pseudo et le nom permettent de te trouver)</td></tr>
+      <tr><td>Séances publiées : nom, date, durée, volume, nombre de séries, records, muscles travaillés, petit mot</td><td>Le fil d’actualité</td><td>Selon la visibilité que tu choisis : Public, Abonnés ou Moi seul</td></tr>
+      <tr><td>Abonnements et demandes</td><td>Savoir qui voit quoi</td><td>Toi et les personnes concernées ; les abonnés d’un profil public sont visibles</td></tr>
+      <tr><td>Bravos et commentaires</td><td>Échanger sur les séances</td><td>Les personnes qui peuvent voir la séance</td></tr>
+      <tr><td>Comptes bloqués</td><td>Ta tranquillité</td><td>Toi seul·e (la personne bloquée n’est pas prévenue)</td></tr>
+      <tr><td>Signalements</td><td>Modération</td><td>Le développeur uniquement</td></tr>
+    </table>
+    <p><strong>Ce qui n’est jamais envoyé :</strong> le détail série par série de tes séances, tes séances non publiées, tes poids et mensurations, et les données lues dans Apple Santé ou Health Connect.</p>
+    <p><strong>Consentement.</strong> Rien n’est publié sans action de ta part : tu publies chaque séance toi-même, ou tu actives la publication automatique. Le profil est <strong>privé par défaut</strong> et les séances sont visibles par tes <strong>abonnés</strong> par défaut. Tu peux changer ces réglages, retirer une séance publiée ou désactiver la publication automatique à tout moment.</p>
+    <p><strong>Âge.</strong> Le compte Barlog est réservé aux personnes de <strong>14 ans et plus</strong>. L’app reste utilisable sans compte à tout âge.</p>
+
+    <h2>4. Où sont stockées ces données, et qui nous aide</h2>
+    <ul>
+      <li><strong>Supabase</strong> héberge la base de données et la connexion des comptes. Les données sont stockées sur des serveurs situés à <strong>Montréal (Canada)</strong>. Supabase est une entreprise établie aux États-Unis ; ses équipes peuvent y accéder pour faire fonctionner le service.</li>
+      <li><strong>Gmail (Google)</strong> envoie les e-mails contenant ton code de connexion. Ton adresse e-mail et le code transitent donc par Google, qui peut traiter ces données hors du Québec.</li>
+      <li>Ces fournisseurs n’utilisent pas tes données pour leur propre compte ; ils ne servent qu’à faire fonctionner Barlog.</li>
+    </ul>
+
+    <h2>5. Conservation et suppression</h2>
+    <p>Les données de ton compte sont conservées tant que ton compte existe. <strong>Profil → Compte → Supprimer mon compte</strong> efface immédiatement ton compte, ton profil, tes séances publiées, tes abonnements, tes bravos, tes commentaires et tes blocages. Des copies de sécurité techniques chez l’hébergeur peuvent subsister quelques jours avant d’être effacées automatiquement. Les signalements que tu as envoyés sont conservés sans lien avec ton compte, le temps de les traiter. Tes séances locales ne sont pas touchées : elles restent sur ton téléphone.</p>
+
+    <h2>6. Données de santé</h2>
     <p>Si tu l’actives, Barlog se connecte à l’app de santé de ton téléphone. Tu choisis les autorisations et tu peux les retirer à tout moment dans les réglages du téléphone.</p>
     <ul>
       <li><strong>Apple Santé (iPhone).</strong> Barlog y enregistre tes séances (type, durée, calories actives estimées, distance pour le cardio) et tes pesées. Barlog y lit ton poids et, avec Barlog Pro, ta masse grasse, ta masse maigre, ton IMC et ton tour de taille.</li>
       <li><strong>Health Connect (Android, dont Samsung Health).</strong> Barlog y enregistre tes séances (type, durée, calories actives estimées, distance pour le cardio) et tes pesées. Barlog y lit ton poids et, avec Barlog Pro, ta masse grasse, ta masse maigre et ta taille (utilisée uniquement pour calculer ton IMC).</li>
     </ul>
-    <p>Les données de santé restent sur ton appareil. Elles ne sont jamais vendues, jamais utilisées à des fins publicitaires, et jamais transmises à des tiers.</p>
+    <p>Les données lues dans Santé ou Health Connect restent sur ton appareil. Elles ne sont jamais publiées, jamais vendues, jamais utilisées à des fins publicitaires et jamais transmises à des tiers.</p>
 
-    <h2>3. Notifications</h2>
+    <h2>7. Notifications</h2>
     <p>Les notifications (fin de repos, rappels d’entraînement, minuteur sur l’écran verrouillé) sont programmées localement sur ton téléphone. Aucune donnée ne transite par un serveur pour les envoyer.</p>
 
-    <h2>4. Import, export et partage</h2>
-    <p>Les fichiers que tu importes (historique Strong ou Hevy en CSV, pesées en CSV, sauvegarde Barlog en JSON) sont lus sur ton appareil. Les exports et les cartes de partage sont créés sur ton appareil et ne quittent celui-ci que si tu choisis de les partager ou de les enregistrer, avec l’outil de partage de ton téléphone.</p>
+    <h2>8. Import, export et partage</h2>
+    <p>Les fichiers que tu importes (Strong ou Hevy en CSV, pesées en CSV, sauvegarde Barlog en JSON) sont lus sur ton appareil. Les exports et les cartes de partage sont créés sur ton appareil et ne le quittent que si tu choisis de les partager avec l’outil de partage de ton téléphone.</p>
 
-    <h2>5. Services tiers</h2>
+    <h2>9. Autres services</h2>
     <ul>
-      <li><strong>GitHub Pages.</strong> La version web de Barlog est hébergée par GitHub, qui peut conserver des journaux techniques (adresse IP, date) comme tout hébergeur.</li>
+      <li><strong>GitHub Pages.</strong> La version web de Barlog est hébergée par GitHub, qui peut conserver des journaux techniques (adresse IP, date) comme tout hébergeur. Tout le code de l’app (polices et bibliothèques comprises) est fourni avec l’app : aucun autre site n’est contacté.</li>
       <li><strong>YouTube.</strong> Le bouton « Voir une démo » d’un exercice ouvre YouTube uniquement si tu le touches.</li>
       <li><strong>Achats.</strong> Si des achats sont proposés dans l’app, ils sont traités par l’App Store ou Google Play. Barlog ne reçoit jamais tes informations de paiement.</li>
     </ul>
 
-    <h2>6. Enfants</h2>
-    <p>Barlog ne collecte de données sur personne, y compris les enfants.</p>
+    <h2>10. Tes droits</h2>
+    <p>Tu peux à tout moment : <strong>consulter et corriger</strong> ton profil dans l’app ; <strong>retirer ton consentement</strong> (retirer une publication, passer en « Moi seul », désactiver la publication automatique, supprimer ton compte) ; <strong>demander l’accès</strong> aux renseignements que nous détenons sur toi ou leur rectification en écrivant à <a href="mailto:barlog.gym.app@gmail.com">barlog.gym.app@gmail.com</a>. Nous répondons dans un délai de 30 jours. Si tu n’es pas satisfait·e de notre réponse, tu peux t’adresser à la <strong>Commission d’accès à l’information du Québec</strong>.</p>
 
-    <h2>7. Tes droits et la suppression de tes données</h2>
-    <p>Comme le développeur ne détient aucune de tes données, il n’y a rien à demander ou à supprimer de son côté. Pour tout effacer : dans l’app, Profil → « Tout effacer », ou supprime l’app. Pour les données de santé, utilise l’app Santé ou Health Connect de ton téléphone.</p>
+    <h2>11. Incident de sécurité</h2>
+    <p>Si un incident de confidentialité présentant un risque de préjudice sérieux touchait tes renseignements, nous t’en informerions, ainsi que la Commission d’accès à l’information, comme le prévoit la loi.</p>
 
-    <h2>8. Modifications</h2>
-    <p>Si cette politique change, la nouvelle version sera publiée sur cette page avec sa date d’entrée en vigueur.</p>
-
-    <h2>9. Contact</h2>
-    <p>Une question ? Écris-nous via <a href="https://github.com/hugoLpr07/Gym-app/issues">la page de suivi du projet sur GitHub</a>.</p>
+    <h2>12. Modifications</h2>
+    <p>Si cette politique change, la nouvelle version sera publiée sur cette page avec sa date d’entrée en vigueur. En cas de changement important pour les comptes, nous te préviendrons dans l’app.</p>
   </section>
 
   <section id="en" lang="en">
     <h1>Privacy policy</h1>
-    <p class="muted">Effective October 18, 2026 · applies to the Barlog app on iPhone, on Android and to its web version.</p>
+    <p class="muted">Effective October 19, 2026 · applies to the Barlog app on iPhone, on Android and to its web version.</p>
 
     <div class="summary">
       <ul>
-        <li><strong>No account.</strong> Barlog works without signing up.</li>
-        <li><strong>Your data stays on your phone.</strong> Barlog’s developer does not receive or store any of your data.</li>
-        <li><strong>No ads, no trackers, no usage analytics.</strong></li>
-        <li><strong>Health data</strong> is used only with your permission and is never shared.</li>
+        <li><strong>Without an account</strong>, Barlog runs entirely on your phone: none of your data is sent to the developer.</li>
+        <li><strong>The Barlog account is optional.</strong> It is only used for sharing (feed, follows, kudos, comments). Only what you choose to publish is shared.</li>
+        <li><strong>No ads, no trackers, no usage analytics</strong>, no data sales.</li>
+        <li><strong>Health data</strong> is used only with your permission, never published and never shared.</li>
+        <li>You can <strong>delete your account and all its data</strong> at any time from the app.</li>
       </ul>
     </div>
 
-    <h2>1. Data you enter</h2>
-    <p>Workouts, sets, weights, routines, programs, custom exercises, notes, body weight and measurements, and your settings. This data is stored only on your device, in the app’s private storage. It is not sent to any server.</p>
-    <p>It may be included in your phone’s automatic backup (iCloud Backup on iPhone, Google or Samsung Cloud backup on Android), depending on your own settings. These backups are handled by Apple, Google or Samsung, not by Barlog.</p>
+    <h2>1. Who is responsible and how to reach us</h2>
+    <p>Barlog is made by an independent developer in Québec, Canada. The <strong>person in charge of the protection of personal information</strong> is Barlog’s developer, reachable at <a href="mailto:barlog.gym.app@gmail.com">barlog.gym.app@gmail.com</a>. Write to this address for any question, request for access, correction or deletion, or to report a problem.</p>
 
-    <h2>2. Health data</h2>
+    <h2>2. Without an account: your data stays on your phone</h2>
+    <p>Workouts, sets, weights, routines, programs, custom exercises, notes, body weight and measurements, and your settings are stored only on your device, in the app’s private storage. They are not sent to any server.</p>
+    <p>They may be included in your phone’s automatic backup (iCloud on iPhone, Google or Samsung Cloud on Android), depending on your own settings. These backups are handled by Apple, Google or Samsung, not by Barlog.</p>
+
+    <h2>3. With a Barlog account (optional)</h2>
+    <p>If you create an account, this information is stored on our servers:</p>
+    <table>
+      <tr><th>Information</th><th>Why</th><th>Who sees it</th></tr>
+      <tr><td>Email address</td><td>Signing in (6-digit code)</td><td>Only you (and the developer for support)</td></tr>
+      <tr><td>Username, display name, public or private profile, default visibility</td><td>Your profile</td><td>Signed-in users (username and name let people find you)</td></tr>
+      <tr><td>Published workouts: name, date, duration, volume, number of sets, records, muscles worked, short note</td><td>The feed</td><td>Depending on the visibility you choose: Public, Followers or Only me</td></tr>
+      <tr><td>Follows and requests</td><td>Knowing who sees what</td><td>You and the people involved; followers of a public profile are visible</td></tr>
+      <tr><td>Kudos and comments</td><td>Talking about workouts</td><td>People who can see the workout</td></tr>
+      <tr><td>Blocked accounts</td><td>Your peace of mind</td><td>Only you (the blocked person is not notified)</td></tr>
+      <tr><td>Reports</td><td>Moderation</td><td>The developer only</td></tr>
+    </table>
+    <p><strong>Never sent:</strong> the set-by-set detail of your workouts, unpublished workouts, your body weight and measurements, and data read from Apple Health or Health Connect.</p>
+    <p><strong>Consent.</strong> Nothing is published without an action from you: you publish each workout yourself, or turn on automatic publishing. Profiles are <strong>private by default</strong> and workouts are visible to your <strong>followers</strong> by default. You can change these settings, remove a published workout or turn off automatic publishing at any time.</p>
+    <p><strong>Age.</strong> The Barlog account is for people <strong>14 and older</strong>. The app can be used without an account at any age.</p>
+
+    <h2>4. Where this data is stored, and who helps us</h2>
+    <ul>
+      <li><strong>Supabase</strong> hosts the database and account sign-in. Data is stored on servers located in <strong>Montréal (Canada)</strong>. Supabase is a company based in the United States; its staff may access the data to run the service.</li>
+      <li><strong>Gmail (Google)</strong> sends the emails containing your sign-in code. Your email address and the code therefore go through Google, which may process them outside Québec.</li>
+      <li>These providers do not use your data for their own purposes; they only help run Barlog.</li>
+    </ul>
+
+    <h2>5. Retention and deletion</h2>
+    <p>Account data is kept as long as your account exists. <strong>Profile → Account → Delete my account</strong> immediately erases your account, profile, published workouts, follows, kudos, comments and blocks. Technical backups at our host may remain for a few days before being erased automatically. Reports you sent are kept, no longer linked to your account, while they are handled. Your local workouts are not affected: they stay on your phone.</p>
+
+    <h2>6. Health data</h2>
     <p>If you turn it on, Barlog connects to your phone’s health app. You choose the permissions and can revoke them at any time in your phone’s settings.</p>
     <ul>
       <li><strong>Apple Health (iPhone).</strong> Barlog writes your workouts (type, duration, estimated active calories, distance for cardio) and your weigh-ins. Barlog reads your body weight and, with Barlog Pro, your body fat, lean body mass, BMI and waist circumference.</li>
       <li><strong>Health Connect (Android, including Samsung Health).</strong> Barlog writes your workouts (type, duration, estimated active calories, distance for cardio) and your weigh-ins. Barlog reads your body weight and, with Barlog Pro, your body fat, lean body mass and height (used only to calculate your BMI).</li>
     </ul>
-    <p>Health data stays on your device. It is never sold, never used for advertising, and never shared with third parties.</p>
+    <p>Data read from Health or Health Connect stays on your device. It is never published, never sold, never used for advertising and never shared with third parties.</p>
 
-    <h2>3. Notifications</h2>
+    <h2>7. Notifications</h2>
     <p>Notifications (rest finished, workout reminders, lock screen timer) are scheduled locally on your phone. No data goes through a server to deliver them.</p>
 
-    <h2>4. Import, export and sharing</h2>
-    <p>Files you import (Strong or Hevy history as CSV, weigh-ins as CSV, Barlog backup as JSON) are read on your device. Exports and share cards are created on your device and only leave it if you choose to share or save them with your phone’s share sheet.</p>
+    <h2>8. Import, export and sharing</h2>
+    <p>Files you import (Strong or Hevy CSV, weigh-ins CSV, Barlog JSON backup) are read on your device. Exports and share cards are created on your device and only leave it if you choose to share them with your phone’s share sheet.</p>
 
-    <h2>5. Third-party services</h2>
+    <h2>9. Other services</h2>
     <ul>
-      <li><strong>GitHub Pages.</strong> Barlog’s web version is hosted by GitHub, which may keep technical logs (IP address, date) like any host.</li>
+      <li><strong>GitHub Pages.</strong> Barlog’s web version is hosted by GitHub, which may keep technical logs (IP address, date) like any host. All of the app’s code (fonts and libraries included) ships with the app: no other website is contacted.</li>
       <li><strong>YouTube.</strong> An exercise’s “Watch a demo” button opens YouTube only if you tap it.</li>
       <li><strong>Purchases.</strong> If in-app purchases are offered, they are processed by the App Store or Google Play. Barlog never receives your payment details.</li>
     </ul>
 
-    <h2>6. Children</h2>
-    <p>Barlog does not collect data about anyone, including children.</p>
+    <h2>10. Your rights</h2>
+    <p>At any time you can: <strong>view and correct</strong> your profile in the app; <strong>withdraw your consent</strong> (remove a post, switch to “Only me”, turn off automatic publishing, delete your account); <strong>request access</strong> to the information we hold about you, or its correction, by writing to <a href="mailto:barlog.gym.app@gmail.com">barlog.gym.app@gmail.com</a>. We reply within 30 days. If you are not satisfied with our answer, you can contact Québec’s <strong>Commission d’accès à l’information</strong>.</p>
 
-    <h2>7. Your rights and deleting your data</h2>
-    <p>Since the developer holds none of your data, there is nothing to request or delete on their side. To erase everything: in the app, Profile → “Erase all”, or delete the app. For health data, use your phone’s Health app or Health Connect.</p>
+    <h2>11. Security incidents</h2>
+    <p>If a confidentiality incident presenting a risk of serious harm affected your information, we would notify you and the Commission d’accès à l’information, as required by law.</p>
 
-    <h2>8. Changes</h2>
-    <p>If this policy changes, the new version will be published on this page with its effective date.</p>
-
-    <h2>9. Contact</h2>
-    <p>Questions? Reach us through <a href="https://github.com/hugoLpr07/Gym-app/issues">the project’s issue tracker on GitHub</a>.</p>
+    <h2>12. Changes</h2>
+    <p>If this policy changes, the new version will be published on this page with its effective date. For important changes affecting accounts, we will let you know in the app.</p>
   </section>
 </main>
 </body>
