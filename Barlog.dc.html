@@ -317,7 +317,7 @@ input::placeholder{color:#9C9CA8}
 <sc-for list="{{ sessList }}" as="se" hint-placeholder-count="5">
 <button onClick="{{ se.onClick }}" style="width:100%;display:grid;grid-template-columns:48px minmax(0,1fr) 16px;gap:12px;align-items:center;padding:12px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;text-align:left;min-height:64px;" style-active="background:#24242B">
 <div style="display:flex;flex-direction:column;align-items:center;"><span style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;line-height:22px;">{{ se.day }}</span><span style="font-size:12px;font-weight:600;color:#9C9CA8;text-transform:uppercase;">{{ se.mon }}</span></div>
-<div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:16px;font-weight:700;">{{ se.name }}</span><span style="font-size:13px;color:#9C9CA8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ se.meta }}</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:16px;font-weight:700;">{{ se.name }}<span style="color:var(--acc);font-size:13px;font-weight:700;margin-left:6px;">{{ se.pub }}</span></span><span style="font-size:13px;color:#9C9CA8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ se.meta }}</span></div>
 <span style="color:#9C9CA8;font-size:18px;">›</span>
 </button>
 </sc-for>
@@ -628,11 +628,13 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ acAsk }}" hint-placeholder-val="{{ false }}">
 <input type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" value="{{ acEmail }}" onChange="{{ onAcEmail }}" placeholder="{{ acEmailPh }}" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;padding:0 14px;">
 <button onClick="{{ acSend }}" style="height:52px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;opacity:{{ acOp }};">{{ acSendLabel }}</button>
+<sc-if value="{{ acErrSend }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ acErrSend }}</span></sc-if>
 </sc-if>
 <sc-if value="{{ acCodeOn }}" hint-placeholder-val="{{ false }}">
 <span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ acSentText }}</span>
 <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" value="{{ acCode }}" onChange="{{ onAcCode }}" placeholder="123456" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;padding:0 14px;font-family:'JetBrains Mono',monospace;letter-spacing:0.3em;text-align:center;font-size:20px;">
 <button onClick="{{ acVerify }}" style="height:52px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;opacity:{{ acOp }};">{{ acVerifyLabel }}</button>
+<sc-if value="{{ acErrCode }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ acErrCode }}</span></sc-if>
 <div style="display:flex;justify-content:space-between;gap:12px;"><button onClick="{{ acChange }}" style="border:none;background:transparent;padding:0;color:#9C9CA8;text-decoration:underline;min-height:44px;font-size:13px;">{{ acChangeLabel }}</button><button onClick="{{ acResend }}" style="border:none;background:transparent;padding:0;color:#9C9CA8;text-decoration:underline;min-height:44px;font-size:13px;">{{ acResendLabel }}</button></div>
 </sc-if>
 <span style="font-size:12px;line-height:17px;color:#9C9CA8;text-wrap:pretty;">{{ acConsent }} <button onClick="{{ openPrivacy }}" style="border:none;background:transparent;padding:0;color:#9C9CA8;text-decoration:underline;font-size:12px;">{{ privacyLabel }}</button></span>
@@ -663,6 +665,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 <div style="padding:6px 16px 16px;display:flex;flex-direction:column;gap:8px;">
 <button onClick="{{ acCreate }}" style="height:52px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;opacity:{{ acOp }};">{{ acCreateLabel }}</button>
+<sc-if value="{{ acErrProf }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ acErrProf }}</span></sc-if>
 <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span style="font-size:12px;color:#9C9CA8;min-width:0;overflow:hidden;text-overflow:ellipsis;">{{ acMail }}</span><button onClick="{{ acSignOut }}" style="border:none;background:transparent;padding:0;color:#9C9CA8;text-decoration:underline;min-height:44px;font-size:13px;flex:none;">{{ acSignOutLabel }}</button></div>
 </div>
 </div>
@@ -678,6 +681,10 @@ input::placeholder{color:#9C9CA8}
 <span style="font-size:16px;font-weight:500;min-width:0;">{{ acVisLabel }}</span>
 <div style="flex:none;display:flex;gap:3px;background:#0A0A0C;border-radius:10px;padding:3px;"><sc-for list="{{ acVisOpts }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.onClick }}" style="height:38px;padding:0 8px;border:none;border-radius:8px;background:{{ o.bg }};color:{{ o.color }};font-size:13px;font-weight:700;">{{ o.label }}</button></sc-for></div>
 </div>
+<button onClick="{{ acAutoClick }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-top:1px solid #24242B;background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;border-radius:0 0 16px 16px;">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">{{ acAutoLabel }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;">{{ acAutoSub }}</span></div>
+<div style="flex:0 0 auto;width:52px;height:32px;border-radius:999px;background:{{ acAutoTg.track }};padding:3px;display:flex;justify-content:{{ acAutoTg.justify }};"><div style="width:26px;height:26px;border-radius:50%;background:{{ acAutoTg.knob }};"></div></div>
+</button>
 </div>
 <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
 <button onClick="{{ acSignOut }}" style="min-height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ acSignOutLabel }}</button>
@@ -1042,6 +1049,19 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-for>
 </div>
+<sc-if value="{{ pbOn }}" hint-placeholder-val="{{ false }}">
+<div style="flex:0 0 auto;background:#16161A;border:1px solid #24242B;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;">
+<sc-if value="{{ pbNew }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;"><span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ pbTitle }}</span><div style="flex:none;display:flex;gap:3px;background:#0A0A0C;border-radius:10px;padding:3px;"><sc-for list="{{ pbVisOpts }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.onClick }}" style="height:36px;padding:0 8px;border:none;border-radius:8px;background:{{ o.bg }};color:{{ o.color }};font-size:13px;font-weight:700;">{{ o.label }}</button></sc-for></div></div>
+<textarea value="{{ pbNote }}" onChange="{{ onPbNote }}" placeholder="{{ pbNotePh }}" maxlength="500" rows="2" style="box-sizing:border-box;width:100%;height:64px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;line-height:22px;padding:10px 12px;font-family:inherit;resize:none;"></textarea>
+<button onClick="{{ pbSend }}" style="height:48px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;">{{ pbSendLabel }}</button>
+</sc-if>
+<sc-if value="{{ pbSending }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:#9C9CA8;min-height:24px;display:flex;align-items:center;">{{ pbSendingText }}</span></sc-if>
+<sc-if value="{{ pbDone }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;"><span style="font-size:15px;font-weight:600;color:var(--acc);min-width:0;">{{ pbDoneText }}</span><button onClick="{{ pbDel }}" style="flex:none;border:none;background:transparent;padding:0 2px;min-height:44px;color:{{ pbDelColor }};font-size:13px;text-decoration:underline;">{{ pbDelLabel }}</button></div></sc-if>
+<sc-if value="{{ pbWait }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;"><span style="font-size:14px;color:#9C9CA8;min-width:0;">{{ pbWaitText }}</span><div style="flex:none;display:flex;align-items:center;gap:12px;"><button onClick="{{ pbCancel }}" style="border:none;background:transparent;padding:0;min-height:44px;color:#9C9CA8;font-size:13px;text-decoration:underline;">{{ pbCancelLabel }}</button><button onClick="{{ pbRetry }}" style="height:40px;padding:0 14px;border-radius:10px;border:none;background:#24242B;color:#fff;font-size:14px;font-weight:600;">{{ pbRetryLabel }}</button></div></div></sc-if>
+<sc-if value="{{ pbErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;">{{ pbErr }}</span></sc-if>
+</div>
+</sc-if>
 <sc-if value="{{ sdHasMus }}" hint-placeholder-val="{{ false }}">
 <div style="flex:0 0 auto;display:flex;flex-direction:column;gap:8px;">
 <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;padding:0 4px;">{{ tx.nWorked }}</span>
@@ -1103,6 +1123,20 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-for>
 </div>
+<sc-if value="{{ pbOn }}" hint-placeholder-val="{{ false }}">
+<div style="flex:0 0 auto;background:#16161A;border:1px solid #24242B;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;">
+<sc-if value="{{ pbNew }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;"><span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ pbTitle }}</span><div style="flex:none;display:flex;gap:3px;background:#0A0A0C;border-radius:10px;padding:3px;"><sc-for list="{{ pbVisOpts }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.onClick }}" style="height:36px;padding:0 8px;border:none;border-radius:8px;background:{{ o.bg }};color:{{ o.color }};font-size:13px;font-weight:700;">{{ o.label }}</button></sc-for></div></div>
+<textarea value="{{ pbNote }}" onChange="{{ onPbNote }}" placeholder="{{ pbNotePh }}" maxlength="500" rows="2" style="box-sizing:border-box;width:100%;height:64px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;line-height:22px;padding:10px 12px;font-family:inherit;resize:none;"></textarea>
+<button onClick="{{ pbSend }}" style="height:48px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;">{{ pbSendLabel }}</button>
+</sc-if>
+<sc-if value="{{ pbSending }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:#9C9CA8;min-height:24px;display:flex;align-items:center;">{{ pbSendingText }}</span></sc-if>
+<sc-if value="{{ pbDone }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;"><span style="font-size:15px;font-weight:600;color:var(--acc);min-width:0;">{{ pbDoneText }}</span><button onClick="{{ pbDel }}" style="flex:none;border:none;background:transparent;padding:0 2px;min-height:44px;color:{{ pbDelColor }};font-size:13px;text-decoration:underline;">{{ pbDelLabel }}</button></div></sc-if>
+<sc-if value="{{ pbWait }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;"><span style="font-size:14px;color:#9C9CA8;min-width:0;">{{ pbWaitText }}</span><div style="flex:none;display:flex;align-items:center;gap:12px;"><button onClick="{{ pbCancel }}" style="border:none;background:transparent;padding:0;min-height:44px;color:#9C9CA8;font-size:13px;text-decoration:underline;">{{ pbCancelLabel }}</button><button onClick="{{ pbRetry }}" style="height:40px;padding:0 14px;border-radius:10px;border:none;background:#24242B;color:#fff;font-size:14px;font-weight:600;">{{ pbRetryLabel }}</button></div></div></sc-if>
+<sc-if value="{{ pbErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;">{{ pbErr }}</span></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ pbHint }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#9C9CA8;padding:0 4px;text-wrap:pretty;">{{ pbHintText }}</span></sc-if>
 <sc-if value="{{ sumHasMus }}" hint-placeholder-val="{{ true }}">
 <div style="display:flex;flex-direction:column;gap:8px;">
 <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.nWorked }}</span><button onClick="{{ shareSum }}" style="height:40px;padding:0 16px;border-radius:20px;border:1px solid #33333C;background:#16161A;color:#FFFFFF;font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;"><span>↗</span>{{ tx.nShare }}</button></div>
@@ -1151,7 +1185,7 @@ const KG_LB = 2.20462;
 const LIB = [['Bench Press','Chest'],['Incline DB Press','Chest'],['Dumbbell Fly','Chest'],['Push-up','Chest'],['Deadlift','Back'],['Barbell Row','Back'],['Pull-up','Back'],['Lat Pulldown','Back'],['Seated Cable Row','Back'],['Squat','Legs'],['Romanian Deadlift','Legs'],['Leg Press','Legs'],['Leg Curl','Legs'],['Leg Extension','Legs'],['Calf Raise','Legs'],['Bulgarian Split Squat','Legs'],['Overhead Press','Shoulders'],['Lateral Raise','Shoulders'],['Face Pull','Shoulders'],['Barbell Curl','Arms'],['Hammer Curl','Arms'],['Triceps Pushdown','Arms'],['Skull Crusher','Arms'],['Plank','Core'],['Hanging Leg Raise','Core'],['Cable Crunch','Core'],['Running','Cardio'],['Cycling','Cardio'],['Rowing machine','Cardio'],['Elliptical','Cardio'],['Stair climber','Cardio'],['Walking','Cardio'],['Jump rope','Cardio']].map(([name, group]) => ({ name, group }));
 const GROUPS = ['All','Chest','Back','Legs','Shoulders','Arms','Core','Cardio','Custom'];
 const BASE = {'Bench Press':80,'Overhead Press':50,'Incline DB Press':30,'Lateral Raise':12,'Triceps Pushdown':30,'Deadlift':160,'Barbell Row':70,'Pull-up':10,'Face Pull':25,'Barbell Curl':35,'Squat':120,'Romanian Deadlift':100,'Leg Press':180,'Leg Curl':45,'Calf Raise':70};
-const PK = ['bodyRange','bodyU','lenU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight','accent','onboarded','restNotif','remind','goal','level','liveRest','pro','effort','healthOn','hkWSync','hkCSync','bodyMetric'];
+const PK = ['bodyRange','bodyU','lenU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight','accent','onboarded','restNotif','remind','goal','level','liveRest','pro','effort','healthOn','hkWSync','hkCSync','bodyMetric','autoPub'];
 const e1 = (w, r) => w * (1 + r / 30);
 const FR = {"Start anyway":"Lancer quand même","Cancel":"Annuler","New version ready · Tap to update":"Nouvelle version prête · Toucher pour mettre à jour","Install on your iPhone":"Installer sur ton iPhone","In Safari: tap Share, then “Add to Home Screen”. Barlog opens full-screen, works offline, and your data is kept safe from Safari’s cleanup.":"Dans Safari : touche Partager, puis « Sur l’écran d’accueil ». Barlog s’ouvre en plein écran, fonctionne hors ligne et tes données sont protégées du nettoyage de Safari.","Got it":"Compris","Today":"Aujourd’hui","Next up":"À suivre","Last done":"Dernière fois :","This week":"Cette semaine","Other routines":"Autres routines","Start":"Lancer","+ Empty workout":"+ Séance libre","Program · rotates automatically":"Programme · rotation automatique","Routines":"Routines","NEXT":"SUIVANTE","Edit":"Modifier","+ New routine":"+ Nouvelle routine","Progress":"Progrès","All sessions":"Toutes les séances","No sessions yet. Finish a workout and it shows up here.":"Aucune séance. Termine une séance et elle apparaîtra ici.","No weighted exercise matches.":"Aucun exercice avec charge ne correspond.","No sessions in this range.":"Aucune séance sur cette période.","Trend":"Tendance","Tap a point for details":"Touche un point pour les détails","Rep records · heaviest weight (":"Records par reps · charge max (","Records ·":"Records ·","History ·":"Historique ·","Right column: best estimated 1RM of the session. Lime = PR.":"Colonne de droite : meilleur 1RM estimé de la séance. Lime = PR.","Consistency":"Régularité","Sets per muscle · weekly avg, last 4 wk":"Séries par muscle · moyenne/sem. sur 4 sem.","Shaded zone = 10–20 work sets per muscle per week, the usual range for muscle growth. Warm-ups excluded.":"Zone ombrée = 10 à 20 séries de travail par muscle et par semaine, la plage habituelle pour la prise de muscle. Échauffements exclus.","e1RM trend · last 4 weeks":"Tendance e1RM · 4 dernières semaines","Profile":"Profil","No account. Your data stays on your phone.":"Pas de compte. Tes données restent sur ton téléphone.","Everything lives on this device.":"Tout est stocké sur cet appareil.","Training":"Entraînement","Language":"Langue","Units":"Unités","Default rest":"Repos par défaut","Your data":"Tes données","Export backup":"Exporter","Import":"Importer","Logging a workout only adds to your history. Import replaces everything with the file’s content — export first if unsure.":"Enregistrer une séance ne fait qu’ajouter à ton historique. Importer remplace tout par le contenu du fichier — exporte d’abord en cas de doute.","Clear history keeps your routines. Erase all also deletes routines and custom exercises. Both ask for a second tap.":"« Effacer l’historique » garde tes routines. « Tout effacer » supprime aussi les routines et les exercices perso. Les deux demandent une deuxième touche.","Resume ›":"Reprendre ›","Finish":"Terminer","SET":"SÉRIE","PREV":"PRÉC.","−1 rep":"−1 rép","+1 rep":"+1 rép","+ Add set":"+ Ajouter une série","Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.":"Touche un numéro de série pour la marquer comme échauffement (W). Les échauffements ne comptent ni dans les PR ni dans le volume.","+ Add exercise":"+ Ajouter un exercice","Skip":"Passer","Add exercise":"Ajouter un exercice","+ Create “":"+ Créer « ","” ·":" » ·","No exercises yet. Add your first movement.":"Aucun exercice. Ajoute ton premier mouvement.","sets":"séries","reps":"reps","Fix any weight or reps. Changes save instantly and update your records and charts.":"Corrige une charge ou des reps. Les changements sont enregistrés tout de suite et mettent à jour tes records et graphiques.","Workout saved":"Séance enregistrée","Exercises":"Exercices","Done":"Terminé","Back up your data":"Sauvegarde tes données","Tap Export, then “Save to Files” → iCloud Drive.":"Touche Exporter, puis « Enregistrer dans Fichiers » → iCloud Drive.","Export now":"Exporter","Later":"Plus tard","Search an exercise":"Chercher un exercice","Search or type a new name":"Chercher ou taper un nouveau nom","Chest":"Pectoraux","Back":"Dos","Legs":"Jambes","Shoulders":"Épaules","Arms":"Bras","Core":"Gainage","All":"Tous","Custom":"Perso","No backup yet. Your data lives only on this phone.":"Aucune sauvegarde. Tes données sont uniquement sur ce téléphone.","Volume":"Volume","Vol ":"Vol ","Quick workout":"Séance libre","New routine":"Nouvelle routine","Backup exported":"Sauvegarde exportée","Data imported":"Données importées","Not a Barlog backup":"Ce n’est pas une sauvegarde Barlog","History cleared":"Historique effacé","All data erased":"Toutes les données effacées","Session deleted":"Séance supprimée"," · you hit every rep last time":" · toutes tes reps réussies la dernière fois"," · custom":" · perso"," · last ":" · dernière "," rep":" rép"," reps":" reps","Workout":"Séance","Low":"Bas","High":"Élevé","In range":"Dans la zone"," this week":" cette semaine","No PR for ":"Aucun PR depuis "," weeks":" semaines","Start today’s: ":"Lancer celle du jour : ","Sessions":"Séances","Lifts":"Exercices","Stats":"Stats","Last 4 wk":"4 dern. sem.","Streak":"Série"," wk":" sem","4 wk":"4 sem","3 mo":"3 mois","Target: ":"Objectif : "," sessions per week (one per routine). Streak = weeks in a row at target.":" séances par semaine (une par routine). Série = semaines d’affilée à l’objectif."," lift":" exercice"," without a PR for 3+ weeks.":" sans PR depuis 3 semaines ou plus.","Every lift has set a PR in the last 3 weeks.":"Chaque exercice a fait un PR ces 3 dernières semaines."," Compared with the 4 weeks before, or with your first session of the period if there is no earlier data.":" Comparé aux 4 semaines précédentes, ou à ta première séance de la période s’il n’y a pas de données plus anciennes."," exercises · ":" exercices · "," sets · ":" séries · ","Time":"Durée","Sets":"Séries","Session updated":"Séance mise à jour","Tap again":"Toucher encore","Delete":"Supprimer","Programs":"Programmes","No routines":"Aucune routine","In progress · ":"En cours · ","Create one in Programs.":"Crées-en une dans Programmes.","Resume workout":"Reprendre la séance","Start workout":"Lancer la séance","No exercises yet":"Aucun exercice","Est. 1RM":"1RM est.","Top set":"Top set","Estimated max for 1 rep, from your best set: weight × (1 + reps ÷ 30). Best overall strength gauge.":"Charge max estimée pour 1 rep, calculée sur ta meilleure série : charge × (1 + reps ÷ 30). Le meilleur indicateur de force.","Total weight × reps over all work sets of the session. Tracks workload — the main driver of muscle growth.":"Charge × reps sur toutes les séries de travail de la séance. Mesure la charge de travail — le moteur principal de la prise de muscle.","Heaviest weight lifted in the session, regardless of reps.":"Charge la plus lourde soulevée dans la séance, peu importe les reps.","Estimated 1RM":"1RM estimé","Session volume":"Volume de la séance","Heaviest set":"Série la plus lourde"," sessions":" séances"," session":" séance","No PR on ":"Aucun PR sur "," for ":" depuis "," sessions since your last best. Try a deload week (−10%), a different rep range, or a close variation.":" séances depuis ton dernier record. Essaie une semaine de décharge (−10 %), une autre plage de reps ou une variante proche.","4-week trend (e1RM)":"Tendance 4 sem. (e1RM)","Best e1RM":"Meilleur e1RM","Best set":"Meilleure série","Heaviest weight":"Charge max","Best session volume":"Meilleur volume de séance"," sessions stored offline.":" séances stockées hors ligne.","Auto-start rest":"Repos automatique","Starts when you log a set":"Démarre quand tu valides une série","Sound at rest end":"Son en fin de repos","Beeps when rest is over. Muted by the iPhone silent switch.":"Bip à la fin du repos. Coupé par le mode silencieux de l’iPhone.","Android only — iPhone doesn’t allow it in web apps":"Android seulement — l’iPhone ne le permet pas dans les apps web","Warn on off-day start":"Alerte hors du jour prévu","Only for routines with a weekday in their name (e.g. “Mardi – …”). Asks before starting one on another day.":"Seulement pour les routines avec un jour dans leur nom (ex. « Mardi – … »). Demande confirmation avant de la lancer un autre jour.","Keep screen on":"Garder l’écran allumé","During a workout, so the timer stays visible":"Pendant une séance, pour garder le minuteur visible","Clear history":"Effacer l’historique","Erase all":"Tout effacer"," sets":" séries","Tap again to discard":"Toucher encore pour abandonner","Discard workout":"Abandonner la séance","Rest over — lift":"Repos terminé — à toi","Rest":"Repos","to ":"à ","Volume ":"Volume ","vs last time":"vs la dernière fois","No PRs this time — consistency counts":"Pas de PR cette fois — la régularité compte","best ":"meilleure "};
 const TX = {"k0":"Start anyway","k1":"Cancel","k2":"New version ready · Tap to update","k3":"Install on your iPhone","k4":"In Safari: tap Share, then “Add to Home Screen”. Barlog opens full-screen, works offline, and your data is kept safe from Safari’s cleanup.","k5":"Got it","k6":"Back up your data","k7":"Tap Export, then “Save to Files” → iCloud Drive.","k8":"Export now","k9":"Later","k10":"Today","k11":"Next up","k12":"Last done","k13":"This week","k14":"Other routines","k15":"Start","k16":"+ Empty workout","k17":"Program · rotates automatically","k18":"Routines","k19":"NEXT","k20":"Edit","k21":"+ New routine","k22":"Progress","k23":"All sessions","k24":"No sessions yet. Finish a workout and it shows up here.","k25":"No weighted exercise matches.","k26":"No sessions in this range.","k27":"Trend","k28":"Tap a point for details","k29":"Rep records · heaviest weight (","k30":"Records ·","k31":"History ·","k32":"Right column: best estimated 1RM of the session. Lime = PR.","k33":"Consistency","k34":"Sets per muscle · weekly avg, last 4 wk","k35":"Shaded zone = 10–20 work sets per muscle per week, the usual range for muscle growth. Warm-ups excluded.","k36":"e1RM trend · last 4 weeks","k37":"Profile","k38":"No account. Your data stays on your phone.","k39":"Everything lives on this device.","k40":"Training","k41":"Language","k42":"Units","k43":"Default rest","k44":"Your data","k45":"Export backup","k46":"Import","k47":"Logging a workout only adds to your history. Import replaces everything with the file’s content — export first if unsure.","k48":"Clear history keeps your routines. Erase all also deletes routines and custom exercises. Both ask for a second tap.","k49":"Resume ›","k50":"Finish","k51":"SET","k52":"PREV","k53":"−1 rep","k54":"+1 rep","k55":"+ Add set","k56":"Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.","k57":"+ Add exercise","k58":"Skip","k59":"Add exercise","k60":"+ Create “","k61":"No exercises yet. Add your first movement.","k62":"sets","k63":"reps","k64":"Fix any weight or reps. Changes save instantly and update your records and charts.","k65":"Workout saved","k66":"Exercises","k67":"Done","k68":"Search an exercise","k69":"Search or type a new name"};
@@ -1163,7 +1197,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.22.0';
+const APP_VERSION = '0.23.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/;
 const hkName = () => plat() === 'android' ? 'Health Connect' : 'Apple Health';
 const hkStore = () => plat() === 'android' ? 'Health Connect' : (LANG === 'fr' ? 'Santé' : 'Health');
@@ -1341,7 +1375,7 @@ class Component extends DCLogic {
   state = this.initial();
   initial() {
     const routines = seedRoutines();
-    return { tab: 'today', screen: 'tabs', routines, history: seedHistory(routines), lastRoutineId: 'r3', workout: null, focus: null, restEnd: null, restTotal: 90, restAlert: false, now: Date.now(), libCtx: 'workout', libQuery: '', libGroup: 'All', custom: [], editId: null, progEx: 'Bench Press', metric: 'e1rm', unit: 'kg', haptics: true, sound: true, wake: true, autoRest: this.props.autoStartRest ?? true, restDefault: this.props.defaultRest ?? 90, summary: null, toast: null, discardArm: false, deleteArm: false, resetArm: false, installSeen: false, standalone: false, sessMeta: {}, progView: 'sessions', calOff: 0, openSess: null, delSessArm: false, clearArm: false, eraseArm: false, sessEdit: false, editBuf: {}, dayWarn: true, confirmStart: null, exMeta: {}, body: [], barLight: false, exSheet: null, hold: null, media: {}, infoName: null, infoFrom: null, bmRange: '7d', bodyBuf: {}, bodyDelArm: null, onboarded: true, remind: { on: false, days: [1, 3, 5], t: '18:00' }, lang: (typeof navigator !== 'undefined' && (navigator.language || '').toLowerCase().startsWith('fr')) ? 'fr' : 'en' };
+    return { tab: 'today', screen: 'tabs', routines, history: seedHistory(routines), lastRoutineId: 'r3', workout: null, focus: null, restEnd: null, restTotal: 90, restAlert: false, now: Date.now(), libCtx: 'workout', libQuery: '', libGroup: 'All', custom: [], editId: null, progEx: 'Bench Press', metric: 'e1rm', unit: 'kg', haptics: true, sound: true, wake: true, autoRest: this.props.autoStartRest ?? true, restDefault: this.props.defaultRest ?? 90, summary: null, toast: null, discardArm: false, deleteArm: false, resetArm: false, installSeen: false, standalone: false, sessMeta: {}, progView: 'sessions', calOff: 0, openSess: null, delSessArm: false, clearArm: false, eraseArm: false, sessEdit: false, editBuf: {}, dayWarn: true, confirmStart: null, exMeta: {}, body: [], barLight: false, exSheet: null, hold: null, media: {}, infoName: null, infoFrom: null, bmRange: '7d', bodyBuf: {}, bodyDelArm: null, onboarded: true, remind: { on: false, days: [1, 3, 5], t: '18:00' }, autoPub: false, lang: (typeof navigator !== 'undefined' && (navigator.language || '').toLowerCase().startsWith('fr')) ? 'fr' : 'en' };
   }
   componentDidMount() {
     let d = null;
@@ -1357,7 +1391,8 @@ class Component extends DCLogic {
       F.writeFile({ path: 'barlog-data.prev.json', data: r.data, directory: 'DATA', encoding: 'utf8' }).catch(() => {});
     }).catch(() => {}).then(() => { this.nativeReady = true; this.save(true); });
     this.iv = setInterval(() => this.tick(), 250);
-    this.onVis = () => { this.save(document.visibilityState === 'hidden'); this.syncWake(); this.tick(); this._rnAt = undefined; this.syncRestNotif(); if (document.visibilityState === 'visible') this.pullWeights(); if (document.visibilityState === 'visible') this.checkUpdate(); };
+    this.onVis = () => { this.save(document.visibilityState === 'hidden'); this.syncWake(); this.tick(); this._rnAt = undefined; this.syncRestNotif(); if (document.visibilityState === 'visible') this.pullWeights(); if (document.visibilityState === 'visible') this.checkUpdate(); if (document.visibilityState === 'visible') this.pubFlush(); };
+    this.onOnline = () => this.pubFlush(true); window.addEventListener('online', this.onOnline);
     this.checkUpdate();
     this.loadMedia();
     setTimeout(() => this.syncReminders(), 600);
@@ -1369,7 +1404,7 @@ class Component extends DCLogic {
     try { if (localStorage.getItem(SB_STORE)) setTimeout(() => this.acBoot(), 400); } catch (e) {}
     try { const A = this.nat() && this.nat().App; if (A && plat() === 'android' && !this._backL) { this._backL = true; A.addListener('backButton', () => this.goBack()); A.addListener('appUrlOpen', e => { if (/\/\/pro/.test((e && e.url) || '') && !this.isPro()) this.need('widget'); }); } } catch (e) {}
   }
-  componentWillUnmount() { clearInterval(this.iv); clearTimeout(this.ra); clearTimeout(this.tt); document.removeEventListener('visibilitychange', this.onVis); window.removeEventListener('pagehide', this.onVis); if (this.wl) this.wl.release(); }
+  componentWillUnmount() { clearInterval(this.iv); clearTimeout(this.ra); clearTimeout(this.tt); document.removeEventListener('visibilitychange', this.onVis); window.removeEventListener('pagehide', this.onVis); window.removeEventListener('online', this.onOnline); if (this.wl) this.wl.release(); }
   componentDidUpdate(_, prevState) {
     const prev = prevState || this._snap || {}; const st = this.state;
     this._snap = { ...st };
@@ -1408,13 +1443,15 @@ class Component extends DCLogic {
     if (!this._sbP) { this._sbP = new Promise((ok, ko) => { const mk = () => { try { const c = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: SB_STORE } }); try { c.auth.onAuthStateChange(ev => { if (ev === 'SIGNED_OUT' && this.state.acct) setTimeout(() => this.setState({ acct: null }), 0); }); } catch (e) {} ok(c); } catch (e) { ko(e); } }; if (window.supabase && window.supabase.createClient) return mk(); const sc = document.createElement('script'); sc.src = 'vendor/supabase.js'; sc.onload = mk; sc.onerror = () => { sc.remove(); ko(new Error('Failed to fetch')); }; document.head.appendChild(sc); }); this._sbP.catch(() => { this._sbP = null; }); }
     return this._sbP;
   }
-  acErr(e, otp) {
+  netErr(e) { const m = String((e && (e.message || e.error_description || e.msg)) || e || ''); return (typeof navigator !== 'undefined' && navigator.onLine === false) || /failed to fetch|network|load failed|offline|fetch/i.test(m); }
+  acMsg(e, otp) {
     const fr = LANG === 'fr'; const m = String((e && (e.message || e.error_description || e.msg)) || e || ''); const c = (e && e.code) || '';
-    const off = (typeof navigator !== 'undefined' && navigator.onLine === false) || /failed to fetch|network|load failed|offline|fetch/i.test(m);
-    this.flash(off ? (fr ? 'Pas de connexion internet' : 'No internet connection') : (e && e.status === 429) || /rate.?limit/i.test(m + c) ? (fr ? 'Trop de demandes, réessaie dans quelques minutes' : 'Too many requests, try again in a few minutes') : otp && (/otp|expired|invalid|token/i.test(m + c) || (e && (e.status === 401 || e.status === 403))) ? (fr ? 'Code incorrect ou expiré' : 'Wrong or expired code') : m.slice(0, 90) || (fr ? 'Erreur' : 'Error'));
+    return this.netErr(e) ? (fr ? 'Pas de connexion internet' : 'No internet connection') : (e && e.status === 429) || /rate.?limit/i.test(m + c) ? (fr ? 'Trop de demandes, réessaie dans quelques minutes' : 'Too many requests, try again in a few minutes') : otp && (/otp|expired|invalid|token/i.test(m + c) || (e && (e.status === 401 || e.status === 403))) ? (fr ? 'Code incorrect ou expiré' : 'Wrong or expired code') : m.slice(0, 90) || (fr ? 'Erreur' : 'Error');
   }
+  acErr(e, otp, k) { this.acFail(k, this.acMsg(e, otp)); }
+  acFail(k, m) { this.flash(m); if (k) this.setState({ acE: { k, m } }); }
   acLoad(c, u) {
-    return c.from('profiles').select('*').eq('id', u.id).maybeSingle().then(({ data, error }) => { if (error) throw error; this.setState(st => ({ acct: { uid: u.id, email: u.email, profile: data || null }, ...(data || st.acName ? {} : { acName: (u.email || '').split('@')[0].slice(0, 40) }) })); });
+    return c.from('profiles').select('*').eq('id', u.id).maybeSingle().then(({ data, error }) => { if (error) throw error; this.setState(st => ({ acct: { uid: u.id, email: u.email, profile: data || null }, ...(data || st.acName ? {} : { acName: (u.email || '').split('@')[0].slice(0, 40) }) })); if (data) setTimeout(() => this.pubFlush(true), 0); });
   }
   acBoot() {
     this.setState({ acBusy: true });
@@ -1422,24 +1459,24 @@ class Component extends DCLogic {
   }
   acSend() {
     const s = this.state; const fr = LANG === 'fr'; if (s.acBusy) return; const email = (s.acEmail || '').trim().toLowerCase();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return this.flash(fr ? 'E-mail invalide' : 'Invalid email');
-    this.setState({ acBusy: true });
-    this.sb().then(c => c.auth.signInWithOtp({ email, options: { shouldCreateUser: true } })).then(({ error }) => { if (error) throw error; this.setState({ acBusy: false, acSent: email, acCode: '' }); this.flash((fr ? 'Code envoyé à ' : 'Code sent to ') + email); }).catch(e => { this.setState({ acBusy: false }); this.acErr(e); });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return this.acFail('send', fr ? 'E-mail invalide' : 'Invalid email');
+    this.setState({ acBusy: true, acE: null });
+    this.sb().then(c => c.auth.signInWithOtp({ email, options: { shouldCreateUser: true } })).then(({ error }) => { if (error) throw error; this.setState({ acBusy: false, acSent: email, acCode: '' }); this.flash((fr ? 'Code envoyé à ' : 'Code sent to ') + email); }).catch(e => { this.setState({ acBusy: false }); this.acErr(e, false, 'send'); });
   }
   acVerify() {
     const s = this.state; const fr = LANG === 'fr'; if (s.acBusy || !s.acSent) return; const token = (s.acCode || '').replace(/\D/g, '');
-    if (token.length < 6) return this.flash(fr ? 'Le code fait 6 chiffres' : 'The code has 6 digits');
-    this.setState({ acBusy: true });
-    this.sb().then(c => c.auth.verifyOtp({ email: s.acSent, token, type: 'email' }).then(({ data, error }) => { if (error) throw error; const u = (data && data.user) || (data && data.session && data.session.user); if (!u) throw new Error('otp'); this.setState({ acSent: null, acCode: '', acct: { uid: u.id, email: u.email, profile: undefined } }); return this.acLoad(c, u).catch(e => this.acErr(e)); })).then(() => this.setState({ acBusy: false })).catch(e => { this.setState({ acBusy: false }); this.acErr(e, true); });
+    if (token.length < 6) return this.acFail('code', fr ? 'Le code fait 6 chiffres' : 'The code has 6 digits');
+    this.setState({ acBusy: true, acE: null });
+    this.sb().then(c => c.auth.verifyOtp({ email: s.acSent, token, type: 'email' }).then(({ data, error }) => { if (error) throw error; const u = (data && data.user) || (data && data.session && data.session.user); if (!u) throw new Error('otp'); this.setState({ acSent: null, acCode: '', acct: { uid: u.id, email: u.email, profile: undefined } }); return this.acLoad(c, u).catch(e => this.acErr(e)); })).then(() => this.setState({ acBusy: false })).catch(e => { this.setState({ acBusy: false }); this.acErr(e, true, 'code'); });
   }
   acCreate() {
     const s = this.state; const fr = LANG === 'fr'; const a = s.acct; if (!a || s.acBusy) return;
     const username = (s.acUser || '').trim(); const display_name = (s.acName || '').trim().slice(0, 40);
-    if (!UNAME.test(username)) return this.flash(fr ? 'Pseudo : 3 à 20 caractères (a-z, 0-9, _ .)' : 'Username: 3–20 characters (a-z, 0-9, _ .)');
-    if (!display_name) return this.flash(fr ? 'Indique ton nom' : 'Enter your name');
+    if (!UNAME.test(username)) return this.acFail('prof', fr ? 'Pseudo : 3 à 20 caractères (a-z, 0-9, _ .)' : 'Username: 3–20 characters (a-z, 0-9, _ .)');
+    if (!display_name) return this.acFail('prof', fr ? 'Indique ton nom' : 'Enter your name');
     const row = { id: a.uid, username, display_name, is_private: s.acPriv !== false, default_visibility: s.acVis || 'followers' };
-    this.setState({ acBusy: true });
-    this.sb().then(c => c.from('profiles').insert(row).select().maybeSingle()).then(({ data, error }) => { if (error) throw error; this.setState(st => ({ acBusy: false, acct: st.acct && { ...st.acct, profile: data || row } })); this.flash(fr ? 'Profil créé' : 'Profile created'); }).catch(e => { this.setState({ acBusy: false }); if (e && e.code === '23505') return this.flash(fr ? 'Ce pseudo est déjà pris' : 'This username is taken'); this.acErr(e); });
+    this.setState({ acBusy: true, acE: null });
+    this.sb().then(c => c.from('profiles').insert(row).select().maybeSingle()).then(({ data, error }) => { if (error) throw error; this.setState(st => ({ acBusy: false, acct: st.acct && { ...st.acct, profile: data || row } })); this.flash(fr ? 'Profil créé' : 'Profile created'); }).catch(e => { this.setState({ acBusy: false }); if (e && e.code === '23505') return this.acFail('prof', fr ? 'Ce pseudo est déjà pris' : 'This username is taken'); this.acErr(e, false, 'prof'); });
   }
   acSet(p) {
     const a = this.state.acct; if (!a || !a.profile) return; const old = a.profile;
@@ -1453,7 +1490,40 @@ class Component extends DCLogic {
   acDelete() {
     if (this.state.acBusy) return;
     this.arm('acDelArm', () => { const fr = LANG === 'fr'; this.setState({ acBusy: true });
-      this.sb().then(c => c.rpc('delete_account').then(({ error }) => { if (error) throw error; return c.auth.signOut({ scope: 'local' }).catch(() => {}); })).then(() => { try { localStorage.removeItem(SB_STORE); } catch (e) {} this.setState({ acBusy: false, acct: null, acUser: '', acName: '' }); this.flash(fr ? 'Compte supprimé' : 'Account deleted'); }).catch(e => { this.setState({ acBusy: false }); this.acErr(e); }); });
+      this.sb().then(c => c.rpc('delete_account').then(({ error }) => { if (error) throw error; return c.auth.signOut({ scope: 'local' }).catch(() => {}); })).then(() => { try { localStorage.removeItem(SB_STORE); } catch (e) {} this.setState(st => ({ acBusy: false, acct: null, acUser: '', acName: '', autoPub: false, sessMeta: Object.fromEntries(Object.entries(st.sessMeta || {}).map(([k, m]) => { if (!m || !m.pub) return [k, m]; const { pub, ...r } = m; return [k, r]; })) })); this.flash(fr ? 'Compte supprimé' : 'Account deleted'); }).catch(e => { this.setState({ acBusy: false }); this.acErr(e); }); });
+  }
+  hasSess(d) { return Object.values(this.state.history || {}).some(a => a.some(x => x.date === d)); }
+  pubRow(d, vis, note) {
+    const s = this.state; const m = (s.sessMeta || {})[d] || {}; let vol = 0, sets = 0; const prs = [], mus = {};
+    Object.entries(s.history || {}).forEach(([name, arr]) => { const se = arr.find(x => x.date === d); if (!se) return; const mt = this.meta(name); const ws = work(se.sets); if (!ws.length) return; sets += ws.length;
+      mt.mus.p.forEach(k => mus[k] = (mus[k] || 0) + ws.length); mt.mus.s.forEach(k => mus[k] = (mus[k] || 0) + ws.length * 0.5);
+      if (isT(mt.type) || mt.type === 'cardio') return; vol += ws.reduce((a, x) => a + (x.w || 0) * (x.r || 0), 0);
+      const b = ws.reduce((o, x) => x.w > 0 && x.r > 0 && (!o || e1(x.w, x.r) > e1(o.w, o.r)) ? x : o, null); if (!b) return;
+      const prev = Math.max(0, ...arr.filter(x => x.date < d).flatMap(x => work(x.sets)).map(x => e1(x.w || 0, x.r || 0)));
+      if (e1(b.w, b.r) > prev + 0.01) prs.push({ ex: name.slice(0, 60), w: Math.round(b.w * 100) / 100, r: b.r });
+    });
+    Object.keys(mus).forEach(k => { mus[k] = Math.round(mus[k] * 2) / 2; if (!mus[k]) delete mus[k]; });
+    const r = m.rid && (s.routines || []).find(x => x.id === m.rid);
+    return { user_id: s.acct && s.acct.uid, local_start: d, title: (String(m.name || (r && r.name) || L('Workout')).trim() || 'Workout').slice(0, 80), started_at: new Date(d).toISOString(), duration_s: Math.max(0, Math.min(86400, Math.round((m.dur || 0) / 1000))), volume_kg: Math.round(vol * 10) / 10, sets, prs: prs.slice(0, 40), muscles: mus, note: (note || '').trim().slice(0, 500) || null, visibility: vis };
+  }
+  pubSet(d, p) { this.setState(st => { const mm = { ...(st.sessMeta || {}) }; const o = { ...(mm[d] || {}) }; if (p) o.pub = p; else delete o.pub; mm[d] = o; return { sessMeta: mm }; }); }
+  pubBusy(d, on) { this.setState(st => { const b = { ...(st.pubBusy || {}) }; if (on) b[d] = 1; else delete b[d]; return { pubBusy: b }; }); }
+  pubSend(d, vis, note, quiet) {
+    const s = this.state; const a = s.acct; const fr = LANG === 'fr'; if (!a || !a.profile || (s.pubBusy || {})[d] || !this.hasSess(d)) return;
+    vis = ['public', 'followers', 'private'].includes(vis) ? vis : a.profile.default_visibility || 'followers'; note = (note || '').trim().slice(0, 500);
+    const row = this.pubRow(d, vis, note); this.pubBusy(d, true); if (!quiet) this.setState({ acE: null });
+    this.sb().then(c => c.from('activities').upsert(row, { onConflict: 'user_id,local_start' }).select('id').single()).then(({ data, error }) => { if (error) throw error; this.pubBusy(d, false); this.pubSet(d, { vis, at: Date.now(), id: (data && data.id) || null, ...(note ? { note } : {}) }); if (!quiet) { this.setState({ pubNote: null, pubVis: null }); this.flash(fr ? 'Séance publiée' : 'Workout posted'); } })
+      .catch(e => { this.pubBusy(d, false); if (quiet || this.netErr(e)) this.pubSet(d, { vis, pending: true, ...(note ? { note } : {}) }); if (!quiet) this.acErr(e, false, 'pub'); });
+  }
+  pubFlush(force) {
+    const s = this.state; if (!s.acct || !s.acct.profile || (!force && this._pfT && Date.now() - this._pfT < 5000)) return; this._pfT = Date.now();
+    Object.entries(s.sessMeta || {}).forEach(([k, m]) => { const p = m && m.pub; if (p && p.pending) this.pubSend(Number(k), p.vis, p.note, true); });
+  }
+  pubSync(d) { const p = ((this.state.sessMeta || {})[d] || {}).pub; if (p && !p.pending && this.state.acct && this.state.acct.profile) setTimeout(() => this.pubSend(d, p.vis, p.note, true), 0); }
+  pubDel(d) {
+    const s = this.state; const a = s.acct; const fr = LANG === 'fr'; if (!a || (s.pubBusy || {})[d]) return;
+    this.arm('pubDelArm', () => { this.pubBusy(d, true); this.setState({ acE: null, pubDelArm: false });
+      this.sb().then(c => c.from('activities').delete().eq('user_id', a.uid).eq('local_start', d)).then(({ error }) => { if (error) throw error; this.pubBusy(d, false); this.pubSet(d, null); this.flash(fr ? 'Publication retirée' : 'Post removed'); }).catch(e => { this.pubBusy(d, false); this.acErr(e, false, 'pub'); }); });
   }
   tick() {
     const now = Date.now(); const s = this.state;
@@ -1670,7 +1740,7 @@ class Component extends DCLogic {
     if (!sets) { this.setState({ workout: null, focus: null, screen: 'tabs', tab: 'today', restEnd: null, restAlert: false, hold: null, exSheet: null }); return; }
     const dur = Date.now() - w.start;
     const m = { name: w.name, rid: w.rid, dur }; this.pushHealth(w.start, dur, exs, w.name); if (w.note && w.note.trim()) m.note = w.note.trim();
-    this.setState({ sessMeta: { ...(s.sessMeta || {}), [w.start]: m }, history: h, workout: null, focus: null, restEnd: null, restAlert: false, hold: null, exSheet: null, lastRoutineId: w.rid || s.lastRoutineId, summary: { name: w.name, dur, vol, sets, prevVol, hasPrev, prs: Object.values(prs), ex: exs }, screen: 'summary' });
+    this.setState({ sessMeta: { ...(s.sessMeta || {}), [w.start]: m }, history: h, workout: null, focus: null, restEnd: null, restAlert: false, hold: null, exSheet: null, lastRoutineId: w.rid || s.lastRoutineId, summary: { start: w.start, name: w.name, dur, vol, sets, prevVol, hasPrev, prs: Object.values(prs), ex: exs }, screen: 'summary' }, () => { if (s.autoPub && s.acct && s.acct.profile) this.pubSend(w.start, s.acct.profile.default_visibility, '', true); });
   }
   discard() {
     if (!this.state.discardArm) { this.setState({ discardArm: true }); setTimeout(() => this.setState({ discardArm: false }), 3000); return; }
@@ -1754,7 +1824,8 @@ class Component extends DCLogic {
       const s = this.state; const h = {};
       if (s.healthOn && this.hk()) { try { this.hk().deleteWorkout({ start: date }).catch(() => {}); } catch (e) {} }
       Object.entries(s.history).forEach(([k, a]) => { const f = a.filter(x => x.date !== date); if (f.length) h[k] = f; });
-      const m = { ...(s.sessMeta || {}) }; delete m[date];
+      const m = { ...(s.sessMeta || {}) }; const pb = m[date] && m[date].pub; delete m[date];
+      if (pb && !pb.pending && s.acct) this.sb().then(c => c.from('activities').delete().eq('user_id', s.acct.uid).eq('local_start', date)).catch(() => {});
       this.setState({ history: h, sessMeta: m, screen: 'tabs', tab: 'progress', openSess: null }); this.flash(L('Session deleted'));
     });
   }
@@ -1775,11 +1846,11 @@ class Component extends DCLogic {
     if (s.confirmStart) return set({ confirmStart: null });
     if ((s.screen === 'workout' && s.workout && s.exSheet != null) || (s.screen === 'routine' && s.rSheet != null)) return set({ exSheet: null, rSheet: null });
     if (s.bmBig) return set({ bmBig: false });
-    const arms = ['discardArm', 'deleteArm', 'clearArm', 'eraseArm', 'delSessArm', 'proArm', 'bodyDelArm', 'mediaDelArm', 'acDelArm'].filter(k => s[k]);
+    const arms = ['discardArm', 'deleteArm', 'clearArm', 'eraseArm', 'delSessArm', 'proArm', 'bodyDelArm', 'mediaDelArm', 'acDelArm', 'pubDelArm'].filter(k => s[k]);
     if (arms.length) return set(Object.fromEntries(arms.map(k => [k, k === 'bodyDelArm' || k === 'mediaDelArm' ? null : false])));
     const sc = s.screen;
     if (sc === 'exinfo') return set({ screen: s.infoFrom || 'tabs' });
-    if (sc === 'session') { if (s.sessEdit) { this.flash(L('Session updated')); return set({ sessEdit: false, editBuf: {}, delSessArm: false }); } if (s.sdSel && s.sdSel.d === s.openSess) return set({ sdSel: null }); return set({ screen: 'tabs', tab: 'progress', openSess: null, sessEdit: false, editBuf: {} }); }
+    if (sc === 'session') { if (s.sessEdit) { this.flash(L('Session updated')); this.pubSync(s.openSess); return set({ sessEdit: false, editBuf: {}, delSessArm: false }); } if (s.sdSel && s.sdSel.d === s.openSess) return set({ sdSel: null }); return set({ screen: 'tabs', tab: 'progress', openSess: null, sessEdit: false, editBuf: {} }); }
     if (sc === 'library') return set(s.libCtx === 'browse' ? { screen: 'tabs', tab: 'programs' } : { screen: s.libCtx === 'workout' ? 'workout' : 'routine' });
     if (sc === 'routine' || sc === 'templates') return set({ screen: 'tabs', tab: 'programs' });
     if (sc === 'summary') return set({ screen: 'tabs', tab: 'today', summary: null });
@@ -2028,8 +2099,20 @@ class Component extends DCLogic {
     const fr = LANG === 'fr'; const a = s.acct; const p = a && a.profile; const busy = !!s.acBusy; const un = s.acUser || '';
     const tg = on => ({ track: on ? ACC : '#24242B', knob: on ? '#0A0A0C' : '#9C9CA8', justify: on ? 'flex-end' : 'flex-start' });
     const vis = (cur, fn) => [['public', 'Public'], ['followers', fr ? 'Abonnés' : 'Followers'], ['private', fr ? 'Moi seul' : 'Only me']].map(([k, label]) => { const on = cur === k; return { label, bg: on ? '#24242B' : 'transparent', color: on ? '#FFFFFF' : '#9C9CA8', onClick: () => fn(k) }; });
-    const priv = p ? p.is_private !== false : s.acPriv !== false;
+    const priv = p ? p.is_private !== false : s.acPriv !== false; const er = k => (s.acE && s.acE.k === k && s.acE.m) || '';
+    const VN = { public: 'Public', followers: fr ? 'Abonnés' : 'Followers', private: fr ? 'Moi seul' : 'Only me' };
+    const ps = s.screen === 'summary' && s.summary ? s.summary.start : s.screen === 'session' ? s.openSess : null; const pm = (ps != null && (s.sessMeta || {})[ps]) || {}; const pp = pm.pub; const pB = ps != null && !!(s.pubBusy || {})[ps];
+    const pv = (s.pubVis && s.pubVis.d === ps && s.pubVis.v) || (p && p.default_visibility) || 'followers'; const pOn = !!p && ps != null && (s.screen === 'session' || this.hasSess(ps));
     return {
+      acErrSend: er('send'), acErrCode: er('code'), acErrProf: er('prof'),
+      pbOn: pOn, pbNew: pOn && !pp && !pB, pbSending: pOn && pB && (!pp || !!pp.pending), pbDone: pOn && !!pp && !pp.pending, pbWait: pOn && !!pp && !!pp.pending && !pB, pbErr: pOn ? er('pub') : '',
+      pbTitle: fr ? 'Partager' : 'Share', pbVisOpts: vis(pv, k => this.setState({ pubVis: { d: ps, v: k }, acE: null })),
+      pbNote: (s.pubNote && s.pubNote.d === ps && s.pubNote.t) || '', onPbNote: e => this.setState({ pubNote: { d: ps, t: e.target.value.slice(0, 500) } }), pbNotePh: fr ? 'Un petit mot ? (facultatif)' : 'A few words? (optional)',
+      pbSend: () => this.pubSend(ps, pv, (s.pubNote && s.pubNote.d === ps && s.pubNote.t) || ''), pbSendLabel: fr ? 'Publier' : 'Post', pbSendingText: fr ? 'Publication…' : 'Posting…',
+      pbDoneText: (fr ? 'Publiée ✓ · ' : 'Posted ✓ · ') + (pp ? VN[pp.vis] || pp.vis : ''), pbDel: () => this.pubDel(ps), pbDelLabel: pB ? (fr ? 'Retrait…' : 'Removing…') : s.pubDelArm ? (fr ? 'Touche encore pour retirer' : 'Tap again to remove') : (fr ? 'Retirer' : 'Remove'), pbDelColor: s.pubDelArm ? '#FF4D4D' : '#9C9CA8',
+      pbWaitText: fr ? 'En attente de connexion…' : 'Waiting for connection…', pbRetry: () => pp && this.pubSend(ps, pp.vis, pp.note), pbRetryLabel: fr ? 'Réessayer' : 'Retry', pbCancel: () => { this.pubSet(ps, null); this.setState({ acE: null }); }, pbCancelLabel: fr ? 'Annuler' : 'Cancel',
+      pbHint: s.screen === 'summary' && ps != null && (!a || p === null), pbHintText: !a ? (fr ? 'Crée un compte dans Profil pour partager tes séances.' : 'Create an account in Profile to share your workouts.') : (fr ? 'Crée ton profil dans Profil pour partager tes séances.' : 'Create your profile in Profile to share your workouts.'),
+      acAutoLabel: fr ? 'Publier automatiquement mes séances' : 'Auto-post my workouts', acAutoSub: fr ? 'Avec ta visibilité par défaut. Tu peux retirer une séance à tout moment.' : 'With your default visibility. You can remove a workout at any time.', acAutoTg: tg(!!s.autoPub), acAutoClick: () => this.setState({ autoPub: !s.autoPub }),
       acTitle: fr ? 'Compte' : 'Account', acOff: !a, acAsk: !a && !s.acSent, acCodeOn: !a && !!s.acSent, acNoProf: !!a && p === null, acHasProf: !!p, acPending: !!a && p === undefined, acOp: busy ? 0.5 : 1,
       acSocTitle: fr ? 'Barlog social · bêta' : 'Barlog social · beta', acSocText: fr ? 'Crée un compte gratuit pour publier tes séances et suivre tes amis. Sans compte, Barlog fonctionne comme avant.' : 'Create a free account to post your workouts and follow your friends. Without an account, Barlog works just like before.',
       acEmail: s.acEmail || '', onAcEmail: e => this.setState({ acEmail: e.target.value }), acEmailPh: fr ? 'ton@email.com' : 'you@email.com',
@@ -2423,7 +2506,7 @@ class Component extends DCLogic {
       calTitle: cm.toLocaleDateString(LOC(), { month: 'long', year: 'numeric' }), calCount: monthCount + L(' session') + (monthCount === 1 ? '' : 's'),
       calPrev: go({ calOff: s.calOff - 1 }), calNext: () => { if (s.calOff < 0) this.setState({ calOff: s.calOff + 1 }); }, calNextOpacity: s.calOff < 0 ? 1 : 0.3,
       calDays, noSess: !sessions.length,
-      sessList: sessions.slice(0, 100).map(se => { const dt = new Date(se.date); return { day: String(dt.getDate()), mon: dt.toLocaleDateString(LOC(), { month: 'short' }), name: se.name, meta: se.ex.length + L(' exercises · ') + se.sets + L(' sets · ') + volU(se.vol) + ' ' + s.unit + (se.dur ? ' · ' + clock(se.dur) : ''), onClick: go({ openSess: se.date, screen: 'session', delSessArm: false, sessEdit: false, editBuf: {} }) }; }),
+      sessList: sessions.slice(0, 100).map(se => { const dt = new Date(se.date); const pb = meta[se.date] && meta[se.date].pub; return { pub: pb ? (pb.pending ? '↗…' : '↗') : '', day: String(dt.getDate()), mon: dt.toLocaleDateString(LOC(), { month: 'short' }), name: se.name, meta: se.ex.length + L(' exercises · ') + se.sets + L(' sets · ') + volU(se.vol) + ' ' + s.unit + (se.dur ? ' · ' + clock(se.dur) : ''), onClick: go({ openSess: se.date, screen: 'session', delSessArm: false, sessEdit: false, editBuf: {} }) }; }),
       sdName: sd ? sd.name : '', sdDate: sd ? fmtLong(sd.date) : '',
       sdStats: sd ? [{ label: L('Time'), value: sd.dur ? clock(sd.dur) : '—' }, { label: L('Sets'), value: String(sd.sets) }, { label: 'Vol ' + s.unit, value: volU(sd.vol) }] : [],
       sdEx: sd ? sd.ex.map(x => { let n = 0; return { name: x.name, sets: x.sets.map((y, i) => { const k = sd.date + '|' + x.name + '|' + i + '|'; return {
@@ -2432,7 +2515,7 @@ class Component extends DCLogic {
         onW: (e) => this.editSessSet(sd.date, x.name, i, 'w', e.target.value), onR: (e) => this.editSessSet(sd.date, x.name, i, 'r', e.target.value),
         onSelect: (e) => { const t = e.target; setTimeout(() => { try { t.setSelectionRange(0, t.value.length); } catch (er) {} }, 0); } }; }) }; }) : [],
       sdView: !s.sessEdit, sdEditing: !!s.sessEdit, unit: s.unit,
-      toggleSessEdit: () => { if (s.sessEdit) this.flash(L('Session updated')); this.setState({ sessEdit: !s.sessEdit, editBuf: {}, delSessArm: false }); },
+      toggleSessEdit: () => { if (s.sessEdit) { this.flash(L('Session updated')); this.pubSync(s.openSess); } this.setState({ sessEdit: !s.sessEdit, editBuf: {}, delSessArm: false }); },
       editBtnLabel: s.sessEdit ? L('Done') : L('Edit'), editBtnBg: s.sessEdit ? ACC : '#24242B', editBtnColor: s.sessEdit ? '#0A0A0C' : '#FFFFFF', editBtnBorder: 'none',
       sessBack: go({ screen: 'tabs', tab: 'progress', openSess: null, sessEdit: false, editBuf: {} }),
       deleteSess: () => sd && this.deleteSession(sd.date), delSessLabel: s.delSessArm ? L('Tap again') : L('Delete'), delSessColor: s.delSessArm ? '#FFFFFF' : '#9C9CA8',
