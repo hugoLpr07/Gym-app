@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.19.0 — 2026-10-18
+- Android : Samsung Health via Health Connect. Séances envoyées (avec calories et distance pour le cardio), poids récupéré, et en Pro : masse grasse, masse maigre et IMC (calculé avec ta taille). Supprimer une séance dans Barlog la supprime aussi de Health Connect.
+
 ## 0.18.3 — 2026-10-18
 - Polices intégrées à l’app : plus aucun appel à Google Fonts, et l’affichage est correct même hors connexion dès le premier lancement.
 - Nouvelle page Politique de confidentialité (privacy.html, FR/EN).
