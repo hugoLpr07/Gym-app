@@ -702,6 +702,7 @@ input::placeholder{color:#9C9CA8}
 <span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ tx.k48 }}</span>
 </div>
 <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;text-align:center;">{{ appLabel }}</div>
+<button onClick="{{ openPrivacy }}" style="align-self:center;min-height:44px;padding:0 12px;border:none;background:transparent;color:#9C9CA8;font-size:13px;text-decoration:underline;">{{ privacyLabel }}</button>
 </div>
 </sc-if>
 
@@ -1095,7 +1096,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.20.0';
+const APP_VERSION = '0.20.1';
 const hkName = () => plat() === 'android' ? 'Health Connect' : 'Apple Health';
 const hkStore = () => plat() === 'android' ? 'Health Connect' : (LANG === 'fr' ? 'Santé' : 'Health');
 const plat = () => { try { const C = window.Capacitor; return (C && C.getPlatform && C.getPlatform()) || 'web'; } catch (e) { return 'web'; } };
@@ -2250,7 +2251,7 @@ class Component extends DCLogic {
         addLabel: PRO_TPL.includes(t.id) && !this.isPro() ? (fr ? 'Débloquer avec Pro ✦' : 'Unlock with Pro ✦') : (fr ? 'Ajouter ' : 'Add ') + t.r.length + ' routines', onAdd: this.gate(PRO_TPL.includes(t.id) ? 'program' : null, () => this.addTemplate(t)) })),
       sdHasNote: !!(sd && meta[sd.date] && meta[sd.date].note), sdNote: sd && meta[sd.date] ? meta[sd.date].note || '' : '',
       toastOn: !!s.toast, toast: s.toast,
-      tx: Object.fromEntries(Object.entries(TX).map(([k, v]) => [k, L(v)])), appLabel: 'Barlog v' + APP_VERSION,
+      tx: Object.fromEntries(Object.entries(TX).map(([k, v]) => [k, L(v)])), appLabel: 'Barlog v' + APP_VERSION, privacyLabel: LANG === 'fr' ? 'Politique de confidentialité' : 'Privacy policy', openPrivacy: () => { try { window.open('https://hugolpr07.github.io/Gym-app/privacy.html' + (LANG === 'fr' ? '' : '#en'), '_blank'); } catch (e) {} },
       calHead: LANG === 'fr' ? ['L','M','M','J','V','S','D'] : ['M','T','W','T','F','S','S'],
       enBg: LANG === 'en' ? '#24242B' : 'transparent', enColor: LANG === 'en' ? '#fff' : '#9C9CA8', frBg: LANG === 'fr' ? '#24242B' : 'transparent', frColor: LANG === 'fr' ? '#fff' : '#9C9CA8',
       setEn: go({ lang: 'en' }), setFr: go({ lang: 'fr' }),
