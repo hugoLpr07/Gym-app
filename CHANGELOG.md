@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.19.1 — 2026-10-18
+- Santé / Health Connect : la séance est enregistrée avec son nom (ex. « Push A »).
+
 ## 0.19.0 — 2026-10-18
 - Android : Samsung Health via Health Connect. Séances envoyées (avec calories et distance pour le cardio), poids récupéré, et en Pro : masse grasse, masse maigre et IMC (calculé avec ta taille). Supprimer une séance dans Barlog la supprime aussi de Health Connect.
 

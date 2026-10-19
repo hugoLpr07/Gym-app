@@ -1095,7 +1095,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.19.0';
+const APP_VERSION = '0.19.1';
 const hkName = () => plat() === 'android' ? 'Health Connect' : 'Apple Health';
 const hkStore = () => plat() === 'android' ? 'Health Connect' : (LANG === 'fr' ? 'Santé' : 'Health');
 const plat = () => { try { const C = window.Capacitor; return (C && C.getPlatform && C.getPlatform()) || 'web'; } catch (e) { return 'web'; } };
@@ -1548,7 +1548,7 @@ class Component extends DCLogic {
     clearTimeout(this.ra);
     if (!sets) { this.setState({ workout: null, focus: null, screen: 'tabs', tab: 'today', restEnd: null, restAlert: false, hold: null, exSheet: null }); return; }
     const dur = Date.now() - w.start;
-    const m = { name: w.name, rid: w.rid, dur }; this.pushHealth(w.start, dur, exs); if (w.note && w.note.trim()) m.note = w.note.trim();
+    const m = { name: w.name, rid: w.rid, dur }; this.pushHealth(w.start, dur, exs, w.name); if (w.note && w.note.trim()) m.note = w.note.trim();
     this.setState({ sessMeta: { ...(s.sessMeta || {}), [w.start]: m }, history: h, workout: null, focus: null, restEnd: null, restAlert: false, hold: null, exSheet: null, lastRoutineId: w.rid || s.lastRoutineId, summary: { name: w.name, dur, vol, sets, prevVol, hasPrev, prs: Object.values(prs), ex: exs }, screen: 'summary' });
   }
   discard() {
@@ -1752,7 +1752,7 @@ class Component extends DCLogic {
       }).catch(() => {});
     } catch (e) {}
   }
-  pushHealth(start, dur, exs) {
+  pushHealth(start, dur, exs, title) {
     const H = this.hk(); const s = this.state; if (!H || !s.healthOn || !exs.length) return;
     const car = exs.filter(x => this.meta(x.name).type === 'cardio'); const sum = (k) => car.reduce((a, x) => a + x.sets.reduce((b, y) => b + (y[k] || 0), 0), 0);
     const cMin = sum('r'), cKcal = sum('c'); const bw = ((s.body || []).filter(b => b.w).slice(-1)[0] || {}).w || 75; const allC = car.length === exs.length;
@@ -1761,7 +1761,7 @@ class Component extends DCLogic {
     const type = allC ? (new Set(car.map(x => kind(x.name))).size === 1 ? kind(car[0].name) : 'mixed') : 'strength';
     const km = ['running', 'walking', 'cycling'].includes(type) ? sum('d') : 0;
     const kcal = Math.round(cKcal + (allC ? (cKcal ? 0 : 7 * bw * cMin / 60) : 4.5 * bw * Math.max(0, dur / 60000 - cMin) / 60));
-    H.saveWorkout({ start, end: start + dur, kcal, km, type }).then(r => { if (r && r.ok === false) this.flash(hkName() + ' : ' + (r.why || 'erreur')); }).catch(() => {});
+    H.saveWorkout({ start, end: start + dur, kcal, km, type, title: title || 'Barlog' }).then(r => { if (r && r.ok === false) this.flash(hkName() + ' : ' + (r.why || 'erreur')); }).catch(() => {});
   }
   syncReminders() {
     const P = this.nat(); const LN = P && P.LocalNotifications; if (!LN) return;
