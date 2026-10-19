@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.24.0 — 2026-10-19
+- Partage (bêta) : nouvel onglet Fil avec tes séances publiées et celles des comptes que tu suis, bravos et commentaires.
+
 ## 0.23.0 — 2026-10-19
 - Partage (bêta) : publier une séance depuis « Séance enregistrée » ou le détail d’une séance, avec visibilité et petit mot ; retirer une publication ; option de publication automatique ; marque sur les séances publiées. Erreurs du compte affichées sous les boutons.
 

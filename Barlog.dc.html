@@ -149,6 +149,34 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-if>
 
+<sc-if value="{{ cmOn }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ cmClose }}" style="position:fixed;inset:0;z-index:60;background:rgba(0,0,0,0.65);display:flex;align-items:flex-end;justify-content:center;">
+<div onClick="{{ cmStop }}" style="width:100%;max-width:480px;height:80%;box-sizing:border-box;background:#16161A;border-top:1px solid #33333C;border-radius:24px 24px 0 0;padding:16px 16px calc(14px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;">
+<div style="flex:none;display:flex;align-items:center;justify-content:space-between;gap:8px;"><span style="font-size:18px;font-weight:800;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ cmTitle }}</span><button onClick="{{ cmClose }}" style="flex:none;width:44px;height:44px;border-radius:22px;border:none;background:#24242B;color:#FFFFFF;font-size:16px;">✕</button></div>
+<div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:12px;">
+<sc-if value="{{ cmLoading }}" hint-placeholder-val="{{ false }}"><div style="padding:24px 0;text-align:center;font-size:14px;color:#9C9CA8;">{{ cmLoadingText }}</div></sc-if>
+<sc-if value="{{ cmRetryOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cmRetry }}" style="flex:none;height:48px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ cmRetryLabel }}</button></sc-if>
+<sc-if value="{{ cmEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:24px 0;text-align:center;font-size:14px;color:#9C9CA8;">{{ cmEmptyText }}</div></sc-if>
+<sc-for list="{{ cmList }}" as="cm" hint-placeholder-count="2">
+<div style="flex:none;display:flex;gap:10px;align-items:flex-start;">
+<div style="flex:none;width:32px;height:32px;border-radius:16px;background:#24242B;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;">{{ cm.ini }}</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;">
+<div style="display:flex;align-items:baseline;gap:6px;min-width:0;"><span style="font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ cm.name }}</span><span style="flex:none;font-size:12px;color:#9C9CA8;">{{ cm.when }}</span></div>
+<span style="font-size:14px;line-height:20px;color:#E4E4EA;white-space:pre-wrap;overflow-wrap:anywhere;">{{ cm.body }}</span>
+<sc-if value="{{ cm.canDel }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cm.onDel }}" style="align-self:flex-start;border:none;background:transparent;padding:0;min-height:32px;color:{{ cm.delColor }};font-size:12px;font-weight:600;">{{ cm.delLabel }}</button></sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="flex:none;display:flex;flex-direction:column;gap:6px;">
+<textarea value="{{ cmText }}" onChange="{{ onCmText }}" placeholder="{{ cmPh }}" maxlength="500" rows="2" style="width:100%;box-sizing:border-box;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;line-height:22px;padding:10px 12px;font-family:inherit;resize:none;"></textarea>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;">{{ cmCount }}</span><button onClick="{{ cmSend }}" style="height:44px;padding:0 20px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;opacity:{{ cmSendOp }};">{{ cmSendLabel }}</button></div>
+<sc-if value="{{ cmErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ cmErr }}</span></sc-if>
+</div>
+</div>
+</div>
+</sc-if>
+
 <sc-if value="{{ sheetOn }}" hint-placeholder-val="{{ false }}">
 <div onClick="{{ closeSheet }}" style="position:fixed;inset:0;z-index:60;background:rgba(0,0,0,0.65);display:flex;align-items:flex-end;justify-content:center;">
 <div onClick="{{ stop }}" style="width:100%;max-width:480px;max-height:88%;overflow-y:auto;box-sizing:border-box;background:#16161A;border-top:1px solid #33333C;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px;">
@@ -616,6 +644,54 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-if>
 
+<sc-if value="{{ isFeed }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 16px 24px;display:flex;flex-direction:column;gap:12px;">
+<div style="padding-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;"><span style="font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">{{ fdTitle }}</span><sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}"><button onClick="{{ fdRefresh }}" aria-label="↻" style="width:44px;height:44px;border-radius:22px;border:none;background:#24242B;color:#FFFFFF;font-size:20px;opacity:{{ fdRefOp }};">↻</button></sc-if></div>
+<sc-if value="{{ fdIntro }}" hint-placeholder-val="{{ false }}">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+<span style="font-size:17px;font-weight:700;">{{ fdIntroTitle }}</span>
+<span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ fdIntroText }}</span>
+<button onClick="{{ fdToProfile }}" style="height:52px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;">{{ fdIntroBtn }}</button>
+</div>
+</sc-if>
+<sc-if value="{{ fdPend }}" hint-placeholder-val="{{ false }}">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+<span style="font-size:14px;line-height:20px;color:#9C9CA8;">{{ acPendingText }}</span>
+<button onClick="{{ acRetry }}" style="height:48px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;opacity:{{ acOp }};">{{ acRetryLabel }}</button>
+</div>
+</sc-if>
+<sc-if value="{{ fdLoading }}" hint-placeholder-val="{{ false }}"><div style="padding:32px 0;text-align:center;font-size:14px;color:#9C9CA8;">{{ fdLoadingText }}</div></sc-if>
+<sc-if value="{{ fdErrCard }}" hint-placeholder-val="{{ false }}">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+<span style="font-size:14px;line-height:20px;color:#FF6B6B;text-wrap:pretty;">{{ fdErrText }}</span>
+<button onClick="{{ fdRefresh }}" style="height:48px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ fdRetryLabel }}</button>
+</div>
+</sc-if>
+<sc-if value="{{ fdEmpty }}" hint-placeholder-val="{{ false }}"><div style="background:#16161A;border:1px solid #24242B;border-radius:16px;padding:20px 16px;font-size:14px;line-height:20px;color:#9C9CA8;text-align:center;text-wrap:pretty;">{{ fdEmptyText }}</div></sc-if>
+<sc-for list="{{ fdCards }}" as="c" hint-placeholder-count="2">
+<div style="flex:none;background:#16161A;border:1px solid #24242B;border-radius:20px;padding:14px 16px;display:flex;flex-direction:column;gap:12px;">
+<div style="display:flex;align-items:center;gap:10px;min-width:0;">
+<div style="flex:none;width:40px;height:40px;border-radius:20px;background:{{ c.avBg }};color:{{ c.avColor }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;">{{ c.ini }}</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;"><span style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ c.name }}</span><span style="font-size:12px;color:#9C9CA8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ c.handle }} · {{ c.when }}</span></div>
+<sc-if value="{{ c.visOn }}" hint-placeholder-val="{{ false }}"><span style="flex:none;height:24px;padding:0 8px;border-radius:12px;background:#24242B;color:#9C9CA8;font-size:11px;font-weight:700;display:flex;align-items:center;">{{ c.vis }}</span></sc-if>
+</div>
+<span style="font-size:18px;font-weight:800;line-height:23px;overflow-wrap:anywhere;">{{ c.title }}</span>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;"><sc-for list="{{ c.stats }}" as="st" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#9C9CA8;">{{ st.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ st.value }}</span></div></sc-for></div>
+<sc-if value="{{ c.prOn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:3px;"><span style="font-size:14px;font-weight:700;color:var(--acc);">{{ c.prTitle }}</span><sc-for list="{{ c.prList }}" as="pr" hint-placeholder-count="2"><span style="font-size:13px;color:#FFFFFF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ pr.text }}</span></sc-for><sc-if value="{{ c.prMore }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#9C9CA8;">{{ c.prMoreText }}</span></sc-if></div></sc-if>
+<sc-if value="{{ c.musOn }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:12px;"><div style="flex:none;display:flex;gap:4px;"><div style="width:40px;">{{ c.fFront }}</div><div style="width:40px;">{{ c.fBack }}</div></div><div style="flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ c.mus }}" as="mm" hint-placeholder-count="3"><span style="height:28px;padding:0 10px;border-radius:14px;background:{{ mm.bg }};color:{{ mm.color }};font-size:12px;font-weight:600;display:flex;align-items:center;white-space:nowrap;">{{ mm.label }}</span></sc-for></div></div></sc-if>
+<sc-if value="{{ c.noteOn }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;line-height:20px;color:#D8D8DE;white-space:pre-wrap;overflow-wrap:anywhere;">{{ c.note }}</span></sc-if>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+<button onClick="{{ c.onKudo }}" style="height:44px;border-radius:12px;border:1px solid {{ c.kBorder }};background:{{ c.kBg }};color:{{ c.kColor }};font-size:14px;font-weight:700;white-space:nowrap;">{{ c.kLabel }}</button>
+<button onClick="{{ c.onCmt }}" style="height:44px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#FFFFFF;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 6px;">{{ c.cLabel }}</button>
+</div>
+<sc-if value="{{ c.err }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ c.err }}</span></sc-if>
+</div>
+</sc-for>
+<sc-if value="{{ fdMore }}" hint-placeholder-val="{{ false }}"><button onClick="{{ fdLoadMore }}" style="flex:none;min-height:52px;border-radius:16px;border:1px solid #33333C;background:transparent;color:#FFFFFF;font-size:15px;font-weight:600;">{{ fdMoreLabel }}</button></sc-if>
+<sc-if value="{{ fdErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ fdErr }}</span></sc-if>
+</div>
+</sc-if>
+
 <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 16px 24px;display:flex;flex-direction:column;gap:20px;">
 <div style="padding-top:8px;font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">{{ tx.k37 }}</div>
@@ -787,9 +863,9 @@ input::placeholder{color:#9C9CA8}
 </sc-if>
 
 <sc-if value="{{ showTabs }}" hint-placeholder-val="{{ true }}">
-<div style="position:absolute;left:0;right:0;bottom:0;height:calc(60px + env(safe-area-inset-bottom));background:#0A0A0C;border-top:1px solid #24242B;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:0 8px env(safe-area-inset-bottom);z-index:3;">
-<sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
-<button onClick="{{ t.onClick }}" style="position:relative;min-width:0;padding:0 2px;white-space:nowrap;border:none;background:transparent;color:{{ t.color }};font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;">
+<div style="position:absolute;left:0;right:0;bottom:0;height:calc(60px + env(safe-area-inset-bottom));background:#0A0A0C;border-top:1px solid #24242B;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:0 4px env(safe-area-inset-bottom);z-index:3;">
+<sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+<button onClick="{{ t.onClick }}" style="position:relative;min-width:0;padding:0 1px;white-space:nowrap;border:none;background:transparent;color:{{ t.color }};font-size:clamp(10px,3.2vw,12px);letter-spacing:-0.01em;font-weight:600;display:flex;align-items:center;justify-content:center;">
 <span style="position:absolute;top:-1px;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:{{ t.bar }};"></span>{{ t.label }}</button>
 </sc-for>
 </div>
@@ -1197,8 +1273,8 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.23.0';
-const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/;
+const APP_VERSION = '0.24.0';
+const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 const hkName = () => plat() === 'android' ? 'Health Connect' : 'Apple Health';
 const hkStore = () => plat() === 'android' ? 'Health Connect' : (LANG === 'fr' ? 'Santé' : 'Health');
 const plat = () => { try { const C = window.Capacitor; return (C && C.getPlatform && C.getPlatform()) || 'web'; } catch (e) { return 'web'; } };
@@ -1413,6 +1489,8 @@ class Component extends DCLogic {
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.workout !== st.workout || prev.restNotif !== st.restNotif) this.syncRestNotif();
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.restTotal !== st.restTotal || prev.workout !== st.workout || prev.hold !== st.hold || prev.liveRest !== st.liveRest) this.syncLive();
     if (prev.remind !== st.remind || prev.lang !== st.lang) this.syncReminders();
+    if ((prev.acct && prev.acct.uid) !== (st.acct && st.acct.uid) && (st.feed || st.cmt)) this.setState({ feed: null, cmt: null, cmtDelArm: null });
+    const fOn = x => x.screen === 'tabs' && x.tab === 'feed' && !!(x.acct && x.acct.profile); if (fOn(st) && !fOn(prev)) this.feedEnter();
   }
   save(flush) { const o = {}; PK.forEach(k => o[k] = this.state[k]); o.savedAt = Date.now(); const j = JSON.stringify(o); try { localStorage.setItem('barlog-v1', j); } catch (e) {} this.saveNative(j, flush); }
   fs() { const P = this.nat(); return P && P.Filesystem; }
@@ -1524,6 +1602,42 @@ class Component extends DCLogic {
     const s = this.state; const a = s.acct; const fr = LANG === 'fr'; if (!a || (s.pubBusy || {})[d]) return;
     this.arm('pubDelArm', () => { this.pubBusy(d, true); this.setState({ acE: null, pubDelArm: false });
       this.sb().then(c => c.from('activities').delete().eq('user_id', a.uid).eq('local_start', d)).then(({ error }) => { if (error) throw error; this.pubBusy(d, false); this.pubSet(d, null); this.flash(fr ? 'Publication retirée' : 'Post removed'); }).catch(e => { this.pubBusy(d, false); this.acErr(e, false, 'pub'); }); });
+  }
+  feedEnter() { const f = this.state.feed; if (!f || !f.at || Date.now() - f.at > 30000) this.feedLoad(); }
+  feedLoad(more) {
+    const s = this.state; const a = s.acct; const f = s.feed || {}; if (!a || !a.profile || f.busy) return; const last = more && f.items && f.items[f.items.length - 1];
+    this.setState(st => ({ feed: { ...(st.feed || {}), busy: true, err: null }, ...(st.acE && st.acE.k === 'feed' ? { acE: null } : {}) }));
+    this.sb().then(c => c.rpc('feed', last ? { before: last.created_at, lim: FEED_N } : { lim: FEED_N })).then(({ data, error }) => { if (error) throw error; const rows = data || [];
+      this.setState(st => { const old = last ? ((st.feed || {}).items || []) : []; const seen = new Set(old.map(x => x.id)); return { feed: { items: [...old, ...rows.filter(x => !seen.has(x.id))], at: Date.now(), more: rows.length >= FEED_N, busy: false, err: null } }; }); })
+      .catch(e => { this.setState(st => ({ feed: { ...(st.feed || {}), busy: false, err: this.acMsg(e) } })); this.acErr(e, false, 'feed'); });
+  }
+  feedPatch(id, fn) { this.setState(st => { const f = st.feed; if (!f || !f.items) return null; return { feed: { ...f, items: f.items.map(x => x.id === id ? { ...x, ...fn(x) } : x) } }; }); }
+  feedKudo(id) {
+    const s = this.state; const a = s.acct; this._kb = this._kb || {}; const it = ((s.feed || {}).items || []).find(x => x.id === id); if (!a || !a.profile || !it || this._kb[id]) return;
+    const on = !it.kudoed; const set = v => this.feedPatch(id, x => ({ kudoed: v, kudos_count: Math.max(0, (x.kudos_count || 0) + (v ? 1 : -1)) })); this._kb[id] = 1; set(on); if (on) this.buzz(15);
+    if (s.acE && s.acE.k === 'k' + id) this.setState({ acE: null });
+    this.sb().then(c => on ? c.from('kudos').insert({ activity_id: id }) : c.from('kudos').delete().eq('activity_id', id).eq('user_id', a.uid)).then(({ error }) => { if (error && !(on && error.code === '23505')) throw error; })
+      .catch(e => { set(!on); this.acErr(e, false, 'k' + id); }).then(() => { delete this._kb[id]; });
+  }
+  cmtOpen(id) { this.setState({ cmt: { id, items: null, busy: false, text: '', sending: false }, cmtDelArm: null, acE: null }); setTimeout(() => this.cmtLoad(id), 0); }
+  cmtUp(id, p) { this.setState(st => st.cmt && st.cmt.id === id ? { cmt: { ...st.cmt, ...(typeof p === 'function' ? p(st.cmt) : p) } } : null); }
+  cmtLoad(id) {
+    this.cmtUp(id, { busy: true }); if (this.state.acE && this.state.acE.k === 'cmt') this.setState({ acE: null });
+    this.sb().then(c => c.from('comments').select('id,body,created_at,user_id,profiles(username,display_name)').eq('activity_id', id).order('created_at')).then(({ data, error }) => { if (error) throw error; const items = data || []; this.cmtUp(id, { items, busy: false }); this.feedPatch(id, () => ({ comments_count: items.length })); })
+      .catch(e => { this.cmtUp(id, { busy: false }); this.acErr(e, false, 'cmt'); });
+  }
+  cmtSend() {
+    const s = this.state; const m = s.cmt; const fr = LANG === 'fr'; if (!m || m.sending || !s.acct) return; const body = (m.text || '').trim().slice(0, 500);
+    if (!body) return this.acFail('cmt', fr ? 'Écris quelque chose' : 'Write something'); const id = m.id; this.cmtUp(id, { sending: true }); this.setState({ acE: null });
+    this.sb().then(c => c.from('comments').insert({ activity_id: id, body })).then(({ error }) => { if (error) throw error; this.cmtUp(id, { sending: false, text: '' }); this.feedPatch(id, x => ({ comments_count: (x.comments_count || 0) + 1 })); this.cmtLoad(id); })
+      .catch(e => { this.cmtUp(id, { sending: false }); this.acErr(e, false, 'cmt'); });
+  }
+  cmtDel(cid) {
+    const s = this.state; const m = s.cmt; if (!m || !s.acct) return; const id = m.id;
+    if (s.cmtDelArm !== cid) { this.setState({ cmtDelArm: cid }); clearTimeout(this._cdT); this._cdT = setTimeout(() => this.setState(st => st.cmtDelArm === cid ? { cmtDelArm: null } : null), 3000); return; }
+    this.setState({ cmtDelArm: null, acE: null });
+    this.sb().then(c => c.from('comments').delete().eq('id', cid)).then(({ error }) => { if (error) throw error; this.cmtUp(id, x => ({ items: (x.items || []).filter(y => y.id !== cid) })); this.feedPatch(id, x => ({ comments_count: Math.max(0, (x.comments_count || 0) - 1) })); })
+      .catch(e => this.acErr(e, false, 'cmt'));
   }
   tick() {
     const now = Date.now(); const s = this.state;
@@ -1844,6 +1958,7 @@ class Component extends DCLogic {
     if (s.onboarded === false) { const st = (s.ob && s.ob.step) || 0; if (st > 0) return set({ ob: { ...(s.ob || { step: 0 }), step: st - 1 } }); return this.minimizeApp(); }
     if (s.prFx) { clearTimeout(this.prT); return set({ prFx: null }); }
     if (s.confirmStart) return set({ confirmStart: null });
+    if (s.cmt) return set({ cmt: null, cmtDelArm: null });
     if ((s.screen === 'workout' && s.workout && s.exSheet != null) || (s.screen === 'routine' && s.rSheet != null)) return set({ exSheet: null, rSheet: null });
     if (s.bmBig) return set({ bmBig: false });
     const arms = ['discardArm', 'deleteArm', 'clearArm', 'eraseArm', 'delSessArm', 'proArm', 'bodyDelArm', 'mediaDelArm', 'acDelArm', 'pubDelArm'].filter(k => s[k]);
@@ -2134,6 +2249,47 @@ class Component extends DCLogic {
       acSignOut: () => this.acOut(), acSignOutLabel: fr ? 'Se déconnecter' : 'Sign out',
       acDelete: () => this.acDelete(), acDelLabel: s.acDelArm ? (fr ? 'Touche encore pour supprimer définitivement' : 'Tap again to delete permanently') : (fr ? 'Supprimer mon compte' : 'Delete my account'), acDelBorder: s.acDelArm ? '#FF4D4D' : '#33333C',
       acDelHint: fr ? 'Supprime ton compte et tout ce que tu as publié. Tes séances sur ce téléphone restent intactes.' : 'Deletes your account and everything you posted. Workouts on this phone stay untouched.'
+    };
+  }
+  feedVals(s) {
+    if (!(s.screen === 'tabs' && s.tab === 'feed') && !s.cmt) return { fdOn: false, fdCards: [], cmOn: false, cmList: [] };
+    const fr = LANG === 'fr'; const a = s.acct; const p = a && a.profile; const f = s.feed || {}; const items = f.items || []; const kg = s.unit === 'kg'; const now = Date.now();
+    const er = k => (s.acE && s.acE.k === k && s.acE.m) || ''; const VN = { public: 'Public', followers: fr ? 'Abonnés' : 'Followers', private: fr ? 'Moi seul' : 'Only me' };
+    const rel = iso => { const t = Date.parse(iso); if (!t) return ''; const m = Math.floor((now - t) / 60000); if (m < 1) return fr ? 'à l’instant' : 'just now'; if (m < 60) return fr ? 'il y a ' + m + ' min' : m + ' min ago'; const h = Math.floor(m / 60); if (h < 24) return fr ? 'il y a ' + h + ' h' : h + 'h ago'; const d = Math.floor(h / 24); if (d < 7) return fr ? 'il y a ' + d + ' j' : d + 'd ago'; return new Date(t).toLocaleDateString(fr ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'short', ...(new Date(t).getFullYear() !== new Date(now).getFullYear() ? { year: 'numeric' } : {}) }); };
+    const ini = n => (String(n || '?').trim().split(/\s+/).slice(0, 2).map(w => [...w][0] || '').join('') || '?').toUpperCase();
+    const musName = k => { const m = MUS.find(x => x[0] === k); return m ? (fr ? m[2] : m[1]) : k; }; const SF = [FIG_BASE, mixC(FIG_BASE, ACC, 0.3), mixC(FIG_BASE, ACC, 0.62), ACC];
+    const hm = sec => { const m = Math.round((sec || 0) / 60); return Math.floor(m / 60) + ':' + pad(m % 60); };
+    const cards = items.map((x, i) => { const mine = !!a && x.user_id === a.uid; const mu = x.muscles && typeof x.muscles === 'object' ? x.muscles : {}; const ord = Object.keys(mu).filter(k => mu[k] > 0 && MUS.some(m => m[0] === k)).sort((q, r) => mu[r] - mu[q]);
+      const mx = Math.max(0, ...ord.map(k => mu[k])); const lv = v => !v ? 0 : v >= mx * 0.66 ? 3 : v >= mx * 0.33 ? 2 : 1; const sty = k => { const l = lv(mu[k]); return { fill: SF[l], glow: false, op: 1 }; }; const nop = () => {};
+      const prs = Array.isArray(x.prs) ? x.prs : []; const vol = Number(x.volume_kg) || 0; const k = 'k' + x.id;
+      return { key: x.id, ini: ini(x.display_name || x.username), avBg: mine ? ACC : '#24242B', avColor: mine ? '#0A0A0C' : '#FFFFFF', name: x.display_name || x.username || '—', handle: '@' + (x.username || ''), when: rel(x.created_at || x.started_at),
+        visOn: mine, vis: VN[x.visibility] || x.visibility || '', title: x.title || L('Workout'),
+        stats: [[fr ? 'Durée' : 'Time', hm(x.duration_s)], ['Volume', Math.round(kg ? vol : vol * KG_LB).toLocaleString() + ' ' + s.unit], [L('Sets'), String(x.sets || 0)]].map(([label, value]) => ({ label, value })),
+        prOn: prs.length > 0, prTitle: '🏆 ' + prs.length + (fr ? ' record' : ' PR') + (prs.length > 1 ? 's' : ''), prList: prs.slice(0, 2).map(q => ({ text: L(q.ex) + ' ' + this.dispW(Number(q.w) || 0) + ' ' + s.unit + ' × ' + q.r })), prMore: prs.length > 2, prMoreText: '+' + (prs.length - 2) + (fr ? ' autre' + (prs.length > 3 ? 's' : '') : ' more'),
+        musOn: ord.length > 0, fFront: ord.length ? bodyFig(FIG_FRONT, sty, nop, false, { uid: 'fd' + i + 'f' }) : null, fBack: ord.length ? bodyFig(FIG_BACK, sty, nop, false, { uid: 'fd' + i + 'b' }) : null,
+        mus: ord.slice(0, 3).map(q => ({ label: musName(q), bg: lv(mu[q]) === 3 ? ACC : '#24242B', color: lv(mu[q]) === 3 ? '#0A0A0C' : '#FFFFFF' })),
+        noteOn: !!x.note, note: x.note || '',
+        kOn: !!x.kudoed, kLabel: (fr ? 'Bravo' : 'Kudos') + (x.kudos_count ? ' · ' + x.kudos_count : ''), kBg: x.kudoed ? ACC : 'transparent', kColor: x.kudoed ? '#0A0A0C' : '#FFFFFF', kBorder: x.kudoed ? ACC : '#33333C', onKudo: () => this.feedKudo(x.id),
+        cLabel: (fr ? 'Commentaires' : 'Comments') + (x.comments_count ? ' (' + x.comments_count + ')' : ''), onCmt: () => this.cmtOpen(x.id), err: er(k) }; });
+    const m = s.cmt; const act = m && items.find(x => x.id === m.id); const cl = (m && m.items) || [];
+    return {
+      fdOn: true, fdTitle: fr ? 'Fil' : 'Feed', fdIntro: !a || p === null, fdPend: !!a && p === undefined, fdHas: !!p,
+      fdIntroTitle: fr ? 'Le fil · bêta' : 'The feed · beta',
+      fdIntroText: fr ? 'Publie tes séances, suis tes amis et encourage-les avec des bravos et des commentaires. Sans compte, Barlog fonctionne comme avant.' : 'Post your workouts, follow your friends and cheer them on with kudos and comments. Without an account, Barlog works just like before.',
+      fdIntroBtn: !a ? (fr ? 'Créer un compte' : 'Create an account') : (fr ? 'Créer mon profil' : 'Create my profile'), fdToProfile: () => this.setState({ tab: 'profile' }),
+      fdRefresh: () => this.feedLoad(), fdRefOp: f.busy ? 0.4 : 1,
+      fdLoading: !!p && !!f.busy && !items.length, fdLoadingText: fr ? 'Chargement…' : 'Loading…',
+      fdErrCard: !!p && !f.busy && !!f.err && !items.length, fdErrText: f.err || '', fdRetryLabel: fr ? 'Réessayer' : 'Retry',
+      fdEmpty: !!p && !f.busy && !f.err && !!f.items && !items.length, fdEmptyText: fr ? 'Rien pour l’instant. Publie une séance depuis « Séance enregistrée » ou le détail d’une séance.' : 'Nothing yet. Post a workout from “Workout saved” or a workout’s details.',
+      fdCards: p ? cards : [], fdMore: !!p && items.length > 0 && !!f.more, fdMoreLabel: f.busy ? (fr ? 'Chargement…' : 'Loading…') : (fr ? 'Voir plus' : 'Load more'), fdLoadMore: () => this.feedLoad(true),
+      fdErr: items.length ? er('feed') : '',
+      cmOn: !!m, cmTitle: (fr ? 'Commentaires' : 'Comments') + (act ? ' · ' + (act.title || '') : ''), cmClose: () => this.setState({ cmt: null, cmtDelArm: null }), cmStop: e => e.stopPropagation(),
+      cmLoading: !!m && !m.items && !!m.busy, cmLoadingText: fr ? 'Chargement…' : 'Loading…', cmEmpty: !!m && !!m.items && !cl.length, cmEmptyText: fr ? 'Aucun commentaire. Sois le premier !' : 'No comments yet. Be the first!',
+      cmList: cl.map(c => { const pr = (Array.isArray(c.profiles) ? c.profiles[0] : c.profiles) || {}; const can = !!a && (c.user_id === a.uid || (!!act && act.user_id === a.uid)); const armed = s.cmtDelArm === c.id;
+        return { key: c.id, ini: ini(pr.display_name || pr.username), name: pr.display_name || pr.username || '—', when: rel(c.created_at), body: c.body || '', canDel: can, delLabel: armed ? (fr ? 'Toucher encore' : 'Tap again') : (fr ? 'Supprimer' : 'Delete'), delColor: armed ? '#FF4D4D' : '#9C9CA8', onDel: () => this.cmtDel(c.id) }; }),
+      cmText: (m && m.text) || '', onCmText: e => { const v = e.target.value.slice(0, 500); this.setState(st => st.cmt ? { cmt: { ...st.cmt, text: v } } : null); }, cmPh: fr ? 'Écrire un commentaire…' : 'Write a comment…',
+      cmCount: ((m && m.text) || '').length + '/500', cmSend: () => this.cmtSend(), cmSendLabel: m && m.sending ? (fr ? 'Envoi…' : 'Sending…') : (fr ? 'Envoyer' : 'Send'), cmSendOp: m && (m.sending || !(m.text || '').trim()) ? 0.5 : 1, cmErr: er('cmt'),
+      cmRetryOn: !!m && !m.items && !m.busy, cmRetry: () => m && this.cmtLoad(m.id), cmRetryLabel: fr ? 'Réessayer' : 'Retry'
     };
   }
   renderVals() {
@@ -2496,7 +2652,7 @@ class Component extends DCLogic {
       ...(() => { const n = sessions.length; const le = s.lastExport; const due = n >= 3 && (!le || now - le > 14 * DAY) && !(s.backupSnooze && now < s.backupSnooze);
         return { backupOn: due, backupHint: plat() === 'android' ? (LANG === 'fr' ? 'Touche Exporter, puis enregistre le fichier dans Google Drive ou Téléchargements.' : 'Tap Export, then save the file to Google Drive or Downloads.') : L('Tap Export, then “Save to Files” → iCloud Drive.'), backupText: le ? (LANG === 'fr' ? 'Dernière sauvegarde il y a ' + Math.floor((now - le) / DAY) + ' jours. Tes données sont uniquement sur ce téléphone.' : 'Last backup ' + Math.floor((now - le) / DAY) + ' days ago. Your data lives only on this phone.') : L('No backup yet. Your data lives only on this phone.'), backupNow: () => this.exportData(), backupLater: go({ backupSnooze: now + 3 * DAY }) }; })(),
       showInstall: !s.standalone && !s.installSeen, dismissInstall: go({ installSeen: true }),
-      isToday: showTabs && s.tab === 'today', isPrograms: showTabs && s.tab === 'programs', isProgress: showTabs && s.tab === 'progress', isProfile: showTabs && s.tab === 'profile',
+      isToday: showTabs && s.tab === 'today', isPrograms: showTabs && s.tab === 'programs', isProgress: showTabs && s.tab === 'progress', isProfile: showTabs && s.tab === 'profile', isFeed: showTabs && s.tab === 'feed',
       isSession: s.screen === 'session' && !!sd,
       progViews: [['sessions', L('Sessions')], ['lifts', L('Lifts')], ['stats', L('Stats')], ['body', L('Body')]].map(([k, label]) => ({ label: label + (k === 'stats' && !this.isPro() ? ' ✦' : ''), bg: s.progView === k ? '#24242B' : 'transparent', color: s.progView === k ? '#FFFFFF' : '#9C9CA8', onClick: k === 'stats' ? this.gate('stats', go({ progView: k })) : go({ progView: k }) })),
       isSessView: !['lifts', 'stats', 'body'].includes(s.progView) || (s.progView === 'stats' && !this.isPro()), isLiftView: s.progView === 'lifts', isStatsView: s.progView === 'stats' && this.isPro(),
@@ -2521,7 +2677,7 @@ class Component extends DCLogic {
       deleteSess: () => sd && this.deleteSession(sd.date), delSessLabel: s.delSessArm ? L('Tap again') : L('Delete'), delSessColor: s.delSessArm ? '#FFFFFF' : '#9C9CA8',
       isWorkout: s.screen === 'workout' && !!w, isLibrary: s.screen === 'library', isRoutine: s.screen === 'routine' && !!er, isSummary: s.screen === 'summary' && !!sm,
       showTabs, showResume: showTabs && !!w, tabBottom: showTabs && w ? 'calc(132px + env(safe-area-inset-bottom))' : 'calc(60px + env(safe-area-inset-bottom))',
-      tabs: [['today',L('Today')],['programs',L('Programs')],['progress',L('Progress')],['profile',L('Profile')]].map(([k, label]) => ({ label, color: s.tab === k ? '#FFFFFF' : '#9C9CA8', bar: s.tab === k ? ACC : 'transparent', onClick: go({ tab: k }) })),
+      tabs: [['today',L('Today')],['programs',L('Programs')],['progress',L('Progress')],['feed',LANG === 'fr' ? 'Fil' : 'Feed'],['profile',L('Profile')]].map(([k, label]) => ({ label, color: s.tab === k ? '#FFFFFF' : '#9C9CA8', bar: s.tab === k ? ACC : 'transparent', onClick: go({ tab: k }) })),
       dateLabel: d0.toLocaleDateString(LOC(), { weekday: 'long', month: 'short', day: 'numeric' }),
       nextName: w ? w.name : next ? next.name : L('No routines'), nextEx: w ? L('In progress · ') + clock(now - w.start) : next ? next.ex.map(e => e.name).join(' · ') : L('Create one in Programs.'),
       nextAgo: next ? ago(lastOf(next)) : '—', startLabel: w ? L('Resume workout') : L('Start workout'),
@@ -2599,7 +2755,8 @@ class Component extends DCLogic {
       sumEx: sm ? (sm.ex || []).map(x => { if (this.meta(x.name).type === 'cardio') return { name: x.name, text: x.sets.map(y => this.cardioTxt(y)).join(' + ') }; const ws = work(x.sets); const b = ws.reduce((a, y) => (!a || e1(y.w, y.r) > e1(a.w, a.r)) ? y : a, null); const wu = x.sets.length - ws.length; return { name: x.name, text: ws.length + ' × ' + (b ? L('best ') + this.dispW(b.w) + '×' + b.r : '—') + (wu ? ' · ' + wu + ' W' : '') }; }) : [],
       closeSummary: go({ screen: 'tabs', tab: 'today', summary: null }),
       ...this.extraVals(s),
-      ...this.acctVals(s)
+      ...this.acctVals(s),
+      ...this.feedVals(s)
     };
   }
 }
