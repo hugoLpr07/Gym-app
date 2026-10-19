@@ -619,12 +619,79 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 16px 24px;display:flex;flex-direction:column;gap:20px;">
 <div style="padding-top:8px;font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">{{ tx.k37 }}</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ acTitle }}</div>
+<sc-if value="{{ acOff }}" hint-placeholder-val="{{ false }}">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+<span style="font-size:17px;font-weight:700;">{{ acSocTitle }}</span>
+<span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ acSocText }}</span>
+<sc-if value="{{ acAsk }}" hint-placeholder-val="{{ false }}">
+<input type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" value="{{ acEmail }}" onChange="{{ onAcEmail }}" placeholder="{{ acEmailPh }}" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;padding:0 14px;">
+<button onClick="{{ acSend }}" style="height:52px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;opacity:{{ acOp }};">{{ acSendLabel }}</button>
+</sc-if>
+<sc-if value="{{ acCodeOn }}" hint-placeholder-val="{{ false }}">
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ acSentText }}</span>
+<input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" value="{{ acCode }}" onChange="{{ onAcCode }}" placeholder="123456" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;padding:0 14px;font-family:'JetBrains Mono',monospace;letter-spacing:0.3em;text-align:center;font-size:20px;">
+<button onClick="{{ acVerify }}" style="height:52px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;opacity:{{ acOp }};">{{ acVerifyLabel }}</button>
+<div style="display:flex;justify-content:space-between;gap:12px;"><button onClick="{{ acChange }}" style="border:none;background:transparent;padding:0;color:#9C9CA8;text-decoration:underline;min-height:44px;font-size:13px;">{{ acChangeLabel }}</button><button onClick="{{ acResend }}" style="border:none;background:transparent;padding:0;color:#9C9CA8;text-decoration:underline;min-height:44px;font-size:13px;">{{ acResendLabel }}</button></div>
+</sc-if>
+<span style="font-size:12px;line-height:17px;color:#9C9CA8;text-wrap:pretty;">{{ acConsent }} <button onClick="{{ openPrivacy }}" style="border:none;background:transparent;padding:0;color:#9C9CA8;text-decoration:underline;font-size:12px;">{{ privacyLabel }}</button></span>
+</div>
+</sc-if>
+<sc-if value="{{ acPending }}" hint-placeholder-val="{{ false }}">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+<span style="font-size:14px;color:#9C9CA8;overflow:hidden;text-overflow:ellipsis;">{{ acMail }}</span>
+<span style="font-size:14px;line-height:20px;color:#9C9CA8;">{{ acPendingText }}</span>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><button onClick="{{ acRetry }}" style="height:48px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;opacity:{{ acOp }};">{{ acRetryLabel }}</button><button onClick="{{ acSignOut }}" style="height:48px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#9C9CA8;font-size:15px;font-weight:600;">{{ acSignOutLabel }}</button></div>
+</div>
+</sc-if>
+<sc-if value="{{ acNoProf }}" hint-placeholder-val="{{ false }}">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;">
+<div style="padding:16px 16px 6px;display:flex;flex-direction:column;gap:10px;">
+<span style="font-size:17px;font-weight:700;">{{ acPickTitle }}</span>
+<label style="display:flex;flex-direction:column;gap:4px;"><span style="font-size:13px;font-weight:600;color:#9C9CA8;">{{ acUserLabel }}</span><input type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="20" value="{{ acUser }}" onChange="{{ onAcUser }}" placeholder="hugo.lifts" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;padding:0 14px;"></label>
+<span style="font-size:12px;line-height:17px;color:{{ acUserHintColor }};">{{ acUserHint }}</span>
+<label style="display:flex;flex-direction:column;gap:4px;"><span style="font-size:13px;font-weight:600;color:#9C9CA8;">{{ acNameLabel }}</span><input type="text" autocomplete="name" maxlength="40" value="{{ acName }}" onChange="{{ onAcName }}" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;padding:0 14px;"></label>
+</div>
+<button onClick="{{ acPrivClick }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;border-top:1px solid #24242B;margin-top:10px;background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">{{ acPrivLabel }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;">{{ acPrivSub }}</span></div>
+<div style="flex:0 0 auto;width:52px;height:32px;border-radius:999px;background:{{ acPrivTg.track }};padding:3px;display:flex;justify-content:{{ acPrivTg.justify }};"><div style="width:26px;height:26px;border-radius:50%;background:{{ acPrivTg.knob }};"></div></div>
+</button>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;min-height:64px;gap:10px;">
+<span style="font-size:16px;font-weight:500;min-width:0;">{{ acVisLabel }}</span>
+<div style="flex:none;display:flex;gap:3px;background:#0A0A0C;border-radius:10px;padding:3px;"><sc-for list="{{ acVisOpts }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.onClick }}" style="height:38px;padding:0 8px;border:none;border-radius:8px;background:{{ o.bg }};color:{{ o.color }};font-size:13px;font-weight:700;">{{ o.label }}</button></sc-for></div>
+</div>
+<div style="padding:6px 16px 16px;display:flex;flex-direction:column;gap:8px;">
+<button onClick="{{ acCreate }}" style="height:52px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;opacity:{{ acOp }};">{{ acCreateLabel }}</button>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span style="font-size:12px;color:#9C9CA8;min-width:0;overflow:hidden;text-overflow:ellipsis;">{{ acMail }}</span><button onClick="{{ acSignOut }}" style="border:none;background:transparent;padding:0;color:#9C9CA8;text-decoration:underline;min-height:44px;font-size:13px;flex:none;">{{ acSignOutLabel }}</button></div>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ acHasProf }}" hint-placeholder-val="{{ false }}">
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;">
+<div style="padding:14px 16px;border-bottom:1px solid #24242B;display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:17px;font-weight:700;overflow:hidden;text-overflow:ellipsis;">{{ acHandle }}</span><span style="font-size:13px;color:#9C9CA8;overflow:hidden;text-overflow:ellipsis;">{{ acMail }}</span></div>
+<button onClick="{{ acPrivClick }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">{{ acPrivLabel }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;">{{ acPrivSub }}</span></div>
+<div style="flex:0 0 auto;width:52px;height:32px;border-radius:999px;background:{{ acPrivTg.track }};padding:3px;display:flex;justify-content:{{ acPrivTg.justify }};"><div style="width:26px;height:26px;border-radius:50%;background:{{ acPrivTg.knob }};"></div></div>
+</button>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;min-height:64px;gap:10px;">
+<span style="font-size:16px;font-weight:500;min-width:0;">{{ acVisLabel }}</span>
+<div style="flex:none;display:flex;gap:3px;background:#0A0A0C;border-radius:10px;padding:3px;"><sc-for list="{{ acVisOpts }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.onClick }}" style="height:38px;padding:0 8px;border:none;border-radius:8px;background:{{ o.bg }};color:{{ o.color }};font-size:13px;font-weight:700;">{{ o.label }}</button></sc-for></div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+<button onClick="{{ acSignOut }}" style="min-height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ acSignOutLabel }}</button>
+<button onClick="{{ acDelete }}" style="min-height:52px;border-radius:12px;border:1px solid {{ acDelBorder }};background:transparent;color:#FF4D4D;font-size:14px;font-weight:600;padding:4px 8px;opacity:{{ acOp }};">{{ acDelLabel }}</button>
+</div>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ acDelHint }}</span>
+</sc-if>
+</div>
 <button onClick="{{ proCardClick }}" style="flex:none;box-sizing:border-box;width:100%;background:#16161A;border:1px solid var(--acc);border-radius:16px;padding:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;color:#FFFFFF;min-height:76px;" style-active="transform:scale(0.99)">
 <div style="display:flex;flex-direction:column;gap:4px;min-width:0;"><span style="font-size:12px;font-weight:800;letter-spacing:0.16em;color:var(--acc);">BARLOG PRO</span><span style="font-size:17px;font-weight:700;">{{ proTitle }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ proSub }}</span></div>
 <span style="flex:none;height:40px;padding:0 14px;border-radius:999px;background:{{ proBtnBg }};color:{{ proBtnColor }};font-size:14px;font-weight:700;display:flex;align-items:center;">{{ proBtn }}</span>
 </button>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px;">
-<span style="font-size:17px;font-weight:700;">{{ tx.k38 }}</span>
+<span style="font-size:17px;font-weight:700;">{{ storeTitle }}</span>
 <span style="font-size:14px;line-height:20px;color:#9C9CA8;">{{ tx.k39 }} {{ storageLine }}</span>
 </div>
 <div style="display:flex;flex-direction:column;gap:8px;">
@@ -1096,7 +1163,8 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.21.0';
+const APP_VERSION = '0.22.0';
+const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/;
 const hkName = () => plat() === 'android' ? 'Health Connect' : 'Apple Health';
 const hkStore = () => plat() === 'android' ? 'Health Connect' : (LANG === 'fr' ? 'Santé' : 'Health');
 const plat = () => { try { const C = window.Capacitor; return (C && C.getPlatform && C.getPlatform()) || 'web'; } catch (e) { return 'web'; } };
@@ -1298,6 +1366,7 @@ class Component extends DCLogic {
     window.addEventListener('pagehide', this.onVis);
     try { if ('serviceWorker' in navigator && location.protocol === 'https:' && window.self === window.top) navigator.serviceWorker.register('./sw.js').catch(() => {}); } catch (e) {}
     try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch (e) {}
+    try { if (localStorage.getItem(SB_STORE)) setTimeout(() => this.acBoot(), 400); } catch (e) {}
     try { const A = this.nat() && this.nat().App; if (A && plat() === 'android' && !this._backL) { this._backL = true; A.addListener('backButton', () => this.goBack()); A.addListener('appUrlOpen', e => { if (/\/\/pro/.test((e && e.url) || '') && !this.isPro()) this.need('widget'); }); } } catch (e) {}
   }
   componentWillUnmount() { clearInterval(this.iv); clearTimeout(this.ra); clearTimeout(this.tt); document.removeEventListener('visibilitychange', this.onVis); window.removeEventListener('pagehide', this.onVis); if (this.wl) this.wl.release(); }
@@ -1335,6 +1404,57 @@ class Component extends DCLogic {
   }
   buzz(p) { if (!this.state.haptics) return; try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} }
   flash(msg) { this.setState({ toast: msg }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 1800); }
+  sb() {
+    if (!this._sbP) { this._sbP = new Promise((ok, ko) => { const mk = () => { try { const c = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: SB_STORE } }); try { c.auth.onAuthStateChange(ev => { if (ev === 'SIGNED_OUT' && this.state.acct) setTimeout(() => this.setState({ acct: null }), 0); }); } catch (e) {} ok(c); } catch (e) { ko(e); } }; if (window.supabase && window.supabase.createClient) return mk(); const sc = document.createElement('script'); sc.src = 'vendor/supabase.js'; sc.onload = mk; sc.onerror = () => { sc.remove(); ko(new Error('Failed to fetch')); }; document.head.appendChild(sc); }); this._sbP.catch(() => { this._sbP = null; }); }
+    return this._sbP;
+  }
+  acErr(e, otp) {
+    const fr = LANG === 'fr'; const m = String((e && (e.message || e.error_description || e.msg)) || e || ''); const c = (e && e.code) || '';
+    const off = (typeof navigator !== 'undefined' && navigator.onLine === false) || /failed to fetch|network|load failed|offline|fetch/i.test(m);
+    this.flash(off ? (fr ? 'Pas de connexion internet' : 'No internet connection') : (e && e.status === 429) || /rate.?limit/i.test(m + c) ? (fr ? 'Trop de demandes, réessaie dans quelques minutes' : 'Too many requests, try again in a few minutes') : otp && (/otp|expired|invalid|token/i.test(m + c) || (e && (e.status === 401 || e.status === 403))) ? (fr ? 'Code incorrect ou expiré' : 'Wrong or expired code') : m.slice(0, 90) || (fr ? 'Erreur' : 'Error'));
+  }
+  acLoad(c, u) {
+    return c.from('profiles').select('*').eq('id', u.id).maybeSingle().then(({ data, error }) => { if (error) throw error; this.setState(st => ({ acct: { uid: u.id, email: u.email, profile: data || null }, ...(data || st.acName ? {} : { acName: (u.email || '').split('@')[0].slice(0, 40) }) })); });
+  }
+  acBoot() {
+    this.setState({ acBusy: true });
+    this.sb().then(c => c.auth.getSession().then(({ data }) => { const u = data && data.session && data.session.user; if (!u) return this.setState({ acct: null }); this.setState({ acct: { uid: u.id, email: u.email, profile: undefined } }); return this.acLoad(c, u); })).catch(() => {}).then(() => this.setState({ acBusy: false }));
+  }
+  acSend() {
+    const s = this.state; const fr = LANG === 'fr'; if (s.acBusy) return; const email = (s.acEmail || '').trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return this.flash(fr ? 'E-mail invalide' : 'Invalid email');
+    this.setState({ acBusy: true });
+    this.sb().then(c => c.auth.signInWithOtp({ email, options: { shouldCreateUser: true } })).then(({ error }) => { if (error) throw error; this.setState({ acBusy: false, acSent: email, acCode: '' }); this.flash((fr ? 'Code envoyé à ' : 'Code sent to ') + email); }).catch(e => { this.setState({ acBusy: false }); this.acErr(e); });
+  }
+  acVerify() {
+    const s = this.state; const fr = LANG === 'fr'; if (s.acBusy || !s.acSent) return; const token = (s.acCode || '').replace(/\D/g, '');
+    if (token.length < 6) return this.flash(fr ? 'Le code fait 6 chiffres' : 'The code has 6 digits');
+    this.setState({ acBusy: true });
+    this.sb().then(c => c.auth.verifyOtp({ email: s.acSent, token, type: 'email' }).then(({ data, error }) => { if (error) throw error; const u = (data && data.user) || (data && data.session && data.session.user); if (!u) throw new Error('otp'); this.setState({ acSent: null, acCode: '', acct: { uid: u.id, email: u.email, profile: undefined } }); return this.acLoad(c, u).catch(e => this.acErr(e)); })).then(() => this.setState({ acBusy: false })).catch(e => { this.setState({ acBusy: false }); this.acErr(e, true); });
+  }
+  acCreate() {
+    const s = this.state; const fr = LANG === 'fr'; const a = s.acct; if (!a || s.acBusy) return;
+    const username = (s.acUser || '').trim(); const display_name = (s.acName || '').trim().slice(0, 40);
+    if (!UNAME.test(username)) return this.flash(fr ? 'Pseudo : 3 à 20 caractères (a-z, 0-9, _ .)' : 'Username: 3–20 characters (a-z, 0-9, _ .)');
+    if (!display_name) return this.flash(fr ? 'Indique ton nom' : 'Enter your name');
+    const row = { id: a.uid, username, display_name, is_private: s.acPriv !== false, default_visibility: s.acVis || 'followers' };
+    this.setState({ acBusy: true });
+    this.sb().then(c => c.from('profiles').insert(row).select().maybeSingle()).then(({ data, error }) => { if (error) throw error; this.setState(st => ({ acBusy: false, acct: st.acct && { ...st.acct, profile: data || row } })); this.flash(fr ? 'Profil créé' : 'Profile created'); }).catch(e => { this.setState({ acBusy: false }); if (e && e.code === '23505') return this.flash(fr ? 'Ce pseudo est déjà pris' : 'This username is taken'); this.acErr(e); });
+  }
+  acSet(p) {
+    const a = this.state.acct; if (!a || !a.profile) return; const old = a.profile;
+    this.setState(st => ({ acct: st.acct && { ...st.acct, profile: { ...old, ...p } } }));
+    this.sb().then(c => c.from('profiles').update(p).eq('id', a.uid)).then(({ error }) => { if (error) throw error; }).catch(e => { this.setState(st => ({ acct: st.acct && { ...st.acct, profile: old } })); this.acErr(e); });
+  }
+  acOut() {
+    this.setState({ acct: null, acDelArm: false, acSent: null, acCode: '', acUser: '', acName: '' });
+    this.sb().then(c => c.auth.signOut()).catch(() => {}).then(() => { try { localStorage.removeItem(SB_STORE); } catch (e) {} });
+  }
+  acDelete() {
+    if (this.state.acBusy) return;
+    this.arm('acDelArm', () => { const fr = LANG === 'fr'; this.setState({ acBusy: true });
+      this.sb().then(c => c.rpc('delete_account').then(({ error }) => { if (error) throw error; return c.auth.signOut({ scope: 'local' }).catch(() => {}); })).then(() => { try { localStorage.removeItem(SB_STORE); } catch (e) {} this.setState({ acBusy: false, acct: null, acUser: '', acName: '' }); this.flash(fr ? 'Compte supprimé' : 'Account deleted'); }).catch(e => { this.setState({ acBusy: false }); this.acErr(e); }); });
+  }
   tick() {
     const now = Date.now(); const s = this.state;
     if (s.workout && now - (this._cRunT || 0) >= 1000 && s.workout.ex.some(e => e.sets.some(y => y.run))) { this._cRunT = now; this.setState({ now }); }
@@ -1655,7 +1775,7 @@ class Component extends DCLogic {
     if (s.confirmStart) return set({ confirmStart: null });
     if ((s.screen === 'workout' && s.workout && s.exSheet != null) || (s.screen === 'routine' && s.rSheet != null)) return set({ exSheet: null, rSheet: null });
     if (s.bmBig) return set({ bmBig: false });
-    const arms = ['discardArm', 'deleteArm', 'clearArm', 'eraseArm', 'delSessArm', 'proArm', 'bodyDelArm', 'mediaDelArm'].filter(k => s[k]);
+    const arms = ['discardArm', 'deleteArm', 'clearArm', 'eraseArm', 'delSessArm', 'proArm', 'bodyDelArm', 'mediaDelArm', 'acDelArm'].filter(k => s[k]);
     if (arms.length) return set(Object.fromEntries(arms.map(k => [k, k === 'bodyDelArm' || k === 'mediaDelArm' ? null : false])));
     const sc = s.screen;
     if (sc === 'exinfo') return set({ screen: s.infoFrom || 'tabs' });
@@ -1666,6 +1786,7 @@ class Component extends DCLogic {
     if (sc === 'workout') return set({ screen: 'tabs', tab: 'today' });
     if (sc !== 'tabs') return set({ screen: 'tabs' });
     if (s.tab === 'progress') { const pv = s.progView || 'sessions'; if (pv === 'stats' && this.isPro() && s.bmSel) return set({ bmSel: null }); if (pv === 'lifts' && s.progSel != null) return set({ progSel: null }); if (pv !== 'sessions') return set({ progView: 'sessions' }); }
+    if (s.tab === 'profile' && s.acSent && !s.acct) return set({ acSent: null, acCode: '' });
     if (s.tab !== 'today') return set({ tab: 'today' });
     return this.minimizeApp();
   }
@@ -1901,6 +2022,35 @@ class Component extends DCLogic {
       nfHasHint: !native, nfHint: fr ? 'Version web : la notification de fin de repos marche sur Android quand l’app est installée. Sur iPhone, Apple bloque les notifications programmées des web-apps — repos et rappels fonctionneront dans l’app App Store.' : 'Web version: the rest notification works on Android when the app is installed. On iPhone, Apple blocks scheduled notifications for web apps — rest and reminders will work in the App Store app.',
       importLifts: () => this.importLifts(), ilLabel: fr ? 'Importer depuis Strong ou Hevy (CSV)' : 'Import from Strong or Hevy (CSV)',
       ilHint: fr ? 'Strong : Profil → Réglages → Exporter les données. Hevy : Profil → Réglages → Exporter et importer → Exporter les entraînements. Ton historique est ajouté, rien n’est effacé. Si le fichier n’indique pas l’unité, tes réglages (' + s.unit + ') sont utilisés.' : 'Strong: Profile → Settings → Export data. Hevy: Profile → Settings → Export & import → Export workouts. History is added, nothing is erased. If the file has no unit, your setting (' + s.unit + ') is used.'
+    };
+  }
+  acctVals(s) {
+    const fr = LANG === 'fr'; const a = s.acct; const p = a && a.profile; const busy = !!s.acBusy; const un = s.acUser || '';
+    const tg = on => ({ track: on ? ACC : '#24242B', knob: on ? '#0A0A0C' : '#9C9CA8', justify: on ? 'flex-end' : 'flex-start' });
+    const vis = (cur, fn) => [['public', 'Public'], ['followers', fr ? 'Abonnés' : 'Followers'], ['private', fr ? 'Moi seul' : 'Only me']].map(([k, label]) => { const on = cur === k; return { label, bg: on ? '#24242B' : 'transparent', color: on ? '#FFFFFF' : '#9C9CA8', onClick: () => fn(k) }; });
+    const priv = p ? p.is_private !== false : s.acPriv !== false;
+    return {
+      acTitle: fr ? 'Compte' : 'Account', acOff: !a, acAsk: !a && !s.acSent, acCodeOn: !a && !!s.acSent, acNoProf: !!a && p === null, acHasProf: !!p, acPending: !!a && p === undefined, acOp: busy ? 0.5 : 1,
+      acSocTitle: fr ? 'Barlog social · bêta' : 'Barlog social · beta', acSocText: fr ? 'Crée un compte gratuit pour publier tes séances et suivre tes amis. Sans compte, Barlog fonctionne comme avant.' : 'Create a free account to post your workouts and follow your friends. Without an account, Barlog works just like before.',
+      acEmail: s.acEmail || '', onAcEmail: e => this.setState({ acEmail: e.target.value }), acEmailPh: fr ? 'ton@email.com' : 'you@email.com',
+      acSend: () => this.acSend(), acSendLabel: busy ? (fr ? 'Envoi…' : 'Sending…') : (fr ? 'Recevoir un code' : 'Get a code'),
+      acSentText: (fr ? 'Code à 6 chiffres envoyé à ' : '6-digit code sent to ') + (s.acSent || '') + (fr ? '. Pense à regarder dans les spams.' : '. Check your spam folder too.'),
+      acCode: s.acCode || '', onAcCode: e => this.setState({ acCode: e.target.value.replace(/\D/g, '').slice(0, 10) }),
+      acVerify: () => this.acVerify(), acVerifyLabel: busy ? (fr ? 'Vérification…' : 'Checking…') : (fr ? 'Valider' : 'Verify'),
+      acChange: () => this.setState({ acSent: null, acCode: '' }), acChangeLabel: fr ? 'Changer d’e-mail' : 'Change email', acResendLabel: fr ? 'Renvoyer le code' : 'Resend code', acResend: () => { if (s.acSent) { this.setState({ acEmail: s.acSent }); setTimeout(() => this.acSend(), 0); } },
+      acConsent: fr ? 'En créant un compte, ton e-mail, ton pseudo, ton nom et les séances que tu choisis de publier sont stockés sur nos serveurs au Canada.' : 'By creating an account, your email, username, name and the workouts you choose to post are stored on our servers in Canada.',
+      acPickTitle: fr ? 'Choisis ton pseudo' : 'Pick your username', acUserLabel: fr ? 'Pseudo' : 'Username', acUser: un, onAcUser: e => this.setState({ acUser: e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, '').slice(0, 20) }),
+      acUserHint: un && !UNAME.test(un) ? (fr ? 'Au moins 3 caractères' : 'At least 3 characters') : (fr ? '3 à 20 caractères : lettres minuscules, chiffres, _ et .' : '3–20 characters: lowercase letters, digits, _ and .'), acUserHintColor: un && !UNAME.test(un) ? '#FF8A65' : '#9C9CA8',
+      acNameLabel: fr ? 'Nom affiché' : 'Display name', acName: s.acName || '', onAcName: e => this.setState({ acName: e.target.value.slice(0, 40) }),
+      acPrivLabel: fr ? 'Profil privé' : 'Private profile', acPrivSub: fr ? 'Les gens doivent te demander pour te suivre.' : 'People have to ask to follow you.', acPrivTg: tg(priv),
+      acPrivClick: () => p ? this.acSet({ is_private: !priv }) : this.setState({ acPriv: !priv }),
+      acVisLabel: fr ? 'Mes séances visibles par défaut' : 'Default workout visibility', acVisOpts: vis(p ? p.default_visibility || 'followers' : s.acVis || 'followers', k => p ? (p.default_visibility !== k && this.acSet({ default_visibility: k })) : this.setState({ acVis: k })),
+      acCreate: () => this.acCreate(), acCreateLabel: busy ? (fr ? 'Création…' : 'Creating…') : (fr ? 'Créer mon profil' : 'Create my profile'),
+      acHandle: p ? '@' + p.username + ' · ' + p.display_name : '', acMail: (a && a.email) || '',
+      acPendingText: busy ? (fr ? 'Chargement du profil…' : 'Loading profile…') : (fr ? 'Profil non chargé (pas de connexion ?)' : 'Profile not loaded (offline?)'), acRetry: () => { if (!busy) this.acBoot(); }, acRetryLabel: fr ? 'Réessayer' : 'Retry',
+      acSignOut: () => this.acOut(), acSignOutLabel: fr ? 'Se déconnecter' : 'Sign out',
+      acDelete: () => this.acDelete(), acDelLabel: s.acDelArm ? (fr ? 'Touche encore pour supprimer définitivement' : 'Tap again to delete permanently') : (fr ? 'Supprimer mon compte' : 'Delete my account'), acDelBorder: s.acDelArm ? '#FF4D4D' : '#33333C',
+      acDelHint: fr ? 'Supprime ton compte et tout ce que tu as publié. Tes séances sur ce téléphone restent intactes.' : 'Deletes your account and everything you posted. Workouts on this phone stay untouched.'
     };
   }
   renderVals() {
@@ -2251,7 +2401,7 @@ class Component extends DCLogic {
         addLabel: PRO_TPL.includes(t.id) && !this.isPro() ? (fr ? 'Débloquer avec Pro ✦' : 'Unlock with Pro ✦') : (fr ? 'Ajouter ' : 'Add ') + t.r.length + ' routines', onAdd: this.gate(PRO_TPL.includes(t.id) ? 'program' : null, () => this.addTemplate(t)) })),
       sdHasNote: !!(sd && meta[sd.date] && meta[sd.date].note), sdNote: sd && meta[sd.date] ? meta[sd.date].note || '' : '',
       toastOn: !!s.toast, toast: s.toast,
-      tx: Object.fromEntries(Object.entries(TX).map(([k, v]) => [k, L(v)])), appLabel: 'Barlog v' + APP_VERSION, privacyLabel: LANG === 'fr' ? 'Politique de confidentialité' : 'Privacy policy', openPrivacy: () => { try { window.open('https://hugolpr07.github.io/Gym-app/privacy.html' + (LANG === 'fr' ? '' : '#en'), '_blank'); } catch (e) {} },
+      tx: Object.fromEntries(Object.entries(TX).map(([k, v]) => [k, L(v)])), appLabel: 'Barlog v' + APP_VERSION, storeTitle: this.state.acct ? (LANG === 'fr' ? 'Tes séances restent sur ton téléphone. Seules celles que tu publies sont partagées.' : 'Your workouts stay on your phone. Only the ones you publish are shared.') : L('No account. Your data stays on your phone.'), privacyLabel: LANG === 'fr' ? 'Politique de confidentialité' : 'Privacy policy', openPrivacy: () => { try { window.open('https://hugolpr07.github.io/Gym-app/privacy.html' + (LANG === 'fr' ? '' : '#en'), '_blank'); } catch (e) {} },
       calHead: LANG === 'fr' ? ['L','M','M','J','V','S','D'] : ['M','T','W','T','F','S','S'],
       enBg: LANG === 'en' ? '#24242B' : 'transparent', enColor: LANG === 'en' ? '#fff' : '#9C9CA8', frBg: LANG === 'fr' ? '#24242B' : 'transparent', frColor: LANG === 'fr' ? '#fff' : '#9C9CA8',
       setEn: go({ lang: 'en' }), setFr: go({ lang: 'fr' }),
@@ -2365,7 +2515,8 @@ class Component extends DCLogic {
       sumPrs: sm ? sm.prs.map(p => ({ name: p.name, text: this.dispW(p.w) + ' ' + s.unit + ' × ' + p.r + ' · e1RM ' + this.dispW(p.e) })) : [],
       sumEx: sm ? (sm.ex || []).map(x => { if (this.meta(x.name).type === 'cardio') return { name: x.name, text: x.sets.map(y => this.cardioTxt(y)).join(' + ') }; const ws = work(x.sets); const b = ws.reduce((a, y) => (!a || e1(y.w, y.r) > e1(a.w, a.r)) ? y : a, null); const wu = x.sets.length - ws.length; return { name: x.name, text: ws.length + ' × ' + (b ? L('best ') + this.dispW(b.w) + '×' + b.r : '—') + (wu ? ' · ' + wu + ' W' : '') }; }) : [],
       closeSummary: go({ screen: 'tabs', tab: 'today', summary: null }),
-      ...this.extraVals(s)
+      ...this.extraVals(s),
+      ...this.acctVals(s)
     };
   }
 }

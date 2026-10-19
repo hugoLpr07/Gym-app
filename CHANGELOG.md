@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.22.0 — 2026-10-19
+- Compte Barlog (bêta, optionnel) dans le Profil : connexion par code e-mail, pseudo, profil privé/public, visibilité par défaut, déconnexion, suppression du compte. Prépare le partage de séances.
+
 ## 0.21.0 — 2026-10-19
 - Le widget écran d’accueil (Android) devient une fonction Barlog Pro. Sans Pro, il propose de débloquer et ouvre la page Pro.
 - Page Pro : « Bientôt : sync iCloud » retiré ; sur Android, le widget apparaît dans la liste des avantages.
