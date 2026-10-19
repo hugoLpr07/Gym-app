@@ -5,6 +5,10 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.25.0 — 2026-10-19
+- Partage (bêta) : recherche de comptes, pages profil, abonnements (demande à accepter pour les profils privés), demandes reçues, listes d'abonnés et d'abonnements.
+- React, ReactDOM et Babel sont maintenant intégrés à l’app (dossier vendor) : plus aucun téléchargement depuis unpkg.com, l’app démarre même sans connexion dès la première fois.
+
 ## 0.24.0 — 2026-10-19
 - Partage (bêta) : nouvel onglet Fil avec tes séances publiées et celles des comptes que tu suis, bravos et commentaires.
 
