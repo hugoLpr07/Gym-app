@@ -5,6 +5,10 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.21.0 — 2026-10-19
+- Le widget écran d’accueil (Android) devient une fonction Barlog Pro. Sans Pro, il propose de débloquer et ouvre la page Pro.
+- Page Pro : « Bientôt : sync iCloud » retiré ; sur Android, le widget apparaît dans la liste des avantages.
+
 ## 0.20.1 — 2026-10-18
 - Profil : lien « Politique de confidentialité » en bas de page (exigé par Apple et Google).
 

@@ -1096,7 +1096,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.20.1';
+const APP_VERSION = '0.21.0';
 const hkName = () => plat() === 'android' ? 'Health Connect' : 'Apple Health';
 const hkStore = () => plat() === 'android' ? 'Health Connect' : (LANG === 'fr' ? 'Santé' : 'Health');
 const plat = () => { try { const C = window.Capacitor; return (C && C.getPlatform && C.getPlatform()) || 'web'; } catch (e) { return 'web'; } };
@@ -1298,7 +1298,7 @@ class Component extends DCLogic {
     window.addEventListener('pagehide', this.onVis);
     try { if ('serviceWorker' in navigator && location.protocol === 'https:' && window.self === window.top) navigator.serviceWorker.register('./sw.js').catch(() => {}); } catch (e) {}
     try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch (e) {}
-    try { const A = this.nat() && this.nat().App; if (A && plat() === 'android' && !this._backL) { this._backL = true; A.addListener('backButton', () => this.goBack()); } } catch (e) {}
+    try { const A = this.nat() && this.nat().App; if (A && plat() === 'android' && !this._backL) { this._backL = true; A.addListener('backButton', () => this.goBack()); A.addListener('appUrlOpen', e => { if (/\/\/pro/.test((e && e.url) || '') && !this.isPro()) this.need('widget'); }); } } catch (e) {}
   }
   componentWillUnmount() { clearInterval(this.iv); clearTimeout(this.ra); clearTimeout(this.tt); document.removeEventListener('visibilitychange', this.onVis); window.removeEventListener('pagehide', this.onVis); if (this.wl) this.wl.release(); }
   componentDidUpdate(_, prevState) {
@@ -1857,7 +1857,7 @@ class Component extends DCLogic {
       obFinishLabel: pickT ? (fr ? 'Commencer avec ' + pickT.fr : 'Start with ' + pickT.name) : (fr ? 'Commencer' : 'Start'), obFinish: this.gate(PRO_TPL.includes(pick) ? 'program' : null, () => this.finishOb(pick)),
       ...(() => {
         const pw = s.pw, pro = s.pro; const f = pw ? pw.f : null; const plan = pw ? pw.plan || 'year' : 'year';
-        const H = { stats: fr ? ['Toutes tes stats', 'Volume par muscle, tendances et records par reps, sur toute ta période.'] : ['All your stats', 'Volume per muscle, trends and rep records across your whole history.'],
+        const H = { widget: fr ? ['Le widget Barlog', 'Ta prochaine séance et ta semaine, directement sur l’écran d’accueil.'] : ['The Barlog widget', 'Your next workout and your week, right on your home screen.'], stats: fr ? ['Toutes tes stats', 'Volume par muscle, tendances et records par reps, sur toute ta période.'] : ['All your stats', 'Volume per muscle, trends and rep records across your whole history.'],
           '4w': fr ? ['Ta moyenne sur 4 semaines', 'Vois quels muscles tu négliges sur la durée, pas seulement cette semaine.'] : ['Your 4-week average', 'See which muscles you neglect over time, not just this week.'],
           muscle: fr ? ['Trouve le bon exercice', 'Touche un muscle et ajoute un exercice qui le cible, en un geste.'] : ['Find the right exercise', 'Tap a muscle and add an exercise that targets it, in one tap.'],
           history: fr ? ['Revis chaque séance', 'Touche un muscle dans l’historique pour voir les exercices qui l’ont travaillé.'] : ['Relive every session', 'Tap a muscle in history to see which exercises worked it.'],
@@ -1871,7 +1871,7 @@ class Component extends DCLogic {
           ['program', fr ? 'Tous les programmes' : 'Every program', fr ? 'Force 5×5, Haut / Bas, et les prochains' : 'Strength 5×5, Upper / Lower, and more to come', ['program']],
           ['accent', fr ? 'Couleurs d’accent' : 'Accent colors', fr ? '7 thèmes pour l’app' : '7 themes for the app', ['accent']],
           ['health', fr ? 'Composition depuis ' + hkStore() : 'Composition from ' + hkStore(), fr ? 'Masse grasse, masse maigre, IMC' : 'Body fat, lean mass, BMI', ['health']],
-          ['soon', fr ? 'Bientôt : widget, sync iCloud' : 'Coming: widget, iCloud sync', fr ? 'Inclus dans ton abonnement dès leur sortie' : 'Included in your plan as they ship', []]];
+          ...(plat() === 'android' ? [['widget', fr ? 'Widget écran d’accueil' : 'Home screen widget', fr ? 'Prochaine séance et semaine en un coup d’œil' : 'Next workout and your week at a glance', ['widget']]] : [['soon', fr ? 'Bientôt : widget écran d’accueil' : 'Coming: home screen widget', fr ? 'Inclus dans ton abonnement dès sa sortie' : 'Included in your plan when it ships', []]])];
         const P = { month: [fr ? 'Mensuel' : 'Monthly', fr ? '2,99 €' : '$2.99', fr ? 'par mois' : 'per month', null], year: [fr ? 'Annuel' : 'Yearly', fr ? '19,99 €' : '$19.99', fr ? '1,67 € / mois' : '$1.67 / month', '−44 %'], life: [fr ? 'À vie' : 'Lifetime', fr ? '49,99 €' : '$49.99', fr ? 'une fois' : 'one time', null] };
         const CTA = { month: fr ? 'S’abonner · 2,99 € / mois' : 'Subscribe · $2.99 / month', year: fr ? 'Essayer 7 jours gratuitement' : 'Try 7 days free', life: fr ? 'Acheter · 49,99 €' : 'Buy · $49.99' };
         const PN = { month: fr ? 'Mensuel' : 'Monthly', year: fr ? 'Annuel' : 'Yearly', life: fr ? 'À vie' : 'Lifetime' };
@@ -1932,7 +1932,7 @@ class Component extends DCLogic {
       const hasWeek = t => [0, 1, 2, 3, 4, 5, 6].some(k => dayKeys.has(ymd(t, k).toDateString()));
       let streak = 0, m = monday.getTime(); if (!hasWeek(m)) m = ymd(m, -7).getTime(); while (streak < 520 && hasWeek(m)) { streak++; m = ymd(m, -7).getTime(); }
       const starts = new Set(); Object.values(s.history).forEach(a => a.forEach(x => { if (x.date >= monday.getTime()) starts.add(x.date); }));
-      this.syncWidget({ acc: ACC, label: wk ? (fr ? 'EN COURS' : 'IN PROGRESS') : (fr ? 'À SUIVRE' : 'NEXT UP'),
+      this.syncWidget({ pro: this.isPro() ? 1 : 0, lockTitle: 'Barlog Pro', lockSub: fr ? 'Débloque le widget avec Barlog Pro. Touche pour voir.' : 'Unlock the widget with Barlog Pro. Tap to see.', acc: ACC, label: wk ? (fr ? 'EN COURS' : 'IN PROGRESS') : (fr ? 'À SUIVRE' : 'NEXT UP'),
         title: wk ? wk.name : next ? next.name : L('No routines'),
         sub: wk ? (fr ? 'Touche pour reprendre' : 'Tap to resume') : next ? L('Last done') + ' ' + ago(lastOf(next)) : L('Create one in Programs.'),
         subM: wk ? (fr ? 'Séance en cours · touche pour reprendre' : 'Workout in progress · tap to resume') : next ? next.ex.map(e => e.name).join(' · ') : L('Create one in Programs.'),
