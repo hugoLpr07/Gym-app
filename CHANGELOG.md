@@ -5,6 +5,10 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.18.1 — 2026-10-18
+- Notification de fin de repos : correction, elle arrivait parfois en avance ou en retard quand on modifiait le repos (plusieurs programmations se chevauchaient).
+- Android : le minuteur s’affiche maintenant sur l’écran verrouillé et dans la Now Bar (Live Update Android 16).
+
 ## 0.18.0 — 2026-10-18
 - Version Android : le bouton / geste retour ferme la fenêtre ouverte ou revient à l’écran précédent (sans jamais abandonner la séance en cours), puis met l’app en arrière-plan.
 - Android : Apple Health et ses mentions sont masqués.

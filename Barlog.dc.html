@@ -1090,7 +1090,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.18.0';
+const APP_VERSION = '0.18.1';
 const plat = () => { try { const C = window.Capacitor; return (C && C.getPlatform && C.getPlatform()) || 'web'; } catch (e) { return 'web'; } };
 const PRO_TPL = ['st', 'ul'];
 let ACC = '#CCFF00';
@@ -1680,7 +1680,7 @@ class Component extends DCLogic {
     const fr = LANG === 'fr'; const f = s.focus && s.workout && s.workout.ex[s.focus.ei];
     const title = fr ? 'Repos terminé' : 'Rest over'; const body = f ? (fr ? 'À toi : ' : 'Up next: ') + f.name + (fr ? ', série ' : ', set ') + (s.focus.si + 1) : (fr ? 'Prochaine série' : 'Next set');
     const P = this.nat(); const LN = P && P.LocalNotifications;
-    if (LN) { LN.cancel({ notifications: [{ id: 1001 }] }).catch(() => {}).then(() => { if (at) LN.schedule({ notifications: [{ id: 1001, title, body, schedule: { at: new Date(at), allowWhileIdle: true } }] }).catch(() => {}); }); return; }
+    if (LN) { const tok = this._rnTok = (this._rnTok || 0) + 1; LN.cancel({ notifications: [{ id: 1001 }] }).catch(() => {}).then(() => { if (at && tok === this._rnTok) LN.schedule({ notifications: [{ id: 1001, title, body, schedule: { at: new Date(at), allowWhileIdle: true } }] }).catch(() => {}); }); return; }
     this.swMsg(at && document.visibilityState === 'hidden' ? { type: 'rest', at, title, body } : { type: 'rest-cancel' });
   }
   liveAct() { if (!this.nat()) return null; if (!this._la) { try { const C = window.Capacitor; this._la = (C.Plugins || {}).RestActivity || (plat() === 'ios' && C.registerPlugin ? C.registerPlugin('RestActivity') : null); } catch (e) {} } return this._la || null; }
