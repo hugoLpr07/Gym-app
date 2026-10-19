@@ -1095,7 +1095,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.19.1';
+const APP_VERSION = '0.20.0';
 const hkName = () => plat() === 'android' ? 'Health Connect' : 'Apple Health';
 const hkStore = () => plat() === 'android' ? 'Health Connect' : (LANG === 'fr' ? 'Santé' : 'Health');
 const plat = () => { try { const C = window.Capacitor; return (C && C.getPlatform && C.getPlatform()) || 'web'; } catch (e) { return 'web'; } };
@@ -1692,6 +1692,7 @@ class Component extends DCLogic {
     if (LN) { const tok = this._rnTok = (this._rnTok || 0) + 1; LN.cancel({ notifications: [{ id: 1001 }] }).catch(() => {}).then(() => { if (at && tok === this._rnTok) this.exactOk().then(ex => { if (tok === this._rnTok) LN.schedule({ notifications: [{ id: 1001, title, body, schedule: { at: new Date(at), allowWhileIdle: true }, ...(ex ? {} : { isExactNotification: false }) }] }).catch(() => {}); }); }); return; }
     this.swMsg(at && document.visibilityState === 'hidden' ? { type: 'rest', at, title, body } : { type: 'rest-cancel' });
   }
+  syncWidget(d) { const P = this.nat(); const W = P && P.BarlogWidget; if (!W) return; const j = JSON.stringify(d); if (j === this._wj) return; this._wj = j; clearTimeout(this._wt); this._wt = setTimeout(() => { try { W.update({ data: j }).catch(() => {}); } catch (e) {} }, 800); }
   liveAct() { if (!this.nat()) return null; if (!this._la) { try { const C = window.Capacitor; this._la = (C.Plugins || {}).RestActivity || (plat() === 'ios' && C.registerPlugin ? C.registerPlugin('RestActivity') : null); } catch (e) {} } return this._la || null; }
   syncLive() {
     const LA = this.liveAct(); if (!LA) return; const s = this.state; const fr = LANG === 'fr'; const w = s.workout; const now = Date.now();
@@ -1926,6 +1927,17 @@ class Component extends DCLogic {
     const monday = new Date(d0.getFullYear(), d0.getMonth(), d0.getDate() - ((d0.getDay() + 6) % 7));
     const dayKeys = new Set(); Object.values(s.history).forEach(a => a.forEach(x => dayKeys.add(new Date(x.date).toDateString())));
     const week = (LANG === 'fr' ? ['L','M','M','J','V','S','D'] : ['M','T','W','T','F','S','S']).map((label, i) => { const d = new Date(monday.getTime() + i * DAY); const done = dayKeys.has(d.toDateString()); const today = d.toDateString() === d0.toDateString(); return { label, dot: done ? ACC : '#24242B', border: today ? '#9C9CA8' : '#24242B' }; });
+    { const fr = LANG === 'fr'; const wk = s.workout; const ymd = (t, k) => new Date(new Date(t).getFullYear(), new Date(t).getMonth(), new Date(t).getDate() + k);
+      const hasWeek = t => [0, 1, 2, 3, 4, 5, 6].some(k => dayKeys.has(ymd(t, k).toDateString()));
+      let streak = 0, m = monday.getTime(); if (!hasWeek(m)) m = ymd(m, -7).getTime(); while (streak < 520 && hasWeek(m)) { streak++; m = ymd(m, -7).getTime(); }
+      const starts = new Set(); Object.values(s.history).forEach(a => a.forEach(x => { if (x.date >= monday.getTime()) starts.add(x.date); }));
+      this.syncWidget({ acc: ACC, label: wk ? (fr ? 'EN COURS' : 'IN PROGRESS') : (fr ? 'À SUIVRE' : 'NEXT UP'),
+        title: wk ? wk.name : next ? next.name : L('No routines'),
+        sub: wk ? (fr ? 'Touche pour reprendre' : 'Tap to resume') : next ? L('Last done') + ' ' + ago(lastOf(next)) : L('Create one in Programs.'),
+        subM: wk ? (fr ? 'Séance en cours · touche pour reprendre' : 'Workout in progress · tap to resume') : next ? next.ex.map(e => e.name).join(' · ') : L('Create one in Programs.'),
+        foot: streak ? (fr ? streak + (streak > 1 ? ' semaines' : ' semaine') + ' d’affilée' : streak + '-week streak') : '',
+        weekLabel: fr ? 'CETTE SEMAINE' : 'THIS WEEK', weekCount: starts.size + (fr ? (starts.size > 1 ? ' séances' : ' séance') : (starts.size === 1 ? ' workout' : ' workouts')),
+        week: week.map((d, k) => [d.label, dayKeys.has(ymd(monday.getTime(), k).toDateString()) ? 1 : 0, ymd(monday.getTime(), k).toDateString() === d0.toDateString() ? 1 : 0]) }); }
 
     const w = s.workout;
     const wStepKg = this.inc();

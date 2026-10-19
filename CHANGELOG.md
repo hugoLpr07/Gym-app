@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.20.0 — 2026-10-18
+- Android : widgets d’écran d’accueil. Petit : prochaine séance et série de semaines. Moyen : prochaine séance, ses exercices et les jours de la semaine. Toucher le widget ouvre Barlog.
+
 ## 0.19.1 — 2026-10-18
 - Santé / Health Connect : la séance est enregistrée avec son nom (ex. « Push A »).
 
