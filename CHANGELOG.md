@@ -5,6 +5,11 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.18.2 — 2026-10-18
+- Android : l’autorisation « Alarmes et rappels » est demandée une seule fois, à l’activation de la notification de fin de repos (avant, l’écran de réglages s’ouvrait à chaque repos).
+- Android : le minuteur de l’écran verrouillé affiche le bon temps restant (il comptait depuis le début du repos).
+- Android : textes adaptés (sauvegarde vers Google Drive, mode silencieux).
+
 ## 0.18.1 — 2026-10-18
 - Notification de fin de repos : correction, elle arrivait parfois en avance ou en retard quand on modifiait le repos (plusieurs programmations se chevauchaient).
 - Android : le minuteur s’affiche maintenant sur l’écran verrouillé et dans la Now Bar (Live Update Android 16).

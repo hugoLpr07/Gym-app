@@ -203,7 +203,7 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ backupOn }}" hint-placeholder-val="{{ false }}">
 <div style="background:#16161A;border:1px solid #33333C;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
 <span style="font-size:16px;font-weight:700;">{{ tx.k6 }}</span>
-<span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ backupText }} {{ tx.k7 }}</span>
+<span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ backupText }} {{ backupHint }}</span>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
 <button onClick="{{ backupNow }}" style="height:48px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;">{{ tx.k8 }}</button>
 <button onClick="{{ backupLater }}" style="height:48px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ tx.k9 }}</button>
@@ -1090,7 +1090,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.18.1';
+const APP_VERSION = '0.18.2';
 const plat = () => { try { const C = window.Capacitor; return (C && C.getPlatform && C.getPlatform()) || 'web'; } catch (e) { return 'web'; } };
 const PRO_TPL = ['st', 'ul'];
 let ACC = '#CCFF00';
@@ -1669,9 +1669,11 @@ class Component extends DCLogic {
     if (typeof Notification === 'undefined') return Promise.resolve(false); if (Notification.permission === 'granted') return Promise.resolve(true);
     return Promise.resolve(Notification.requestPermission()).then(p => p === 'granted').catch(() => false);
   }
+  exactOk() { const P = this.nat(); const LN = P && P.LocalNotifications; if (plat() !== 'android' || !LN || !LN.checkExactNotificationSetting) return Promise.resolve(true); return LN.checkExactNotificationSetting().then(r => !r || r.exact_alarm !== 'denied').catch(() => true); }
+  askExact() { const P = this.nat(); const LN = P && P.LocalNotifications; this.exactOk().then(ok => { if (ok || !LN.changeExactNotificationSetting) return; this.flash(LANG === 'fr' ? 'Autorise « Alarmes et rappels » pour une notification pile à l’heure' : 'Allow “Alarms & reminders” so the alert fires right on time'); setTimeout(() => LN.changeExactNotificationSetting().catch(() => {}), 1200); }); }
   toggleRestNotif() {
     if (this.state.restNotif) { this.setState({ restNotif: false }); return; }
-    this.askNotif().then(ok => { if (ok) { this.setState({ restNotif: true }); this.flash(LANG === 'fr' ? 'Notifications activées' : 'Notifications on'); } else this.flash(LANG === 'fr' ? 'Notifications indisponibles (installe l’app sur l’écran d’accueil)' : 'Notifications unavailable (install the app to your home screen)'); });
+    this.askNotif().then(ok => { if (ok) { this.setState({ restNotif: true }); this.flash(LANG === 'fr' ? 'Notifications activées' : 'Notifications on'); this.askExact(); } else this.flash(LANG === 'fr' ? 'Notifications indisponibles (installe l’app sur l’écran d’accueil)' : 'Notifications unavailable (install the app to your home screen)'); });
   }
   toggleRemind() { const on = !(this.state.remind || {}).on; if (on && this.nat()) this.askNotif(); this.setState(st => ({ remind: { days: [1, 3, 5], t: '18:00', ...(st.remind || {}), on } })); }
   syncRestNotif() {
@@ -1680,7 +1682,7 @@ class Component extends DCLogic {
     const fr = LANG === 'fr'; const f = s.focus && s.workout && s.workout.ex[s.focus.ei];
     const title = fr ? 'Repos terminé' : 'Rest over'; const body = f ? (fr ? 'À toi : ' : 'Up next: ') + f.name + (fr ? ', série ' : ', set ') + (s.focus.si + 1) : (fr ? 'Prochaine série' : 'Next set');
     const P = this.nat(); const LN = P && P.LocalNotifications;
-    if (LN) { const tok = this._rnTok = (this._rnTok || 0) + 1; LN.cancel({ notifications: [{ id: 1001 }] }).catch(() => {}).then(() => { if (at && tok === this._rnTok) LN.schedule({ notifications: [{ id: 1001, title, body, schedule: { at: new Date(at), allowWhileIdle: true } }] }).catch(() => {}); }); return; }
+    if (LN) { const tok = this._rnTok = (this._rnTok || 0) + 1; LN.cancel({ notifications: [{ id: 1001 }] }).catch(() => {}).then(() => { if (at && tok === this._rnTok) this.exactOk().then(ex => { if (tok === this._rnTok) LN.schedule({ notifications: [{ id: 1001, title, body, schedule: { at: new Date(at), allowWhileIdle: true }, ...(ex ? {} : { isExactNotification: false }) }] }).catch(() => {}); }); }); return; }
     this.swMsg(at && document.visibilityState === 'hidden' ? { type: 'rest', at, title, body } : { type: 'rest-cancel' });
   }
   liveAct() { if (!this.nat()) return null; if (!this._la) { try { const C = window.Capacitor; this._la = (C.Plugins || {}).RestActivity || (plat() === 'ios' && C.registerPlugin ? C.registerPlugin('RestActivity') : null); } catch (e) {} } return this._la || null; }
@@ -2239,7 +2241,7 @@ class Component extends DCLogic {
           confirmHasToday: !!(cr && tr && tr !== cr), confirmTodayLabel: tr ? L('Start today’s: ') + tr.name : '', confirmToday: () => tr && this.start(tr.id, true) }; })(),
       updateOn: !!s.updateReady && !s.workout && s.screen === 'tabs', applyUpdate: () => { this.save(); location.reload(); },
       ...(() => { const n = sessions.length; const le = s.lastExport; const due = n >= 3 && (!le || now - le > 14 * DAY) && !(s.backupSnooze && now < s.backupSnooze);
-        return { backupOn: due, backupText: le ? (LANG === 'fr' ? 'Dernière sauvegarde il y a ' + Math.floor((now - le) / DAY) + ' jours. Tes données sont uniquement sur ce téléphone.' : 'Last backup ' + Math.floor((now - le) / DAY) + ' days ago. Your data lives only on this phone.') : L('No backup yet. Your data lives only on this phone.'), backupNow: () => this.exportData(), backupLater: go({ backupSnooze: now + 3 * DAY }) }; })(),
+        return { backupOn: due, backupHint: plat() === 'android' ? (LANG === 'fr' ? 'Touche Exporter, puis enregistre le fichier dans Google Drive ou Téléchargements.' : 'Tap Export, then save the file to Google Drive or Downloads.') : L('Tap Export, then “Save to Files” → iCloud Drive.'), backupText: le ? (LANG === 'fr' ? 'Dernière sauvegarde il y a ' + Math.floor((now - le) / DAY) + ' jours. Tes données sont uniquement sur ce téléphone.' : 'Last backup ' + Math.floor((now - le) / DAY) + ' days ago. Your data lives only on this phone.') : L('No backup yet. Your data lives only on this phone.'), backupNow: () => this.exportData(), backupLater: go({ backupSnooze: now + 3 * DAY }) }; })(),
       showInstall: !s.standalone && !s.installSeen, dismissInstall: go({ installSeen: true }),
       isToday: showTabs && s.tab === 'today', isPrograms: showTabs && s.tab === 'programs', isProgress: showTabs && s.tab === 'progress', isProfile: showTabs && s.tab === 'profile',
       isSession: s.screen === 'session' && !!sd,
@@ -2302,7 +2304,7 @@ class Component extends DCLogic {
       restDefaultLabel: clock(s.restDefault * 1000), restDown: go({ restDefault: Math.max(15, s.restDefault - 15) }), restUp: go({ restDefault: Math.min(600, s.restDefault + 15) }),
       toggles: [
         toggleRow(L('Auto-start rest'), L('Starts when you log a set'), s.autoRest, 'autoRest'),
-        toggleRow(L('Sound at rest end'), L('Beeps when rest is over. Muted by the iPhone silent switch.'), s.sound, 'sound'),
+        toggleRow(L('Sound at rest end'), plat() === 'android' ? (LANG === 'fr' ? 'Bip à la fin du repos. Coupé quand le téléphone est en silencieux.' : 'Beeps when rest is over. Muted when your phone is on silent.') : L('Beeps when rest is over. Muted by the iPhone silent switch.'), s.sound, 'sound'),
         toggleRow('Vibration', L('Android only — iPhone doesn’t allow it in web apps'), s.haptics, 'haptics'),
         toggleRow(L('Warn on off-day start'), L('Only for routines with a weekday in their name (e.g. “Mardi – …”). Asks before starting one on another day.'), s.dayWarn !== false, 'dayWarn'),
         toggleRow(L('Light bar (15 kg / 35 lb)'), L('For the plate calculator. Off = 20 kg / 45 lb.'), !!s.barLight, 'barLight'),
