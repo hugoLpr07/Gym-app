@@ -167,7 +167,7 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ cmEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:24px 0;text-align:center;font-size:14px;color:#9C9CA8;">{{ cmEmptyText }}</div></sc-if>
 <sc-for list="{{ cmList }}" as="cm" hint-placeholder-count="2">
 <div style="flex:none;display:flex;gap:10px;align-items:flex-start;">
-<div style="flex:none;width:32px;height:32px;border-radius:16px;background:#24242B;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;">{{ cm.ini }}</div>
+<div style="flex:none;width:32px;height:32px;border-radius:16px;background:#24242B;background-image:{{ cm.avImg }};background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;">{{ cm.ini }}</div>
 <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;">
 <div style="display:flex;align-items:baseline;gap:6px;min-width:0;"><span style="font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ cm.name }}</span><span style="flex:none;font-size:12px;color:#9C9CA8;">{{ cm.when }}</span><sc-if value="{{ cm.moreOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cm.onMore }}" aria-label="⋯" style="flex:none;margin:-6px -4px -6px auto;align-self:center;width:36px;height:28px;border:none;border-radius:14px;background:transparent;color:#9C9CA8;font-size:17px;font-weight:700;line-height:1;padding:0;">⋯</button></sc-if></div>
 <span style="font-size:14px;line-height:20px;color:#E4E4EA;white-space:pre-wrap;overflow-wrap:anywhere;">{{ cm.body }}</span>
@@ -668,7 +668,7 @@ input::placeholder{color:#9C9CA8}
 
 <sc-if value="{{ isFeed }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 16px 24px;display:flex;flex-direction:column;gap:12px;">
-<div style="padding-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;"><span style="font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">{{ fdTitle }}</span><sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}"><div style="flex:none;display:flex;gap:8px;"><button onClick="{{ fdSearch }}" aria-label="🔍" style="width:44px;height:44px;border-radius:22px;border:none;background:#24242B;color:#FFFFFF;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5L21 21"></path></svg></button><button onClick="{{ fdRefresh }}" aria-label="↻" style="width:44px;height:44px;border-radius:22px;border:none;background:#24242B;color:#FFFFFF;font-size:20px;opacity:{{ fdRefOp }};">↻</button></div></sc-if></div>
+<div style="padding-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;"><span style="font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">{{ fdTitle }}</span><sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}"><div style="flex:none;display:flex;gap:8px;"><button onClick="{{ fdNtf }}" aria-label="{{ fdNtfLabel }}" style="position:relative;width:44px;height:44px;border-radius:22px;border:none;background:#24242B;color:#FFFFFF;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z"></path><path d="M10 20a2.2 2.2 0 0 0 4 0"></path></svg><sc-if value="{{ fdNtfN }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-2px;right:-2px;min-width:18px;height:18px;padding:0 4px;box-sizing:border-box;border-radius:9px;background:var(--acc);color:#0A0A0C;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;">{{ fdNtfN }}</span></sc-if></button><button onClick="{{ fdSearch }}" aria-label="🔍" style="width:44px;height:44px;border-radius:22px;border:none;background:#24242B;color:#FFFFFF;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5L21 21"></path></svg></button><button onClick="{{ fdRefresh }}" aria-label="↻" style="width:44px;height:44px;border-radius:22px;border:none;background:#24242B;color:#FFFFFF;font-size:20px;opacity:{{ fdRefOp }};">↻</button></div></sc-if></div>
 <sc-if value="{{ fdReqOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ fdReqOpen }}" style="flex:none;min-height:52px;border-radius:16px;border:1px solid var(--acc);background:#16161A;color:#FFFFFF;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 16px;font-size:15px;font-weight:700;text-align:left;"><span style="display:flex;align-items:center;gap:10px;min-width:0;"><span style="flex:none;width:8px;height:8px;border-radius:4px;background:var(--acc);"></span><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ fdReqText }}</span></span><span style="flex:none;color:#9C9CA8;font-size:20px;">›</span></button></sc-if>
 <sc-if value="{{ fdIntro }}" hint-placeholder-val="{{ false }}">
 <div style="background:#16161A;border:1px solid #24242B;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
@@ -694,7 +694,7 @@ input::placeholder{color:#9C9CA8}
 <sc-for list="{{ fdCards }}" as="c" hint-placeholder-count="2">
 <div style="flex:none;background:#16161A;border:1px solid #24242B;border-radius:20px;padding:14px 16px;display:flex;flex-direction:column;gap:12px;">
 <div style="display:flex;align-items:center;gap:10px;min-width:0;">
-<div onClick="{{ c.onUser }}" style="flex:none;cursor:pointer;width:40px;height:40px;border-radius:20px;background:{{ c.avBg }};color:{{ c.avColor }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;">{{ c.ini }}</div>
+<div onClick="{{ c.onUser }}" style="flex:none;cursor:pointer;width:40px;height:40px;border-radius:20px;background:{{ c.avBg }};background-image:{{ c.avImg }};background-size:cover;background-position:center;color:{{ c.avColor }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;">{{ c.ini }}</div>
 <div onClick="{{ c.onUser }}" style="flex:1;min-width:0;cursor:pointer;display:flex;flex-direction:column;gap:1px;"><span style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ c.name }}</span><span style="font-size:12px;color:#9C9CA8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ c.handle }} · {{ c.when }}</span></div>
 <sc-if value="{{ c.visOn }}" hint-placeholder-val="{{ false }}"><span style="flex:none;height:24px;padding:0 8px;border-radius:12px;background:#24242B;color:#9C9CA8;font-size:11px;font-weight:700;display:flex;align-items:center;">{{ c.vis }}</span></sc-if>
 <sc-if value="{{ c.moreOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.onMore }}" aria-label="⋯" style="flex:none;width:36px;height:36px;margin-right:-8px;border-radius:18px;border:none;background:transparent;color:#9C9CA8;font-size:20px;font-weight:700;line-height:1;">⋯</button></sc-if>
@@ -702,11 +702,12 @@ input::placeholder{color:#9C9CA8}
 <span style="font-size:18px;font-weight:800;line-height:23px;overflow-wrap:anywhere;">{{ c.title }}</span>
 <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;"><sc-for list="{{ c.stats }}" as="st" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#9C9CA8;">{{ st.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ st.value }}</span></div></sc-for></div>
 <sc-if value="{{ c.prOn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:3px;"><span style="font-size:14px;font-weight:700;color:var(--acc);">{{ c.prTitle }}</span><sc-for list="{{ c.prList }}" as="pr" hint-placeholder-count="2"><span style="font-size:13px;color:#FFFFFF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ pr.text }}</span></sc-for><sc-if value="{{ c.prMore }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#9C9CA8;">{{ c.prMoreText }}</span></sc-if></div></sc-if>
-<sc-if value="{{ c.musOn }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:12px;"><div style="flex:none;display:flex;gap:4px;"><div style="width:40px;">{{ c.fFront }}</div><div style="width:40px;">{{ c.fBack }}</div></div><div style="flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ c.mus }}" as="mm" hint-placeholder-count="3"><span style="height:28px;padding:0 10px;border-radius:14px;background:{{ mm.bg }};color:{{ mm.color }};font-size:12px;font-weight:600;display:flex;align-items:center;white-space:nowrap;">{{ mm.label }}</span></sc-for></div></div></sc-if>
+<sc-if value="{{ c.musOn }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:12px;"><div data-cf="{{ c.key }}" style="flex:none;display:flex;gap:4px;"><div style="width:40px;">{{ c.fFront }}</div><div style="width:40px;">{{ c.fBack }}</div></div><div style="flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ c.mus }}" as="mm" hint-placeholder-count="3"><span style="height:28px;padding:0 10px;border-radius:14px;background:{{ mm.bg }};color:{{ mm.color }};font-size:12px;font-weight:600;display:flex;align-items:center;white-space:nowrap;">{{ mm.label }}</span></sc-for></div></div></sc-if>
 <sc-if value="{{ c.noteOn }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;line-height:20px;color:#D8D8DE;white-space:pre-wrap;overflow-wrap:anywhere;">{{ c.note }}</span></sc-if>
-<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 44px;gap:8px;">
 <button onClick="{{ c.onKudo }}" style="height:44px;border-radius:12px;border:1px solid {{ c.kBorder }};background:{{ c.kBg }};color:{{ c.kColor }};font-size:14px;font-weight:700;white-space:nowrap;">{{ c.kLabel }}</button>
 <button onClick="{{ c.onCmt }}" style="height:44px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#FFFFFF;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 6px;">{{ c.cLabel }}</button>
+<button onClick="{{ c.onShare }}" aria-label="{{ c.shareLabel }}" style="height:44px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#FFFFFF;font-size:17px;font-weight:700;padding:0;">↗</button>
 </div>
 <sc-if value="{{ c.err }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ c.err }}</span></sc-if>
 </div>
@@ -751,9 +752,9 @@ input::placeholder{color:#9C9CA8}
 <div style="background:#16161A;border:1px solid #24242B;border-radius:16px;">
 <div style="padding:16px 16px 6px;display:flex;flex-direction:column;gap:10px;">
 <span style="font-size:17px;font-weight:700;">{{ acPickTitle }}</span>
-<label style="display:flex;flex-direction:column;gap:4px;"><span style="font-size:13px;font-weight:600;color:#9C9CA8;">{{ acUserLabel }}</span><input type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="20" value="{{ acUser }}" onChange="{{ onAcUser }}" placeholder="hugo.lifts" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;padding:0 14px;"></label>
+<label style="display:flex;flex-direction:column;gap:4px;"><span style="font-size:13px;font-weight:600;color:#9C9CA8;">{{ acUserLabel }}</span><input type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="20" value="{{ acUser }}" onChange="{{ onAcUser }}" placeholder="{{ acUserPh }}" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;padding:0 14px;"></label>
 <span style="font-size:12px;line-height:17px;color:{{ acUserHintColor }};">{{ acUserHint }}</span>
-<label style="display:flex;flex-direction:column;gap:4px;"><span style="font-size:13px;font-weight:600;color:#9C9CA8;">{{ acNameLabel }}</span><input type="text" autocomplete="name" maxlength="40" value="{{ acName }}" onChange="{{ onAcName }}" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;padding:0 14px;"></label>
+<label style="display:flex;flex-direction:column;gap:4px;"><span style="font-size:13px;font-weight:600;color:#9C9CA8;">{{ acNameLabel }}</span><input type="text" autocomplete="name" maxlength="40" value="{{ acName }}" onChange="{{ onAcName }}" placeholder="{{ acNamePh }}" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;padding:0 14px;"></label>
 </div>
 <button onClick="{{ acPrivClick }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;border-top:1px solid #24242B;margin-top:10px;background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
 <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">{{ acPrivLabel }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;">{{ acPrivSub }}</span></div>
@@ -772,7 +773,14 @@ input::placeholder{color:#9C9CA8}
 </sc-if>
 <sc-if value="{{ acHasProf }}" hint-placeholder-val="{{ false }}">
 <div style="background:#16161A;border:1px solid #24242B;border-radius:16px;">
-<div style="padding:14px 16px;border-bottom:1px solid #24242B;display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:17px;font-weight:700;overflow:hidden;text-overflow:ellipsis;">{{ acHandle }}</span><span style="font-size:13px;color:#9C9CA8;overflow:hidden;text-overflow:ellipsis;">{{ acMail }}</span></div>
+<div style="padding:14px 16px;border-bottom:1px solid #24242B;display:flex;flex-direction:column;gap:12px;min-width:0;">
+<div style="display:flex;align-items:center;gap:14px;min-width:0;">
+<button onClick="{{ acAvPick }}" aria-label="{{ acAvLabel }}" style="flex:none;position:relative;width:64px;height:64px;padding:0;border-radius:32px;border:none;background:var(--acc);background-image:{{ acAvImg }};background-size:cover;background-position:center;color:#0A0A0C;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;opacity:{{ acAvOp }};">{{ acAvIni }}<span style="position:absolute;right:-2px;bottom:-2px;width:24px;height:24px;border-radius:12px;background:#24242B;border:2px solid #16161A;color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;">✎</span></button>
+<div style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:17px;font-weight:700;overflow:hidden;text-overflow:ellipsis;">{{ acHandle }}</span><span style="font-size:13px;color:#9C9CA8;overflow:hidden;text-overflow:ellipsis;">{{ acMail }}</span></div>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;"><button onClick="{{ acAvPick }}" style="min-height:40px;padding:4px 14px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#fff;font-size:14px;font-weight:600;opacity:{{ acAvOp }};">{{ acAvLabel }}</button><sc-if value="{{ acAvHas }}" hint-placeholder-val="{{ false }}"><button onClick="{{ acAvDel }}" style="min-height:40px;padding:4px 14px;border-radius:12px;border:1px solid {{ acAvDelBorder }};background:transparent;color:{{ acAvDelColor }};font-size:14px;font-weight:600;">{{ acAvDelLabel }}</button></sc-if></div>
+<sc-if value="{{ acAvErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ acAvErr }}</span></sc-if>
+</div>
 <button onClick="{{ acPubOpen }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:56px;gap:8px;text-align:left;font-size:16px;font-weight:500;"><span>{{ acPubLabel }}</span><span style="color:#9C9CA8;font-size:20px;">›</span></button>
 <button onClick="{{ acBlkOpen }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:56px;gap:8px;text-align:left;font-size:16px;font-weight:500;"><span>{{ acBlkLabel }}</span><span style="color:#9C9CA8;font-size:20px;">›</span></button>
 <button onClick="{{ acPrivClick }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
@@ -899,7 +907,7 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ upOn }}" hint-placeholder-val="{{ false }}">
 <div style="flex:none;display:flex;flex-direction:column;gap:14px;background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;">
 <div style="display:flex;align-items:center;gap:14px;min-width:0;">
-<div style="flex:none;width:64px;height:64px;border-radius:32px;background:{{ upAvBg }};color:{{ upAvColor }};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;">{{ upIni }}</div>
+<div style="flex:none;width:64px;height:64px;border-radius:32px;background:{{ upAvBg }};background-image:{{ upAvImg }};background-size:cover;background-position:center;color:{{ upAvColor }};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;">{{ upIni }}</div>
 <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;"><span style="font-size:20px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ upName }}</span><span style="font-size:14px;color:#9C9CA8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ upHandle }}</span><sc-if value="{{ upPrivOn }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;margin-top:4px;height:22px;padding:0 8px;border-radius:11px;background:#24242B;color:#9C9CA8;font-size:11px;font-weight:700;display:flex;align-items:center;">🔒 {{ upPrivText }}</span></sc-if></div>
 <sc-if value="{{ upMenuOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ upMenu }}" aria-label="⋯" style="flex:none;align-self:flex-start;width:40px;height:40px;margin:-6px -8px 0 0;border-radius:20px;border:none;background:transparent;color:#9C9CA8;font-size:22px;font-weight:700;line-height:1;">⋯</button></sc-if>
 </div>
@@ -921,7 +929,7 @@ input::placeholder{color:#9C9CA8}
 <sc-for list="{{ upCards }}" as="c" hint-placeholder-count="2">
 <div style="flex:none;background:#16161A;border:1px solid #24242B;border-radius:20px;padding:14px 16px;display:flex;flex-direction:column;gap:12px;">
 <div style="display:flex;align-items:center;gap:10px;min-width:0;">
-<div onClick="{{ c.onUser }}" style="flex:none;cursor:pointer;width:40px;height:40px;border-radius:20px;background:{{ c.avBg }};color:{{ c.avColor }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;">{{ c.ini }}</div>
+<div onClick="{{ c.onUser }}" style="flex:none;cursor:pointer;width:40px;height:40px;border-radius:20px;background:{{ c.avBg }};background-image:{{ c.avImg }};background-size:cover;background-position:center;color:{{ c.avColor }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;">{{ c.ini }}</div>
 <div onClick="{{ c.onUser }}" style="flex:1;min-width:0;cursor:pointer;display:flex;flex-direction:column;gap:1px;"><span style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ c.name }}</span><span style="font-size:12px;color:#9C9CA8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ c.handle }} · {{ c.when }}</span></div>
 <sc-if value="{{ c.visOn }}" hint-placeholder-val="{{ false }}"><span style="flex:none;height:24px;padding:0 8px;border-radius:12px;background:#24242B;color:#9C9CA8;font-size:11px;font-weight:700;display:flex;align-items:center;">{{ c.vis }}</span></sc-if>
 <sc-if value="{{ c.moreOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.onMore }}" aria-label="⋯" style="flex:none;width:36px;height:36px;margin-right:-8px;border-radius:18px;border:none;background:transparent;color:#9C9CA8;font-size:20px;font-weight:700;line-height:1;">⋯</button></sc-if>
@@ -929,11 +937,12 @@ input::placeholder{color:#9C9CA8}
 <span style="font-size:18px;font-weight:800;line-height:23px;overflow-wrap:anywhere;">{{ c.title }}</span>
 <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;"><sc-for list="{{ c.stats }}" as="st" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#9C9CA8;">{{ st.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ st.value }}</span></div></sc-for></div>
 <sc-if value="{{ c.prOn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:3px;"><span style="font-size:14px;font-weight:700;color:var(--acc);">{{ c.prTitle }}</span><sc-for list="{{ c.prList }}" as="pr" hint-placeholder-count="2"><span style="font-size:13px;color:#FFFFFF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ pr.text }}</span></sc-for><sc-if value="{{ c.prMore }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#9C9CA8;">{{ c.prMoreText }}</span></sc-if></div></sc-if>
-<sc-if value="{{ c.musOn }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:12px;"><div style="flex:none;display:flex;gap:4px;"><div style="width:40px;">{{ c.fFront }}</div><div style="width:40px;">{{ c.fBack }}</div></div><div style="flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ c.mus }}" as="mm" hint-placeholder-count="3"><span style="height:28px;padding:0 10px;border-radius:14px;background:{{ mm.bg }};color:{{ mm.color }};font-size:12px;font-weight:600;display:flex;align-items:center;white-space:nowrap;">{{ mm.label }}</span></sc-for></div></div></sc-if>
+<sc-if value="{{ c.musOn }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:12px;"><div data-cf="{{ c.key }}" style="flex:none;display:flex;gap:4px;"><div style="width:40px;">{{ c.fFront }}</div><div style="width:40px;">{{ c.fBack }}</div></div><div style="flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ c.mus }}" as="mm" hint-placeholder-count="3"><span style="height:28px;padding:0 10px;border-radius:14px;background:{{ mm.bg }};color:{{ mm.color }};font-size:12px;font-weight:600;display:flex;align-items:center;white-space:nowrap;">{{ mm.label }}</span></sc-for></div></div></sc-if>
 <sc-if value="{{ c.noteOn }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;line-height:20px;color:#D8D8DE;white-space:pre-wrap;overflow-wrap:anywhere;">{{ c.note }}</span></sc-if>
-<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 44px;gap:8px;">
 <button onClick="{{ c.onKudo }}" style="height:44px;border-radius:12px;border:1px solid {{ c.kBorder }};background:{{ c.kBg }};color:{{ c.kColor }};font-size:14px;font-weight:700;white-space:nowrap;">{{ c.kLabel }}</button>
 <button onClick="{{ c.onCmt }}" style="height:44px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#FFFFFF;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 6px;">{{ c.cLabel }}</button>
+<button onClick="{{ c.onShare }}" aria-label="{{ c.shareLabel }}" style="height:44px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#FFFFFF;font-size:17px;font-weight:700;padding:0;">↗</button>
 </div>
 <sc-if value="{{ c.err }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ c.err }}</span></sc-if>
 </div>
@@ -945,16 +954,17 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ plState }}" hint-placeholder-val="{{ false }}"><div style="padding:24px 0;text-align:center;font-size:14px;line-height:20px;color:{{ plStateColor }};text-wrap:pretty;">{{ plState }}</div></sc-if>
 <sc-if value="{{ plRetryOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ plRetry }}" style="flex:none;height:48px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ plRetryLabel }}</button></sc-if>
 <sc-for list="{{ pList }}" as="pp" hint-placeholder-count="3">
-<div style="flex:none;display:flex;flex-direction:column;gap:6px;background:#16161A;border:1px solid #24242B;border-radius:16px;padding:10px 12px;">
+<div style="flex:none;display:flex;flex-direction:column;gap:6px;background:#16161A;border:1px solid {{ pp.bd }};border-radius:16px;padding:10px 12px;">
 <div style="display:flex;align-items:center;gap:10px;min-width:0;">
 <div onClick="{{ pp.onOpen }}" style="flex:1;min-width:0;display:flex;align-items:center;gap:10px;cursor:pointer;min-height:44px;">
-<div style="flex:none;width:40px;height:40px;border-radius:20px;background:#24242B;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;">{{ pp.ini }}</div>
-<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;"><span style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ pp.name }}</span><span style="font-size:12px;color:#9C9CA8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ pp.handle }}</span></div>
+<div style="flex:none;width:40px;height:40px;border-radius:20px;background:#24242B;background-image:{{ pp.avImg }};background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;">{{ pp.ini }}</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;"><span style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ pp.name }}</span><span style="font-size:12px;color:#9C9CA8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ pp.handle }}</span><sc-if value="{{ pp.txt }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#D8D8DE;text-wrap:pretty;overflow-wrap:anywhere;">{{ pp.txt }}</span></sc-if></div>
 <sc-if value="{{ pp.privOn }}" hint-placeholder-val="{{ false }}"><span style="flex:none;height:22px;padding:0 8px;border-radius:11px;background:#24242B;color:#9C9CA8;font-size:11px;font-weight:700;display:flex;align-items:center;">{{ pp.privLabel }}</span></sc-if>
 </div>
 <sc-if value="{{ pp.b1On }}" hint-placeholder-val="{{ false }}"><button onClick="{{ pp.on1 }}" style="flex:none;min-height:40px;max-width:40%;padding:4px 12px;border-radius:12px;border:1px solid {{ pp.b1Border }};background:{{ pp.b1Bg }};color:{{ pp.b1Color }};font-size:13px;font-weight:700;">{{ pp.b1Label }}</button></sc-if>
 <sc-if value="{{ pp.b2On }}" hint-placeholder-val="{{ false }}"><button onClick="{{ pp.on2 }}" style="flex:none;min-height:40px;padding:4px 12px;border-radius:12px;border:1px solid {{ pp.b2Border }};background:{{ pp.b2Bg }};color:{{ pp.b2Color }};font-size:13px;font-weight:700;">{{ pp.b2Label }}</button></sc-if>
 </div>
+<sc-if value="{{ pp.b3On }}" hint-placeholder-val="{{ false }}"><button onClick="{{ pp.on3 }}" style="flex:none;min-height:40px;padding:4px 12px;border-radius:12px;border:1px solid {{ pp.b3Border }};background:{{ pp.b3Bg }};color:{{ pp.b3Color }};font-size:13px;font-weight:700;">{{ pp.b3Label }}</button></sc-if>
 <sc-if value="{{ pp.err }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ pp.err }}</span></sc-if>
 </div>
 </sc-for>
@@ -1374,9 +1384,10 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.26.0';
+const APP_VERSION = '0.27.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive content'], ['Harcèlement ou intimidation', 'Harassment or bullying'], ['Spam ou arnaque', 'Spam or scam'], ['Usurpation d’identité', 'Impersonation'], ['Autre', 'Other']];
+const avUrl = p => p ? SB_URL + '/storage/v1/object/public/avatars/' + p : '', avImg = p => p ? "url('" + avUrl(p) + "')" : 'none';
 const iniOf = n => (String(n || '?').trim().split(/\s+/).slice(0, 2).map(w => [...w][0] || '').join('') || '?').toUpperCase();
 const relT = (iso, fr) => { const now = Date.now(); const t = Date.parse(iso); if (!t) return ''; const m = Math.floor((now - t) / 60000); if (m < 1) return fr ? 'à l’instant' : 'just now'; if (m < 60) return fr ? 'il y a ' + m + ' min' : m + ' min ago'; const h = Math.floor(m / 60); if (h < 24) return fr ? 'il y a ' + h + ' h' : h + 'h ago'; const d = Math.floor(h / 24); if (d < 7) return fr ? 'il y a ' + d + ' j' : d + 'd ago'; return new Date(t).toLocaleDateString(fr ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'short', ...(new Date(t).getFullYear() !== new Date(now).getFullYear() ? { year: 'numeric' } : {}) }); };
 const hkName = () => plat() === 'android' ? 'Health Connect' : 'Apple Health';
@@ -1593,7 +1604,7 @@ class Component extends DCLogic {
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.workout !== st.workout || prev.restNotif !== st.restNotif) this.syncRestNotif();
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.restTotal !== st.restTotal || prev.workout !== st.workout || prev.hold !== st.hold || prev.liveRest !== st.liveRest) this.syncLive();
     if (prev.remind !== st.remind || prev.lang !== st.lang) this.syncReminders();
-    if ((prev.acct && prev.acct.uid) !== (st.acct && st.acct.uid) && (st.feed || st.cmt || st.sv || st.up || st.reqs || st.pl || st.srch || st.blk || st.mod)) { this._rqT = 0; this.setState({ feed: null, cmt: null, cmtDelArm: null, sv: null, up: null, pl: null, reqs: null, srch: null, socArm: null, blk: null, mod: null }); }
+    if ((prev.acct && prev.acct.uid) !== (st.acct && st.acct.uid) && (st.feed || st.cmt || st.sv || st.up || st.reqs || st.pl || st.srch || st.blk || st.mod)) { this._rqT = 0; this.setState({ ntf: null, feed: null, cmt: null, cmtDelArm: null, sv: null, up: null, pl: null, reqs: null, srch: null, socArm: null, blk: null, mod: null }); }
     if (st.acct && st.acct.profile && !((prev.acct && prev.acct.uid) === st.acct.uid && prev.acct.profile)) setTimeout(() => { this.reqCount(true); this.blkLoad(true); }, 0);
     const fOn = x => x.screen === 'tabs' && x.tab === 'feed' && !!(x.acct && x.acct.profile); if (fOn(st) && !fOn(prev)) this.feedEnter();
   }
@@ -1634,7 +1645,7 @@ class Component extends DCLogic {
   acErr(e, otp, k) { this.acFail(k, this.acMsg(e, otp)); }
   acFail(k, m) { this.flash(m); if (k) this.setState({ acE: { k, m } }); }
   acLoad(c, u) {
-    return c.from('profiles').select('*').eq('id', u.id).maybeSingle().then(({ data, error }) => { if (error) throw error; this.setState(st => ({ acct: { uid: u.id, email: u.email, profile: data || null }, ...(data || st.acName ? {} : { acName: (u.email || '').split('@')[0].slice(0, 40) }) })); if (data) setTimeout(() => this.pubFlush(true), 0); });
+    return c.from('profiles').select('*').eq('id', u.id).maybeSingle().then(({ data, error }) => { if (error) throw error; this.setState({ acct: { uid: u.id, email: u.email, profile: data || null } }); if (data) setTimeout(() => this.pubFlush(true), 0); });
   }
   acBoot() {
     this.setState({ acBusy: true });
@@ -1670,10 +1681,38 @@ class Component extends DCLogic {
     this.setState({ acct: null, acDelArm: false, acSent: null, acCode: '', acUser: '', acName: '' });
     this.sb().then(c => c.auth.signOut()).catch(() => {}).then(() => { try { localStorage.removeItem(SB_STORE); } catch (e) {} });
   }
+  // Photo de profil : carré 320 px en JPEG, rangé dans avatars/<id>/<horodatage>.jpg ; les anciennes sont effacées.
+  avPick() {
+    const s = this.state; const a = s.acct; if (!a || !a.profile || s.avBusy) return;
+    const i = document.createElement('input'); i.type = 'file'; i.accept = 'image/*'; i.onchange = () => { const f = i.files && i.files[0]; if (f) this.avSet(f); }; i.click();
+  }
+  avSet(file) {
+    const a = this.state.acct; const fr = LANG === 'fr'; if (!a || !a.profile) return; const uid = a.uid; const path = uid + '/' + Date.now() + '.jpg';
+    this.setState({ avBusy: true, acE: null });
+    new Promise((ok, ko) => { const u = URL.createObjectURL(file); const im = new Image(); im.onload = () => { URL.revokeObjectURL(u); ok(im); }; im.onerror = () => { URL.revokeObjectURL(u); ko(new Error(fr ? 'Image illisible' : 'Unreadable image')); }; im.src = u; })
+      .then(im => new Promise((ok, ko) => { const N = 320, c = document.createElement('canvas'); c.width = c.height = N; const x = c.getContext('2d'); const w = im.naturalWidth, h = im.naturalHeight, m = Math.min(w, h);
+        x.fillStyle = '#24242B'; x.fillRect(0, 0, N, N); x.drawImage(im, (w - m) / 2, (h - m) / 2, m, m, 0, 0, N, N); c.toBlob(b => b ? ok(b) : ko(new Error(fr ? 'Image illisible' : 'Unreadable image')), 'image/jpeg', 0.85); }))
+      .then(b => this.sb().then(c => c.storage.from('avatars').upload(path, b, { contentType: 'image/jpeg', upsert: false }).then(({ error }) => { if (error) throw error; return c.from('profiles').update({ avatar: path }).eq('id', uid); })
+        .then(({ error }) => { if (error) throw error; this.avApply(uid, path); this.setState({ avBusy: false }); this.flash(fr ? 'Photo mise à jour' : 'Photo updated'); return this.avClean(c, uid, path).catch(() => {}); })))
+      .catch(e => { this.setState({ avBusy: false }); this.acErr(e, false, 'av'); });
+  }
+  avDel() {
+    const s = this.state; const a = s.acct; const fr = LANG === 'fr'; if (!a || !a.profile || s.avBusy) return; const uid = a.uid;
+    this.arm('avDelArm', () => { this.setState({ avBusy: true, avDelArm: false, acE: null });
+      this.sb().then(c => c.from('profiles').update({ avatar: null }).eq('id', uid).then(({ error }) => { if (error) throw error; this.avApply(uid, null); this.setState({ avBusy: false }); this.flash(fr ? 'Photo retirée' : 'Photo removed'); return this.avClean(c, uid, null).catch(() => {}); }))
+        .catch(e => { this.setState({ avBusy: false }); this.acErr(e, false, 'av'); }); });
+  }
+  avClean(c, uid, keep) { return c.storage.from('avatars').list(uid, { limit: 100 }).then(({ data, error }) => { if (error) throw error; const rm = (data || []).map(o => uid + '/' + o.name).filter(n => n !== keep); return rm.length ? c.storage.from('avatars').remove(rm) : null; }); }
+  avApply(uid, path) {
+    this.setState(st => { const o = { acct: st.acct && st.acct.profile ? { ...st.acct, profile: { ...st.acct.profile, avatar: path } } : st.acct }; const mp = l => l && l.map(x => x.user_id === uid ? { ...x, avatar: path } : x);
+      if (st.feed && st.feed.items) o.feed = { ...st.feed, items: mp(st.feed.items) };
+      if (st.up) o.up = Object.fromEntries(Object.entries(st.up).map(([k, u]) => [k, { ...u, ...(k === uid && u.prof ? { prof: { ...u.prof, avatar: path } } : {}), ...(u.items ? { items: mp(u.items) } : {}) }]));
+      return o; });
+  }
   acDelete() {
     if (this.state.acBusy) return;
     this.arm('acDelArm', () => { const fr = LANG === 'fr'; this.setState({ acBusy: true });
-      this.sb().then(c => c.rpc('delete_account').then(({ error }) => { if (error) throw error; return c.auth.signOut({ scope: 'local' }).catch(() => {}); })).then(() => { try { localStorage.removeItem(SB_STORE); } catch (e) {} this.setState(st => ({ acBusy: false, acct: null, acUser: '', acName: '', autoPub: false, sessMeta: Object.fromEntries(Object.entries(st.sessMeta || {}).map(([k, m]) => { if (!m || !m.pub) return [k, m]; const { pub, ...r } = m; return [k, r]; })) })); this.flash(fr ? 'Compte supprimé' : 'Account deleted'); }).catch(e => { this.setState({ acBusy: false }); this.acErr(e); }); });
+      this.sb().then(c => this.avClean(c, this.state.acct && this.state.acct.uid, null).catch(() => {}).then(() => c.rpc('delete_account')).then(({ error }) => { if (error) throw error; return c.auth.signOut({ scope: 'local' }).catch(() => {}); })).then(() => { try { localStorage.removeItem(SB_STORE); } catch (e) {} this.setState(st => ({ acBusy: false, acct: null, acUser: '', acName: '', autoPub: false, sessMeta: Object.fromEntries(Object.entries(st.sessMeta || {}).map(([k, m]) => { if (!m || !m.pub) return [k, m]; const { pub, ...r } = m; return [k, r]; })) })); this.flash(fr ? 'Compte supprimé' : 'Account deleted'); }).catch(e => { this.setState({ acBusy: false }); this.acErr(e); }); });
   }
   hasSess(d) { return Object.values(this.state.history || {}).some(a => a.some(x => x.date === d)); }
   pubRow(d, vis, note) {
@@ -1728,7 +1767,7 @@ class Component extends DCLogic {
   cmtUp(id, p) { this.setState(st => st.cmt && st.cmt.id === id ? { cmt: { ...st.cmt, ...(typeof p === 'function' ? p(st.cmt) : p) } } : null); }
   cmtLoad(id) {
     this.cmtUp(id, { busy: true }); if (this.state.acE && this.state.acE.k === 'cmt') this.setState({ acE: null });
-    this.sb().then(c => c.from('comments').select('id,body,created_at,user_id,profiles(username,display_name)').eq('activity_id', id).order('created_at')).then(({ data, error }) => { if (error) throw error; const items = data || []; this.cmtUp(id, { items, busy: false }); this.feedPatch(id, () => ({ comments_count: items.length })); })
+    this.sb().then(c => c.from('comments').select('id,body,created_at,user_id,profiles(username,display_name,avatar)').eq('activity_id', id).order('created_at')).then(({ data, error }) => { if (error) throw error; const items = data || []; this.cmtUp(id, { items, busy: false }); this.feedPatch(id, () => ({ comments_count: items.length })); })
       .catch(e => { this.cmtUp(id, { busy: false }); this.acErr(e, false, 'cmt'); });
   }
   cmtSend() {
@@ -1747,9 +1786,9 @@ class Component extends DCLogic {
   actFind(s, id) { const f = ((s.feed || {}).items || []).find(x => x.id === id); if (f) return f; for (const u of Object.values(s.up || {})) { const y = (u.items || []).find(x => x.id === id); if (y) return y; } return null; }
   feedDirty() { this.setState(st => st.feed ? { feed: { ...st.feed, at: 0 } } : null); }
   socArmSet(k) { this.setState({ socArm: k }); clearTimeout(this._saT); this._saT = setTimeout(() => this.setState(st => st.socArm === k ? { socArm: null } : null), 3000); }
-  svOpen(v) { const t = (this.state.sv || []).slice(-1)[0]; if (t && t.v === v.v && t.id === v.id && t.k === v.k) return; this.setState(st => ({ sv: [...(st.sv || []), v], socArm: null, acE: null, cmt: null })); setTimeout(() => v.v === 'user' ? this.upLoad(v.id) : v.v === 'list' ? this.plLoad(v.id, v.k) : v.v === 'reqs' ? this.reqLoad() : v.v === 'blocks' ? this.blkLoad() : null, 0); }
+  svOpen(v) { const t = (this.state.sv || []).slice(-1)[0]; if (t && t.v === v.v && t.id === v.id && t.k === v.k) return; this.setState(st => ({ sv: [...(st.sv || []), v], socArm: null, acE: null, cmt: null })); setTimeout(() => v.v === 'user' ? this.upLoad(v.id) : v.v === 'list' ? this.plLoad(v.id, v.k) : v.v === 'reqs' ? this.reqLoad() : v.v === 'ntf' ? this.ntfLoad() : v.v === 'blocks' ? this.blkLoad() : null, 0); }
   svPop() { const sv = (this.state.sv || []).slice(0, -1); const t = sv[sv.length - 1]; this.setState({ sv, socArm: null, acE: null }); if (t && t.v === 'user' && !((this.state.up || {})[t.id] || {}).at) setTimeout(() => this.upLoad(t.id), 0); return true; }
-  userOpen(id, seed) { if (!id) return; if (seed) this.setState(st => { const u = (st.up || {})[id] || {}; return u.prof ? null : { up: { ...(st.up || {}), [id]: { ...u, prof: { id, username: seed.username, display_name: seed.display_name, is_private: seed.is_private } } } }; }); this.svOpen({ v: 'user', id }); }
+  userOpen(id, seed) { if (!id) return; if (seed) this.setState(st => { const u = (st.up || {})[id] || {}; return u.prof ? null : { up: { ...(st.up || {}), [id]: { ...u, prof: { id, username: seed.username, display_name: seed.display_name, is_private: seed.is_private, avatar: seed.avatar } } } }; }); this.svOpen({ v: 'user', id }); }
   upUp(id, p) { this.setState(st => { const u = (st.up || {})[id] || {}; return { up: { ...(st.up || {}), [id]: { ...u, ...(typeof p === 'function' ? p(u) : p) } } }; }); }
   upLoad(id, more) {
     const s = this.state; const a = s.acct; const u = (s.up || {})[id] || {}; if (!a || !a.profile || u.busy) return; const me = id === a.uid; const last = more && u.items && u.items[u.items.length - 1];
@@ -1757,7 +1796,7 @@ class Component extends DCLogic {
     this.sb().then(c => { const cnt = q => q.then(({ count, error }) => error ? null : count == null ? null : count);
       const acts = c.rpc('user_activities', last ? { target: id, before: last.created_at, lim: FEED_N } : { target: id, lim: FEED_N }).then(({ data, error }) => { if (error) throw error; return data || []; });
       if (more) return acts.then(rows => ({ rows }));
-      return Promise.all([c.from('profiles').select('id,username,display_name,is_private').eq('id', id).maybeSingle(), me ? { data: null } : c.from('follows').select('status').eq('follower', a.uid).eq('followee', id).maybeSingle(),
+      return Promise.all([c.from('profiles').select('id,username,display_name,is_private,avatar').eq('id', id).maybeSingle(), me ? { data: null } : c.from('follows').select('status').eq('follower', a.uid).eq('followee', id).maybeSingle(),
         cnt(c.from('follows').select('*', { count: 'exact', head: true }).eq('followee', id).eq('status', 'accepted')), cnt(c.from('follows').select('*', { count: 'exact', head: true }).eq('follower', id).eq('status', 'accepted')), acts])
         .then(([p, r, nF, nG, rows]) => { if (p.error) throw p.error; if (r.error) throw r.error; return { prof: p.data || null, gone: !p.data, rel: r.data ? r.data.status : null, nF, nG, rows }; }); })
       .then(({ rows, ...o }) => this.upUp(id, x => { const old = last ? (x.items || []) : []; const seen = new Set(old.map(y => y.id)); return { ...o, ...(o.gone ? { prof: x.prof } : {}), items: [...old, ...rows.filter(y => !seen.has(y.id))], more: rows.length >= FEED_N, busy: false, err: null, at: Date.now() }; }))
@@ -1778,8 +1817,8 @@ class Component extends DCLogic {
   plUp(key, p) { this.setState(st => ({ pl: { ...(st.pl || {}), [key]: { ...((st.pl || {})[key] || {}), ...p } } })); }
   plLoad(id, k) {
     const key = id + ':' + k; const fol = k === 'followers'; this.plUp(key, { busy: true, err: null });
-    this.sb().then(c => c.from('follows').select(fol ? 'follower, profiles!follows_follower_fkey(id,username,display_name)' : 'followee, profiles!follows_followee_fkey(id,username,display_name)').eq(fol ? 'followee' : 'follower', id).eq('status', 'accepted').order('created_at', { ascending: false }))
-      .then(({ data, error }) => { if (error) throw error; const items = (data || []).map(r => { const p = (Array.isArray(r.profiles) ? r.profiles[0] : r.profiles) || {}; return { id: r[fol ? 'follower' : 'followee'], username: p.username, display_name: p.display_name }; }).filter(x => x.id && x.username); this.plUp(key, { items, busy: false }); })
+    this.sb().then(c => c.from('follows').select(fol ? 'follower, profiles!follows_follower_fkey(id,username,display_name,avatar)' : 'followee, profiles!follows_followee_fkey(id,username,display_name,avatar)').eq(fol ? 'followee' : 'follower', id).eq('status', 'accepted').order('created_at', { ascending: false }))
+      .then(({ data, error }) => { if (error) throw error; const items = (data || []).map(r => { const p = (Array.isArray(r.profiles) ? r.profiles[0] : r.profiles) || {}; return { id: r[fol ? 'follower' : 'followee'], username: p.username, display_name: p.display_name, avatar: p.avatar }; }).filter(x => x.id && x.username); this.plUp(key, { items, busy: false }); })
       .catch(e => { this.plUp(key, { busy: false, err: this.acMsg(e) }); this.acErr(e, false, 'pl'); });
   }
   plRm(k, x) {
@@ -1793,18 +1832,41 @@ class Component extends DCLogic {
   reqCount(force) {
     const s = this.state; const a = s.acct; if (!a || !a.profile || (!force && this._rqT && Date.now() - this._rqT < 30000)) return; this._rqT = Date.now();
     this.sb().then(c => c.from('follows').select('*', { count: 'exact', head: true }).eq('followee', a.uid).eq('status', 'pending')).then(({ count, error }) => { if (error) throw error; this.setState(st => ({ reqs: { ...(st.reqs || {}), n: count || 0 } })); }).catch(() => {});
+    this.sb().then(c => c.rpc('notif_unread')).then(({ data, error }) => { if (error) throw error; this.setState(st => ({ ntf: { ...(st.ntf || {}), n: Number(data) || 0 } })); }).catch(() => {});
+  }
+  ntfLoad() {
+    const a = this.state.acct; if (!a || !a.profile) return; this.setState(st => ({ ntf: { ...(st.ntf || {}), busy: true, err: null } }));
+    this.sb().then(c => c.rpc('my_notifications', { lim: 60 }).then(({ data, error }) => { if (error) throw error; const items = data || [];
+      this.setState(st => ({ ntf: { ...(st.ntf || {}), items, busy: false, n: 0 } }));
+      // Marquées comme lues à l'ouverture (la mise en avant reste visible jusqu'au prochain chargement).
+      if (items.some(x => !x.read)) return c.from('notifications').update({ read_at: new Date().toISOString() }).is('read_at', null).then(() => {}); }))
+      .catch(e => { this.setState(st => ({ ntf: { ...(st.ntf || {}), busy: false, err: this.acMsg(e) } })); this.acErr(e, false, 'ntf'); });
+  }
+  ntfOpen(x) {
+    const a = this.state.acct; if (!a) return;
+    if (x.kind === 'request') return this.svOpen({ v: 'reqs' });
+    if (x.kind === 'comment' && x.activity_id) return this.cmtOpen(x.activity_id);
+    if (x.kind === 'kudo') return this.userOpen(a.uid, a.profile);
+    this.userOpen(x.actor, { username: x.username, display_name: x.display_name, avatar: x.avatar });
   }
   reqLoad() {
     const a = this.state.acct; if (!a) return; this.setState(st => ({ reqs: { ...(st.reqs || {}), busy: true, err: null } }));
-    this.sb().then(c => c.from('follows').select('follower, created_at, profiles!follows_follower_fkey(username,display_name)').eq('followee', a.uid).eq('status', 'pending').order('created_at', { ascending: false }))
-      .then(({ data, error }) => { if (error) throw error; const items = (data || []).map(r => { const p = (Array.isArray(r.profiles) ? r.profiles[0] : r.profiles) || {}; return { id: r.follower, username: p.username, display_name: p.display_name }; }).filter(x => x.id); this._rqT = Date.now(); this.setState(st => ({ reqs: { ...(st.reqs || {}), items, n: items.length, busy: false } })); })
+    this.sb().then(c => c.from('follows').select('follower, created_at, profiles!follows_follower_fkey(username,display_name,avatar)').eq('followee', a.uid).eq('status', 'pending').order('created_at', { ascending: false }))
+      .then(({ data, error }) => { if (error) throw error; const items = (data || []).map(r => { const p = (Array.isArray(r.profiles) ? r.profiles[0] : r.profiles) || {}; return { id: r.follower, username: p.username, display_name: p.display_name, avatar: p.avatar }; }).filter(x => x.id);
+        return (items.length ? this.sb().then(c => c.from('follows').select('followee').eq('follower', a.uid).in('followee', items.map(x => x.id))).then(({ data: f }) => new Set((f || []).map(y => y.followee))).catch(() => new Set()) : Promise.resolve(new Set()))
+          .then(mine => { const it = items.map(x => ({ ...x, iFollow: mine.has(x.id) })); this._rqT = Date.now(); this.setState(st => ({ reqs: { ...(st.reqs || {}), items: it, n: it.length, busy: false } })); }); })
       .catch(e => { this.setState(st => ({ reqs: { ...(st.reqs || {}), busy: false, err: this.acMsg(e) } })); this.acErr(e, false, 'rq'); });
   }
-  reqAns(x, ok) {
+  reqAns(x, ok, back) {
     const s = this.state; const a = s.acct; const fr = LANG === 'fr'; const r = s.reqs || {}; const old = r.items || []; if (!a || !old.some(y => y.id === x)) return;
     this.setState({ reqs: { ...r, items: old.filter(y => y.id !== x), n: Math.max(0, (r.n || 0) - 1) }, acE: null });
     this.sb().then(c => (ok ? c.from('follows').update({ status: 'accepted' }) : c.from('follows').delete()).eq('follower', x).eq('followee', a.uid)).then(({ error }) => { if (error) throw error;
-      if (ok) { this.feedDirty(); this.upUp(a.uid, m => ({ nF: m.nF == null ? m.nF : m.nF + 1 })); } this.upUp(x, { at: 0 }); this.flash(ok ? (fr ? 'Demande acceptée' : 'Request accepted') : (fr ? 'Demande refusée' : 'Request declined')); })
+      if (ok) { this.feedDirty(); this.upUp(a.uid, m => ({ nF: m.nF == null ? m.nF : m.nF + 1 })); } this.upUp(x, { at: 0 });
+      if (!back) return this.flash(ok ? (fr ? 'Demande acceptée' : 'Request accepted') : (fr ? 'Demande refusée' : 'Request declined'));
+      // Suivre en retour : accepté tout de suite si son profil est public, sinon une demande part chez lui.
+      return this.sb().then(c => c.from('follows').insert({ follower: a.uid, followee: x }).select('status').maybeSingle()).then(({ data, error }) => { if (error && error.code !== '23505') throw error; const st = data && data.status;
+        if (st === 'accepted') this.upUp(a.uid, m => ({ nG: m.nG == null ? m.nG : m.nG + 1 })); this.feedDirty(); this.flash(st === 'pending' ? (fr ? 'Acceptée · demande envoyée en retour' : 'Accepted · request sent back') : (fr ? 'Acceptée · abonné en retour' : 'Accepted · following back')); })
+        .catch(e => { this.flash(fr ? 'Demande acceptée' : 'Request accepted'); this.acErr(e); }); })
       .catch(e => { this.setState(st => { const q = st.reqs || {}; const cur = q.items || []; return { reqs: { ...q, items: old.filter(y => y.id === x || cur.some(z => z.id === y.id)), n: (q.n || 0) + 1 } }; }); this.acErr(e, false, 'p' + x); });
   }
   modOpen(o) { const a = this.state.acct; if (!a || !a.profile || !o.uid || o.uid === a.uid) return; this.setState({ mod: { ...o, step: 'menu', r: null, txt: '', busy: false }, acE: null, socArm: null }); }
@@ -1866,7 +1928,7 @@ class Component extends DCLogic {
     const s = this.state; const a = s.acct; if (!a || !a.profile) return; const q = ((s.srch || {}).q || '').trim().replace(/^@+/, '').replace(/[%,()"\\*]/g, '').trim(); const n = this._srN = (this._srN || 0) + 1;
     if (q.length < 2) return this.setState(st => ({ srch: { ...(st.srch || {}), items: null, busy: false, err: null } }));
     this.setState(st => ({ srch: { ...(st.srch || {}), busy: true, err: null } }));
-    this.sb().then(c => c.from('profiles').select('id,username,display_name,is_private').or(`username.ilike.%${q}%,display_name.ilike.%${q}%`).neq('id', a.uid).limit(20)).then(({ data, error }) => { if (n !== this._srN) return; if (error) throw error; this.setState(st => ({ srch: { ...(st.srch || {}), items: data || [], busy: false } })); })
+    this.sb().then(c => c.from('profiles').select('id,username,display_name,is_private,avatar').or(`username.ilike.%${q}%,display_name.ilike.%${q}%`).neq('id', a.uid).limit(20)).then(({ data, error }) => { if (n !== this._srN) return; if (error) throw error; this.setState(st => ({ srch: { ...(st.srch || {}), items: data || [], busy: false } })); })
       .catch(e => { if (n !== this._srN) return; this.setState(st => ({ srch: { ...(st.srch || {}), busy: false, err: this.acMsg(e) } })); });
   }
   tick() {
@@ -1992,24 +2054,42 @@ class Component extends DCLogic {
     const ex = [this.mkEx(name, 3, null, s.history)];
     this.setState({ workout: { rid: null, name: L('Quick workout'), start: Date.now(), ex }, focus: { ei: 0, si: 0 }, screen: 'workout', restEnd: null, restAlert: false, discardArm: false, bmBig: false });
   }
-  shareSummary() {
-    const d = this._share; if (!d) return; const svgs = document.querySelectorAll('[data-sumfig] svg'); if (svgs.length < 2) return;
+  shareSummary() { const d = this._share; if (d) this.shareCard(d, document.querySelectorAll('[data-sumfig] svg')); }
+  shareAct(id) {
+    const s = this.state; const x = this.actFind(s, id); if (!x) return; const fr = LANG === 'fr'; const kg = s.unit === 'kg'; const vol = Number(x.volume_kg) || 0; const m = Math.round((x.duration_s || 0) / 60);
+    const mu = x.muscles && typeof x.muscles === 'object' ? x.muscles : {}; const ord = Object.keys(mu).filter(k => mu[k] > 0 && MUS.some(q => q[0] === k)).sort((q, r) => mu[r] - mu[q]);
+    const musName = k => { const q = MUS.find(y => y[0] === k); return q ? (fr ? q[2] : q[1]) : k; };
+    this.shareCard({ name: x.title || L('Workout'), by: x.username ? '@' + x.username : '', date: new Date(x.started_at || x.created_at),
+      stats: [{ label: fr ? 'Durée' : 'Time', value: Math.floor(m / 60) + ':' + pad(m % 60) }, { label: 'Volume', value: Math.round(kg ? vol : vol * KG_LB).toLocaleString() + ' ' + s.unit }, { label: L('Sets'), value: String(x.sets || 0) }],
+      mus: ord.map(musName) }, document.querySelectorAll('[data-cf="' + id + '"] svg'));
+  }
+  // Image 1080×1350 de la séance (résumé de fin de séance ou publication du Fil), puis feuille de partage du téléphone.
+  shareCard(d, svgs) {
     const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d'); const F = "'Archivo', system-ui, sans-serif", M = "'JetBrains Mono', monospace";
     const rr = (X, Y, w, h, r) => { x.beginPath(); if (x.roundRect) x.roundRect(X, Y, w, h, r); else x.rect(X, Y, w, h); };
     x.fillStyle = '#0A0A0C'; x.fillRect(0, 0, W, H);
     x.fillStyle = ACC; x.font = '800 34px ' + F; x.textBaseline = 'alphabetic'; x.fillText('BARLOG', 72, 110);
-    x.fillStyle = '#9C9CA8'; x.font = '600 30px ' + F; x.textAlign = 'right'; x.fillText(new Date().toLocaleDateString(LOC(), { day: 'numeric', month: 'long', year: 'numeric' }), W - 72, 110); x.textAlign = 'left';
+    x.fillStyle = '#9C9CA8'; x.font = '600 30px ' + F; x.textAlign = 'right'; x.fillText((d.date || new Date()).toLocaleDateString(LOC(), { day: 'numeric', month: 'long', year: 'numeric' }), W - 72, 110); x.textAlign = 'left';
     x.fillStyle = '#FFFFFF'; x.font = '800 76px ' + F; let nm = d.name; while (x.measureText(nm).width > W - 144 && nm.length > 4) nm = nm.slice(0, -2) + '…'; x.fillText(nm, 72, 220);
+    const top = d.by ? 300 : 262; if (d.by) { x.fillStyle = '#9C9CA8'; x.font = '600 32px ' + F; x.fillText(d.by, 72, 270); }
     const st = d.stats.slice(0, 3), bw = (W - 144 - 2 * 20) / 3;
-    st.forEach((s, i) => { const X = 72 + i * (bw + 20); x.fillStyle = '#16161A'; rr(X, 262, bw, 140, 24); x.fill(); x.fillStyle = '#9C9CA8'; x.font = '600 24px ' + F; x.fillText(String(s.label).toUpperCase(), X + 26, 312); x.fillStyle = '#FFFFFF'; x.font = '700 48px ' + M; x.fillText(s.value, X + 26, 374); });
+    st.forEach((s, i) => { const X = 72 + i * (bw + 20); x.fillStyle = '#16161A'; rr(X, top, bw, 140, 24); x.fill(); x.fillStyle = '#9C9CA8'; x.font = '600 24px ' + F; x.fillText(String(s.label).toUpperCase(), X + 26, top + 50); x.fillStyle = '#FFFFFF'; x.font = '700 48px ' + M; x.fillText(s.value, X + 26, top + 112); });
     const toImg = svg => new Promise(res => { const cl = svg.cloneNode(true); cl.setAttribute('xmlns', 'http://www.w3.org/2000/svg'); cl.setAttribute('width', '344'); cl.setAttribute('height', '900'); cl.removeAttribute('style'); const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(cl)); });
-    Promise.all([toImg(svgs[0]), toImg(svgs[1])]).then(ims => {
-      const fh = 720, fw = fh * 172 / 450; ims.forEach((im, i) => { if (!im) return; const cx = W / 4 + i * W / 2; x.drawImage(im, cx - fw / 2, 450, fw, fh); });
+    Promise.all(svgs.length >= 2 ? [toImg(svgs[0]), toImg(svgs[1])] : []).then(ims => {
+      const fh = 720, fw = fh * 172 / 450; ims.forEach((im, i) => { if (!im) return; const cx = W / 4 + i * W / 2; x.drawImage(im, cx - fw / 2, top + 188, fw, fh); });
       x.font = '600 30px ' + F; let X = 72, Y = 1236; d.mus.slice(0, 5).forEach((m, i) => { const tw = x.measureText(m).width + 44; if (X + tw > W - 72) return; x.fillStyle = i < 2 ? ACC : '#24242B'; rr(X, Y - 42, tw, 60, 30); x.fill(); x.fillStyle = i < 2 ? '#0A0A0C' : '#FFFFFF'; x.fillText(m, X + 22, Y - 2); X += tw + 12; });
-      c.toBlob(b => { if (!b) return; const file = new File([b], 'barlog-seance.png', { type: 'image/png' });
-        if (navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file] }).catch(() => {}); return; }
-        const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'barlog-seance.png'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }, 'image/png');
+      c.toBlob(b => { if (b) this.shareFile(b, 'barlog-seance.png'); }, 'image/png');
     });
+  }
+  // Partage d'un fichier : plugin natif (Android n'a pas navigator.share dans la WebView), sinon Web Share, sinon téléchargement.
+  // Résout true si le fichier est parti (ou téléchargé), false si annulé.
+  shareFile(blob, name, title) {
+    const P = this.nat(); const Sh = P && P.Share; const F = this.fs();
+    if (Sh && F) return new Promise(res => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => res(''); r.readAsDataURL(blob); })
+      .then(data => F.writeFile({ path: name, data, directory: 'CACHE' })).then(w => Sh.share({ files: [w.uri], title: title || name, dialogTitle: title || undefined })).then(() => true)
+      .catch(e => { if (!/cancel/i.test(String((e && e.message) || e))) this.flash((LANG === 'fr' ? 'Partage impossible : ' : 'Could not share: ') + String((e && e.message) || e).slice(0, 60)); return false; });
+    try { const file = new File([blob], name, { type: blob.type }); if (navigator.canShare && navigator.canShare({ files: [file] })) return navigator.share({ files: [file], ...(title ? { title } : {}) }).then(() => true, () => false); } catch (e) {}
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); return Promise.resolve(true);
   }
   updW(fn) {
     const s = this.state; if (!s.workout) return {};
@@ -2113,11 +2193,7 @@ class Component extends DCLogic {
     const s = this.state; const o = {}; PK.forEach(k => o[k] = s[k]);
     const name = 'barlog-' + new Date().toISOString().slice(0, 10) + '.json';
     const json = JSON.stringify(o, null, 2);
-    const done = () => { this.setState({ lastExport: Date.now(), backupSnooze: null }); this.flash(L('Backup exported')); };
-    try { const file = new File([json], name, { type: 'application/json' }); if (navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file], title: 'Barlog backup' }).then(done).catch(() => {}); return; } } catch (e) {}
-    const blob = new Blob([json], { type: 'application/json' });
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'barlog-' + new Date().toISOString().slice(0, 10) + '.json'; document.body.appendChild(a); a.click(); a.remove();
-    done();
+    this.shareFile(new Blob([json], { type: 'application/json' }), name, 'Barlog backup').then(ok => { if (ok) { this.setState({ lastExport: Date.now(), backupSnooze: null }); this.flash(L('Backup exported')); } });
   }
   importBody() {
     const i = document.createElement('input'); i.type = 'file'; i.accept = '.csv,text/csv,text/plain';
@@ -2469,7 +2545,7 @@ class Component extends DCLogic {
       acVerify: () => this.acVerify(), acVerifyLabel: busy ? (fr ? 'Vérification…' : 'Checking…') : (fr ? 'Valider' : 'Verify'),
       acChange: () => this.setState({ acSent: null, acCode: '' }), acChangeLabel: fr ? 'Changer d’e-mail' : 'Change email', acResendLabel: fr ? 'Renvoyer le code' : 'Resend code', acResend: () => { if (s.acSent) { this.setState({ acEmail: s.acSent }); setTimeout(() => this.acSend(), 0); } },
       acConsent: fr ? 'Compte réservé aux 14 ans et plus. En créant un compte, ton e-mail, ton pseudo, ton nom et les séances que tu choisis de publier sont stockés sur nos serveurs au Canada (Montréal).' : 'Accounts are for ages 14 and up. By creating an account, your email, username, name and the workouts you choose to post are stored on our servers in Canada (Montréal).',
-      acPickTitle: fr ? 'Choisis ton pseudo' : 'Pick your username', acUserLabel: fr ? 'Pseudo' : 'Username', acUser: un, onAcUser: e => this.setState({ acUser: e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, '').slice(0, 20) }),
+      acPickTitle: fr ? 'Choisis ton pseudo' : 'Pick your username', acUserLabel: fr ? 'Pseudo' : 'Username', acUser: un, acUserPh: fr ? 'ton.pseudo' : 'your.username', acNamePh: fr ? 'Ton nom' : 'Your name', onAcUser: e => this.setState({ acUser: e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, '').slice(0, 20) }),
       acUserHint: un && !UNAME.test(un) ? (fr ? 'Au moins 3 caractères' : 'At least 3 characters') : (fr ? '3 à 20 caractères : lettres minuscules, chiffres, _ et .' : '3–20 characters: lowercase letters, digits, _ and .'), acUserHintColor: un && !UNAME.test(un) ? '#FF8A65' : '#9C9CA8',
       acNameLabel: fr ? 'Nom affiché' : 'Display name', acName: s.acName || '', onAcName: e => this.setState({ acName: e.target.value.slice(0, 40) }),
       acPrivLabel: fr ? 'Profil privé' : 'Private profile', acPrivSub: fr ? 'Les gens doivent te demander pour te suivre.' : 'People have to ask to follow you.', acPrivTg: tg(priv),
@@ -2477,6 +2553,10 @@ class Component extends DCLogic {
       acVisLabel: fr ? 'Mes séances visibles par défaut' : 'Default workout visibility', acVisOpts: vis(p ? p.default_visibility || 'followers' : s.acVis || 'followers', k => p ? (p.default_visibility !== k && this.acSet({ default_visibility: k })) : this.setState({ acVis: k })),
       acCreate: () => this.acCreate(), acCreateLabel: busy ? (fr ? 'Création…' : 'Creating…') : (fr ? 'Créer mon profil' : 'Create my profile'),
       acHandle: p ? '@' + p.username + ' · ' + p.display_name : '', acMail: (a && a.email) || '',
+      acAvPick: () => this.avPick(), acAvImg: avImg(p && p.avatar), acAvIni: p && p.avatar ? '' : iniOf(p && (p.display_name || p.username)), acAvOp: s.avBusy ? 0.5 : 1, acAvHas: !!(p && p.avatar),
+      acAvLabel: s.avBusy ? (fr ? 'Envoi…' : 'Uploading…') : p && p.avatar ? (fr ? 'Changer la photo' : 'Change photo') : (fr ? 'Ajouter une photo' : 'Add a photo'),
+      acAvDel: () => this.avDel(), acAvDelLabel: s.avDelArm ? (fr ? 'Toucher encore' : 'Tap again') : (fr ? 'Retirer' : 'Remove'), acAvDelColor: s.avDelArm ? '#FF4D4D' : '#9C9CA8', acAvDelBorder: s.avDelArm ? '#FF4D4D' : '#33333C',
+      acAvErr: (s.acE && s.acE.k === 'av' && s.acE.m) || '',
       acPendingText: busy ? (fr ? 'Chargement du profil…' : 'Loading profile…') : (fr ? 'Profil non chargé (pas de connexion ?)' : 'Profile not loaded (offline?)'), acRetry: () => { if (!busy) this.acBoot(); }, acRetryLabel: fr ? 'Réessayer' : 'Retry',
       acBlkOpen: () => this.svOpen({ v: 'blocks' }), acBlkLabel: (fr ? 'Comptes bloqués' : 'Blocked accounts') + (s.blk && s.blk.items ? ' (' + s.blk.items.length + ')' : ''), acPubOpen: () => a && this.userOpen(a.uid), acPubLabel: fr ? 'Mon profil public' : 'My public profile',
       acSignOut: () => this.acOut(), acSignOutLabel: fr ? 'Se déconnecter' : 'Sign out',
@@ -2491,8 +2571,8 @@ class Component extends DCLogic {
     return items.map((x, i) => { const mine = !!a && x.user_id === a.uid; const mu = x.muscles && typeof x.muscles === 'object' ? x.muscles : {}; const ord = Object.keys(mu).filter(k => mu[k] > 0 && MUS.some(m => m[0] === k)).sort((q, r) => mu[r] - mu[q]);
       const mx = Math.max(0, ...ord.map(k => mu[k])); const lv = v => !v ? 0 : v >= mx * 0.66 ? 3 : v >= mx * 0.33 ? 2 : 1; const sty = k => { const l = lv(mu[k]); return { fill: SF[l], glow: false, op: 1 }; }; const nop = () => {};
       const prs = Array.isArray(x.prs) ? x.prs : []; const vol = Number(x.volume_kg) || 0; const k = 'k' + x.id;
-      return { key: x.id, ini: iniOf(x.display_name || x.username), avBg: mine ? ACC : '#24242B', avColor: mine ? '#0A0A0C' : '#FFFFFF', name: x.display_name || x.username || '—', handle: '@' + (x.username || ''), when: relT(x.created_at || x.started_at, fr),
-        onUser: () => this.userOpen(x.user_id, { username: x.username, display_name: x.display_name }),
+      return { key: x.id, ini: x.avatar ? '' : iniOf(x.display_name || x.username), avImg: avImg(x.avatar), avBg: mine ? ACC : '#24242B', avColor: mine ? '#0A0A0C' : '#FFFFFF', name: x.display_name || x.username || '—', handle: '@' + (x.username || ''), when: relT(x.created_at || x.started_at, fr),
+        onUser: () => this.userOpen(x.user_id, { username: x.username, display_name: x.display_name, avatar: x.avatar }),
         visOn: mine, vis: VN[x.visibility] || x.visibility || '', title: x.title || L('Workout'),
         stats: [[fr ? 'Durée' : 'Time', hm(x.duration_s)], ['Volume', Math.round(kg ? vol : vol * KG_LB).toLocaleString() + ' ' + s.unit], [L('Sets'), String(x.sets || 0)]].map(([label, value]) => ({ label, value })),
         prOn: prs.length > 0, prTitle: '🏆 ' + prs.length + (fr ? ' record' : ' PR') + (prs.length > 1 ? 's' : ''), prList: prs.slice(0, 2).map(q => ({ text: L(q.ex) + ' ' + this.dispW(Number(q.w) || 0) + ' ' + s.unit + ' × ' + q.r })), prMore: prs.length > 2, prMoreText: '+' + (prs.length - 2) + (fr ? ' autre' + (prs.length > 3 ? 's' : '') : ' more'),
@@ -2500,12 +2580,12 @@ class Component extends DCLogic {
         mus: ord.slice(0, 3).map(q => ({ label: musName(q), bg: lv(mu[q]) === 3 ? ACC : '#24242B', color: lv(mu[q]) === 3 ? '#0A0A0C' : '#FFFFFF' })),
         noteOn: !!x.note, note: x.note || '',
         kOn: !!x.kudoed, kLabel: (fr ? 'Bravo' : 'Kudos') + (x.kudos_count ? ' · ' + x.kudos_count : ''), kBg: x.kudoed ? ACC : 'transparent', kColor: x.kudoed ? '#0A0A0C' : '#FFFFFF', kBorder: x.kudoed ? ACC : '#33333C', onKudo: () => this.feedKudo(x.id),
-        cLabel: (fr ? 'Commentaires' : 'Comments') + (x.comments_count ? ' (' + x.comments_count + ')' : ''), onCmt: () => this.cmtOpen(x.id), err: er(k), moreOn: !!a && !mine, onMore: () => this.modOpen({ t: 'act', uid: x.user_id, un: x.username, aid: x.id }) }; });
+        cLabel: (fr ? 'Commentaires' : 'Comments') + (x.comments_count ? ' (' + x.comments_count + ')' : ''), onCmt: () => this.cmtOpen(x.id), onShare: () => this.shareAct(x.id), shareLabel: fr ? 'Partager' : 'Share', err: er(k), moreOn: !!a && !mine, onMore: () => this.modOpen({ t: 'act', uid: x.user_id, un: x.username, aid: x.id }) }; });
   }
   socVals(s) {
     const sv = s.screen === 'tabs' && s.acct && s.acct.profile && s.sv && s.sv.length ? s.sv[s.sv.length - 1] : null; if (!sv) return { svOn: false, pList: [], upCards: [], upStats: [] };
     const fr = LANG === 'fr'; const a = s.acct; const er = k => (s.acE && s.acE.k === k && s.acE.m) || ''; const arm = k => s.socArm === k; const LD = fr ? 'Chargement…' : 'Loading…';
-    const row = (x, o) => ({ key: x.id, ini: iniOf(x.display_name || x.username), name: x.display_name || x.username || '—', handle: '@' + (x.username || ''), privOn: !!x.is_private, privLabel: fr ? 'Privé' : 'Private', onOpen: () => this.userOpen(x.id, x), b1On: false, b2On: false, err: er('p' + x.id), ...o });
+    const row = (x, o) => ({ bd: '#24242B', txt: '', key: x.id, ini: x.avatar ? '' : iniOf(x.display_name || x.username), avImg: avImg(x.avatar), name: x.display_name || x.username || '—', handle: '@' + (x.username || ''), privOn: !!x.is_private, privLabel: fr ? 'Privé' : 'Private', onOpen: () => this.userOpen(x.id, x), b1On: false, b2On: false, b3On: false, err: er('p' + x.id), ...o });
     const btn = (n, label, onClick, hot, red) => ({ ['b' + n + 'On']: true, ['b' + n + 'Label']: label, ['on' + n]: onClick, ['b' + n + 'Bg']: hot ? 'var(--acc)' : 'transparent', ['b' + n + 'Color']: hot ? '#0A0A0C' : red ? '#FF4D4D' : '#FFFFFF', ['b' + n + 'Border']: hot ? 'var(--acc)' : red ? '#FF4D4D' : '#33333C' });
     const fin = r => ({ ...r, plStateColor: r.plErrOn ? '#FF6B6B' : '#9C9CA8' }); const o = { svOn: true, svBack: () => this.svPop(), srOn: false, upOn: false, plOn: false, pList: [], upCards: [], upStats: [], plState: '', plErr: '', plRetry: () => {}, plRetryOn: false, plRetryLabel: fr ? 'Réessayer' : 'Retry', plNote: '' };
     if (sv.v === 'search') { const r = s.srch || {}; const q = (r.q || '').trim().replace(/^@+/, '');
@@ -2514,7 +2594,13 @@ class Component extends DCLogic {
         pList: q.length >= 2 && r.items ? r.items.map(x => row(x)) : [] }); }
     if (sv.v === 'reqs') { const r = s.reqs || {}; const it = r.items || [];
       return fin({ ...o, plOn: true, svTitle: fr ? 'Demandes d’abonnement' : 'Follow requests', plState: !r.items && r.busy ? LD : !r.items && r.err ? r.err : r.items && !it.length ? (fr ? 'Aucune demande en attente.' : 'No pending requests.') : '', plErrOn: !r.items && !!r.err,
-        plRetryOn: !r.items && !r.busy && !!r.err, plRetry: () => this.reqLoad(), pList: it.map(x => row(x, { ...btn(1, fr ? 'Accepter' : 'Accept', () => this.reqAns(x.id, true), true), ...btn(2, fr ? 'Refuser' : 'Decline', () => this.reqAns(x.id, false)) })) }); }
+        plRetryOn: !r.items && !r.busy && !!r.err, plRetry: () => this.reqLoad(), pList: it.map(x => row(x, { ...btn(1, fr ? 'Accepter' : 'Accept', () => this.reqAns(x.id, true), true), ...btn(2, fr ? 'Refuser' : 'Decline', () => this.reqAns(x.id, false)), ...(x.iFollow ? {} : btn(3, fr ? 'Accepter et suivre en retour' : 'Accept and follow back', () => this.reqAns(x.id, true, true))) })) }); }
+    if (sv.v === 'ntf') { const r = s.ntf || {}; const it = r.items || []; const q = t => t ? ' « ' + t + ' »' : '';
+      const say = x => x.kind === 'request' ? (fr ? 'demande à te suivre' : 'wants to follow you') : x.kind === 'follow' ? (fr ? 'te suit maintenant' : 'started following you') : x.kind === 'accepted' ? (fr ? 'a accepté ta demande d’abonnement' : 'accepted your follow request')
+        : x.kind === 'kudo' ? (fr ? 'a mis un bravo à ta séance' : 'gave kudos to your workout') + q(x.title) : (fr ? 'a commenté ta séance' : 'commented on your workout') + q(x.title) + (x.body ? ' : ' + x.body : '');
+      return fin({ ...o, plOn: true, svTitle: 'Notifications', plState: !r.items && r.busy ? LD : !r.items && r.err ? r.err : r.items && !it.length ? (fr ? 'Aucune notification pour l’instant. Les bravos, commentaires et abonnements apparaîtront ici.' : 'No notifications yet. Kudos, comments and follows will show up here.') : '', plErrOn: !r.items && !!r.err,
+        plRetryOn: !r.items && !r.busy && !!r.err, plRetry: () => this.ntfLoad(),
+        pList: it.map(x => row({ id: x.actor, username: x.username, display_name: x.display_name, avatar: x.avatar }, { key: 'n' + x.id, handle: relT(x.created_at, fr), txt: say(x), bd: x.read ? '#24242B' : ACC, onOpen: () => this.ntfOpen(x), err: '' })) }); }
     if (sv.v === 'blocks') { const r = s.blk || {}; const it = r.items || []; const dt = t => { try { return new Date(t).toLocaleDateString(fr ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' }); } catch (e) { return ''; } };
       return fin({ ...o, plOn: true, svTitle: fr ? 'Comptes bloqués' : 'Blocked accounts', plNote: it.length ? (fr ? 'Débloquer ne rétablit pas les abonnements.' : 'Unblocking doesn’t restore follows.') : '', plState: !r.items && r.busy ? LD : !r.items && r.err ? r.err : r.items && !it.length ? (fr ? 'Aucun compte bloqué.' : 'No blocked accounts.') : '', plErrOn: !r.items && !!r.err,
         plRetryOn: !r.items && !r.busy && !!r.err, plRetry: () => this.blkLoad(), pList: it.map(x => { const ak = 'u' + x.id; return row(x, { ...(x.username ? {} : { ini: '⊘', name: fr ? 'Compte bloqué' : 'Blocked account' }), handle: (x.username ? '@' + x.username + ' · ' : '') + (fr ? 'Bloqué le ' : 'Blocked on ') + dt(x.at), onOpen: () => {}, err: er(ak), ...btn(1, arm(ak) ? (fr ? 'Toucher encore' : 'Tap again') : (fr ? 'Débloquer' : 'Unblock'), () => this.blkUn(x.id), false, arm(ak)) }); }) }); }
@@ -2528,7 +2614,7 @@ class Component extends DCLogic {
     const lst = k => () => { if (!locked) this.svOpen({ v: 'list', id, k }); };
     const bl = u.rel === 'accepted' ? (am ? (fr ? 'Toucher encore pour se désabonner' : 'Tap again to unfollow') : (fr ? 'Abonné ✓' : 'Following ✓')) : u.rel === 'pending' ? (am ? (fr ? 'Toucher encore pour annuler' : 'Tap again to cancel') : (fr ? 'Demande envoyée' : 'Request sent')) : u.rel === null ? (fr ? 'S’abonner' : 'Follow') : LD;
     const hot = u.rel === null;
-    return fin({ ...o, upOn: true, svTitle: p.username ? '@' + p.username : (fr ? 'Profil' : 'Profile'), upIni: iniOf(p.display_name || p.username), upAvBg: me ? ACC : '#24242B', upAvColor: me ? '#0A0A0C' : '#FFFFFF',
+    return fin({ ...o, upOn: true, svTitle: p.username ? '@' + p.username : (fr ? 'Profil' : 'Profile'), upIni: p.avatar ? '' : iniOf(p.display_name || p.username), upAvImg: avImg(p.avatar), upAvBg: me ? ACC : '#24242B', upAvColor: me ? '#0A0A0C' : '#FFFFFF',
       upName: p.display_name || p.username || '—', upHandle: p.username ? '@' + p.username : '', upPrivOn: !!p.is_private, upPrivText: fr ? 'Profil privé' : 'Private profile',
       upStats: [['nF', 'followers', fr ? 'Abonnés' : 'Followers'], ['nG', 'following', fr ? 'Abonnements' : 'Following']].map(([f, k, label]) => ({ key: k, n: n(u[f]), label, onClick: lst(k), op: locked ? 0.6 : 1 })),
       upBtnOn: !me && !u.gone, upBtn: () => this.folDo(id), upBtnLabel: bl, upBtnBg: hot ? 'var(--acc)' : 'transparent', upBtnColor: hot ? '#0A0A0C' : am ? '#FF4D4D' : '#FFFFFF', upBtnBorder: hot ? 'var(--acc)' : am ? '#FF4D4D' : '#33333C', upBtnOp: u.fb || u.rel === undefined ? 0.5 : 1,
@@ -2543,14 +2629,14 @@ class Component extends DCLogic {
     if (!(s.screen === 'tabs' && s.tab === 'feed') && !s.cmt) return { fdOn: false, fdCards: [], cmOn: false, cmList: [], fdReqOn: false };
     const fr = LANG === 'fr'; const a = s.acct; const p = a && a.profile; const f = s.feed || {}; const items = f.items || []; 
     const er = k => (s.acE && s.acE.k === k && s.acE.m) || ''; const rel = iso => relT(iso, fr), ini = iniOf;
-    const cards = p ? this.cardVals(s, items, 'fd') : []; const rq = (s.reqs || {}).n || 0;
+    const cards = p ? this.cardVals(s, items, 'fd') : []; const rq = (s.reqs || {}).n || 0; const nt = p ? (s.ntf || {}).n || 0 : 0;
     const m = s.cmt; const act = m && this.actFind(s, m.id); const cl = (m && m.items) || [];
     return {
       fdOn: true, fdTitle: fr ? 'Fil' : 'Feed', fdIntro: !a || p === null, fdPend: !!a && p === undefined, fdHas: !!p,
       fdIntroTitle: fr ? 'Le fil · bêta' : 'The feed · beta',
       fdIntroText: fr ? 'Publie tes séances, suis tes amis et encourage-les avec des bravos et des commentaires. Sans compte, Barlog fonctionne comme avant.' : 'Post your workouts, follow your friends and cheer them on with kudos and comments. Without an account, Barlog works just like before.',
       fdIntroBtn: !a ? (fr ? 'Créer un compte' : 'Create an account') : (fr ? 'Créer mon profil' : 'Create my profile'), fdToProfile: () => this.setState({ tab: 'profile' }),
-      fdRefresh: () => this.feedLoad(), fdRefOp: f.busy ? 0.4 : 1, fdSearch: () => this.svOpen({ v: 'search' }),
+      fdRefresh: () => this.feedLoad(), fdRefOp: f.busy ? 0.4 : 1, fdSearch: () => this.svOpen({ v: 'search' }), fdNtf: () => this.svOpen({ v: 'ntf' }), fdNtfLabel: 'Notifications', fdNtfN: nt ? (nt > 99 ? '99+' : String(nt)) : '',
       fdReqOn: !!p && rq > 0, fdReqText: fr ? rq + ' demande' + (rq > 1 ? 's' : '') + ' d’abonnement' : rq + ' follow request' + (rq > 1 ? 's' : ''), fdReqOpen: () => this.svOpen({ v: 'reqs' }),
       fdLoading: !!p && !!f.busy && !items.length, fdLoadingText: fr ? 'Chargement…' : 'Loading…',
       fdErrCard: !!p && !f.busy && !!f.err && !items.length, fdErrText: f.err || '', fdRetryLabel: fr ? 'Réessayer' : 'Retry',
@@ -2560,7 +2646,7 @@ class Component extends DCLogic {
       cmOn: !!m, cmTitle: (fr ? 'Commentaires' : 'Comments') + (act ? ' · ' + (act.title || '') : ''), cmClose: () => this.setState({ cmt: null, cmtDelArm: null }), cmStop: e => e.stopPropagation(),
       cmLoading: !!m && !m.items && !!m.busy, cmLoadingText: fr ? 'Chargement…' : 'Loading…', cmEmpty: !!m && !!m.items && !cl.length, cmEmptyText: fr ? 'Aucun commentaire. Sois le premier !' : 'No comments yet. Be the first!',
       cmList: cl.map(c => { const pr = (Array.isArray(c.profiles) ? c.profiles[0] : c.profiles) || {}; const can = !!a && (c.user_id === a.uid || (!!act && act.user_id === a.uid)); const armed = s.cmtDelArm === c.id;
-        return { key: c.id, ini: ini(pr.display_name || pr.username), name: pr.display_name || pr.username || '—', when: rel(c.created_at), body: c.body || '', canDel: can, delLabel: armed ? (fr ? 'Toucher encore' : 'Tap again') : (fr ? 'Supprimer' : 'Delete'), delColor: armed ? '#FF4D4D' : '#9C9CA8', onDel: () => this.cmtDel(c.id), moreOn: !!a && !!c.user_id && c.user_id !== a.uid, onMore: () => this.modOpen({ t: 'cmt', uid: c.user_id, un: pr.username, cid: c.id, aid: m.id }) }; }),
+        return { key: c.id, ini: pr.avatar ? '' : ini(pr.display_name || pr.username), avImg: avImg(pr.avatar), name: pr.display_name || pr.username || '—', when: rel(c.created_at), body: c.body || '', canDel: can, delLabel: armed ? (fr ? 'Toucher encore' : 'Tap again') : (fr ? 'Supprimer' : 'Delete'), delColor: armed ? '#FF4D4D' : '#9C9CA8', onDel: () => this.cmtDel(c.id), moreOn: !!a && !!c.user_id && c.user_id !== a.uid, onMore: () => this.modOpen({ t: 'cmt', uid: c.user_id, un: pr.username, cid: c.id, aid: m.id }) }; }),
       cmText: (m && m.text) || '', onCmText: e => { const v = e.target.value.slice(0, 500); this.setState(st => st.cmt ? { cmt: { ...st.cmt, text: v } } : null); }, cmPh: fr ? 'Écrire un commentaire…' : 'Write a comment…',
       cmCount: ((m && m.text) || '').length + '/500', cmSend: () => this.cmtSend(), cmSendLabel: m && m.sending ? (fr ? 'Envoi…' : 'Sending…') : (fr ? 'Envoyer' : 'Send'), cmSendOp: m && (m.sending || !(m.text || '').trim()) ? 0.5 : 1, cmErr: er('cmt'),
       cmRetryOn: !!m && !m.items && !m.busy, cmRetry: () => m && this.cmtLoad(m.id), cmRetryLabel: fr ? 'Réessayer' : 'Retry'
@@ -2951,7 +3037,7 @@ class Component extends DCLogic {
       deleteSess: () => sd && this.deleteSession(sd.date), delSessLabel: s.delSessArm ? L('Tap again') : L('Delete'), delSessColor: s.delSessArm ? '#FFFFFF' : '#9C9CA8',
       isWorkout: s.screen === 'workout' && !!w, isLibrary: s.screen === 'library', isRoutine: s.screen === 'routine' && !!er, isSummary: s.screen === 'summary' && !!sm,
       showTabs, showResume: showTabs && !!w, tabBottom: showTabs && w ? 'calc(132px + env(safe-area-inset-bottom))' : 'calc(60px + env(safe-area-inset-bottom))',
-      tabs: [['today',L('Today')],['programs',L('Programs')],['progress',L('Progress')],['feed',LANG === 'fr' ? 'Fil' : 'Feed'],['profile',L('Profile')]].map(([k, label]) => { const rq = k === 'feed' && s.acct && s.acct.profile ? (s.reqs || {}).n || 0 : 0; return { label, color: s.tab === k ? '#FFFFFF' : '#9C9CA8', bar: s.tab === k ? ACC : 'transparent', onClick: go({ tab: k }), badge: rq ? (rq > 99 ? '99+' : String(rq)) : '' }; }),
+      tabs: [['today',L('Today')],['programs',L('Programs')],['progress',L('Progress')],['feed',LANG === 'fr' ? 'Fil' : 'Feed'],['profile',L('Profile')]].map(([k, label]) => { const rq = k === 'feed' && s.acct && s.acct.profile ? Math.max((s.reqs || {}).n || 0, (s.ntf || {}).n || 0) : 0; return { label, color: s.tab === k ? '#FFFFFF' : '#9C9CA8', bar: s.tab === k ? ACC : 'transparent', onClick: go({ tab: k }), badge: rq ? (rq > 99 ? '99+' : String(rq)) : '' }; }),
       dateLabel: d0.toLocaleDateString(LOC(), { weekday: 'long', month: 'short', day: 'numeric' }),
       nextName: w ? w.name : next ? next.name : L('No routines'), nextEx: w ? L('In progress · ') + clock(now - w.start) : next ? next.ex.map(e => e.name).join(' · ') : L('Create one in Programs.'),
       nextAgo: next ? ago(lastOf(next)) : '—', startLabel: w ? L('Resume workout') : L('Start workout'),

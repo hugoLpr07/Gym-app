@@ -5,6 +5,15 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.27.0 — 2026-10-20
+- Partage (bêta) : notifications dans le Fil (cloche + pastille) pour les demandes d’abonnement, nouveaux abonnés, demandes acceptées, bravos et commentaires.
+- Photo de profil : ajouter, changer ou retirer sa photo (Profil → Compte) ; affichée dans le Fil, les profils, les listes et les commentaires.
+- Demandes d’abonnement : nouvelle option « Accepter et suivre en retour ».
+- Bouton Partager (↗) sur chaque publication : image de la séance à envoyer sur Instagram, Messages, WhatsApp…
+- Android : partage d’images et export de sauvegarde par la feuille de partage native (ne fonctionnaient pas dans l’app).
+- Création du profil : pseudo et nom ne sont plus préremplis (simple exemple en gris).
+- Politique de confidentialité : photo de profil et notifications ajoutées.
+
 ## 0.26.0 — 2026-10-19
 - Partage (bêta) : signaler une séance, un commentaire ou un compte ; bloquer quelqu'un (il ne voit plus rien de toi, et toi plus rien de lui) ; liste des comptes bloqués avec Débloquer.
 - Nouvelle politique de confidentialité (compte Barlog, Loi 25 : responsable, données stockées, hébergement à Montréal, droits, suppression). Compte réservé aux 14 ans et plus.
