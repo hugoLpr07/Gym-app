@@ -227,6 +227,16 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-if>
 
+<sc-if value="{{ sureOn }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ sureNo }}" style="position:fixed;inset:0;z-index:63;background:rgba(0,0,0,0.65);display:flex;align-items:flex-end;justify-content:center;">
+<div onClick="{{ stop }}" style="width:100%;max-width:480px;box-sizing:border-box;background:#16161A;border-top:1px solid #33333C;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;">
+<span style="font-size:20px;font-weight:800;">{{ sureTitle }}</span>
+<span style="font-size:15px;line-height:21px;color:#9C9CA8;text-wrap:pretty;padding-bottom:6px;">{{ sureText }}</span>
+<button onClick="{{ sureGo }}" style="min-height:56px;border-radius:16px;border:none;background:{{ sureBg }};color:{{ sureColor }};font-size:16px;font-weight:700;padding:4px 12px;">{{ sureGoLabel }}</button>
+<button onClick="{{ sureNo }}" style="min-height:52px;border-radius:16px;border:none;background:#24242B;color:#FFFFFF;font-size:15px;font-weight:600;">{{ sureNoLabel }}</button>
+</div>
+</div>
+</sc-if>
 <sc-if value="{{ cbAskOn }}" hint-placeholder-val="{{ false }}">
 <div style="position:fixed;inset:0;z-index:61;background:rgba(0,0,0,0.65);display:flex;align-items:flex-end;justify-content:center;">
 <div style="width:100%;max-width:480px;box-sizing:border-box;background:#16161A;border-top:1px solid #33333C;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;">
@@ -1411,7 +1421,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.29.0';
+const APP_VERSION = '0.29.1';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive content'], ['Harcèlement ou intimidation', 'Harassment or bullying'], ['Spam ou arnaque', 'Spam or scam'], ['Usurpation d’identité', 'Impersonation'], ['Autre', 'Other']];
 // Sauvegarde en ligne : ce qui n'est pas envoyé (propre à l'appareil, ou relu depuis Santé / Health Connect).
@@ -1824,9 +1834,12 @@ class Component extends DCLogic {
       if (st.up) o.up = Object.fromEntries(Object.entries(st.up).map(([k, u]) => [k, { ...u, ...(k === uid && u.prof ? { prof: { ...u.prof, avatar: path } } : {}), ...(u.items ? { items: mp(u.items) } : {}) }]));
       return o; });
   }
+  // Confirmation avant une action du compte (déconnexion, suppression).
+  sure(k, fn) { this._sureFn = fn; this.setState({ sure: k }); }
+  sureGo() { const f = this._sureFn; this._sureFn = null; this.setState({ sure: null }); if (f) f(); }
   acDelete() {
     if (this.state.acBusy) return;
-    this.arm('acDelArm', () => { const fr = LANG === 'fr'; this.setState({ acBusy: true });
+    this.sure('del', () => { const fr = LANG === 'fr'; this.setState({ acBusy: true });
       this.sb().then(c => this.avClean(c, this.state.acct && this.state.acct.uid, null).catch(() => {}).then(() => this.cbWipe(c, this.state.acct && this.state.acct.uid).catch(() => {})).then(() => { this.cbSet({ link: false, uid: null, at: null, n: null }); return c.rpc('delete_account'); }).then(({ error }) => { if (error) throw error; return c.auth.signOut({ scope: 'local' }).catch(() => {}); })).then(() => { try { localStorage.removeItem(SB_STORE); } catch (e) {} this.setState(st => ({ acBusy: false, acct: null, acUser: '', acName: '', autoPub: false, sessMeta: Object.fromEntries(Object.entries(st.sessMeta || {}).map(([k, m]) => { if (!m || !m.pub) return [k, m]; const { pub, ...r } = m; return [k, r]; })) })); this.flash(fr ? 'Compte supprimé' : 'Account deleted'); }).catch(e => { this.setState({ acBusy: false }); this.acErr(e); }); });
   }
   hasSess(d) { return Object.values(this.state.history || {}).some(a => a.some(x => x.date === d)); }
@@ -2698,8 +2711,14 @@ class Component extends DCLogic {
       acAvErr: (s.acE && s.acE.k === 'av' && s.acE.m) || '',
       acPendingText: busy ? (fr ? 'Chargement du profil…' : 'Loading profile…') : (fr ? 'Profil non chargé (pas de connexion ?)' : 'Profile not loaded (offline?)'), acRetry: () => { if (!busy) this.acBoot(); }, acRetryLabel: fr ? 'Réessayer' : 'Retry',
       acBlkOpen: () => this.svOpen({ v: 'blocks' }), acBlkLabel: (fr ? 'Comptes bloqués' : 'Blocked accounts') + (s.blk && s.blk.items ? ' (' + s.blk.items.length + ')' : ''), acPubOpen: () => a && this.userOpen(a.uid), acPubLabel: fr ? 'Mon profil public' : 'My public profile',
-      acSignOut: () => this.acOut(), acSignOutLabel: fr ? 'Se déconnecter' : 'Sign out',
-      acDelete: () => this.acDelete(), acDelLabel: s.acDelArm ? (fr ? 'Touche encore pour supprimer définitivement' : 'Tap again to delete permanently') : (fr ? 'Supprimer mon compte' : 'Delete my account'), acDelBorder: s.acDelArm ? '#FF4D4D' : '#33333C',
+      acSignOut: () => this.sure('out', () => this.acOut()), acSignOutLabel: fr ? 'Se déconnecter' : 'Sign out',
+      acDelete: () => this.acDelete(), acDelLabel: fr ? 'Supprimer mon compte' : 'Delete my account', acDelBorder: '#33333C',
+      ...(() => { const k = s.sure; const del = k === 'del'; const cbOn = !!(s.cloud && s.cloud.link && s.cloud.on !== false);
+        return { sureOn: !!k, sureNo: () => { this._sureFn = null; this.setState({ sure: null }); }, sureGo: () => this.sureGo(), sureNoLabel: fr ? 'Annuler' : 'Cancel',
+          sureTitle: del ? (fr ? 'Supprimer ton compte ?' : 'Delete your account?') : (fr ? 'Te déconnecter ?' : 'Sign out?'),
+          sureText: del ? (fr ? 'C’est définitif. Ton profil, ta photo, tes publications, tes abonnements, tes bravos, tes commentaires' + (cbOn ? ' et ta sauvegarde en ligne' : '') + ' seront effacés. Tes séances sur ce téléphone restent intactes.' : 'This is permanent. Your profile, photo, posts, follows, kudos, comments' + (cbOn ? ' and online backup' : '') + ' will be erased. Workouts on this phone stay untouched.')
+            : (fr ? 'Tes séances restent sur ce téléphone' + (cbOn ? ', et ta sauvegarde en ligne reste sur ton compte. La sauvegarde reprendra quand tu te reconnecteras.' : '.') : 'Your workouts stay on this phone' + (cbOn ? ', and your online backup stays on your account. Backups resume when you sign back in.' : '.')),
+          sureGoLabel: del ? (fr ? 'Supprimer définitivement' : 'Delete permanently') : (fr ? 'Se déconnecter' : 'Sign out'), sureBg: del ? '#FF4D4D' : 'var(--acc)', sureColor: del ? '#FFFFFF' : '#0A0A0C' }; })(),
       acDelHint: fr ? 'Supprime ton compte et tout ce que tu as publié. Tes séances sur ce téléphone restent intactes.' : 'Deletes your account and everything you posted. Workouts on this phone stay untouched.'
     };
   }

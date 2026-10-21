@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.29.1 — 2026-10-20
+- Compte : « Se déconnecter » et « Supprimer mon compte » demandent maintenant une confirmation (fenêtre qui explique ce qui sera gardé ou effacé).
+
 ## 0.29.0 — 2026-10-20
 - Sauvegarde en ligne (avec un compte, activée par défaut) : séances, routines, exercices perso, pesées saisies et réglages sont sauvegardés automatiquement dans un espace privé. En te connectant sur un nouveau téléphone, tout revient (« Restaurer », ou « Fusionner » si le téléphone a déjà des séances : rien n’est supprimé). Copie de la veille gardée en secours. Réglage et état dans Profil → Compte.
 - Les pesées lues dans Santé / Health Connect ne sont pas envoyées : le nouveau téléphone les relit à la source.
