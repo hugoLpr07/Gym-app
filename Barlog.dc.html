@@ -227,6 +227,24 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-if>
 
+<sc-if value="{{ cbAskOn }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:61;background:rgba(0,0,0,0.65);display:flex;align-items:flex-end;justify-content:center;">
+<div style="width:100%;max-width:480px;box-sizing:border-box;background:#16161A;border-top:1px solid #33333C;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;">
+<span style="font-size:20px;font-weight:800;">{{ cbAskTitle }}</span>
+<span style="font-size:15px;line-height:21px;color:#9C9CA8;text-wrap:pretty;padding-bottom:6px;">{{ cbAskText }}</span>
+<button onClick="{{ cbAskGo }}" style="min-height:56px;border-radius:16px;border:none;background:var(--acc);color:#0A0A0C;font-size:16px;font-weight:700;opacity:{{ cbAskOp }};">{{ cbAskGoLabel }}</button>
+<sc-if value="{{ cbAskRepOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cbAskRep }}" style="min-height:52px;border-radius:16px;border:1px solid {{ cbAskRepBorder }};background:transparent;color:{{ cbAskRepColor }};font-size:15px;font-weight:600;padding:4px 12px;">{{ cbAskRepLabel }}</button></sc-if>
+<button onClick="{{ cbAskLater }}" style="min-height:52px;border-radius:16px;border:none;background:transparent;color:#9C9CA8;font-size:15px;font-weight:600;">{{ cbAskLaterLabel }}</button>
+<sc-if value="{{ cbAskErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ cbAskErr }}</span></sc-if>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ avBigOn }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ avBigClose }}" style="position:fixed;inset:0;z-index:62;background:rgba(0,0,0,0.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:16px;">
+<div style="width:min(78vw,340px);height:min(78vw,340px);border-radius:50%;background-color:#24242B;background-image:{{ avBigImg }};background-size:cover;background-position:center;"></div>
+<span style="font-size:17px;font-weight:700;color:#fff;">{{ avBigName }}</span>
+</div>
+</sc-if>
 <sc-if value="{{ confirmOn }}" hint-placeholder-val="{{ false }}">
 <div onClick="{{ confirmCancel }}" style="position:fixed;inset:0;z-index:60;background:rgba(0,0,0,0.65);display:flex;align-items:flex-end;justify-content:center;">
 <div onClick="{{ stop }}" style="width:100%;max-width:480px;box-sizing:border-box;background:#16161A;border-top:1px solid #33333C;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;">
@@ -798,6 +816,13 @@ input::placeholder{color:#9C9CA8}
 <div style="flex:0 0 auto;width:52px;height:32px;border-radius:999px;background:{{ acAutoTg.track }};padding:3px;display:flex;justify-content:{{ acAutoTg.justify }};"><div style="width:26px;height:26px;border-radius:50%;background:{{ acAutoTg.knob }};"></div></div>
 </button>
 </div>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;">
+<button onClick="{{ cbClick }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:16px;font-weight:500;">{{ cbLabel }}</span><span style="font-size:13px;line-height:18px;color:{{ cbSubColor }};text-wrap:pretty;">{{ cbSub }}</span></div>
+<div style="flex:0 0 auto;width:52px;height:32px;border-radius:999px;background:{{ cbTg.track }};padding:3px;display:flex;justify-content:{{ cbTg.justify }};"><div style="width:26px;height:26px;border-radius:50%;background:{{ cbTg.knob }};"></div></div>
+</button>
+<sc-if value="{{ cbNowOn }}" hint-placeholder-val="{{ false }}"><div style="padding:0 16px 14px;display:flex;flex-direction:column;gap:6px;"><button onClick="{{ cbNow }}" style="min-height:44px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#fff;font-size:14px;font-weight:600;opacity:{{ cbNowOp }};">{{ cbNowLabel }}</button><sc-if value="{{ cbErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ cbErr }}</span></sc-if></div></sc-if>
+</div>
 <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
 <button onClick="{{ acSignOut }}" style="min-height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ acSignOutLabel }}</button>
 <button onClick="{{ acDelete }}" style="min-height:52px;border-radius:12px;border:1px solid {{ acDelBorder }};background:transparent;color:#FF4D4D;font-size:14px;font-weight:600;padding:4px 8px;opacity:{{ acOp }};">{{ acDelLabel }}</button>
@@ -909,7 +934,7 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ upOn }}" hint-placeholder-val="{{ false }}">
 <div style="flex:none;display:flex;flex-direction:column;gap:14px;background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;">
 <div style="display:flex;align-items:center;gap:14px;min-width:0;">
-<div style="flex:none;width:64px;height:64px;border-radius:32px;background:{{ upAvBg }};background-image:{{ upAvImg }};background-size:cover;background-position:center;color:{{ upAvColor }};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;">{{ upIni }}</div>
+<div onClick="{{ upAvOpen }}" style="flex:none;cursor:pointer;width:64px;height:64px;border-radius:32px;background:{{ upAvBg }};background-image:{{ upAvImg }};background-size:cover;background-position:center;color:{{ upAvColor }};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;">{{ upIni }}</div>
 <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;"><span style="font-size:20px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ upName }}</span><span style="font-size:14px;color:#9C9CA8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ upHandle }}</span><sc-if value="{{ upPrivOn }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;margin-top:4px;height:22px;padding:0 8px;border-radius:11px;background:#24242B;color:#9C9CA8;font-size:11px;font-weight:700;display:flex;align-items:center;">🔒 {{ upPrivText }}</span></sc-if></div>
 <sc-if value="{{ upMenuOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ upMenu }}" aria-label="⋯" style="flex:none;align-self:flex-start;width:40px;height:40px;margin:-6px -8px 0 0;border-radius:20px;border:none;background:transparent;color:#9C9CA8;font-size:22px;font-weight:700;line-height:1;">⋯</button></sc-if>
 </div>
@@ -1374,7 +1399,7 @@ const KG_LB = 2.20462;
 const LIB = [['Bench Press','Chest'],['Incline DB Press','Chest'],['Dumbbell Fly','Chest'],['Push-up','Chest'],['Deadlift','Back'],['Barbell Row','Back'],['Pull-up','Back'],['Lat Pulldown','Back'],['Seated Cable Row','Back'],['Squat','Legs'],['Romanian Deadlift','Legs'],['Leg Press','Legs'],['Leg Curl','Legs'],['Leg Extension','Legs'],['Calf Raise','Legs'],['Bulgarian Split Squat','Legs'],['Overhead Press','Shoulders'],['Lateral Raise','Shoulders'],['Face Pull','Shoulders'],['Barbell Curl','Arms'],['Hammer Curl','Arms'],['Triceps Pushdown','Arms'],['Skull Crusher','Arms'],['Plank','Core'],['Hanging Leg Raise','Core'],['Cable Crunch','Core'],['Running','Cardio'],['Cycling','Cardio'],['Rowing machine','Cardio'],['Elliptical','Cardio'],['Stair climber','Cardio'],['Walking','Cardio'],['Jump rope','Cardio']].map(([name, group]) => ({ name, group }));
 const GROUPS = ['All','Chest','Back','Legs','Shoulders','Arms','Core','Cardio','Custom'];
 const BASE = {'Bench Press':80,'Overhead Press':50,'Incline DB Press':30,'Lateral Raise':12,'Triceps Pushdown':30,'Deadlift':160,'Barbell Row':70,'Pull-up':10,'Face Pull':25,'Barbell Curl':35,'Squat':120,'Romanian Deadlift':100,'Leg Press':180,'Leg Curl':45,'Calf Raise':70};
-const PK = ['bodyRange','bodyU','lenU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight','accent','onboarded','restNotif','remind','goal','level','liveRest','pro','effort','healthOn','hkWSync','hkCSync','bodyMetric','autoPub'];
+const PK = ['bodyRange','bodyU','lenU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight','accent','onboarded','restNotif','remind','goal','level','liveRest','pro','effort','healthOn','hkWSync','hkCSync','bodyMetric','autoPub','cloud','hkTag'];
 const e1 = (w, r) => w * (1 + r / 30);
 const FR = {"Start anyway":"Lancer quand même","Cancel":"Annuler","New version ready · Tap to update":"Nouvelle version prête · Toucher pour mettre à jour","Install on your iPhone":"Installer sur ton iPhone","In Safari: tap Share, then “Add to Home Screen”. Barlog opens full-screen, works offline, and your data is kept safe from Safari’s cleanup.":"Dans Safari : touche Partager, puis « Sur l’écran d’accueil ». Barlog s’ouvre en plein écran, fonctionne hors ligne et tes données sont protégées du nettoyage de Safari.","Got it":"Compris","Today":"Aujourd’hui","Next up":"À suivre","Last done":"Dernière fois :","This week":"Cette semaine","Other routines":"Autres routines","Start":"Lancer","+ Empty workout":"+ Séance libre","Program · rotates automatically":"Programme · rotation automatique","Routines":"Routines","NEXT":"SUIVANTE","Edit":"Modifier","+ New routine":"+ Nouvelle routine","Progress":"Progrès","All sessions":"Toutes les séances","No sessions yet. Finish a workout and it shows up here.":"Aucune séance. Termine une séance et elle apparaîtra ici.","No weighted exercise matches.":"Aucun exercice avec charge ne correspond.","No sessions in this range.":"Aucune séance sur cette période.","Trend":"Tendance","Tap a point for details":"Touche un point pour les détails","Rep records · heaviest weight (":"Records par reps · charge max (","Records ·":"Records ·","History ·":"Historique ·","Right column: best estimated 1RM of the session. Lime = PR.":"Colonne de droite : meilleur 1RM estimé de la séance. Lime = PR.","Consistency":"Régularité","Sets per muscle · weekly avg, last 4 wk":"Séries par muscle · moyenne/sem. sur 4 sem.","Shaded zone = 10–20 work sets per muscle per week, the usual range for muscle growth. Warm-ups excluded.":"Zone ombrée = 10 à 20 séries de travail par muscle et par semaine, la plage habituelle pour la prise de muscle. Échauffements exclus.","e1RM trend · last 4 weeks":"Tendance e1RM · 4 dernières semaines","Profile":"Profil","No account. Your data stays on your phone.":"Pas de compte. Tes données restent sur ton téléphone.","Everything lives on this device.":"Tout est stocké sur cet appareil.","Training":"Entraînement","Language":"Langue","Units":"Unités","Default rest":"Repos par défaut","Your data":"Tes données","Export backup":"Exporter","Import":"Importer","Logging a workout only adds to your history. Import replaces everything with the file’s content — export first if unsure.":"Enregistrer une séance ne fait qu’ajouter à ton historique. Importer remplace tout par le contenu du fichier — exporte d’abord en cas de doute.","Clear history keeps your routines. Erase all also deletes routines and custom exercises. Both ask for a second tap.":"« Effacer l’historique » garde tes routines. « Tout effacer » supprime aussi les routines et les exercices perso. Les deux demandent une deuxième touche.","Resume ›":"Reprendre ›","Finish":"Terminer","SET":"SÉRIE","PREV":"PRÉC.","−1 rep":"−1 rép","+1 rep":"+1 rép","+ Add set":"+ Ajouter une série","Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.":"Touche un numéro de série pour la marquer comme échauffement (W). Les échauffements ne comptent ni dans les PR ni dans le volume.","+ Add exercise":"+ Ajouter un exercice","Skip":"Passer","Add exercise":"Ajouter un exercice","+ Create “":"+ Créer « ","” ·":" » ·","No exercises yet. Add your first movement.":"Aucun exercice. Ajoute ton premier mouvement.","sets":"séries","reps":"reps","Fix any weight or reps. Changes save instantly and update your records and charts.":"Corrige une charge ou des reps. Les changements sont enregistrés tout de suite et mettent à jour tes records et graphiques.","Workout saved":"Séance enregistrée","Exercises":"Exercices","Done":"Terminé","Back up your data":"Sauvegarde tes données","Tap Export, then “Save to Files” → iCloud Drive.":"Touche Exporter, puis « Enregistrer dans Fichiers » → iCloud Drive.","Export now":"Exporter","Later":"Plus tard","Search an exercise":"Chercher un exercice","Search or type a new name":"Chercher ou taper un nouveau nom","Chest":"Pectoraux","Back":"Dos","Legs":"Jambes","Shoulders":"Épaules","Arms":"Bras","Core":"Gainage","All":"Tous","Custom":"Perso","No backup yet. Your data lives only on this phone.":"Aucune sauvegarde. Tes données sont uniquement sur ce téléphone.","Volume":"Volume","Vol ":"Vol ","Quick workout":"Séance libre","New routine":"Nouvelle routine","Backup exported":"Sauvegarde exportée","Data imported":"Données importées","Not a Barlog backup":"Ce n’est pas une sauvegarde Barlog","History cleared":"Historique effacé","All data erased":"Toutes les données effacées","Session deleted":"Séance supprimée"," · you hit every rep last time":" · toutes tes reps réussies la dernière fois"," · custom":" · perso"," · last ":" · dernière "," rep":" rép"," reps":" reps","Workout":"Séance","Low":"Bas","High":"Élevé","In range":"Dans la zone"," this week":" cette semaine","No PR for ":"Aucun PR depuis "," weeks":" semaines","Start today’s: ":"Lancer celle du jour : ","Sessions":"Séances","Lifts":"Exercices","Stats":"Stats","Last 4 wk":"4 dern. sem.","Streak":"Série"," wk":" sem","4 wk":"4 sem","3 mo":"3 mois","Target: ":"Objectif : "," sessions per week (one per routine). Streak = weeks in a row at target.":" séances par semaine (une par routine). Série = semaines d’affilée à l’objectif."," lift":" exercice"," without a PR for 3+ weeks.":" sans PR depuis 3 semaines ou plus.","Every lift has set a PR in the last 3 weeks.":"Chaque exercice a fait un PR ces 3 dernières semaines."," Compared with the 4 weeks before, or with your first session of the period if there is no earlier data.":" Comparé aux 4 semaines précédentes, ou à ta première séance de la période s’il n’y a pas de données plus anciennes."," exercises · ":" exercices · "," sets · ":" séries · ","Time":"Durée","Sets":"Séries","Session updated":"Séance mise à jour","Tap again":"Toucher encore","Delete":"Supprimer","Programs":"Programmes","No routines":"Aucune routine","In progress · ":"En cours · ","Create one in Programs.":"Crées-en une dans Programmes.","Resume workout":"Reprendre la séance","Start workout":"Lancer la séance","No exercises yet":"Aucun exercice","Est. 1RM":"1RM est.","Top set":"Top set","Estimated max for 1 rep, from your best set: weight × (1 + reps ÷ 30). Best overall strength gauge.":"Charge max estimée pour 1 rep, calculée sur ta meilleure série : charge × (1 + reps ÷ 30). Le meilleur indicateur de force.","Total weight × reps over all work sets of the session. Tracks workload — the main driver of muscle growth.":"Charge × reps sur toutes les séries de travail de la séance. Mesure la charge de travail — le moteur principal de la prise de muscle.","Heaviest weight lifted in the session, regardless of reps.":"Charge la plus lourde soulevée dans la séance, peu importe les reps.","Estimated 1RM":"1RM estimé","Session volume":"Volume de la séance","Heaviest set":"Série la plus lourde"," sessions":" séances"," session":" séance","No PR on ":"Aucun PR sur "," for ":" depuis "," sessions since your last best. Try a deload week (−10%), a different rep range, or a close variation.":" séances depuis ton dernier record. Essaie une semaine de décharge (−10 %), une autre plage de reps ou une variante proche.","4-week trend (e1RM)":"Tendance 4 sem. (e1RM)","Best e1RM":"Meilleur e1RM","Best set":"Meilleure série","Heaviest weight":"Charge max","Best session volume":"Meilleur volume de séance"," sessions stored offline.":" séances stockées hors ligne.","Auto-start rest":"Repos automatique","Starts when you log a set":"Démarre quand tu valides une série","Sound at rest end":"Son en fin de repos","Beeps when rest is over. Muted by the iPhone silent switch.":"Bip à la fin du repos. Coupé par le mode silencieux de l’iPhone.","Android only — iPhone doesn’t allow it in web apps":"Android seulement — l’iPhone ne le permet pas dans les apps web","Warn on off-day start":"Alerte hors du jour prévu","Only for routines with a weekday in their name (e.g. “Mardi – …”). Asks before starting one on another day.":"Seulement pour les routines avec un jour dans leur nom (ex. « Mardi – … »). Demande confirmation avant de la lancer un autre jour.","Keep screen on":"Garder l’écran allumé","During a workout, so the timer stays visible":"Pendant une séance, pour garder le minuteur visible","Clear history":"Effacer l’historique","Erase all":"Tout effacer"," sets":" séries","Tap again to discard":"Toucher encore pour abandonner","Discard workout":"Abandonner la séance","Rest over — lift":"Repos terminé — à toi","Rest":"Repos","to ":"à ","Volume ":"Volume ","vs last time":"vs la dernière fois","No PRs this time — consistency counts":"Pas de PR cette fois — la régularité compte","best ":"meilleure "};
 const TX = {"k0":"Start anyway","k1":"Cancel","k2":"New version ready · Tap to update","k3":"Install on your iPhone","k4":"In Safari: tap Share, then “Add to Home Screen”. Barlog opens full-screen, works offline, and your data is kept safe from Safari’s cleanup.","k5":"Got it","k6":"Back up your data","k7":"Tap Export, then “Save to Files” → iCloud Drive.","k8":"Export now","k9":"Later","k10":"Today","k11":"Next up","k12":"Last done","k13":"This week","k14":"Other routines","k15":"Start","k16":"+ Empty workout","k17":"Program · rotates automatically","k18":"Routines","k19":"NEXT","k20":"Edit","k21":"+ New routine","k22":"Progress","k23":"All sessions","k24":"No sessions yet. Finish a workout and it shows up here.","k25":"No weighted exercise matches.","k26":"No sessions in this range.","k27":"Trend","k28":"Tap a point for details","k29":"Rep records · heaviest weight (","k30":"Records ·","k31":"History ·","k32":"Right column: best estimated 1RM of the session. Lime = PR.","k33":"Consistency","k34":"Sets per muscle · weekly avg, last 4 wk","k35":"Shaded zone = 10–20 work sets per muscle per week, the usual range for muscle growth. Warm-ups excluded.","k36":"e1RM trend · last 4 weeks","k37":"Profile","k38":"No account. Your data stays on your phone.","k39":"Everything lives on this device.","k40":"Training","k41":"Language","k42":"Units","k43":"Default rest","k44":"Your data","k45":"Export backup","k46":"Import","k47":"Logging a workout only adds to your history. Import replaces everything with the file’s content — export first if unsure.","k48":"Clear history keeps your routines. Erase all also deletes routines and custom exercises. Both ask for a second tap.","k49":"Resume ›","k50":"Finish","k51":"SET","k52":"PREV","k53":"−1 rep","k54":"+1 rep","k55":"+ Add set","k56":"Tap a set number to mark it as warm-up (W). Warm-ups don’t count toward PRs or volume.","k57":"+ Add exercise","k58":"Skip","k59":"Add exercise","k60":"+ Create “","k61":"No exercises yet. Add your first movement.","k62":"sets","k63":"reps","k64":"Fix any weight or reps. Changes save instantly and update your records and charts.","k65":"Workout saved","k66":"Exercises","k67":"Done","k68":"Search an exercise","k69":"Search or type a new name"};
@@ -1386,9 +1411,15 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.28.0';
+const APP_VERSION = '0.29.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive content'], ['Harcèlement ou intimidation', 'Harassment or bullying'], ['Spam ou arnaque', 'Spam or scam'], ['Usurpation d’identité', 'Impersonation'], ['Autre', 'Other']];
+// Sauvegarde en ligne : ce qui n'est pas envoyé (propre à l'appareil, ou relu depuis Santé / Health Connect).
+const CB_SKIP = ['workout', 'focus', 'restEnd', 'restTotal', 'cloud', 'installSeen', 'lastExport', 'backupSnooze', 'healthOn', 'hkWSync', 'hkCSync', 'hkTag'];
+const CB_SET = ['bodyRange', 'bodyU', 'lenU', 'unit', 'haptics', 'sound', 'wake', 'autoRest', 'restDefault', 'dayWarn', 'lang', 'barLight', 'accent', 'restNotif', 'remind', 'goal', 'level', 'liveRest', 'pro', 'effort', 'bodyMetric', 'autoPub', 'lastRoutineId'];
+const nSess = h => { const d = new Set(); Object.values(h || {}).forEach(a => (a || []).forEach(x => d.add(x.date))); return d.size; };
+// Pesées : on retire les valeurs lues dans Santé / Health Connect (marquées hk) — le nouveau téléphone les relit à la source.
+const bodyOut = b => (b || []).map(x => { if (!x.hk) return x; const y = { ...x }; Object.keys(x.hk).forEach(k => delete y[k]); delete y.hk; return y; }).filter(x => Object.keys(x).some(k => k !== 'date'));
 const avUrl = p => p ? SB_URL + '/storage/v1/object/public/avatars/' + p : '', avImg = p => p ? "url('" + avUrl(p) + "')" : 'none';
 const iniOf = n => (String(n || '?').trim().split(/\s+/).slice(0, 2).map(w => [...w][0] || '').join('') || '?').toUpperCase();
 const relT = (iso, fr) => { const now = Date.now(); const t = Date.parse(iso); if (!t) return ''; const m = Math.floor((now - t) / 60000); if (m < 1) return fr ? 'à l’instant' : 'just now'; if (m < 60) return fr ? 'il y a ' + m + ' min' : m + ' min ago'; const h = Math.floor(m / 60); if (h < 24) return fr ? 'il y a ' + h + ' h' : h + 'h ago'; const d = Math.floor(h / 24); if (d < 7) return fr ? 'il y a ' + d + ' j' : d + 'd ago'; return new Date(t).toLocaleDateString(fr ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'short', ...(new Date(t).getFullYear() !== new Date(now).getFullYear() ? { year: 'numeric' } : {}) }); };
@@ -1584,7 +1615,7 @@ class Component extends DCLogic {
       F.writeFile({ path: 'barlog-data.prev.json', data: r.data, directory: 'DATA', encoding: 'utf8' }).catch(() => {});
     }).catch(() => {}).then(() => { this.nativeReady = true; this.save(true); });
     this.iv = setInterval(() => this.tick(), 250);
-    this.onVis = () => { this.save(document.visibilityState === 'hidden'); this.syncWake(); this.tick(); this._rnAt = undefined; this.syncRestNotif(); if (document.visibilityState === 'visible') this.pullWeights(); if (document.visibilityState === 'visible') this.checkUpdate(); if (document.visibilityState === 'visible') this.pubFlush(); if (document.visibilityState === 'visible') this.reqCount(); };
+    this.onVis = () => { if (document.visibilityState === 'hidden' && this._cbT) { clearTimeout(this._cbT); this._cbT = null; this.cbUp(); } this.save(document.visibilityState === 'hidden'); this.syncWake(); this.tick(); this._rnAt = undefined; this.syncRestNotif(); if (document.visibilityState === 'visible') this.pullWeights(); if (document.visibilityState === 'visible') this.checkUpdate(); if (document.visibilityState === 'visible') this.pubFlush(); if (document.visibilityState === 'visible') this.reqCount(); };
     this.onOnline = () => this.pubFlush(true); window.addEventListener('online', this.onOnline);
     this.checkUpdate();
     this.loadMedia();
@@ -1602,12 +1633,13 @@ class Component extends DCLogic {
     const prev = prevState || this._snap || {}; const st = this.state;
     this._snap = { ...st };
     if (PK.some(k => prev[k] !== st[k])) this.save();
+    if (st.cloud && st.cloud.link && ['history', 'sessMeta', 'routines', 'body', 'custom', 'exMeta'].some(k => prev[k] !== st[k])) this.cbSoon(15000);
     if (prev.workout !== st.workout || prev.wake !== st.wake) this.syncWake();
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.workout !== st.workout || prev.restNotif !== st.restNotif) this.syncRestNotif();
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.restTotal !== st.restTotal || prev.workout !== st.workout || prev.hold !== st.hold || prev.liveRest !== st.liveRest) this.syncLive();
     if (prev.remind !== st.remind || prev.lang !== st.lang) this.syncReminders();
     if ((prev.acct && prev.acct.uid) !== (st.acct && st.acct.uid) && (st.feed || st.cmt || st.sv || st.up || st.reqs || st.pl || st.srch || st.blk || st.mod)) { this._rqT = 0; this.setState({ ntf: null, feed: null, cmt: null, cmtDelArm: null, sv: null, up: null, pl: null, reqs: null, srch: null, socArm: null, blk: null, mod: null }); }
-    if (st.acct && st.acct.profile && !((prev.acct && prev.acct.uid) === st.acct.uid && prev.acct.profile)) setTimeout(() => { this.reqCount(true); this.blkLoad(true); }, 0);
+    if (st.acct && st.acct.profile && !((prev.acct && prev.acct.uid) === st.acct.uid && prev.acct.profile)) setTimeout(() => { this.reqCount(true); this.blkLoad(true); this.cbCheck(); }, 0);
     const fOn = x => x.screen === 'tabs' && x.tab === 'feed' && !!(x.acct && x.acct.profile); if (fOn(st) && !fOn(prev)) this.feedEnter();
   }
   save(flush) { const o = {}; PK.forEach(k => o[k] = this.state[k]); o.savedAt = Date.now(); const j = JSON.stringify(o); try { localStorage.setItem('barlog-v1', j); } catch (e) {} this.saveNative(j, flush); }
@@ -1680,8 +1712,81 @@ class Component extends DCLogic {
     this.sb().then(c => c.from('profiles').update(p).eq('id', a.uid)).then(({ error }) => { if (error) throw error; }).catch(e => { this.setState(st => ({ acct: st.acct && { ...st.acct, profile: old } })); this.acErr(e); });
   }
   acOut() {
-    this.setState({ acct: null, acDelArm: false, acSent: null, acCode: '', acUser: '', acName: '' });
+    this.setState(st => ({ acct: null, acDelArm: false, acSent: null, acCode: '', acUser: '', acName: '', cbAsk: null, cloud: { ...(st.cloud || {}), link: false, uid: null } }));
     this.sb().then(c => c.auth.signOut()).catch(() => {}).then(() => { try { localStorage.removeItem(SB_STORE); } catch (e) {} });
+  }
+  // ───── Sauvegarde en ligne de l'historique (compte) ─────
+  // Fichier compressé privé backups/<id>/latest.gz (+ prev.gz, copie de la veille) ; infos dans backups_meta.
+  // Jamais destructif : une sauvegarde trouvée sur le compte est restaurée ou fusionnée avant toute nouvelle écriture.
+  cbSet(p) { this.setState(st => ({ cloud: { ...(st.cloud || {}), ...p } })); }
+  cbSoon(ms) { clearTimeout(this._cbT); this._cbT = setTimeout(() => { this._cbT = null; this.cbUp(); }, ms); }
+  cbData(st) { const o = {}; PK.forEach(k => { if (!CB_SKIP.includes(k)) o[k] = st[k]; }); o.body = bodyOut(st.body); o.v = 1; o.savedAt = Date.now(); return o; }
+  cbGz(json) {
+    if (typeof CompressionStream === 'undefined') return Promise.resolve(new Blob([json], { type: 'application/json' }));
+    return new Response(new Blob([json]).stream().pipeThrough(new CompressionStream('gzip'))).blob().then(b => new Blob([b], { type: 'application/gzip' }));
+  }
+  cbFetch(c, uid) {
+    return c.storage.from('backups').download(uid + '/latest.gz').then(({ data, error }) => { if (error) throw error; return data.slice(0, 2).arrayBuffer().then(h => { const u = new Uint8Array(h);
+      const gz = u[0] === 0x1f && u[1] === 0x8b; return gz ? new Response(data.stream().pipeThrough(new DecompressionStream('gzip'))).text() : data.text(); }); })
+      .then(t => { const d = JSON.parse(t); if (!d || !d.history || !d.routines) throw new Error(LANG === 'fr' ? 'Sauvegarde illisible' : 'Unreadable backup'); return d; });
+  }
+  cbWipe(c, uid) { if (!uid) return Promise.resolve(); return c.storage.from('backups').remove([uid + '/latest.gz', uid + '/prev.gz']); }
+  // Fusion sans perte : on garde tout ce qui existe d'un côté ou de l'autre (ce téléphone l'emporte en cas de doublon).
+  cbMerge(st, d) {
+    const h = {}; const names = new Set([...Object.keys(st.history || {}), ...Object.keys(d.history || {})]);
+    names.forEach(n => { const m = new Map(); ((d.history || {})[n] || []).forEach(x => m.set(x.date, x)); ((st.history || {})[n] || []).forEach(x => m.set(x.date, x)); h[n] = [...m.values()].sort((a, b) => a.date - b.date); });
+    const ids = new Set((st.routines || []).map(r => r.id)); const routines = [...(st.routines || []), ...(d.routines || []).filter(r => !ids.has(r.id))];
+    const cn = new Set((st.custom || []).map(x => x.name)); const custom = [...(st.custom || []), ...(d.custom || []).filter(x => !cn.has(x.name))];
+    const bm = {}; (d.body || []).forEach(x => bm[x.date] = x); (st.body || []).forEach(x => bm[x.date] = { ...(bm[x.date] || {}), ...x }); const body = Object.values(bm).sort((a, b) => a.date - b.date);
+    const o = { history: h, routines, custom, body, sessMeta: { ...(d.sessMeta || {}), ...(st.sessMeta || {}) }, exMeta: { ...(d.exMeta || {}), ...(st.exMeta || {}) }, onboarded: true };
+    if (!nSess(st.history)) CB_SET.forEach(k => { if (d[k] !== undefined) o[k] = d[k]; });
+    if (!o.lastRoutineId && routines.length) o.lastRoutineId = routines[0].id;
+    return o;
+  }
+  cbCheck(manual) {
+    const s = this.state; const a = s.acct; if (!a || !a.profile || this._cbChk || (!manual && this._cbLater)) return; const cl = s.cloud || {}; if (cl.on === false) return;
+    if (cl.link && cl.uid === a.uid) return this.cbSoon(3000);
+    this._cbChk = true;
+    this.sb().then(c => c.from('backups_meta').select('*').eq('user_id', a.uid).maybeSingle()).then(({ data, error }) => { if (error) throw error;
+      if (!data) { this.cbSet({ uid: a.uid, link: true, srvAt: 0 }); return this.cbUp(); }
+      this.setState({ cbAsk: { n: data.sessions, at: data.updated_at, loc: nSess(this.state.history), arm: false } }); })
+      .catch(e => { if (manual) this.acErr(e, false, 'cb'); }).then(() => { this._cbChk = false; });
+  }
+  // mode : 'merge' (fusionner / restaurer) ou 'replace' (remplacer ce téléphone par la sauvegarde)
+  cbRestore(mode) {
+    const s = this.state; const a = s.acct; const fr = LANG === 'fr'; const q = s.cbAsk; if (!a || !q || q.busy) return;
+    if (mode === 'replace' && !q.arm) { this.setState({ cbAsk: { ...q, arm: true } }); return; }
+    this.setState({ cbAsk: { ...q, busy: true } });
+    this.sb().then(c => this.cbFetch(c, a.uid)).then(d => {
+      this.setState(st => { const keep = { healthOn: st.healthOn, hkWSync: null, hkCSync: null };
+        const o = mode === 'replace' ? { ...this.cbMerge({ ...st, history: {}, routines: [], custom: [], body: (st.body || []).filter(x => x.hk), sessMeta: {}, exMeta: {} }, d), ...keep } : { ...this.cbMerge(st, d), hkWSync: null, hkCSync: null };
+        return { ...o, cbAsk: null, workout: st.workout, screen: st.workout ? st.screen : 'tabs', cloud: { ...(st.cloud || {}), uid: a.uid, link: true, srvAt: 0, err: null } }; });
+      this.flash((fr ? 'Sauvegarde restaurée · ' : 'Backup restored · ') + nSess(this.state.history) + (fr ? ' séances' : ' workouts'));
+      setTimeout(() => { this.pullWeights(); this.cbUp(); }, 500); })
+      .catch(e => { this.setState(st => st.cbAsk ? { cbAsk: { ...st.cbAsk, busy: false } } : null); this.acErr(e, false, 'cbask'); });
+  }
+  cbLater() { this._cbLater = true; this.setState({ cbAsk: null }); }
+  cbUp() {
+    const s = this.state; const a = s.acct; const cl = s.cloud || {}; if (!a || !a.profile || cl.on === false || !cl.link || cl.uid !== a.uid) return Promise.resolve();
+    if (this._cbRun) { this._cbAgain = true; return this._cbRun; }
+    const uid = a.uid; const dev = cl.dev || ('d' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36)); this.cbSet({ busy: true });
+    const B = () => this.sb().then(c => c.storage.from('backups'));
+    const run = this.sb().then(c => c.from('backups_meta').select('*').eq('user_id', uid).maybeSingle().then(({ data: m, error }) => { if (error) throw error;
+        // Sauvegarde plus récente faite sur un autre téléphone : on la fusionne d'abord, pour ne rien écraser.
+        const other = m && m.device !== dev && Date.parse(m.updated_at) > ((this.state.cloud || {}).srvAt || 0);
+        return (other ? this.cbFetch(c, uid).then(d => this.setState(st => this.cbMerge(st, d))) : Promise.resolve())
+          .then(() => m && Date.now() - Date.parse(m.updated_at) > 20 * 3600000 ? B().then(b => b.remove([uid + '/prev.gz']).then(() => b.copy(uid + '/latest.gz', uid + '/prev.gz'))).catch(() => {}) : null)
+          .then(() => { const st = this.state; const n = nSess(st.history); return this.cbGz(JSON.stringify(this.cbData(st))).then(b => B().then(bk => bk.upload(uid + '/latest.gz', b, { upsert: true, contentType: b.type, cacheControl: '0' }))
+            .then(({ error }) => { if (error) throw error; return c.from('backups_meta').upsert({ user_id: uid, sessions: n, size_bytes: b.size, device: dev, app_version: APP_VERSION }).select('updated_at').maybeSingle(); })
+            .then(({ data, error }) => { if (error) throw error; this.cbSet({ dev, at: Date.now(), srvAt: data ? Date.parse(data.updated_at) : Date.now(), n, err: null, busy: false }); })); }); }))
+      .catch(e => this.cbSet({ err: this.acMsg(e), busy: false }))
+      .then(() => { this._cbRun = null; if (this._cbAgain) { this._cbAgain = false; this.cbSoon(5000); } });
+    this._cbRun = run; return run;
+  }
+  cbToggle() {
+    const s = this.state; const cl = s.cloud || {}; const on = cl.on === false;
+    if (!on) { this.cbSet({ on: false, link: false }); return; }
+    this._cbLater = false; this.cbSet({ on: true }); setTimeout(() => this.cbCheck(true), 0);
   }
   // Photo de profil : carré 320 px en JPEG, rangé dans avatars/<id>/<horodatage>.jpg ; les anciennes sont effacées.
   avPick(cam) {
@@ -1719,7 +1824,7 @@ class Component extends DCLogic {
   acDelete() {
     if (this.state.acBusy) return;
     this.arm('acDelArm', () => { const fr = LANG === 'fr'; this.setState({ acBusy: true });
-      this.sb().then(c => this.avClean(c, this.state.acct && this.state.acct.uid, null).catch(() => {}).then(() => c.rpc('delete_account')).then(({ error }) => { if (error) throw error; return c.auth.signOut({ scope: 'local' }).catch(() => {}); })).then(() => { try { localStorage.removeItem(SB_STORE); } catch (e) {} this.setState(st => ({ acBusy: false, acct: null, acUser: '', acName: '', autoPub: false, sessMeta: Object.fromEntries(Object.entries(st.sessMeta || {}).map(([k, m]) => { if (!m || !m.pub) return [k, m]; const { pub, ...r } = m; return [k, r]; })) })); this.flash(fr ? 'Compte supprimé' : 'Account deleted'); }).catch(e => { this.setState({ acBusy: false }); this.acErr(e); }); });
+      this.sb().then(c => this.avClean(c, this.state.acct && this.state.acct.uid, null).catch(() => {}).then(() => this.cbWipe(c, this.state.acct && this.state.acct.uid).catch(() => {})).then(() => { this.cbSet({ link: false, uid: null, at: null, n: null }); return c.rpc('delete_account'); }).then(({ error }) => { if (error) throw error; return c.auth.signOut({ scope: 'local' }).catch(() => {}); })).then(() => { try { localStorage.removeItem(SB_STORE); } catch (e) {} this.setState(st => ({ acBusy: false, acct: null, acUser: '', acName: '', autoPub: false, sessMeta: Object.fromEntries(Object.entries(st.sessMeta || {}).map(([k, m]) => { if (!m || !m.pub) return [k, m]; const { pub, ...r } = m; return [k, r]; })) })); this.flash(fr ? 'Compte supprimé' : 'Account deleted'); }).catch(e => { this.setState({ acBusy: false }); this.acErr(e); }); });
   }
   hasSess(d) { return Object.values(this.state.history || {}).some(a => a.some(x => x.date === d)); }
   pubRow(d, vis, note) {
@@ -2020,7 +2125,8 @@ class Component extends DCLogic {
     if (!Object.keys(e).length) { this.flash(L('Enter at least one value')); return; }
     const d = new Date(); d.setHours(0, 0, 0, 0); const date = d.getTime();
     const prev = (s.body || []).find(x => x.date === date) || {};
-    this.setState({ body: [...(s.body || []).filter(x => x.date !== date), { ...prev, ...e, date }], bodyBuf: {} }); this.flash(L('Saved'));
+    const hk = { ...(prev.hk || {}) }; Object.keys(e).forEach(k => delete hk[k]); const ne = { ...prev, ...e, date }; if (Object.keys(hk).length) ne.hk = hk; else delete ne.hk;
+    this.setState({ body: [...(s.body || []).filter(x => x.date !== date), ne], bodyBuf: {} }); this.flash(L('Saved'));
   }
   delBody(date) {
     if (this.state.bodyDelArm !== date) { this.setState({ bodyDelArm: date }); clearTimeout(this.bda); this.bda = setTimeout(() => this.setState({ bodyDelArm: null }), 3000); return; }
@@ -2219,7 +2325,7 @@ class Component extends DCLogic {
       const days = {};
       lines.slice(1).forEach(l => { const c = split(l); const d = pd(c[di] || ''); const w = parseFloat(String(c[wi] || '').replace(',', '.')); if (!d || isNaN(w) || w <= 0) return; d.setHours(0, 0, 0, 0); const kgv = lb ? w / KG_LB : w; if (kgv < 20 || kgv > 400) return; const k = d.getTime(); if (!(k in days)) days[k] = kgv; });
       const keys = Object.keys(days); if (!keys.length) throw 0;
-      this.setState(s => { const map = {}; (s.body || []).forEach(b => map[b.date] = b); keys.forEach(k => { map[k] = { ...(map[k] || {}), date: +k, w: Math.round(days[k] * 100) / 100 }; }); return { body: Object.values(map) }; });
+      this.setState(s => { const map = {}; (s.body || []).forEach(b => map[b.date] = b); keys.forEach(k => { const { hk, ...r } = map[k] || {}; const h = { ...(hk || {}) }; delete h.w; map[k] = { ...r, ...(Object.keys(h).length ? { hk: h } : {}), date: +k, w: Math.round(days[k] * 100) / 100 }; }); return { body: Object.values(map) }; });
       this.flash(keys.length + (LANG === 'fr' ? ' pesées importées' : ' weigh-ins imported'));
     }).catch(() => this.flash(LANG === 'fr' ? 'Fichier non reconnu' : 'File not recognized')); };
     i.click();
@@ -2358,19 +2464,19 @@ class Component extends DCLogic {
   }
   pullWeights(manual) {
     const H = this.hk(); const s = this.state; if (!H || !s.healthOn || !H.readWeights) return; const fr = LANG === 'fr';
-    const since = s.hkWSync ? s.hkWSync - 3 * 86400000 : Date.now() - 400 * 86400000; const now = Date.now();
+    const since = s.hkWSync && s.hkTag ? s.hkWSync - 3 * 86400000 : Date.now() - 400 * 86400000; const now = Date.now();
     try {
       Promise.resolve(H.readWeights({ since })).then(r => {
         const list = (r && r.items) || []; const st = this.state; const body = (st.body || []).slice(); const byDay = {};
         list.forEach(it => { if (!(it.kg > 0) || !it.date) return; const d = new Date(it.date); d.setHours(0, 0, 0, 0); const k = d.getTime(); if (!byDay[k] || it.date > byDay[k].date) byDay[k] = it; });
         let n = 0;
         Object.entries(byDay).forEach(([k, it]) => { const day = +k; const i = body.findIndex(x => x.date === day);
-          if (i >= 0) { if (body[i].w) return; body[i] = { ...body[i], w: it.kg }; } else body.push({ date: day, w: it.kg }); n++; });
-        this.setState({ body: n ? body : st.body, ...(list.length ? { hkWSync: now } : {}) });
-        if (this.isPro() && H.readComp) { const cs = st.hkCSync ? st.hkCSync - 3 * 86400000 : Date.now() - 400 * 86400000;
+          if (i >= 0) { if (body[i].w) { if (!st.hkTag && Math.abs(body[i].w - it.kg) < 0.05 && !(body[i].hk || {}).w) { body[i] = { ...body[i], hk: { ...(body[i].hk || {}), w: 1 } }; n++; } return; } body[i] = { ...body[i], w: it.kg, hk: { ...(body[i].hk || {}), w: 1 } }; } else body.push({ date: day, w: it.kg, hk: { w: 1 } }); n++; });
+        this.setState({ body: n ? body : st.body, ...(list.length ? { hkWSync: now } : {}), hkTag: true });
+        if (this.isPro() && H.readComp) { const cs = st.hkCSync && st.hkTag ? st.hkCSync - 3 * 86400000 : Date.now() - 400 * 86400000;
           Promise.resolve(H.readComp({ since: cs })).then(r2 => { const cl = (r2 && r2.items) || []; const b2 = (this.state.body || []).slice(); let m = 0;
             cl.forEach(it => { if (!(it.v > 0) || !it.date || !['fat', 'lean', 'bmi', 'waist'].includes(it.k)) return; const d = new Date(it.date); d.setHours(0, 0, 0, 0); const day = d.getTime();
-              const i = b2.findIndex(x => x.date === day); if (i >= 0) { if (b2[i][it.k] > 0) return; b2[i] = { ...b2[i], [it.k]: it.v }; } else b2.push({ date: day, [it.k]: it.v }); m++; });
+              const i = b2.findIndex(x => x.date === day); if (i >= 0) { if (b2[i][it.k] > 0) { if (Math.abs(b2[i][it.k] - it.v) < 0.05 && !(b2[i].hk || {})[it.k]) { b2[i] = { ...b2[i], hk: { ...(b2[i].hk || {}), [it.k]: 1 } }; m++; } return; } b2[i] = { ...b2[i], [it.k]: it.v, hk: { ...(b2[i].hk || {}), [it.k]: 1 } }; } else b2.push({ date: day, [it.k]: it.v, hk: { [it.k]: 1 } }); m++; });
             this.setState({ body: m ? b2 : this.state.body, ...(cl.length ? { hkCSync: now } : {}) }); if (manual && m) this.flash(m + (fr ? ' mesures de composition importées' : ' composition values imported')); }).catch(() => {}); }
         if (n || manual) this.flash(n ? n + (fr ? ' pesée' + (n > 1 ? 's' : '') + ' importée' + (n > 1 ? 's' : '') + ' depuis ' + hkStore() : ' weigh-in' + (n > 1 ? 's' : '') + ' imported from ' + hkStore()) : (fr ? 'Aucune nouvelle pesée dans ' + hkStore() : 'No new weigh-ins in ' + hkStore()));
       }).catch(() => {});
@@ -2554,7 +2660,21 @@ class Component extends DCLogic {
       acTitle: fr ? 'Compte' : 'Account', acOff: !a, acAsk: !a && !s.acSent, acCodeOn: !a && !!s.acSent, acNoProf: !!a && p === null, acHasProf: !!p, acPending: !!a && p === undefined, acOp: busy ? 0.5 : 1,
       acSocTitle: fr ? 'Barlog social · bêta' : 'Barlog social · beta', acSocText: fr ? 'Crée un compte gratuit pour publier tes séances et suivre tes amis. Sans compte, Barlog fonctionne comme avant.' : 'Create a free account to post your workouts and follow your friends. Without an account, Barlog works just like before.',
       acEmail: s.acEmail || '', onAcEmail: e => this.setState({ acEmail: e.target.value }), acEmailPh: fr ? 'ton@email.com' : 'you@email.com',
-      acBackHint: s.obAcctHint ? (fr ? 'Utilise le même e-mail que sur ton ancien téléphone : ton profil, tes abonnés et tes publications reviennent. Ton historique de séances n’est pas encore dans le compte : pour le récupérer, utilise « Importer » (plus bas) avec ta sauvegarde.' : 'Use the same email as on your old phone: your profile, followers and posts come back. Your workout history isn’t in the account yet: to get it back, use “Import” (below) with your backup.') : '',
+      acBackHint: s.obAcctHint ? (fr ? 'Utilise le même e-mail que sur ton ancien téléphone : ton profil, tes abonnés, tes publications et ta sauvegarde en ligne (séances, routines, pesées, réglages) reviennent.' : 'Use the same email as on your old phone: your profile, followers, posts and online backup (workouts, routines, weigh-ins, settings) come back.') : '',
+      ...(() => { const cl = s.cloud || {}; const on = cl.on !== false; const q = s.cbAsk; const dt = t => { try { return new Date(t).toLocaleDateString(fr ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ''; } };
+        const ns = n => n + (fr ? ' séance' : ' workout') + (n > 1 ? 's' : ''); const linked = on && cl.link && a && cl.uid === a.uid;
+        const sub = !on ? (fr ? 'Désactivée. Sans sauvegarde, garde un export à jour.' : 'Off. Without it, keep an export up to date.') : cl.busy && this._cbRun ? (fr ? 'Sauvegarde en cours…' : 'Backing up…') : cl.err && linked ? (fr ? 'Dernier essai raté : ' : 'Last try failed: ') + cl.err
+          : linked && cl.at ? (fr ? 'Sauvegardé ' : 'Backed up ') + relT(new Date(cl.at).toISOString(), fr) + ' · ' + ns(cl.n || 0) + (fr ? '. Automatique après chaque changement.' : '. Automatic after every change.')
+          : linked ? (fr ? 'Première sauvegarde en cours…' : 'First backup in progress…') : (fr ? 'Une sauvegarde existe sur ton compte : touche « Restaurer ou fusionner ».' : 'Your account has a backup: tap “Restore or merge”.');
+        return { cbAskOn: !!q, cbAskTitle: fr ? 'Sauvegarde trouvée' : 'Backup found',
+          cbAskText: !q ? '' : q.loc ? (fr ? 'Ton compte a une sauvegarde de ' + ns(q.n) + ' (' + dt(q.at) + '). Ce téléphone en a ' + q.loc + '. « Fusionner » garde tout : rien n’est supprimé.' : 'Your account has a backup with ' + ns(q.n) + ' (' + dt(q.at) + '). This phone has ' + q.loc + '. “Merge” keeps everything: nothing is deleted.')
+            : (fr ? ns(q.n) + ' sauvegardées sur ton compte (' + dt(q.at) + '). Les remettre sur ce téléphone ?' : ns(q.n) + ' backed up on your account (' + dt(q.at) + '). Put them back on this phone?'),
+          cbAskGoLabel: q && q.busy ? (fr ? 'Restauration…' : 'Restoring…') : q && q.loc ? (fr ? 'Fusionner' : 'Merge') : (fr ? 'Restaurer' : 'Restore'), cbAskGo: () => this.cbRestore('merge'), cbAskOp: q && q.busy ? 0.5 : 1,
+          cbAskRepOn: !!(q && q.loc), cbAskRep: () => this.cbRestore('replace'), cbAskRepLabel: q && q.arm ? (fr ? 'Toucher encore : les séances de ce téléphone seront remplacées' : 'Tap again: this phone’s workouts will be replaced') : (fr ? 'Remplacer ce téléphone par la sauvegarde' : 'Replace this phone with the backup'),
+          cbAskRepBorder: q && q.arm ? '#FF4D4D' : '#33333C', cbAskRepColor: q && q.arm ? '#FF4D4D' : '#FFFFFF', cbAskLater: () => this.cbLater(), cbAskLaterLabel: fr ? 'Pas maintenant' : 'Not now', cbAskErr: (s.acE && s.acE.k === 'cbask' && s.acE.m) || '',
+          cbLabel: fr ? 'Sauvegarde en ligne' : 'Online backup', cbSub: sub, cbSubColor: on && cl.err && linked ? '#FF8A65' : '#9C9CA8', cbTg: tg(on), cbClick: () => this.cbToggle(),
+          cbNowOn: on && !!a && !!p, cbNow: () => linked ? this.cbUp() : this.cbCheck(true), cbNowLabel: linked ? (fr ? 'Sauvegarder maintenant' : 'Back up now') : (fr ? 'Restaurer ou fusionner' : 'Restore or merge'), cbNowOp: cl.busy && this._cbRun ? 0.5 : 1, cbErr: (s.acE && s.acE.k === 'cb' && s.acE.m) || '',
+          avBigOn: !!s.avBig, avBigImg: (s.avBig && s.avBig.img) || 'none', avBigName: (s.avBig && s.avBig.name) || '', avBigClose: () => this.setState({ avBig: null }) }; })(),
       acSend: () => this.acSend(), acSendLabel: busy ? (fr ? 'Envoi…' : 'Sending…') : (fr ? 'Recevoir un code' : 'Get a code'),
       acSentText: (fr ? 'Code à 6 chiffres envoyé à ' : '6-digit code sent to ') + (s.acSent || '') + (fr ? '. Pense à regarder dans les spams.' : '. Check your spam folder too.'),
       acCode: s.acCode || '', onAcCode: e => this.setState({ acCode: e.target.value.replace(/\D/g, '').slice(0, 10) }),
@@ -2630,7 +2750,7 @@ class Component extends DCLogic {
     const lst = k => () => { if (!locked) this.svOpen({ v: 'list', id, k }); };
     const bl = u.rel === 'accepted' ? (am ? (fr ? 'Toucher encore pour se désabonner' : 'Tap again to unfollow') : (fr ? 'Abonné ✓' : 'Following ✓')) : u.rel === 'pending' ? (am ? (fr ? 'Toucher encore pour annuler' : 'Tap again to cancel') : (fr ? 'Demande envoyée' : 'Request sent')) : u.rel === null ? (fr ? 'S’abonner' : 'Follow') : LD;
     const hot = u.rel === null;
-    return fin({ ...o, upOn: true, svTitle: p.username ? '@' + p.username : (fr ? 'Profil' : 'Profile'), upIni: p.avatar ? '' : iniOf(p.display_name || p.username), upAvImg: avImg(p.avatar), upAvBg: me ? ACC : '#24242B', upAvColor: me ? '#0A0A0C' : '#FFFFFF',
+    return fin({ ...o, upOn: true, svTitle: p.username ? '@' + p.username : (fr ? 'Profil' : 'Profile'), upIni: p.avatar ? '' : iniOf(p.display_name || p.username), upAvImg: avImg(p.avatar), upAvOpen: () => { if (p.avatar) this.setState({ avBig: { img: avImg(p.avatar), name: p.username ? '@' + p.username : '' } }); }, upAvBg: me ? ACC : '#24242B', upAvColor: me ? '#0A0A0C' : '#FFFFFF',
       upName: p.display_name || p.username || '—', upHandle: p.username ? '@' + p.username : '', upPrivOn: !!p.is_private, upPrivText: fr ? 'Profil privé' : 'Private profile',
       upStats: [['nF', 'followers', fr ? 'Abonnés' : 'Followers'], ['nG', 'following', fr ? 'Abonnements' : 'Following']].map(([f, k, label]) => ({ key: k, n: n(u[f]), label, onClick: lst(k), op: locked ? 0.6 : 1 })),
       upBtnOn: !me && !u.gone, upBtn: () => this.folDo(id), upBtnLabel: bl, upBtnBg: hot ? 'var(--acc)' : 'transparent', upBtnColor: hot ? '#0A0A0C' : am ? '#FF4D4D' : '#FFFFFF', upBtnBorder: hot ? 'var(--acc)' : am ? '#FF4D4D' : '#33333C', upBtnOp: u.fb || u.rel === undefined ? 0.5 : 1,
@@ -3025,7 +3145,7 @@ class Component extends DCLogic {
           confirmGo: () => cr && this.start(cr.id, true), confirmCancel: go({ confirmStart: null }),
           confirmHasToday: !!(cr && tr && tr !== cr), confirmTodayLabel: tr ? L('Start today’s: ') + tr.name : '', confirmToday: () => tr && this.start(tr.id, true) }; })(),
       updateOn: !!s.updateReady && !s.workout && s.screen === 'tabs', applyUpdate: () => { this.save(); location.reload(); },
-      ...(() => { const n = sessions.length; const le = s.lastExport; const due = n >= 3 && (!le || now - le > 14 * DAY) && !(s.backupSnooze && now < s.backupSnooze);
+      ...(() => { const n = sessions.length; const le = s.lastExport; const cbOk = !!(s.cloud && s.cloud.link && s.cloud.on !== false && s.cloud.at && now - s.cloud.at < 7 * DAY); const due = !cbOk && n >= 3 && (!le || now - le > 14 * DAY) && !(s.backupSnooze && now < s.backupSnooze);
         return { backupOn: due, backupHint: plat() === 'android' ? (LANG === 'fr' ? 'Touche Exporter, puis enregistre le fichier dans Google Drive ou Téléchargements.' : 'Tap Export, then save the file to Google Drive or Downloads.') : L('Tap Export, then “Save to Files” → iCloud Drive.'), backupText: le ? (LANG === 'fr' ? 'Dernière sauvegarde il y a ' + Math.floor((now - le) / DAY) + ' jours. Tes données sont uniquement sur ce téléphone.' : 'Last backup ' + Math.floor((now - le) / DAY) + ' days ago. Your data lives only on this phone.') : L('No backup yet. Your data lives only on this phone.'), backupNow: () => this.exportData(), backupLater: go({ backupSnooze: now + 3 * DAY }) }; })(),
       showInstall: !s.standalone && !s.installSeen, dismissInstall: go({ installSeen: true }),
       isToday: showTabs && s.tab === 'today', isPrograms: showTabs && s.tab === 'programs', isProgress: showTabs && s.tab === 'progress', isProfile: showTabs && s.tab === 'profile', isFeed: showTabs && s.tab === 'feed',

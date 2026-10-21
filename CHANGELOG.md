@@ -5,6 +5,13 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.29.0 — 2026-10-20
+- Sauvegarde en ligne (avec un compte, activée par défaut) : séances, routines, exercices perso, pesées saisies et réglages sont sauvegardés automatiquement dans un espace privé. En te connectant sur un nouveau téléphone, tout revient (« Restaurer », ou « Fusionner » si le téléphone a déjà des séances : rien n’est supprimé). Copie de la veille gardée en secours. Réglage et état dans Profil → Compte.
+- Les pesées lues dans Santé / Health Connect ne sont pas envoyées : le nouveau téléphone les relit à la source.
+- Le rappel « Sauvegarde tes données » n’apparaît plus quand la sauvegarde en ligne est à jour (l’export reste disponible en dernier recours).
+- Photo de profil : toucher la photo sur une page profil l’affiche en grand.
+- Politique de confidentialité : sauvegarde en ligne ajoutée.
+
 ## 0.28.0 — 2026-10-20
 - Accueil (première ouverture) : nouveau bouton « J’ai déjà un compte Barlog », qui mène directement à la connexion, sans données d’exemple.
 - Photo de profil : boutons « Appareil photo » et « Galerie » (plugin natif). Corrige le plantage sur iPhone à l’ouverture de l’appareil photo et l’absence d’appareil photo sur Android.
