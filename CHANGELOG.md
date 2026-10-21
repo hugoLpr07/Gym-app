@@ -5,6 +5,12 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.30.0 — 2026-10-20
+- Nouveau découpage gratuit / Pro. Gratuit : séances illimitées, minuteur, records, social, export/import, 4 routines perso, 10 exercices perso, graphiques d’exercice sur 3 mois, Corps sur 30 jours. Pro : sauvegarde en ligne, progression auto, onglet Stats, tout l’historique, routines et exercices illimités, programmes avancés, body map 4 semaines, couleurs, widgets, composition corporelle.
+- Aperçus Pro : au lieu d’ouvrir directement la page des prix, l’écran s’affiche avec tes propres données en partie floutées et une invitation (Stats, graphiques au-delà de la période gratuite, muscles d’une séance, progression proposée, couleurs en aperçu).
+- Sauvegarde en ligne réservée à Pro (une sauvegarde existante peut être restaurée en passant Pro). Ce qui existe déjà (routines, exercices perso) est gardé même au-delà des limites.
+- Nouveaux prix (mode test) : 4,99 $ / mois, 29,99 $ / an avec 7 jours d’essai, 79,99 $ à vie (dollars canadiens).
+
 ## 0.29.2 — 2026-10-20
 - Profil : « Se déconnecter » et « Supprimer mon compte » déplacés tout en bas de la page.
 

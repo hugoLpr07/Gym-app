@@ -287,7 +287,7 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ backupOn }}" hint-placeholder-val="{{ false }}">
 <div style="background:#16161A;border:1px solid #33333C;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
 <span style="font-size:16px;font-weight:700;">{{ tx.k6 }}</span>
-<span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ backupText }} {{ backupHint }}</span>
+<span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ backupText }} {{ backupHint }}{{ backupPro }}</span>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
 <button onClick="{{ backupNow }}" style="height:48px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;">{{ tx.k8 }}</button>
 <button onClick="{{ backupLater }}" style="height:48px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ tx.k9 }}</button>
@@ -437,7 +437,7 @@ input::placeholder{color:#9C9CA8}
 <span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ metricHelp }}</span>
 <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:8px;">
 <div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ metricLabel }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:700;">{{ curVal }}<span style="font-size:15px;color:#9C9CA8;"> {{ curUnit }}</span></span></div>
-<span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--acc);padding-bottom:8px;text-align:right;">{{ delta }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--acc);padding-bottom:8px;text-align:right;filter:{{ deltaF }};">{{ delta }}</span>
 </div>
 <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
 <div style="font-family:'JetBrains Mono',monospace;font-size:13px;line-height:18px;color:#FFFFFF;background:#0A0A0C;border-radius:10px;padding:8px 10px;">{{ selSets }}</div>
@@ -472,6 +472,7 @@ input::placeholder{color:#9C9CA8}
 <span style="width:{{ p.size }};height:{{ p.size }};border-radius:50%;background:{{ p.bg }};border:2px solid #16161A;box-shadow:0 0 0 2px {{ p.halo }};"></span>
 </button>
 </sc-for>
+<sc-if value="{{ lkChart.on }}" hint-placeholder-val="{{ false }}"><div onClick="{{ lkChart.go }}" style="position:absolute;inset:-6px;z-index:4;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);background:rgba(22,22,26,0.4);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px;text-align:center;cursor:pointer;"><span style="font-size:15px;font-weight:800;color:#FFFFFF;text-wrap:balance;">✦ {{ lkChart.title }}</span><span style="font-size:13px;line-height:18px;color:#C8C8D0;text-wrap:pretty;">{{ lkChart.sub }}</span><span style="min-height:36px;padding:0 16px;border-radius:18px;background:var(--acc);color:#0A0A0C;font-size:13px;font-weight:700;display:flex;align-items:center;">{{ lkChart.cta }}</span></div></sc-if>
 </div>
 </sc-if>
 <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;"><span>{{ chartFrom }}</span><span style="display:flex;gap:10px;align-items:center;"><span style="display:flex;gap:5px;align-items:center;"><span style="width:14px;height:3px;border-radius:2px;background:var(--acc);"></span>{{ tx.k27 }}</span><span style="display:flex;gap:5px;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:var(--acc);"></span>PR</span></span><span>{{ chartTo }}</span></div>
@@ -538,7 +539,7 @@ input::placeholder{color:#9C9CA8}
 <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;background:#0A0A0C;border-radius:12px;padding:4px;"><sc-for list="{{ bwRanges }}" as="u" hint-placeholder-count="5"><button onClick="{{ u.onClick }}" style="height:36px;border:none;border-radius:9px;background:{{ u.bg }};color:{{ u.color }};font-size:14px;font-weight:600;">{{ u.label }}</button></sc-for></div>
 <sc-if value="{{ bwNoChart }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ bwEmptyText }}</span></sc-if>
 <sc-if value="{{ bwHasChart }}" hint-placeholder-val="{{ false }}">
-<div style="display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:8px;row-gap:6px;">
+<div style="position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:8px;row-gap:6px;">
 <div style="position:relative;height:170px;min-width:34px;">
 <sc-for list="{{ bmYTicks }}" as="y" hint-placeholder-count="4"><span style="position:absolute;right:0;top:{{ y.top }};transform:translateY(-50%);font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;white-space:nowrap;">{{ y.label }}</span></sc-for>
 </div>
@@ -555,6 +556,7 @@ input::placeholder{color:#9C9CA8}
 <div style="position:relative;height:16px;">
 <sc-for list="{{ bmXTicks }}" as="x" hint-placeholder-count="4"><span style="position:absolute;left:{{ x.left }};transform:translateX({{ x.tx }});font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;white-space:nowrap;">{{ x.label }}</span></sc-for>
 </div>
+<sc-if value="{{ lkBody.on }}" hint-placeholder-val="{{ false }}"><div onClick="{{ lkBody.go }}" style="position:absolute;inset:-6px;z-index:4;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);background:rgba(22,22,26,0.4);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px;text-align:center;cursor:pointer;"><span style="font-size:15px;font-weight:800;color:#FFFFFF;text-wrap:balance;">✦ {{ lkBody.title }}</span><span style="font-size:13px;line-height:18px;color:#C8C8D0;text-wrap:pretty;">{{ lkBody.sub }}</span><span style="min-height:36px;padding:0 16px;border-radius:18px;background:var(--acc);color:#0A0A0C;font-size:13px;font-weight:700;display:flex;align-items:center;">{{ lkBody.cta }}</span></div></sc-if>
 </div>
 </sc-if>
 </div>
@@ -616,7 +618,8 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-if>
 <sc-if value="{{ isStatsView }}" hint-placeholder-val="{{ false }}">
-<div style="display:flex;flex-direction:column;gap:16px;padding:0 16px;">
+<div style="position:relative;display:flex;flex-direction:column;gap:16px;padding:0 16px;max-height:{{ stMaxH }};overflow:hidden;">
+<sc-if value="{{ lkStats.on }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:0;right:0;top:{{ lkStats.top }};bottom:0;z-index:4;-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);background:linear-gradient(to bottom, rgba(10,10,12,0) 0, rgba(10,10,12,0.6) 80px);display:flex;flex-direction:column;align-items:center;padding:56px 16px 16px;"><div style="width:100%;max-width:380px;box-sizing:border-box;background:#16161A;border:1px solid var(--acc);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:8px;box-shadow:0 16px 48px rgba(0,0,0,0.55);"><span style="font-size:12px;font-weight:800;letter-spacing:0.16em;color:var(--acc);">✦ BARLOG PRO</span><span style="font-size:20px;font-weight:800;line-height:25px;text-wrap:balance;">{{ lkStats.title }}</span><span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ lkStats.sub }}</span><button onClick="{{ lkStats.go }}" style="margin-top:4px;min-height:52px;border-radius:14px;border:none;background:var(--acc);color:#0A0A0C;font-size:16px;font-weight:700;">{{ lkStats.cta }}</button><button onClick="{{ lkStats.go }}" style="min-height:40px;border:none;background:transparent;color:#9C9CA8;font-size:14px;font-weight:600;">{{ lkStats.more }}</button></div></div></sc-if>
 <div style="display:flex;flex-direction:column;gap:8px;">
 <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.nBodyMap }}</div>
 <div style="display:flex;gap:4px;background:#16161A;border:1px solid #24242B;border-radius:10px;padding:3px;"><sc-for list="{{ bmRanges }}" as="r" hint-placeholder-count="2"><button onClick="{{ r.onClick }}" style="height:34px;padding:0 10px;border:none;border-radius:8px;background:{{ r.bg }};color:{{ r.color }};font-size:13px;font-weight:600;">{{ r.label }}</button></sc-for></div>
@@ -864,6 +867,7 @@ input::placeholder{color:#9C9CA8}
 <span style="font-size:16px;font-weight:500;">{{ tx.nAccent }}</span>
 <div style="display:flex;gap:2px;"><sc-for list="{{ accOpts }}" as="a" hint-placeholder-count="7"><button onClick="{{ a.onClick }}" aria-label="{{ a.label }}" style="width:32px;height:44px;border:none;background:transparent;padding:0;display:flex;align-items:center;justify-content:center;"><span style="width:28px;height:28px;border-radius:999px;background:{{ a.c }};box-shadow:{{ a.ring }};"></span></button></sc-for></div>
 </div>
+<sc-if value="{{ accPrevOn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid #24242B;"><span style="flex:1;min-width:0;font-size:13px;line-height:18px;color:#C8C8D0;text-wrap:pretty;">{{ accPrevText }}</span><button onClick="{{ accUndo }}" style="flex:none;min-height:40px;padding:0 12px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#fff;font-size:13px;font-weight:600;">{{ accUndoLabel }}</button><button onClick="{{ accKeep }}" style="flex:none;min-height:40px;padding:0 14px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:13px;font-weight:700;">{{ accKeepLabel }}</button></div></sc-if>
 <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #24242B;min-height:64px;gap:8px;">
 <span style="font-size:16px;font-weight:500;">{{ tx.k43 }}</span>
 <div style="display:flex;align-items:center;gap:6px;">
@@ -1046,7 +1050,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 <sc-if value="{{ ex.hasNote }}" hint-placeholder-val="{{ false }}"><div style="padding:0 14px 8px;font-size:13px;line-height:18px;color:#9C9CA8;white-space:pre-wrap;text-wrap:pretty;">{{ ex.note }}</div></sc-if>
 <sc-if value="{{ ex.up }}" hint-placeholder-val="{{ false }}">
-<div style="padding:0 14px 8px;font-size:13px;font-weight:600;color:var(--acc);">↑ {{ ex.upText }}</div>
+<div onClick="{{ ex.onUp }}" style="padding:0 14px 8px;font-size:13px;font-weight:600;color:var(--acc);cursor:pointer;">↑ <span style="display:inline-block;filter:{{ ex.upBlur }};">{{ ex.upVal }}</span>{{ ex.upText }}</div>
 </sc-if>
 <div style="display:grid;grid-template-columns:{{ ex.cols }};gap:8px;padding:0 12px 6px;font-size:12px;font-weight:600;letter-spacing:0.06em;color:#9C9CA8;">
 <span style="text-align:center;">{{ ex.h0 }}</span><span>{{ tx.k52 }}</span><span style="text-align:center;">{{ ex.h1 }}</span><span style="text-align:center;">{{ ex.h2 }}</span><sc-if value="{{ ex.isUni }}" hint-placeholder-val="{{ false }}"><span style="text-align:center;">{{ ex.h3 }}</span></sc-if><span></span>
@@ -1300,8 +1304,8 @@ input::placeholder{color:#9C9CA8}
 </div>
 <sc-if value="{{ sdHasSel }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:10px;background:#1B1B20;border:1px solid #2A2A30;border-radius:16px;padding:12px 14px;">
 <div style="display:flex;align-items:center;gap:12px;"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:700;">{{ sdSelName }}</span><span style="font-size:12px;color:#9C9CA8;">{{ sdSelSub }}</span></div><span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--acc);">{{ sdSelVal }}</span><button onClick="{{ sdClear }}" style="width:44px;height:44px;border-radius:22px;border:none;background:#2A2A30;color:#C8C8CF;font-size:15px;">✕</button></div>
-<div style="display:flex;flex-direction:column;"><sc-for list="{{ sdSelEx }}" as="e" hint-placeholder-count="2"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid #2A2A30;"><div style="min-width:0;display:flex;flex-direction:column;gap:2px;"><span style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ e.name }}</span><span style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:{{ e.tagColor }};">{{ e.tag }}</span></div><span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:13px;color:#C8C8CF;">{{ e.sets }}</span></div></sc-for></div>
-</div></sc-if>
+<div style="position:relative;"><div style="display:flex;flex-direction:column;"><sc-for list="{{ sdSelEx }}" as="e" hint-placeholder-count="2"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid #2A2A30;"><div style="min-width:0;display:flex;flex-direction:column;gap:2px;"><span style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ e.name }}</span><span style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:{{ e.tagColor }};">{{ e.tag }}</span></div><span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:13px;color:#C8C8CF;">{{ e.sets }}</span></div></sc-for></div>
+<sc-if value="{{ lkSess.on }}" hint-placeholder-val="{{ false }}"><div onClick="{{ lkSess.go }}" style="position:absolute;inset:-6px;z-index:4;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);background:rgba(22,22,26,0.4);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px;text-align:center;cursor:pointer;"><span style="font-size:15px;font-weight:800;color:#FFFFFF;text-wrap:balance;">✦ {{ lkSess.title }}</span><span style="font-size:13px;line-height:18px;color:#C8C8D0;text-wrap:pretty;">{{ lkSess.sub }}</span><span style="min-height:36px;padding:0 16px;border-radius:18px;background:var(--acc);color:#0A0A0C;font-size:13px;font-weight:700;display:flex;align-items:center;">{{ lkSess.cta }}</span></div></sc-if></div></div></sc-if>
 <sc-if value="{{ sdNoSel }}" hint-placeholder-val="{{ true }}"><div style="text-align:center;color:#9C9CA8;font-size:12px;">{{ tx.nTapMuscle }}</div></sc-if>
 <div style="display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ sdMus }}" as="mm" hint-placeholder-count="4"><button onClick="{{ mm.onClick }}" style="display:flex;align-items:center;gap:6px;height:34px;padding:0 12px;border:none;border-radius:17px;background:{{ mm.bg }};color:{{ mm.color }};font-size:12px;font-weight:600;">{{ mm.label }}<span style="font-family:'JetBrains Mono',monospace;opacity:0.75;">{{ mm.val }}</span></button></sc-for></div>
 </div>
@@ -1425,7 +1429,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.29.2';
+const APP_VERSION = '0.30.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive content'], ['Harcèlement ou intimidation', 'Harassment or bullying'], ['Spam ou arnaque', 'Spam or scam'], ['Usurpation d’identité', 'Impersonation'], ['Autre', 'Other']];
 // Sauvegarde en ligne : ce qui n'est pas envoyé (propre à l'appareil, ou relu depuis Santé / Health Connect).
@@ -1440,7 +1444,7 @@ const relT = (iso, fr) => { const now = Date.now(); const t = Date.parse(iso); i
 const hkName = () => plat() === 'android' ? 'Health Connect' : 'Apple Health';
 const hkStore = () => plat() === 'android' ? 'Health Connect' : (LANG === 'fr' ? 'Santé' : 'Health');
 const plat = () => { try { const C = window.Capacitor; return (C && C.getPlatform && C.getPlatform()) || 'web'; } catch (e) { return 'web'; } };
-const PRO_TPL = ['st', 'ul'];
+const PRO_TPL = ['st', 'ul']; const FREE_ROUT = 4, FREE_CUST = 10;
 let ACC = '#CCFF00';
 const ACCENTS = [['#CCFF00', 'Lime'], ['#FF7A1A', 'Orange'], ['#FF4D8D', 'Pink'], ['#A78BFA', 'Violet'], ['#22D3EE', 'Cyan'], ['#FFC83D', 'Gold'], ['#FF3B3B', 'Red']];
 const hexRgb = h => { h = h.replace('#', ''); return [0, 2, 4].map(i => parseInt(h.substr(i, 2), 16)); };
@@ -1647,6 +1651,8 @@ class Component extends DCLogic {
     const prev = prevState || this._snap || {}; const st = this.state;
     this._snap = { ...st };
     if (PK.some(k => prev[k] !== st[k])) this.save();
+    if (st.accPrev && (st.tab !== 'profile' || st.screen !== 'tabs' || st.pro)) setTimeout(() => this.setState({ accPrev: null }), 0);
+    if (st.pro && !prev.pro && st.acct && st.acct.profile) setTimeout(() => this.cbCheck(true), 0);
     if (st.cloud && st.cloud.link && ['history', 'sessMeta', 'routines', 'body', 'custom', 'exMeta'].some(k => prev[k] !== st[k])) this.cbSoon(15000);
     if (prev.workout !== st.workout || prev.wake !== st.wake) this.syncWake();
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.workout !== st.workout || prev.restNotif !== st.restNotif) this.syncRestNotif();
@@ -1760,11 +1766,12 @@ class Component extends DCLogic {
   }
   cbCheck(manual) {
     const s = this.state; const a = s.acct; if (!a || !a.profile || this._cbChk || (!manual && this._cbLater)) return; const cl = s.cloud || {}; if (cl.on === false) return;
-    if (cl.link && cl.uid === a.uid) return this.cbSoon(3000);
+    // Sauvegarde en ligne = Barlog Pro. Sans Pro : on signale seulement qu'une sauvegarde existe (restaurable en passant Pro).
+    const pro = this.isPro(); if (cl.link && cl.uid === a.uid) return pro ? this.cbSoon(3000) : undefined;
     this._cbChk = true;
     this.sb().then(c => c.from('backups_meta').select('*').eq('user_id', a.uid).maybeSingle()).then(({ data, error }) => { if (error) throw error;
-      if (!data || !data.path) { this.cbSet({ uid: a.uid, link: true, srvAt: 0 }); return this.cbUp(); }
-      this.setState({ cbAsk: { n: data.sessions, at: data.updated_at, path: data.path, loc: nSess(this.state.history), arm: false } }); })
+      if (!data || !data.path) { if (!pro) return; this.cbSet({ uid: a.uid, link: true, srvAt: 0 }); return this.cbUp(); }
+      this.setState({ cbAsk: { n: data.sessions, at: data.updated_at, path: data.path, loc: nSess(this.state.history), arm: false, locked: !pro } }); })
       .catch(e => { if (manual) this.acErr(e, false, 'cb'); }).then(() => { this._cbChk = false; });
   }
   // mode : 'merge' (fusionner / restaurer) ou 'replace' (remplacer ce téléphone par la sauvegarde)
@@ -1782,7 +1789,7 @@ class Component extends DCLogic {
   }
   cbLater() { this._cbLater = true; this.setState({ cbAsk: null }); }
   cbUp() {
-    const s = this.state; const a = s.acct; const cl = s.cloud || {}; if (!a || !a.profile || cl.on === false || !cl.link || cl.uid !== a.uid) return Promise.resolve();
+    const s = this.state; const a = s.acct; const cl = s.cloud || {}; if (!a || !a.profile || !this.isPro() || cl.on === false || !cl.link || cl.uid !== a.uid) return Promise.resolve();
     if (this._cbRun) { this._cbAgain = true; return this._cbRun; }
     const uid = a.uid; const dev = cl.dev || ('d' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36)); this.cbSet({ busy: true });
     const B = () => this.sb().then(c => c.storage.from('backups'));
@@ -1801,6 +1808,7 @@ class Component extends DCLogic {
     this._cbRun = run; return run;
   }
   cbToggle() {
+    if (!this.isPro()) return this.need('backup');
     const s = this.state; const cl = s.cloud || {}; const on = cl.on === false;
     if (!on) { this.cbSet({ on: false, link: false }); return; }
     this._cbLater = false; this.cbSet({ on: true }); setTimeout(() => this.cbCheck(true), 0);
@@ -2133,7 +2141,7 @@ class Component extends DCLogic {
   }
   addTemplate(t) {
     const base = Date.now();
-    const rs = t.r.map(([n, ex], i) => ({ id: 'r' + base + '_' + i, name: n, ex: ex.map(([name, sets, reps, ss]) => ({ name, sets, reps, ss: !!ss })) }));
+    const rs = t.r.map(([n, ex], i) => ({ id: 'r' + base + '_' + i, tpl: t.id, name: n, ex: ex.map(([name, sets, reps, ss]) => ({ name, sets, reps, ss: !!ss })) }));
     this.setState(s => ({ routines: [...s.routines, ...rs], screen: 'tabs', tab: 'programs' })); this.flash(L('Program added'));
   }
   saveBody() {
@@ -2163,7 +2171,7 @@ class Component extends DCLogic {
     const inc = this.inc(); const sets = [];
     for (let i = 0; i < n; i++) {
       const p = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null;
-      const bump = up && p && !p.wu;
+      const bump = up && p && !p.wu && this.isPro();
       const q = lastW ? (lastW.sets[i] || lastW.sets[lastW.sets.length - 1]) : null;
       const bw = p && p.w > 0 ? p.w : q ? q.w : 0;
       sets.push({ w: bw ? bw + (bump ? inc : 0) : 0, r: p ? (bump ? target : p.r) : (target || 8), pw: p ? p.w : null, pr: p ? p.r : null, warm: !!(p && p.wu), done: false });
@@ -2311,11 +2319,13 @@ class Component extends DCLogic {
   }
   createCustom() {
     const s = this.state; const name = s.libQuery.trim(); if (!name) return;
+    if (!this.isPro() && (s.custom || []).length >= FREE_CUST) return this.need('custom', () => this.createCustom());
     const group = s.libGroup === 'All' ? 'Custom' : s.libGroup;
     this.setState({ custom: [...s.custom, { name, group, custom: true }] }, () => this.pick(name));
   }
   updR(fn) { const s = this.state; this.setState({ routines: s.routines.map(r => { if (r.id !== s.editId) return r; const c = JSON.parse(JSON.stringify(r)); fn(c); return c; }) }); }
-  newRoutine() { const id = 'r' + Date.now(); this.setState(s => ({ routines: [...s.routines, { id, name: L('New routine'), ex: [] }], editId: id, screen: 'routine', deleteArm: false })); }
+  // Gratuit : 4 routines créées par soi (celles d'un programme ne comptent pas) et 10 exercices perso. Ce qui existe déjà est gardé.
+  newRoutine() { if (!this.isPro() && this.state.routines.filter(r => !r.tpl).length >= FREE_ROUT) return this.need('routines', () => this.newRoutine()); const id = 'r' + Date.now(); this.setState(s => ({ routines: [...s.routines, { id, name: L('New routine'), ex: [] }], editId: id, screen: 'routine', deleteArm: false })); }
   deleteRoutine() {
     const s = this.state;
     if (!s.deleteArm) { this.setState({ deleteArm: true }); setTimeout(() => this.setState({ deleteArm: false }), 3000); return; }
@@ -2383,6 +2393,8 @@ class Component extends DCLogic {
     });
   }
   isPro() { return !!this.state.pro; }
+  // Aperçu Pro : voile flou posé sur le vrai écran (avec les vraies données) + invitation. f = fonction, pour le titre de l'offre.
+  lockV(on, f, title, sub, extra) { const fr = LANG === 'fr'; return { on: !!on, title, sub, cta: fr ? 'Essayer 7 jours gratuitement' : 'Try 7 days free', more: fr ? 'Voir les offres' : 'See plans', go: () => this.need(f), ...(extra || {}) }; }
   gate(f, fn) { return f && !this.isPro() ? () => this.need(f, fn) : fn; }
   need(f, fn) { this._pwThen = fn || null; this.setState({ pw: { f, plan: 'year' } }); }
   buyPro(plan) {
@@ -2540,7 +2552,7 @@ class Component extends DCLogic {
   }
   finishOb(pick) {
     const s = this.state; const ob = s.ob || {}; const t = TEMPLATES.find(x => x.id === pick); const base = Date.now();
-    const rs = t ? t.r.map(([n, ex], i) => ({ id: 'r' + base + '_' + i, name: n, ex: ex.map(([name, sets, reps, ss]) => ({ name, sets, reps, ss: !!ss })) })) : [];
+    const rs = t ? t.r.map(([n, ex], i) => ({ id: 'r' + base + '_' + i, tpl: t.id, name: n, ex: ex.map(([name, sets, reps, ss]) => ({ name, sets, reps, ss: !!ss })) })) : [];
     const DAYS = { 2: [1, 4], 3: [1, 3, 5], 4: [1, 2, 4, 5], 5: [1, 2, 3, 4, 5], 6: [1, 2, 3, 4, 5, 6] };
     const keep = !!ob.imported;
     this.setState({ onboarded: true, ob: null, routines: rs, lastRoutineId: rs.length ? rs[rs.length - 1].id : null, history: keep ? s.history : {}, sessMeta: keep ? s.sessMeta : {}, body: keep ? s.body : [],
@@ -2613,7 +2625,14 @@ class Component extends DCLogic {
       obFinishLabel: pickT ? (fr ? 'Commencer avec ' + pickT.fr : 'Start with ' + pickT.name) : (fr ? 'Commencer' : 'Start'), obFinish: this.gate(PRO_TPL.includes(pick) ? 'program' : null, () => this.finishOb(pick)),
       ...(() => {
         const pw = s.pw, pro = s.pro; const f = pw ? pw.f : null; const plan = pw ? pw.plan || 'year' : 'year';
-        const H = { widget: fr ? ['Le widget Barlog', 'Ta prochaine séance et ta semaine, directement sur l’écran d’accueil.'] : ['The Barlog widget', 'Your next workout and your week, right on your home screen.'], stats: fr ? ['Toutes tes stats', 'Volume par muscle, tendances et records par reps, sur toute ta période.'] : ['All your stats', 'Volume per muscle, trends and rep records across your whole history.'],
+        const H = {
+          routines: fr ? ['Routines illimitées', 'Le gratuit garde ' + FREE_ROUT + ' routines perso. Pro te laisse en créer autant que tu veux.'] : ['Unlimited routines', 'Free keeps ' + FREE_ROUT + ' custom routines. Pro lets you create as many as you want.'],
+          custom: fr ? ['Exercices perso illimités', 'Le gratuit garde ' + FREE_CUST + ' exercices perso. Pro n’a aucune limite.'] : ['Unlimited custom exercises', 'Free keeps ' + FREE_CUST + ' custom exercises. Pro has no limit.'],
+          coach: fr ? ['Ta progression auto', 'Quand tu réussis toutes tes reps, Barlog ajoute la bonne charge à ta prochaine séance.'] : ['Auto progression', 'When you hit every rep, Barlog adds the right weight to your next session.'],
+          backup: fr ? ['Ta sauvegarde en ligne', 'Séances, routines, pesées et réglages sauvegardés automatiquement, et retrouvés sur n’importe quel téléphone.'] : ['Your online backup', 'Workouts, routines, weigh-ins and settings backed up automatically, and restored on any phone.'],
+          chart: fr ? ['Toute ta progression', 'Le graphique de chaque exercice sur tout ton historique, pas seulement 3 mois.'] : ['Your whole progress', 'Every lift’s chart over your full history, not just 3 months.'],
+          body: fr ? ['Tout ton historique corporel', 'Poids et mensurations sur 3 mois, 1 an ou depuis le début.'] : ['Your whole body history', 'Weight and measurements over 3 months, 1 year or since day one.'],
+          widget: fr ? ['Le widget Barlog', 'Ta prochaine séance et ta semaine, directement sur l’écran d’accueil.'] : ['The Barlog widget', 'Your next workout and your week, right on your home screen.'], stats: fr ? ['Toutes tes stats', 'Volume par muscle, tendances et records par reps, sur toute ta période.'] : ['All your stats', 'Volume per muscle, trends and rep records across your whole history.'],
           '4w': fr ? ['Ta moyenne sur 4 semaines', 'Vois quels muscles tu négliges sur la durée, pas seulement cette semaine.'] : ['Your 4-week average', 'See which muscles you neglect over time, not just this week.'],
           muscle: fr ? ['Trouve le bon exercice', 'Touche un muscle et ajoute un exercice qui le cible, en un geste.'] : ['Find the right exercise', 'Tap a muscle and add an exercise that targets it, in one tap.'],
           history: fr ? ['Revis chaque séance', 'Touche un muscle dans l’historique pour voir les exercices qui l’ont travaillé.'] : ['Relive every session', 'Tap a muscle in history to see which exercises worked it.'],
@@ -2621,25 +2640,30 @@ class Component extends DCLogic {
           health: fr ? ['Ta composition corporelle', 'Masse grasse, masse maigre et IMC récupérés depuis ' + (plat() === 'android' ? 'Health Connect (Samsung Health, balance connectée).' : 'Santé (Withings, balance connectée).')] : ['Your body composition', 'Body fat, lean mass and BMI pulled from ' + (plat() === 'android' ? 'Health Connect (Samsung Health, smart scale).' : 'Health (Withings, smart scale).')],
           accent: fr ? ['Ta couleur', 'Choisis parmi 7 couleurs d’accent pour personnaliser Barlog.'] : ['Your color', 'Pick from 7 accent colors to make Barlog yours.'] };
         const hd = H[f] || (fr ? ['Passe à Barlog Pro', 'L’essentiel reste gratuit. Pro débloque tout le reste.'] : ['Go Barlog Pro', 'The essentials stay free. Pro unlocks everything else.']);
-        const PK2 = [['stats', fr ? 'Stats avancées' : 'Advanced stats', fr ? 'Volume par muscle, tendances, records par reps' : 'Muscle volume, trends, rep records', ['stats']],
+        const PK2 = [['backup', fr ? 'Sauvegarde en ligne' : 'Online backup', fr ? 'Automatique, sur tous tes téléphones' : 'Automatic, on all your phones', ['backup']],
+          ['coach', fr ? 'Progression auto' : 'Auto progression', fr ? 'La bonne charge proposée à chaque séance' : 'The right weight suggested every session', ['coach']],
+          ['stats', fr ? 'Stats avancées' : 'Advanced stats', fr ? 'Volume par muscle, tendances, records par reps' : 'Muscle volume, trends, rep records', ['stats']],
+          ['chart', fr ? 'Tout ton historique' : 'Your full history', fr ? 'Graphiques d’exercice et du corps sans limite de temps' : 'Lift and body charts with no time limit', ['chart', 'body']],
+          ['routines', fr ? 'Routines et exercices illimités' : 'Unlimited routines and exercises', fr ? 'Au-delà de ' + FREE_ROUT + ' routines et ' + FREE_CUST + ' exercices perso' : 'Beyond ' + FREE_ROUT + ' routines and ' + FREE_CUST + ' custom exercises', ['routines', 'custom']],
           ['body', fr ? 'Body map complète' : 'Full body map', fr ? 'Moyenne 4 semaines, muscles cliquables dans l’historique' : '4-week average, tappable muscles in history', ['4w', 'history']],
           ['muscle', fr ? 'Muscle → exercices' : 'Muscle → exercises', fr ? 'Ajoute un exercice ciblé en un geste' : 'Add a targeted exercise in one tap', ['muscle']],
           ['program', fr ? 'Tous les programmes' : 'Every program', fr ? 'Force 5×5, Haut / Bas, et les prochains' : 'Strength 5×5, Upper / Lower, and more to come', ['program']],
           ['accent', fr ? 'Couleurs d’accent' : 'Accent colors', fr ? '7 thèmes pour l’app' : '7 themes for the app', ['accent']],
           ['health', fr ? 'Composition depuis ' + hkStore() : 'Composition from ' + hkStore(), fr ? 'Masse grasse, masse maigre, IMC' : 'Body fat, lean mass, BMI', ['health']],
           ...(plat() === 'android' ? [['widget', fr ? 'Widget écran d’accueil' : 'Home screen widget', fr ? 'Prochaine séance et semaine en un coup d’œil' : 'Next workout and your week at a glance', ['widget']]] : [['soon', fr ? 'Bientôt : widget écran d’accueil' : 'Coming: home screen widget', fr ? 'Inclus dans ton abonnement dès sa sortie' : 'Included in your plan when it ships', []]])];
-        const P = { month: [fr ? 'Mensuel' : 'Monthly', fr ? '2,99 €' : '$2.99', fr ? 'par mois' : 'per month', null], year: [fr ? 'Annuel' : 'Yearly', fr ? '19,99 €' : '$19.99', fr ? '1,67 € / mois' : '$1.67 / month', '−44 %'], life: [fr ? 'À vie' : 'Lifetime', fr ? '49,99 €' : '$49.99', fr ? 'une fois' : 'one time', null] };
-        const CTA = { month: fr ? 'S’abonner · 2,99 € / mois' : 'Subscribe · $2.99 / month', year: fr ? 'Essayer 7 jours gratuitement' : 'Try 7 days free', life: fr ? 'Acheter · 49,99 €' : 'Buy · $49.99' };
+        // Prix en dollars canadiens (mode test). Avec les vrais achats, le prix affiché viendra de la boutique (devise du pays).
+        const P = { month: [fr ? 'Mensuel' : 'Monthly', fr ? '4,99 $' : 'CA$4.99', fr ? 'par mois' : 'per month', null], year: [fr ? 'Annuel' : 'Yearly', fr ? '29,99 $' : 'CA$29.99', fr ? '2,50 $ / mois' : 'CA$2.50 / month', '−50 %'], life: [fr ? 'À vie' : 'Lifetime', fr ? '79,99 $' : 'CA$79.99', fr ? 'une fois' : 'one time', null] };
+        const CTA = { month: fr ? 'S’abonner · 4,99 $ / mois' : 'Subscribe · CA$4.99 / month', year: fr ? 'Essayer 7 jours gratuitement' : 'Try 7 days free', life: fr ? 'Acheter · 79,99 $' : 'Buy · CA$79.99' };
         const PN = { month: fr ? 'Mensuel' : 'Monthly', year: fr ? 'Annuel' : 'Yearly', life: fr ? 'À vie' : 'Lifetime' };
         return {
           pwOn: !!pw, pwClose: () => { this._pwThen = null; this.setState({ pw: null }); }, pwTitle: hd[0], pwSub: hd[1],
           pwPerks: PK2.map(([k, label, sub, fs]) => { const on = fs.includes(f); return { label, sub, color: on ? ACC : '#FFFFFF', dotBg: k === 'soon' ? '#24242B' : on ? ACC : accA(0.16), dotColor: k === 'soon' ? '#9C9CA8' : on ? '#0A0A0C' : ACC }; }),
           pwPlans: ['month', 'year', 'life'].map(k => { const on = plan === k; const p = P[k]; return { name: p[0], price: p[1], per: p[2], hasBadge: !!p[3], badge: p[3] || '', border: on ? ACC : '#24242B', bg: on ? accA(0.08) : '#16161A', onClick: () => this.setState(st => ({ pw: { ...(st.pw || {}), plan: k } })) }; }),
           pwCta: CTA[plan], pwBuy: () => this.buyPro(plan),
-          pwFine: (plan === 'year' ? (fr ? 'Puis 19,99 € / an. Annulable à tout moment. ' : 'Then $19.99 / year. Cancel anytime. ') : '') + (fr ? 'Mode test : aucun paiement réel pour l’instant.' : 'Test mode: no real payment yet.'),
+          pwFine: (plan === 'year' ? (fr ? 'Puis 29,99 $ / an. Annulable à tout moment. ' : 'Then CA$29.99 / year. Cancel anytime. ') : '') + (fr ? 'Mode test : aucun paiement réel pour l’instant.' : 'Test mode: no real payment yet.'),
           pwRestoreLabel: fr ? 'Restaurer mes achats' : 'Restore purchases', pwRestore: () => this.flash(fr ? 'Aucun achat à restaurer (mode test)' : 'No purchases to restore (test mode)'),
           proTitle: pro ? (fr ? 'Pro actif · ' : 'Pro active · ') + (PN[pro.plan] || '') + (pro.test ? ' (test)' : '') : (fr ? 'Débloque tout Barlog' : 'Unlock all of Barlog'),
-          proSub: pro ? (fr ? 'Merci ! Toutes les fonctions sont débloquées.' : 'Thanks! Every feature is unlocked.') : (fr ? 'Stats avancées, body map complète, tous les programmes, couleurs.' : 'Advanced stats, full body map, every program, colors.'),
+          proSub: pro ? (fr ? 'Merci ! Toutes les fonctions sont débloquées.' : 'Thanks! Every feature is unlocked.') : (fr ? 'Sauvegarde en ligne, progression auto, stats, tout ton historique, routines illimitées.' : 'Online backup, auto progression, stats, your full history, unlimited routines.'),
           proBtn: pro ? (s.proArm ? (fr ? 'Désactiver ?' : 'Turn off?') : (fr ? 'Test : désactiver' : 'Test: turn off')) : (fr ? 'Voir les offres' : 'See plans'),
           proBtnBg: pro ? (s.proArm ? '#FF4D4D' : '#24242B') : ACC, proBtnColor: pro ? '#FFFFFF' : '#0A0A0C',
           proCardClick: () => { if (!pro) return this.need(null); if (!s.proArm) { this.setState({ proArm: true }); clearTimeout(this.proArmT); this.proArmT = setTimeout(() => this.setState({ proArm: false }), 3000); return; } this.setState({ pro: null, proArm: false }); this.flash(fr ? 'Pro désactivé (test)' : 'Pro turned off (test)'); }
@@ -2680,20 +2704,20 @@ class Component extends DCLogic {
       acTitle: fr ? 'Compte' : 'Account', acOff: !a, acAsk: !a && !s.acSent, acCodeOn: !a && !!s.acSent, acNoProf: !!a && p === null, acHasProf: !!p, acPending: !!a && p === undefined, acOp: busy ? 0.5 : 1,
       acSocTitle: fr ? 'Barlog social · bêta' : 'Barlog social · beta', acSocText: fr ? 'Crée un compte gratuit pour publier tes séances et suivre tes amis. Sans compte, Barlog fonctionne comme avant.' : 'Create a free account to post your workouts and follow your friends. Without an account, Barlog works just like before.',
       acEmail: s.acEmail || '', onAcEmail: e => this.setState({ acEmail: e.target.value }), acEmailPh: fr ? 'ton@email.com' : 'you@email.com',
-      acBackHint: s.obAcctHint ? (fr ? 'Utilise le même e-mail que sur ton ancien téléphone : ton profil, tes abonnés, tes publications et ta sauvegarde en ligne (séances, routines, pesées, réglages) reviennent.' : 'Use the same email as on your old phone: your profile, followers, posts and online backup (workouts, routines, weigh-ins, settings) come back.') : '',
+      acBackHint: s.obAcctHint ? (fr ? 'Utilise le même e-mail que sur ton ancien téléphone : ton profil, tes abonnés et tes publications reviennent. Tes séances reviennent avec ta sauvegarde en ligne (Barlog Pro) ou en important ton export (plus bas, « Importer »).' : 'Use the same email as on your old phone: your profile, followers and posts come back. Your workouts come back with your online backup (Barlog Pro) or by importing your export (below, “Import”).') : '',
       ...(() => { const cl = s.cloud || {}; const on = cl.on !== false; const q = s.cbAsk; const dt = t => { try { return new Date(t).toLocaleDateString(fr ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ''; } };
-        const ns = n => n + (fr ? ' séance' : ' workout') + (n > 1 ? 's' : ''); const linked = on && cl.link && a && cl.uid === a.uid;
-        const sub = !on ? (fr ? 'Désactivée. Sans sauvegarde, garde un export à jour.' : 'Off. Without it, keep an export up to date.') : cl.busy && this._cbRun ? (fr ? 'Sauvegarde en cours…' : 'Backing up…') : cl.err && linked ? (fr ? 'Dernier essai raté : ' : 'Last try failed: ') + cl.err
+        const ns = n => n + (fr ? ' séance' : ' workout') + (n > 1 ? 's' : ''); const pro = this.isPro(); const linked = pro && on && cl.link && a && cl.uid === a.uid;
+        const sub = !pro ? (fr ? 'Avec Barlog Pro : séances, routines, pesées et réglages sauvegardés automatiquement et retrouvés sur n’importe quel téléphone. Sans Pro, pense à exporter.' : 'With Barlog Pro: workouts, routines, weigh-ins and settings backed up automatically and restored on any phone. Without Pro, remember to export.') : !on ? (fr ? 'Désactivée. Sans sauvegarde, garde un export à jour.' : 'Off. Without it, keep an export up to date.') : cl.busy && this._cbRun ? (fr ? 'Sauvegarde en cours…' : 'Backing up…') : cl.err && linked ? (fr ? 'Dernier essai raté : ' : 'Last try failed: ') + cl.err
           : linked && cl.at ? (fr ? 'Sauvegardé ' : 'Backed up ') + relT(new Date(cl.at).toISOString(), fr) + ' · ' + ns(cl.n || 0) + (fr ? '. Automatique après chaque changement.' : '. Automatic after every change.')
           : linked ? (fr ? 'Première sauvegarde en cours…' : 'First backup in progress…') : (fr ? 'Une sauvegarde existe sur ton compte : touche « Restaurer ou fusionner ».' : 'Your account has a backup: tap “Restore or merge”.');
         return { cbAskOn: !!q, cbAskTitle: fr ? 'Sauvegarde trouvée' : 'Backup found',
-          cbAskText: !q ? '' : q.loc ? (fr ? 'Ton compte a une sauvegarde de ' + ns(q.n) + ' (' + dt(q.at) + '). Ce téléphone en a ' + q.loc + '. « Fusionner » garde tout : rien n’est supprimé.' : 'Your account has a backup with ' + ns(q.n) + ' (' + dt(q.at) + '). This phone has ' + q.loc + '. “Merge” keeps everything: nothing is deleted.')
+          cbAskText: !q ? '' : q.locked ? (fr ? ns(q.n) + ' sauvegardées sur ton compte (' + dt(q.at) + '). La sauvegarde en ligne fait partie de Barlog Pro : passe Pro pour les retrouver sur ce téléphone.' : ns(q.n) + ' backed up on your account (' + dt(q.at) + '). Online backup is part of Barlog Pro: go Pro to get them back on this phone.') : q.loc ? (fr ? 'Ton compte a une sauvegarde de ' + ns(q.n) + ' (' + dt(q.at) + '). Ce téléphone en a ' + q.loc + '. « Fusionner » garde tout : rien n’est supprimé.' : 'Your account has a backup with ' + ns(q.n) + ' (' + dt(q.at) + '). This phone has ' + q.loc + '. “Merge” keeps everything: nothing is deleted.')
             : (fr ? ns(q.n) + ' sauvegardées sur ton compte (' + dt(q.at) + '). Les remettre sur ce téléphone ?' : ns(q.n) + ' backed up on your account (' + dt(q.at) + '). Put them back on this phone?'),
-          cbAskGoLabel: q && q.busy ? (fr ? 'Restauration…' : 'Restoring…') : q && q.loc ? (fr ? 'Fusionner' : 'Merge') : (fr ? 'Restaurer' : 'Restore'), cbAskGo: () => this.cbRestore('merge'), cbAskOp: q && q.busy ? 0.5 : 1,
-          cbAskRepOn: !!(q && q.loc), cbAskRep: () => this.cbRestore('replace'), cbAskRepLabel: q && q.arm ? (fr ? 'Toucher encore : les séances de ce téléphone seront remplacées' : 'Tap again: this phone’s workouts will be replaced') : (fr ? 'Remplacer ce téléphone par la sauvegarde' : 'Replace this phone with the backup'),
+          cbAskGoLabel: q && q.locked ? (fr ? 'Restaurer avec Pro ✦' : 'Restore with Pro ✦') : q && q.busy ? (fr ? 'Restauration…' : 'Restoring…') : q && q.loc ? (fr ? 'Fusionner' : 'Merge') : (fr ? 'Restaurer' : 'Restore'), cbAskGo: () => q && q.locked ? (this.setState({ cbAsk: null }), this.need('backup')) : this.cbRestore('merge'), cbAskOp: q && q.busy ? 0.5 : 1,
+          cbAskRepOn: !!(q && q.loc && !q.locked), cbAskRep: () => this.cbRestore('replace'), cbAskRepLabel: q && q.arm ? (fr ? 'Toucher encore : les séances de ce téléphone seront remplacées' : 'Tap again: this phone’s workouts will be replaced') : (fr ? 'Remplacer ce téléphone par la sauvegarde' : 'Replace this phone with the backup'),
           cbAskRepBorder: q && q.arm ? '#FF4D4D' : '#33333C', cbAskRepColor: q && q.arm ? '#FF4D4D' : '#FFFFFF', cbAskLater: () => this.cbLater(), cbAskLaterLabel: fr ? 'Pas maintenant' : 'Not now', cbAskErr: (s.acE && s.acE.k === 'cbask' && s.acE.m) || '',
-          cbLabel: fr ? 'Sauvegarde en ligne' : 'Online backup', cbSub: sub, cbSubColor: on && cl.err && linked ? '#FF8A65' : '#9C9CA8', cbTg: tg(on), cbClick: () => this.cbToggle(),
-          cbNowOn: on && !!a && !!p, cbNow: () => linked ? this.cbUp() : this.cbCheck(true), cbNowLabel: linked ? (fr ? 'Sauvegarder maintenant' : 'Back up now') : (fr ? 'Restaurer ou fusionner' : 'Restore or merge'), cbNowOp: cl.busy && this._cbRun ? 0.5 : 1, cbErr: (s.acE && s.acE.k === 'cb' && s.acE.m) || '',
+          cbLabel: (fr ? 'Sauvegarde en ligne' : 'Online backup') + (pro ? '' : ' ✦'), cbSub: sub, cbSubColor: on && cl.err && linked ? '#FF8A65' : '#9C9CA8', cbTg: tg(pro && on), cbClick: () => this.cbToggle(),
+          cbNowOn: pro && on && !!a && !!p, cbNow: () => linked ? this.cbUp() : this.cbCheck(true), cbNowLabel: linked ? (fr ? 'Sauvegarder maintenant' : 'Back up now') : (fr ? 'Restaurer ou fusionner' : 'Restore or merge'), cbNowOp: cl.busy && this._cbRun ? 0.5 : 1, cbErr: (s.acE && s.acE.k === 'cb' && s.acE.m) || '',
           avBigOn: !!s.avBig, avBigImg: (s.avBig && s.avBig.img) || 'none', avBigName: (s.avBig && s.avBig.name) || '', avBigClose: () => this.setState({ avBig: null }) }; })(),
       acSend: () => this.acSend(), acSendLabel: busy ? (fr ? 'Envoi…' : 'Sending…') : (fr ? 'Recevoir un code' : 'Get a code'),
       acSentText: (fr ? 'Code à 6 chiffres envoyé à ' : '6-digit code sent to ') + (s.acSent || '') + (fr ? '. Pense à regarder dans les spams.' : '. Check your spam folder too.'),
@@ -2815,7 +2839,7 @@ class Component extends DCLogic {
     };
   }
   renderVals() {
-    ACC = (this.isPro() && this.state.accent) || '#CCFF00'; try { document.documentElement.style.setProperty('--acc', ACC); } catch (e) {}
+    ACC = (this.isPro() && this.state.accent) || this.state.accPrev || '#CCFF00'; try { document.documentElement.style.setProperty('--acc', ACC); } catch (e) {}
     const s = this.state; const now = s.now; const kg = s.unit === 'kg';
     LANG = s.lang === 'fr' ? 'fr' : 'en'; try { document.documentElement.lang = LANG; } catch (e) {}
     const go = (p) => () => this.setState(p);
@@ -2861,7 +2885,8 @@ class Component extends DCLogic {
       const cols = uni || car ? '30px 44px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 48px' : '36px 52px minmax(0,1fr) minmax(0,1fr) 52px';
       return {
         name: ex.name, progress: d + '/' + ex.sets.length, progColor: d === ex.sets.length && d ? ACC : '#9C9CA8',
-        up: !!ex.up, upText: '+' + (kg ? '2.5 kg' : '5 lb') + L(' · you hit every rep last time'),
+        up: !!ex.up, upVal: '+' + (kg ? '2.5 kg' : '5 lb'), upBlur: this.isPro() ? 'none' : 'blur(4px)', onUp: () => { if (!this.isPro()) this.need('coach'); },
+        upText: this.isPro() ? L(' · you hit every rep last time') : (LANG === 'fr' ? ' · progression proposée ✦ Pro' : ' · suggested progression ✦ Pro'),
         hasSS: !!tagsW[ei], ssTag: tagsW[ei] ? L('SUPERSET') + ' ' + tagsW[ei] : '', hasNote: !!m.note, note: m.note,
         onMenu: go({ exSheet: ei }), cols, isUni: uni || car, h0: uni || car ? '#' : L('SET'), h1: car ? 'MIN' : s.unit.toUpperCase(), h3: car ? 'KCAL' : tim ? 'R s' : 'R', h2: car ? (kg ? 'KM' : 'MI') : uni ? (tim ? 'L s' : 'L') : tim ? L('SEC') : 'REPS',
         onAddSet: () => this.addSet(ei),
@@ -2935,7 +2960,7 @@ class Component extends DCLogic {
     const setTxt = x => this.dispW(x.w) + '×' + x.r;
     const sessAll = (s.history[progEx] || []).map(se => ({ date: se.date, ws: work(se.sets).filter(x => x.w > 0) })).filter(se => se.ws.length);
     const RANGES = [['4w', L('4 wk'), 28], ['3m', L('3 mo'), 91], ['all', L('All'), 0]];
-    const rg = RANGES.find(r => r[0] === s.progRange) || RANGES[2];
+    const rg = RANGES.find(r => r[0] === (s.progRange || (this.isPro() ? 'all' : '3m'))) || RANGES[2]; const chartLock = !this.isPro() && rg[0] === 'all';
     const cut = rg[2] ? T - rg[2] * DAY : -Infinity;
     const sess = sessAll.filter(se => se.date >= cut);
     const val = (se) => s.metric === 'e1rm' ? Math.max(...se.ws.map(x => e1(x.w, x.r))) : s.metric === 'vol' ? se.ws.reduce((a, x) => a + x.w * x.r, 0) : Math.max(...se.ws.map(x => x.w));
@@ -3033,7 +3058,7 @@ class Component extends DCLogic {
     const seg = (cur, k, label, patch) => ({ label, bg: cur === k ? '#24242B' : 'transparent', color: cur === k ? '#FFFFFF' : '#9C9CA8', onClick: () => this.setState({ ...patch, bodyBuf: {} }) });
     const MEAS = [['waist', 'Waist', 'Tour de taille'], ['hips', 'Hips', 'Hanches'], ['chest', 'Chest', 'Poitrine'], ['arm', 'Arm', 'Bras'], ['thigh', 'Thigh', 'Cuisse']];
     const BR = [['1w', fr ? '7 j' : '7 d', 7], ['1m', fr ? '1 m' : '1 mo', 30], ['3m', fr ? '3 m' : '3 mo', 91], ['1y', fr ? '1 an' : '1 yr', 365], ['all', fr ? 'Tout' : 'All', 0]];
-    const br = BR.find(r => r[0] === (s.bodyRange || '3m')) || BR[2];
+    const br = BR.find(r => r[0] === (s.bodyRange || (this.isPro() ? '3m' : '1m'))) || BR[2]; const bodyLock = !this.isPro() && !['1w', '1m'].includes(br[0]);
     const bAllW = bodyArr.filter(b => b.w > 0); const bCut = br[2] ? (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime() - (br[2] - 1) * 86400000; })() : 0;
     const bws = bAllW.filter(b => b.date >= bCut); const bv = bws.map(b => b.w);
     const bmn0 = bv.length ? Math.min(...bv) : 0, bmx0 = bv.length ? Math.max(...bv) : 1; const bpad = bmx0 > bmn0 ? (bmx0 - bmn0) * 0.15 : 1;
@@ -3072,10 +3097,11 @@ class Component extends DCLogic {
         const mx = Math.max(0, ...Object.values(acc)); const lv = v => !v ? 0 : v >= mx * 0.66 ? 3 : v >= mx * 0.33 ? 2 : 1; const SF = [FIG_BASE, mixC(FIG_BASE, ACC, 0.3), mixC(FIG_BASE, ACC, 0.62), ACC];
         const sel = s.sdSel && s.sdSel.d === sd.date ? s.sdSel.k : null; const fx = v => trim(Math.round((v || 0) * 10) / 10);
         const sty = k => { const l = lv(acc[k]), on = sel === k; return { fill: SF[l], stroke: on ? '#FFFFFF' : 'none', sw: 1.4, glow: on || (!sel && l === 3), glowC: on ? 'rgba(255,255,255,.7)' : ACC, op: sel && !on ? 0.35 : 1 }; };
-        const tap = k => !this.isPro() ? this.need('history') : this.setState(st => ({ sdSel: st.sdSel && st.sdSel.d === sd.date && st.sdSel.k === k ? null : { d: sd.date, k } }));
+        const tap = k => this.setState(st => ({ sdSel: st.sdSel && st.sdSel.d === sd.date && st.sdSel.k === k ? null : { d: sd.date, k } }));
         const ord = Object.keys(acc).filter(k => acc[k] > 0).sort((a, b) => acc[b] - acc[a]);
         const selEx = sel ? (sd.ex || []).map(x => { const mu = this.meta(x.name).mus; const p = mu.p.includes(sel); if (!p && !mu.s.includes(sel)) return null; const n = work(x.sets).length; return { name: x.name, p, n }; }).filter(Boolean).sort((a, b) => (b.p - a.p) || (b.n - a.n)) : [];
         return { sdHasMus: ord.length > 0, sdFront: bodyFig(FIG_FRONT, sty, tap, !!sel, { uid: 'df' }), sdBack: bodyFig(FIG_BACK, sty, tap, !!sel, { uid: 'db' }),
+          lkSess: this.lockV(!!sel && !this.isPro(), 'history', LANG === 'fr' ? 'Exercices par muscle' : 'Exercises per muscle', LANG === 'fr' ? 'Vois quels exercices ont travaillé ce muscle.' : 'See which exercises worked this muscle.'),
           sdHasSel: !!sel, sdNoSel: !sel, sdSelName: sel ? musName(sel) : '', sdSelVal: sel ? fx(acc[sel]) : '', sdSelSub: LANG === 'fr' ? 'séries ce jour-là' : 'sets that day', sdClear: () => this.setState({ sdSel: null }),
           sdSelEx: selEx.map(e => ({ name: e.name, tag: e.p ? L('Primary') : L('Secondary'), tagColor: e.p ? ACC : '#9C9CA8', sets: e.n + (LANG === 'fr' ? ' série' : ' set') + (e.n > 1 ? 's' : '') + (e.p ? '' : ' × ½') })),
           sdMus: ord.map(k => { const l = lv(acc[k]), on = sel === k; return { label: musName(k), val: fx(acc[k]), bg: on ? '#FFFFFF' : l === 3 ? ACC : '#24242B', color: on || l === 3 ? '#0A0A0C' : '#FFFFFF', onClick: () => tap(k) }; }) }; })(),
@@ -3091,7 +3117,9 @@ class Component extends DCLogic {
       bmSelSub: bmSel ? (LANG === 'fr' ? 'séries · ' : 'sets · ') + (bmTotal ? Math.round(mVal(bmSel) / bmTotal * 100) : 0) + (LANG === 'fr' ? ' % du volume · rang ' : '% of volume · rank ') + (bmRank.indexOf(bmSel) + 1) + '/' + MUS.length : '',
       bmClear: () => this.setState({ bmSel: null }),
       fiFront: fiM ? bodyFig(FIG_FRONT, exStyleOf(fiM.mus), k => this.cycleMus(fi, k), false, { uid: 'ff' }) : null, fiBack: fiM ? bodyFig(FIG_BACK, exStyleOf(fiM.mus), k => this.cycleMus(fi, k), false, { uid: 'fb' }) : null,
-      accOpts: ACCENTS.map(([c, label]) => ({ c, label, ring: c.toLowerCase() === ACC.toLowerCase() ? '0 0 0 2px #0A0A0C, 0 0 0 4px #FFFFFF' : 'none', onClick: this.gate(c === '#CCFF00' ? null : 'accent', () => this.setState({ accent: c })) })),
+      accOpts: ACCENTS.map(([c, label]) => ({ c, label, ring: c.toLowerCase() === ACC.toLowerCase() ? '0 0 0 2px #0A0A0C, 0 0 0 4px #FFFFFF' : 'none', onClick: () => this.isPro() || c === '#CCFF00' ? this.setState({ accent: c, accPrev: null }) : this.setState({ accPrev: c }) })),
+      accPrevOn: !this.isPro() && !!s.accPrev, accPrevText: LANG === 'fr' ? 'Aperçu de la couleur. Garde-la avec Barlog Pro ✦' : 'Color preview. Keep it with Barlog Pro ✦', accKeepLabel: LANG === 'fr' ? 'Garder' : 'Keep', accUndoLabel: LANG === 'fr' ? 'Annuler' : 'Undo',
+      accKeep: () => { const c = s.accPrev; this.need('accent', () => this.setState({ accent: c, accPrev: null })); }, accUndo: () => this.setState({ accPrev: null }),
       ...(() => { const z = MUS.filter(m => mVal(m[0]) <= 0).map(m => LANG === 'fr' ? m[2] : m[1]); return { bmHasZero: z.length > 0, bmZero: (LANG === 'fr' ? 'Pas travaillé : ' : 'Not trained: ') + z.join(', ') }; })(),
       bmRanges: [['7d', L('7 days')], ['4w', L('4-wk avg')]].map(([k, label]) => ({ label: label + (k === '4w' && !this.isPro() ? ' ✦' : ''), bg: (s.bmRange || '7d') === k ? '#24242B' : 'transparent', color: (s.bmRange || '7d') === k ? '#FFFFFF' : '#9C9CA8', onClick: k === '4w' ? this.gate('4w', go({ bmRange: k })) : go({ bmRange: k }) })),
       isInfo: !!fi, fiName: fi || '', fiSub: fiLib ? L(fiLib.group) : '',
@@ -3108,7 +3136,8 @@ class Component extends DCLogic {
       openLibrary: go({ screen: 'library', libCtx: 'browse', libQuery: '', libGroup: 'All' }),
       isBodyView: s.progView === 'body',
       bwCur: bAllW.length ? dBW(bAllW[bAllW.length - 1].w) : '—', bwUnit: bU,
-      bwRanges: BR.map(([k, l]) => ({ label: l, bg: br[0] === k ? '#24242B' : 'transparent', color: br[0] === k ? '#FFFFFF' : '#9C9CA8', onClick: () => this.setState({ bodyRange: k }) })),
+      lkBody: this.lockV(bodyLock, 'body', fr ? 'Tout ton historique corporel' : 'Your whole body history', fr ? '30 derniers jours gratuits. Pro affiche 3 mois, 1 an ou tout.' : 'Last 30 days are free. Pro shows 3 months, 1 year or everything.'),
+      bwRanges: BR.map(([k, l]) => ({ label: l + (!this.isPro() && !['1w', '1m'].includes(k) ? ' ✦' : ''), bg: br[0] === k ? '#24242B' : 'transparent', color: br[0] === k ? '#FFFFFF' : '#9C9CA8', onClick: () => this.setState({ bodyRange: k }) })),
       bwEmptyText: bAllW.length ? (fr ? 'Aucune pesée sur cette période.' : 'No weigh-ins in this period.') : L(TX.nBodyEmpty),
       bwUnits: [['kg', 'kg'], ['lb', 'lb']].map(([k, l]) => seg(bU, k, l, { bodyU: k })),
       lenUnits: [['cm', 'cm'], ['in', 'in'], ['ft', fr ? 'pi' : 'ft']].map(([k, l]) => seg(lenU, k, l, { lenU: k })),
@@ -3172,12 +3201,13 @@ class Component extends DCLogic {
           confirmHasToday: !!(cr && tr && tr !== cr), confirmTodayLabel: tr ? L('Start today’s: ') + tr.name : '', confirmToday: () => tr && this.start(tr.id, true) }; })(),
       updateOn: !!s.updateReady && !s.workout && s.screen === 'tabs', applyUpdate: () => { this.save(); location.reload(); },
       ...(() => { const n = sessions.length; const le = s.lastExport; const cbOk = !!(s.cloud && s.cloud.link && s.cloud.on !== false && s.cloud.at && now - s.cloud.at < 7 * DAY); const due = !cbOk && n >= 3 && (!le || now - le > 14 * DAY) && !(s.backupSnooze && now < s.backupSnooze);
-        return { backupOn: due, backupHint: plat() === 'android' ? (LANG === 'fr' ? 'Touche Exporter, puis enregistre le fichier dans Google Drive ou Téléchargements.' : 'Tap Export, then save the file to Google Drive or Downloads.') : L('Tap Export, then “Save to Files” → iCloud Drive.'), backupText: le ? (LANG === 'fr' ? 'Dernière sauvegarde il y a ' + Math.floor((now - le) / DAY) + ' jours. Tes données sont uniquement sur ce téléphone.' : 'Last backup ' + Math.floor((now - le) / DAY) + ' days ago. Your data lives only on this phone.') : L('No backup yet. Your data lives only on this phone.'), backupNow: () => this.exportData(), backupLater: go({ backupSnooze: now + 3 * DAY }) }; })(),
+        return { backupOn: due, backupHint: plat() === 'android' ? (LANG === 'fr' ? 'Touche Exporter, puis enregistre le fichier dans Google Drive ou Téléchargements.' : 'Tap Export, then save the file to Google Drive or Downloads.') : L('Tap Export, then “Save to Files” → iCloud Drive.'), backupText: le ? (LANG === 'fr' ? 'Dernière sauvegarde il y a ' + Math.floor((now - le) / DAY) + ' jours. Tes données sont uniquement sur ce téléphone.' : 'Last backup ' + Math.floor((now - le) / DAY) + ' days ago. Your data lives only on this phone.') : L('No backup yet. Your data lives only on this phone.'), backupPro: (this.isPro() ? '' : (LANG === 'fr' ? ' ✦ Ou passe à Barlog Pro : la sauvegarde se fait toute seule.' : ' ✦ Or go Barlog Pro: backups happen on their own.')), backupNow: () => this.exportData(), backupLater: go({ backupSnooze: now + 3 * DAY }) }; })(),
       showInstall: !s.standalone && !s.installSeen, dismissInstall: go({ installSeen: true }),
       isToday: showTabs && s.tab === 'today', isPrograms: showTabs && s.tab === 'programs', isProgress: showTabs && s.tab === 'progress', isProfile: showTabs && s.tab === 'profile', isFeed: showTabs && s.tab === 'feed',
       isSession: s.screen === 'session' && !!sd,
-      progViews: [['sessions', L('Sessions')], ['lifts', L('Lifts')], ['stats', L('Stats')], ['body', L('Body')]].map(([k, label]) => ({ label: label + (k === 'stats' && !this.isPro() ? ' ✦' : ''), bg: s.progView === k ? '#24242B' : 'transparent', color: s.progView === k ? '#FFFFFF' : '#9C9CA8', onClick: k === 'stats' ? this.gate('stats', go({ progView: k })) : go({ progView: k }) })),
-      isSessView: !['lifts', 'stats', 'body'].includes(s.progView) || (s.progView === 'stats' && !this.isPro()), isLiftView: s.progView === 'lifts', isStatsView: s.progView === 'stats' && this.isPro(),
+      progViews: [['sessions', L('Sessions')], ['lifts', L('Lifts')], ['stats', L('Stats')], ['body', L('Body')]].map(([k, label]) => ({ label: label + (k === 'stats' && !this.isPro() ? ' ✦' : ''), bg: s.progView === k ? '#24242B' : 'transparent', color: s.progView === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ progView: k }) })),
+      isSessView: !['lifts', 'stats', 'body'].includes(s.progView), isLiftView: s.progView === 'lifts', isStatsView: s.progView === 'stats',
+      stMaxH: this.isPro() ? 'none' : '1100px', lkStats: this.lockV(!this.isPro(), 'stats', LANG === 'fr' ? 'Tes stats sont prêtes' : 'Your stats are ready', LANG === 'fr' ? 'Muscles travaillés sur 4 semaines, régularité, volume par muscle et tendance de chaque exercice, calculés avec tes séances.' : '4-week muscle map, consistency, volume per muscle and every lift’s trend, built from your workouts.', { top: '210px' }),
       statTiles: [{ label: L('This week'), value: thisWk + '/' + planned }, { label: L('Last 4 wk'), value: Math.round(last4 / (4 * planned) * 100) + '%' }, { label: L('Streak'), value: streak + L(' wk') }],
       weekBars, plannedLabel: L('Target: ') + planned + L(' sessions per week (one per routine). Streak = weeks in a row at target.'),
       muscleRows, liftTrends, stalledLine: (stalledN ? stalledN + L(' lift') + (stalledN > 1 ? 's' : '') + L(' without a PR for 3+ weeks.') : L('Every lift has set a PR in the last 3 weeks.')) + L(' Compared with the 4 weeks before, or with your first session of the period if there is no earlier data.'),
@@ -3214,7 +3244,8 @@ class Component extends DCLogic {
       progEx, progChips: histNames.map(n => ({ name: n, bg: n === progEx ? '#FFFFFF' : 'transparent', color: n === progEx ? '#0A0A0C' : '#FFFFFF', border: n === progEx ? '#FFFFFF' : '#33333C', onClick: go({ progEx: n, progSel: null }) })),
       metrics: [['e1rm',L('Est. 1RM')],['vol','Volume'],['top',L('Top set')]].map(([k, label]) => ({ label, bg: s.metric === k ? '#24242B' : 'transparent', color: s.metric === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ metric: k, progSel: null }) })),
       metricHelp: s.metric === 'e1rm' ? L('Estimated max for 1 rep, from your best set: weight × (1 + reps ÷ 30). Best overall strength gauge.') : s.metric === 'vol' ? L('Total weight × reps over all work sets of the session. Tracks workload — the main driver of muscle growth.') : L('Heaviest weight lifted in the session, regardless of reps.'),
-      ranges: RANGES.map(([k, label]) => ({ label, bg: rg[0] === k ? '#24242B' : 'transparent', color: rg[0] === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ progRange: k, progSel: null }) })),
+      lkChart: this.lockV(chartLock, 'chart', LANG === 'fr' ? 'Toute ta progression' : 'Your whole progress', LANG === 'fr' ? 'Les 3 derniers mois sont gratuits. Pro affiche tout ton historique.' : 'The last 3 months are free. Pro shows your full history.'), deltaF: chartLock ? 'blur(6px)' : 'none',
+      ranges: RANGES.map(([k, label]) => ({ label: label + (k === 'all' && !this.isPro() ? ' ✦' : ''), bg: rg[0] === k ? '#24242B' : 'transparent', color: rg[0] === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ progRange: k, progSel: null }) })),
       metricLabel: (s.metric === 'e1rm' ? L('Estimated 1RM') : s.metric === 'vol' ? L('Session volume') : L('Heaviest set')) + (sel != null ? ' · ' + fmtD(sess[sel].date) : ''),
       curVal: sel != null ? toU(series[sel]) : series.length ? toU(series[series.length - 1]) : '—', curUnit: s.unit,
       delta: sel == null && series.length > 1 ? (delta >= 0 ? '+' : '−') + toU(Math.abs(delta)) + ' · ' + series.length + L(' sessions') : '',
