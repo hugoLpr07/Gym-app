@@ -5,6 +5,13 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.32.0 — 2026-10-22
+- Notifications push sur Android (même app fermée) : demandes d’abonnement, nouveaux abonnés, demandes acceptées, bravos (regroupés : « @alex et 2 autres ont donné un bravo à ta séance ») et commentaires. Envoyées par Supabase via Firebase Cloud Messaging.
+- Profil → Compte : réglage « Notifications push » (activé par défaut) et choix des types sur ce téléphone.
+- Toucher une notification ouvre la liste des notifications, puis la demande, le commentaire ou le profil concerné (pas pendant une séance en cours).
+- Le téléphone est retiré du compte à la déconnexion. iPhone : plus tard (compte Apple Developer).
+- Politique de confidentialité : jeton de notification et Firebase Cloud Messaging ajoutés.
+
 ## 0.31.0 — 2026-10-21
 - Progrès : l’onglet Stats disparaît, son contenu est rangé là où on le cherche. Il reste 3 onglets : Séances · Exercices · Corps.
 - Exercices commence par la carte du corps (7 jours / 4 semaines), plus compacte. Toucher un muscle affiche juste en dessous ses séries, sa part du volume et les exercices qui le travaillent (ajout à la séance avec Pro). Les muscles sont listés en puces sous la carte.
