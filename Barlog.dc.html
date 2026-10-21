@@ -1444,7 +1444,7 @@ const relT = (iso, fr) => { const now = Date.now(); const t = Date.parse(iso); i
 const hkName = () => plat() === 'android' ? 'Health Connect' : 'Apple Health';
 const hkStore = () => plat() === 'android' ? 'Health Connect' : (LANG === 'fr' ? 'Santé' : 'Health');
 const plat = () => { try { const C = window.Capacitor; return (C && C.getPlatform && C.getPlatform()) || 'web'; } catch (e) { return 'web'; } };
-const PRO_TPL = ['st', 'ul']; const FREE_ROUT = 4, FREE_CUST = 10;
+const PRO_TPL = ['st', 'ul']; const FREE_ROUT = 3, FREE_CUST = 10;
 let ACC = '#CCFF00';
 const ACCENTS = [['#CCFF00', 'Lime'], ['#FF7A1A', 'Orange'], ['#FF4D8D', 'Pink'], ['#A78BFA', 'Violet'], ['#22D3EE', 'Cyan'], ['#FFC83D', 'Gold'], ['#FF3B3B', 'Red']];
 const hexRgb = h => { h = h.replace('#', ''); return [0, 2, 4].map(i => parseInt(h.substr(i, 2), 16)); };
@@ -2630,7 +2630,7 @@ class Component extends DCLogic {
           custom: fr ? ['Exercices perso illimités', 'Le gratuit garde ' + FREE_CUST + ' exercices perso. Pro n’a aucune limite.'] : ['Unlimited custom exercises', 'Free keeps ' + FREE_CUST + ' custom exercises. Pro has no limit.'],
           coach: fr ? ['Ta progression auto', 'Quand tu réussis toutes tes reps, Barlog ajoute la bonne charge à ta prochaine séance.'] : ['Auto progression', 'When you hit every rep, Barlog adds the right weight to your next session.'],
           backup: fr ? ['Ta sauvegarde en ligne', 'Séances, routines, pesées et réglages sauvegardés automatiquement, et retrouvés sur n’importe quel téléphone.'] : ['Your online backup', 'Workouts, routines, weigh-ins and settings backed up automatically, and restored on any phone.'],
-          chart: fr ? ['Toute ta progression', 'Le graphique de chaque exercice sur tout ton historique, pas seulement 3 mois.'] : ['Your whole progress', 'Every lift’s chart over your full history, not just 3 months.'],
+          chart: fr ? ['Toute ta progression', 'Le graphique de chaque exercice sur 3 mois ou tout ton historique, pas seulement 30 jours.'] : ['Your whole progress', 'Every lift’s chart over 3 months or your full history, not just 30 days.'],
           body: fr ? ['Tout ton historique corporel', 'Poids et mensurations sur 3 mois, 1 an ou depuis le début.'] : ['Your whole body history', 'Weight and measurements over 3 months, 1 year or since day one.'],
           widget: fr ? ['Le widget Barlog', 'Ta prochaine séance et ta semaine, directement sur l’écran d’accueil.'] : ['The Barlog widget', 'Your next workout and your week, right on your home screen.'], stats: fr ? ['Toutes tes stats', 'Volume par muscle, tendances et records par reps, sur toute ta période.'] : ['All your stats', 'Volume per muscle, trends and rep records across your whole history.'],
           '4w': fr ? ['Ta moyenne sur 4 semaines', 'Vois quels muscles tu négliges sur la durée, pas seulement cette semaine.'] : ['Your 4-week average', 'See which muscles you neglect over time, not just this week.'],
@@ -2959,8 +2959,8 @@ class Component extends DCLogic {
     const fmtD = (t) => new Date(t).toLocaleDateString(LOC(), { month: 'short', day: 'numeric' });
     const setTxt = x => this.dispW(x.w) + '×' + x.r;
     const sessAll = (s.history[progEx] || []).map(se => ({ date: se.date, ws: work(se.sets).filter(x => x.w > 0) })).filter(se => se.ws.length);
-    const RANGES = [['4w', L('4 wk'), 28], ['3m', L('3 mo'), 91], ['all', L('All'), 0]];
-    const rg = RANGES.find(r => r[0] === (s.progRange || (this.isPro() ? 'all' : '3m'))) || RANGES[2]; const chartLock = !this.isPro() && rg[0] === 'all';
+    const RANGES = [['4w', LANG === 'fr' ? '30 j' : '30 d', 30], ['3m', L('3 mo'), 91], ['all', L('All'), 0]];
+    const rg = RANGES.find(r => r[0] === (s.progRange || (this.isPro() ? 'all' : '4w'))) || RANGES[2]; const chartLock = !this.isPro() && rg[0] !== '4w';
     const cut = rg[2] ? T - rg[2] * DAY : -Infinity;
     const sess = sessAll.filter(se => se.date >= cut);
     const val = (se) => s.metric === 'e1rm' ? Math.max(...se.ws.map(x => e1(x.w, x.r))) : s.metric === 'vol' ? se.ws.reduce((a, x) => a + x.w * x.r, 0) : Math.max(...se.ws.map(x => x.w));
@@ -3245,8 +3245,8 @@ class Component extends DCLogic {
       progEx, progChips: histNames.map(n => ({ name: n, bg: n === progEx ? '#FFFFFF' : 'transparent', color: n === progEx ? '#0A0A0C' : '#FFFFFF', border: n === progEx ? '#FFFFFF' : '#33333C', onClick: go({ progEx: n, progSel: null }) })),
       metrics: [['e1rm',L('Est. 1RM')],['vol','Volume'],['top',L('Top set')]].map(([k, label]) => ({ label, bg: s.metric === k ? '#24242B' : 'transparent', color: s.metric === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ metric: k, progSel: null }) })),
       metricHelp: s.metric === 'e1rm' ? L('Estimated max for 1 rep, from your best set: weight × (1 + reps ÷ 30). Best overall strength gauge.') : s.metric === 'vol' ? L('Total weight × reps over all work sets of the session. Tracks workload — the main driver of muscle growth.') : L('Heaviest weight lifted in the session, regardless of reps.'),
-      lkChart: this.lockV(chartLock, 'chart', LANG === 'fr' ? 'Toute ta progression' : 'Your whole progress', LANG === 'fr' ? 'Les 3 derniers mois sont gratuits. Pro affiche tout ton historique.' : 'The last 3 months are free. Pro shows your full history.'), deltaF: chartLock ? 'blur(6px)' : 'none',
-      ranges: RANGES.map(([k, label]) => ({ label: label + (k === 'all' && !this.isPro() ? ' ✦' : ''), bg: rg[0] === k ? '#24242B' : 'transparent', color: rg[0] === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ progRange: k, progSel: null }) })),
+      lkChart: this.lockV(chartLock, 'chart', LANG === 'fr' ? 'Toute ta progression' : 'Your whole progress', LANG === 'fr' ? 'Les 30 derniers jours sont gratuits. Pro affiche 3 mois ou tout ton historique.' : 'The last 30 days are free. Pro shows 3 months or your full history.'), deltaF: chartLock ? 'blur(6px)' : 'none',
+      ranges: RANGES.map(([k, label]) => ({ label: label + (k !== '4w' && !this.isPro() ? ' ✦' : ''), bg: rg[0] === k ? '#24242B' : 'transparent', color: rg[0] === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ progRange: k, progSel: null }) })),
       metricLabel: (s.metric === 'e1rm' ? L('Estimated 1RM') : s.metric === 'vol' ? L('Session volume') : L('Heaviest set')) + (sel != null ? ' · ' + fmtD(sess[sel].date) : ''),
       curVal: sel != null ? toU(series[sel]) : series.length ? toU(series[series.length - 1]) : '—', curUnit: s.unit,
       delta: sel == null && series.length > 1 ? (delta >= 0 ? '+' : '−') + toU(Math.abs(delta)) + ' · ' + series.length + L(' sessions') : '',
