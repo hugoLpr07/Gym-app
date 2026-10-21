@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.29.2 — 2026-10-20
+- Profil : « Se déconnecter » et « Supprimer mon compte » déplacés tout en bas de la page.
+
 ## 0.29.1 — 2026-10-20
 - Compte : « Se déconnecter » et « Supprimer mon compte » demandent maintenant une confirmation (fenêtre qui explique ce qui sera gardé ou effacé).
 

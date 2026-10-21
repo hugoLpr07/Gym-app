@@ -833,11 +833,6 @@ input::placeholder{color:#9C9CA8}
 </button>
 <sc-if value="{{ cbNowOn }}" hint-placeholder-val="{{ false }}"><div style="padding:0 16px 14px;display:flex;flex-direction:column;gap:6px;"><button onClick="{{ cbNow }}" style="min-height:44px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#fff;font-size:14px;font-weight:600;opacity:{{ cbNowOp }};">{{ cbNowLabel }}</button><sc-if value="{{ cbErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ cbErr }}</span></sc-if></div></sc-if>
 </div>
-<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
-<button onClick="{{ acSignOut }}" style="min-height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ acSignOutLabel }}</button>
-<button onClick="{{ acDelete }}" style="min-height:52px;border-radius:12px;border:1px solid {{ acDelBorder }};background:transparent;color:#FF4D4D;font-size:14px;font-weight:600;padding:4px 8px;opacity:{{ acOp }};">{{ acDelLabel }}</button>
-</div>
-<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ acDelHint }}</span>
 </sc-if>
 </div>
 <button onClick="{{ proCardClick }}" style="flex:none;box-sizing:border-box;width:100%;background:#16161A;border:1px solid var(--acc);border-radius:16px;padding:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;color:#FFFFFF;min-height:76px;" style-active="transform:scale(0.99)">
@@ -922,6 +917,15 @@ input::placeholder{color:#9C9CA8}
 </div>
 <span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ tx.k48 }}</span>
 </div>
+<sc-if value="{{ acHasProf }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:8px;padding-top:8px;">
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+<button onClick="{{ acSignOut }}" style="min-height:52px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:15px;font-weight:600;">{{ acSignOutLabel }}</button>
+<button onClick="{{ acDelete }}" style="min-height:52px;border-radius:12px;border:1px solid {{ acDelBorder }};background:transparent;color:#FF4D4D;font-size:14px;font-weight:600;padding:4px 8px;opacity:{{ acOp }};">{{ acDelLabel }}</button>
+</div>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ acDelHint }}</span>
+</div>
+</sc-if>
 <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;text-align:center;">{{ appLabel }}</div>
 <button onClick="{{ openPrivacy }}" style="align-self:center;min-height:44px;padding:0 12px;border:none;background:transparent;color:#9C9CA8;font-size:13px;text-decoration:underline;">{{ privacyLabel }}</button>
 </div>
@@ -1421,7 +1425,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.29.1';
+const APP_VERSION = '0.29.2';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive content'], ['Harcèlement ou intimidation', 'Harassment or bullying'], ['Spam ou arnaque', 'Spam or scam'], ['Usurpation d’identité', 'Impersonation'], ['Autre', 'Other']];
 // Sauvegarde en ligne : ce qui n'est pas envoyé (propre à l'appareil, ou relu depuis Santé / Health Connect).
