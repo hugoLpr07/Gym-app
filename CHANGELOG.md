@@ -5,6 +5,13 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.31.0 — 2026-10-21
+- Progrès : l’onglet Stats disparaît, son contenu est rangé là où on le cherche. Il reste 3 onglets : Séances · Exercices · Corps.
+- Exercices commence par la carte du corps (7 jours / 4 semaines), plus compacte. Toucher un muscle affiche juste en dessous ses séries, sa part du volume et les exercices qui le travaillent (ajout à la séance avec Pro). Les muscles sont listés en puces sous la carte.
+- Exercices : « Séries par muscle » et « Tendance e1RM » (Pro) juste sous la carte ; toucher une tendance ouvre le graphique de l’exercice plus bas.
+- Séances : la régularité (cette semaine, 4 dernières semaines, série, 8 semaines) au-dessus du calendrier (Pro).
+- Séries par muscle : la moyenne sur 4 semaines compte maintenant la semaine en cours (elle affichait 0 au début).
+
 ## 0.30.2 — 2026-10-21
 - Historique : dans une ancienne séance, toucher un muscle affiche maintenant gratuitement les exercices qui l’ont travaillé (principal / secondaire, séries). Ce n’est plus une fonction Pro.
 

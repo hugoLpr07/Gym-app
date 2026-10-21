@@ -365,13 +365,36 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ isProgress }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;top:0;left:0;right:0;bottom:{{ tabBottom }};overflow-y:auto;padding:12px 0 24px;display:flex;flex-direction:column;gap:16px;">
 <div style="padding:8px 16px 0;font-size:34px;font-weight:800;letter-spacing:-0.02em;line-height:40px;">{{ tx.k22 }}</div>
-<div style="margin:0 16px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:#16161A;border:1px solid #24242B;border-radius:12px;padding:4px;">
-<sc-for list="{{ progViews }}" as="v" hint-placeholder-count="4">
+<div style="margin:0 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#16161A;border:1px solid #24242B;border-radius:12px;padding:4px;">
+<sc-for list="{{ progViews }}" as="v" hint-placeholder-count="3">
 <button onClick="{{ v.onClick }}" style="height:44px;border:none;border-radius:9px;background:{{ v.bg }};color:{{ v.color }};font-size:15px;font-weight:600;">{{ v.label }}</button>
 </sc-for>
 </div>
 <sc-if value="{{ isSessView }}" hint-placeholder-val="{{ true }}">
 <div style="display:flex;flex-direction:column;gap:16px;padding:0 16px;">
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k33 }}</div>
+<div style="position:relative;">
+<sc-if value="{{ lkReg.on }}" hint-placeholder-val="{{ false }}"><div onClick="{{ lkReg.go }}" style="position:absolute;inset:-6px;z-index:4;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);background:rgba(22,22,26,0.4);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px;text-align:center;cursor:pointer;"><span style="font-size:15px;font-weight:800;color:#FFFFFF;text-wrap:balance;">✦ {{ lkReg.title }}</span><span style="font-size:13px;line-height:18px;color:#C8C8D0;text-wrap:pretty;">{{ lkReg.sub }}</span><span style="min-height:36px;padding:0 16px;border-radius:18px;background:var(--acc);color:#0A0A0C;font-size:13px;font-weight:700;display:flex;align-items:center;">{{ lkReg.cta }}</span></div></sc-if>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:16px;">
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
+<sc-for list="{{ statTiles }}" as="t" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;font-weight:600;color:#9C9CA8;">{{ t.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;">{{ t.value }}</span></div>
+</sc-for>
+</div>
+<div style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;align-items:end;height:112px;">
+<sc-for list="{{ weekBars }}" as="b" hint-placeholder-count="8">
+<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%;">
+<span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#FFFFFF;">{{ b.count }}</span>
+<div style="width:100%;height:{{ b.h }};border-radius:6px;background:{{ b.bg }};"></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:{{ b.labelColor }};">{{ b.label }}</span>
+</div>
+</sc-for>
+</div>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ plannedLabel }}</span>
+</div>
+</div>
+</div>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:10px;">
 <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
 <button onClick="{{ calPrev }}" style="width:44px;height:44px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:20px;">‹</button>
@@ -406,7 +429,65 @@ input::placeholder{color:#9C9CA8}
 </sc-if>
 <sc-if value="{{ isLiftView }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;flex-direction:column;gap:16px;">
-<div style="display:flex;flex-direction:column;gap:10px;">
+<div style="display:flex;flex-direction:column;gap:16px;padding:0 16px;">
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.nBodyMap }}</div>
+<div style="display:flex;gap:4px;background:#16161A;border:1px solid #24242B;border-radius:10px;padding:3px;"><sc-for list="{{ bmRanges }}" as="r" hint-placeholder-count="2"><button onClick="{{ r.onClick }}" style="height:34px;padding:0 10px;border:none;border-radius:8px;background:{{ r.bg }};color:{{ r.color }};font-size:13px;font-weight:600;">{{ r.label }}</button></sc-for></div>
+</div>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:14px;">
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;">
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><div style="width:100%;max-width:130px;">{{ bmFront }}</div><span style="font-size:13px;font-weight:600;color:#9C9CA8;">{{ tx.nFront }}</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><div style="width:100%;max-width:130px;">{{ bmBack }}</div><span style="font-size:13px;font-weight:600;color:#9C9CA8;">{{ tx.nBack }}</span></div>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;"><span>0</span><sc-for list="{{ bmLegend }}" as="lg" hint-placeholder-count="4"><span style="width:26px;height:10px;border-radius:3px;background:{{ lg.c }};"></span></sc-for><span>{{ tx.nScale }}</span></div>
+<sc-if value="{{ bmHasSel }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:12px;background:#1B1B20;border:1px solid #2A2A30;border-radius:16px;padding:12px 14px;"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;"><span style="font-size:16px;font-weight:700;">{{ bmSelName }}</span><span style="font-size:12px;color:#9C9CA8;">{{ bmSelSub }}</span></div><span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--acc);">{{ bmSelVal }}</span><button onClick="{{ bmClear }}" style="width:44px;height:44px;border-radius:22px;border:none;background:#2A2A30;color:#C8C8CF;font-size:15px;">✕</button></div></sc-if>
+<sc-if value="{{ bmHasExList }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:6px;"><sc-for list="{{ bmExTop }}" as="e" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:10px;padding:6px 6px 6px 14px;background:#1B1B20;border:1px solid #2A2A30;border-radius:14px;"><div onClick="{{ e.onInfo }}" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;cursor:pointer;padding:4px 0;"><span style="font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ e.name }}</span><span style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:{{ e.tagColor }};">{{ e.tag }}</span></div><button onClick="{{ e.onAdd }}" style="flex:none;min-width:44px;height:44px;padding:0 14px;border-radius:12px;border:none;background:{{ e.addBg }};color:{{ e.addColor }};font-size:14px;font-weight:700;white-space:nowrap;">{{ e.addLabel }}</button></div></sc-for></div></sc-if>
+<sc-if value="{{ bmNoSel }}" hint-placeholder-val="{{ true }}"><div style="text-align:center;color:#6E6E77;font-size:12px;">{{ tx.nTapMuscle }}</div></sc-if>
+<div style="display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ bmMusChips }}" as="mm" hint-placeholder-count="6"><button onClick="{{ mm.onClick }}" style="display:flex;align-items:center;gap:6px;height:34px;padding:0 12px;border:none;border-radius:17px;background:{{ mm.bg }};color:{{ mm.color }};font-size:12px;font-weight:600;">{{ mm.label }}<span style="font-family:'JetBrains Mono',monospace;opacity:0.7;">{{ mm.val }}</span></button></sc-for></div>
+<sc-if value="{{ bmHasZero }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:17px;color:#9C9CA8;text-wrap:pretty;">{{ bmZero }}</span></sc-if>
+<button onClick="{{ openBig }}" style="height:44px;border-radius:12px;border:1px solid #2A2A30;background:#1B1B20;color:#FFFFFF;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;"><span style="font-size:16px;">⤢</span>{{ bmExpandLabel }}</button>
+<span style="font-size:12px;line-height:17px;color:#9C9CA8;text-wrap:pretty;">{{ tx.nBodyMapHint }}</span>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k34 }}</div>
+<div style="position:relative;">
+<sc-if value="{{ lkMus.on }}" hint-placeholder-val="{{ false }}"><div onClick="{{ lkMus.go }}" style="position:absolute;inset:-6px;z-index:4;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);background:rgba(22,22,26,0.4);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px;text-align:center;cursor:pointer;"><span style="font-size:15px;font-weight:800;color:#FFFFFF;text-wrap:balance;">✦ {{ lkMus.title }}</span><span style="font-size:13px;line-height:18px;color:#C8C8D0;text-wrap:pretty;">{{ lkMus.sub }}</span><span style="min-height:36px;padding:0 16px;border-radius:18px;background:var(--acc);color:#0A0A0C;font-size:13px;font-weight:700;display:flex;align-items:center;">{{ lkMus.cta }}</span></div></sc-if>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:8px 16px;display:flex;flex-direction:column;">
+<sc-for list="{{ muscleRows }}" as="g" hint-placeholder-count="6">
+<div style="display:grid;grid-template-columns:84px minmax(0,1fr) 44px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #24242B;">
+<div style="display:flex;flex-direction:column;gap:1px;"><span style="font-size:15px;font-weight:600;">{{ g.name }}</span><span style="font-size:11px;color:{{ g.tagColor }};white-space:nowrap;">{{ g.tag }}</span></div>
+<div style="position:relative;height:10px;border-radius:5px;background:#0A0A0C;overflow:hidden;">
+<div style="position:absolute;top:0;bottom:0;left:40%;width:40%;background:color-mix(in srgb, var(--acc) 14%, transparent);"></div>
+<div style="position:absolute;top:0;bottom:0;left:0;width:{{ g.w }};border-radius:5px;background:{{ g.color }};"></div>
+</div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;text-align:right;">{{ g.avg }}</span>
+</div>
+</sc-for>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;padding:10px 0 6px;text-wrap:pretty;">{{ tx.k35 }}</span>
+</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k36 }}</div>
+<div style="position:relative;">
+<sc-if value="{{ lkTrend.on }}" hint-placeholder-val="{{ false }}"><div onClick="{{ lkTrend.go }}" style="position:absolute;inset:-6px;z-index:4;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);background:rgba(22,22,26,0.4);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px;text-align:center;cursor:pointer;"><span style="font-size:15px;font-weight:800;color:#FFFFFF;text-wrap:balance;">✦ {{ lkTrend.title }}</span><span style="font-size:13px;line-height:18px;color:#C8C8D0;text-wrap:pretty;">{{ lkTrend.sub }}</span><span style="min-height:36px;padding:0 16px;border-radius:18px;background:var(--acc);color:#0A0A0C;font-size:13px;font-weight:700;display:flex;align-items:center;">{{ lkTrend.cta }}</span></div></sc-if>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;overflow:hidden;">
+<sc-for list="{{ liftTrends }}" as="lt" hint-placeholder-count="6">
+<button onClick="{{ lt.onClick }}" style="width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto 14px;gap:10px;align-items:center;padding:12px 16px;min-height:56px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;text-align:left;" style-active="background:#24242B">
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ lt.name }}</span><sc-if value="{{ lt.hasFlag }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#9C9CA8;">{{ lt.flag }}</span></sc-if></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:{{ lt.color }};">{{ lt.pct }}</span>
+<span style="color:#9C9CA8;font-size:16px;">›</span>
+</button>
+</sc-for>
+<sc-if value="{{ trMoreOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ trMore }}" style="width:100%;min-height:48px;border:none;background:transparent;color:#FFFFFF;font-size:14px;font-weight:600;">{{ trMoreLabel }}</button></sc-if>
+</div>
+</div>
+<sc-if value="{{ stalledLine }}" hint-placeholder-val="{{ true }}"><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ stalledLine }}</span></sc-if>
+</div>
+</div>
+<div data-anchor="lfChart" style="display:flex;flex-direction:column;gap:10px;scroll-margin-top:12px;">
+<div style="margin:0 16px;font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ lfHead }}</div>
 <div style="position:relative;margin:0 16px;">
 <input type="search" value="{{ progQuery }}" onChange="{{ onProgQuery }}" placeholder="{{ tx.k68 }}" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #24242B;background:#16161A;color:#fff;font-size:16px;padding:0 48px 0 14px;">
 <sc-if value="{{ hasProgQuery }}" hint-placeholder-val="{{ false }}">
@@ -615,84 +696,6 @@ input::placeholder{color:#9C9CA8}
 </div>
 </div>
 </sc-if>
-</div>
-</sc-if>
-<sc-if value="{{ isStatsView }}" hint-placeholder-val="{{ false }}">
-<div style="position:relative;display:flex;flex-direction:column;gap:16px;padding:0 16px;max-height:{{ stMaxH }};overflow:hidden;">
-<sc-if value="{{ lkStats.on }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:0;right:0;top:{{ lkStats.top }};bottom:0;z-index:4;-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);background:linear-gradient(to bottom, rgba(10,10,12,0) 0, rgba(10,10,12,0.6) 80px);display:flex;flex-direction:column;align-items:center;padding:56px 16px 16px;"><div style="width:100%;max-width:380px;box-sizing:border-box;background:#16161A;border:1px solid var(--acc);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:8px;box-shadow:0 16px 48px rgba(0,0,0,0.55);"><span style="font-size:12px;font-weight:800;letter-spacing:0.16em;color:var(--acc);">✦ BARLOG PRO</span><span style="font-size:20px;font-weight:800;line-height:25px;text-wrap:balance;">{{ lkStats.title }}</span><span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ lkStats.sub }}</span><button onClick="{{ lkStats.go }}" style="margin-top:4px;min-height:52px;border-radius:14px;border:none;background:var(--acc);color:#0A0A0C;font-size:16px;font-weight:700;">{{ lkStats.cta }}</button><button onClick="{{ lkStats.go }}" style="min-height:40px;border:none;background:transparent;color:#9C9CA8;font-size:14px;font-weight:600;">{{ lkStats.more }}</button></div></div></sc-if>
-<div style="display:flex;flex-direction:column;gap:8px;">
-<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.nBodyMap }}</div>
-<div style="display:flex;gap:4px;background:#16161A;border:1px solid #24242B;border-radius:10px;padding:3px;"><sc-for list="{{ bmRanges }}" as="r" hint-placeholder-count="2"><button onClick="{{ r.onClick }}" style="height:34px;padding:0 10px;border:none;border-radius:8px;background:{{ r.bg }};color:{{ r.color }};font-size:13px;font-weight:600;">{{ r.label }}</button></sc-for></div>
-</div>
-<div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:14px;">
-<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;">
-<div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><div style="width:100%;max-width:170px;">{{ bmFront }}</div><span style="font-size:13px;font-weight:600;color:#9C9CA8;">{{ tx.nFront }}</span></div>
-<div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><div style="width:100%;max-width:170px;">{{ bmBack }}</div><span style="font-size:13px;font-weight:600;color:#9C9CA8;">{{ tx.nBack }}</span></div>
-</div>
-<div style="display:flex;align-items:center;justify-content:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;"><span>0</span><sc-for list="{{ bmLegend }}" as="lg" hint-placeholder-count="4"><span style="width:26px;height:10px;border-radius:3px;background:{{ lg.c }};"></span></sc-for><span>{{ tx.nScale }}</span></div>
-<button onClick="{{ openBig }}" style="height:44px;border-radius:12px;border:1px solid #2A2A30;background:#1B1B20;color:#FFFFFF;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;"><span style="font-size:16px;">⤢</span>{{ bmExpandLabel }}</button>
-<sc-if value="{{ bmHasSel }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:12px;background:#1B1B20;border:1px solid #2A2A30;border-radius:16px;padding:12px 14px;"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;"><span style="font-size:16px;font-weight:700;">{{ bmSelName }}</span><span style="font-size:12px;color:#9C9CA8;">{{ bmSelSub }}</span></div><span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--acc);">{{ bmSelVal }}</span><button onClick="{{ bmClear }}" style="width:44px;height:44px;border-radius:22px;border:none;background:#2A2A30;color:#C8C8CF;font-size:15px;">✕</button></div></sc-if>
-<sc-if value="{{ bmNoSel }}" hint-placeholder-val="{{ true }}"><div style="text-align:center;color:#6E6E77;font-size:12px;">{{ tx.nTapMuscle }}</div></sc-if>
-<div style="display:flex;flex-direction:column;gap:8px;">
-<sc-for list="{{ bmList }}" as="m" hint-placeholder-count="8"><div onClick="{{ m.onClick }}" style="display:grid;grid-template-columns:22px 96px minmax(0,1fr) 40px;gap:10px;align-items:center;padding:7px 8px;margin:0 -8px;border-radius:10px;background:{{ m.bg }};cursor:pointer;"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#55555F;">{{ m.rank }}</span>
-<span style="font-size:13px;font-weight:600;color:{{ m.labelColor }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ m.label }}</span>
-<div style="height:8px;border-radius:4px;background:#0A0A0C;overflow:hidden;"><div style="height:100%;width:{{ m.w }};border-radius:4px;background:{{ m.c }};"></div></div>
-<span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;text-align:right;color:{{ m.color }};">{{ m.val }}</span>
-</div></sc-for>
-<sc-if value="{{ bmHasZero }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:17px;color:#9C9CA8;text-wrap:pretty;">{{ bmZero }}</span></sc-if>
-</div>
-<span style="font-size:12px;line-height:17px;color:#9C9CA8;text-wrap:pretty;">{{ tx.nBodyMapHint }}</span>
-</div>
-</div>
-<div style="display:flex;flex-direction:column;gap:8px;">
-<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k33 }}</div>
-<div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:16px;">
-<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
-<sc-for list="{{ statTiles }}" as="t" hint-placeholder-count="3">
-<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;font-weight:600;color:#9C9CA8;">{{ t.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;">{{ t.value }}</span></div>
-</sc-for>
-</div>
-<div style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;align-items:end;height:112px;">
-<sc-for list="{{ weekBars }}" as="b" hint-placeholder-count="8">
-<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%;">
-<span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#FFFFFF;">{{ b.count }}</span>
-<div style="width:100%;height:{{ b.h }};border-radius:6px;background:{{ b.bg }};"></div>
-<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:{{ b.labelColor }};">{{ b.label }}</span>
-</div>
-</sc-for>
-</div>
-<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ plannedLabel }}</span>
-</div>
-</div>
-<div style="display:flex;flex-direction:column;gap:8px;">
-<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k34 }}</div>
-<div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:8px 16px;display:flex;flex-direction:column;">
-<sc-for list="{{ muscleRows }}" as="g" hint-placeholder-count="6">
-<div style="display:grid;grid-template-columns:84px minmax(0,1fr) 44px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #24242B;">
-<div style="display:flex;flex-direction:column;gap:1px;"><span style="font-size:15px;font-weight:600;">{{ g.name }}</span><span style="font-size:11px;color:{{ g.tagColor }};white-space:nowrap;">{{ g.tag }}</span></div>
-<div style="position:relative;height:10px;border-radius:5px;background:#0A0A0C;overflow:hidden;">
-<div style="position:absolute;top:0;bottom:0;left:40%;width:40%;background:color-mix(in srgb, var(--acc) 14%, transparent);"></div>
-<div style="position:absolute;top:0;bottom:0;left:0;width:{{ g.w }};border-radius:5px;background:{{ g.color }};"></div>
-</div>
-<span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;text-align:right;">{{ g.avg }}</span>
-</div>
-</sc-for>
-<span style="font-size:13px;line-height:18px;color:#9C9CA8;padding:10px 0 6px;text-wrap:pretty;">{{ tx.k35 }}</span>
-</div>
-</div>
-<div style="display:flex;flex-direction:column;gap:8px;">
-<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ tx.k36 }}</div>
-<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;overflow:hidden;">
-<sc-for list="{{ liftTrends }}" as="lt" hint-placeholder-count="6">
-<button onClick="{{ lt.onClick }}" style="width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto 14px;gap:10px;align-items:center;padding:12px 16px;min-height:56px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;text-align:left;" style-active="background:#24242B">
-<div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ lt.name }}</span><sc-if value="{{ lt.hasFlag }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#9C9CA8;">{{ lt.flag }}</span></sc-if></div>
-<span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:{{ lt.color }};">{{ lt.pct }}</span>
-<span style="color:#9C9CA8;font-size:16px;">›</span>
-</button>
-</sc-for>
-</div>
-<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ stalledLine }}</span>
-</div>
 </div>
 </sc-if>
 </div>
@@ -1428,7 +1431,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.30.2';
+const APP_VERSION = '0.31.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive content'], ['Harcèlement ou intimidation', 'Harassment or bullying'], ['Spam ou arnaque', 'Spam or scam'], ['Usurpation d’identité', 'Impersonation'], ['Autre', 'Other']];
 // Sauvegarde en ligne : ce qui n'est pas envoyé (propre à l'appareil, ou relu depuis Santé / Health Connect).
@@ -2426,7 +2429,7 @@ class Component extends DCLogic {
     if (sc === 'summary') return set({ screen: 'tabs', tab: 'today', summary: null });
     if (sc === 'workout') return set({ screen: 'tabs', tab: 'today' });
     if (sc !== 'tabs') return set({ screen: 'tabs' });
-    if (s.tab === 'progress') { const pv = s.progView || 'sessions'; if (pv === 'stats' && this.isPro() && s.bmSel) return set({ bmSel: null }); if (pv === 'lifts' && s.progSel != null) return set({ progSel: null }); if (pv !== 'sessions') return set({ progView: 'sessions' }); }
+    if (s.tab === 'progress') { const pv = s.progView || 'sessions'; if (pv === 'lifts' && s.bmSel) return set({ bmSel: null }); if (pv === 'lifts' && s.progSel != null) return set({ progSel: null }); if (pv !== 'sessions') return set({ progView: 'sessions' }); }
     if (s.tab === 'profile' && s.acSent && !s.acct) return set({ acSent: null, acCode: '' });
     if (s.tab !== 'today') return set({ tab: 'today' });
     return this.minimizeApp();
@@ -3049,9 +3052,9 @@ class Component extends DCLogic {
     const weekBars = Array.from({ length: 8 }, (_, j) => { const i = 7 - j; const k = wkKey(i); const c = wkCount[k] || 0; const d = new Date(k); return { count: String(c), h: Math.max(3, c / barMax * 72) + 'px', bg: c >= planned ? ACC : c ? '#FFFFFF' : '#33333C', label: d.getDate() + '/' + (d.getMonth() + 1), labelColor: i === 0 ? '#FFFFFF' : '#9C9CA8' }; });
     const GMAP = {}; [...LIB, ...s.custom].forEach(l => { GMAP[l.name] = l.group; });
     const mg = {}, mgNow = {};
-    Object.entries(s.history).forEach(([name, arr]) => { const g = GMAP[name]; if (!g) return; arr.forEach(se => { const n = work(se.sets).length; const k = wkStart(se.date); if (k >= wkKey(4) && k < w0) mg[g] = (mg[g] || 0) + n; if (k === w0) mgNow[g] = (mgNow[g] || 0) + n; }); });
+    Object.entries(s.history).forEach(([name, arr]) => { const g = GMAP[name]; if (!g) return; arr.forEach(se => { const n = work(se.sets).length; const k = wkStart(se.date); if (k >= wkKey(3) && k <= w0) mg[g] = (mg[g] || 0) + n; if (k === w0) mgNow[g] = (mgNow[g] || 0) + n; }); });
     const muscleRows = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core'].map(g => { const avg = (mg[g] || 0) / 4; const ok = avg >= 10 && avg <= 20; return { name: L(g), avg: String(Math.round(avg * 10) / 10), w: Math.min(100, avg / 25 * 100) + '%', color: ok ? ACC : '#FFFFFF', tag: (avg < 10 ? L('Low') : avg > 20 ? L('High') : L('In range')) + ' · ' + (mgNow[g] || 0) + L(' this week'), tagColor: ok ? ACC : '#9C9CA8' }; });
-    const liftTrends = histAll.map(n => { const st = liftStat(n); return { name: n, pct: pctTxt(st.pct), color: st.pct == null ? '#9C9CA8' : st.pct > 0.05 ? ACC : '#FFFFFF', flag: st.stalled ? L('No PR for ') + st.wks + L(' weeks') : '', hasFlag: !!st.stalled, onClick: go({ progView: 'lifts', progEx: n, progSel: null }) }; });
+    const liftTrends = histAll.map(n => { const st = liftStat(n); return { name: n, pct: pctTxt(st.pct), color: st.pct == null ? '#9C9CA8' : st.pct > 0.05 ? ACC : '#FFFFFF', flag: st.stalled ? L('No PR for ') + st.wks + L(' weeks') : '', hasFlag: !!st.stalled, onClick: () => { this.setState({ progView: 'lifts', progEx: n, progSel: null }); setTimeout(() => { const el = document.querySelector('[data-anchor="lfChart"]'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60); } }; });
     const stalledN = liftTrends.filter(x => x.hasFlag).length;
 
     const fr = LANG === 'fr';
@@ -3087,17 +3090,18 @@ class Component extends DCLogic {
     const fiLib = fi ? [...LIB, ...s.custom].find(l => l.name === fi) : null;
     return {
       bmS: Object.fromEntries(MUS.map(m => [m[0], heat(mVal(m[0]))])),
-      bmList: MUS.map(m => ({ m, v: mVal(m[0]) })).filter(x => x.v > 0).sort((a, b) => b.v - a.v).map(({ m, v }, i, arr) => ({ rank: String(i + 1).padStart(2, '0'), label: LANG === 'fr' ? m[2] : m[1], val: trim(Math.round(v * 10) / 10), color: '#FFFFFF', labelColor: '#FFFFFF', c: heat(v), w: (v / arr[0].v * 100) + '%', bg: bmSel === m[0] ? '#1D1D22' : 'transparent', onClick: () => bmPick(m[0]) })),
+      bmMusChips: MUS.map(m => ({ m, v: mVal(m[0]) })).filter(x => x.v > 0).sort((a, b) => b.v - a.v).map(({ m, v }) => { const on = bmSel === m[0], l = lvl(v); return { label: LANG === 'fr' ? m[2] : m[1], val: trim(Math.round(v * 10) / 10), bg: on ? '#FFFFFF' : l === 3 ? ACC : '#24242B', color: on || l === 3 ? '#0A0A0C' : '#FFFFFF', onClick: () => bmPick(m[0]) }; }),
       bmLegend: FILLS.map(c => ({ c })),
       bmFront: bodyFig(FIG_FRONT, statStyle, bmPick, !!bmSel, { uid: 'bf' }), bmBack: bodyFig(FIG_BACK, statStyle, bmPick, !!bmSel, { uid: 'bb' }),
       bmBig: !!s.bmBig, openBig: () => this.setState(st => ({ bmBig: true, bmSide: st.bmSel && !FIG_FK.has(st.bmSel) ? 'back' : (st.bmSide || 'front') })), closeBig: () => this.setState({ bmBig: false }),
       bmSides: [['front', LANG === 'fr' ? 'Face' : 'Front'], ['back', LANG === 'fr' ? 'Dos' : 'Back']].map(([k, label]) => ({ label, bg: (s.bmSide || 'front') === k ? '#FFFFFF' : 'transparent', color: (s.bmSide || 'front') === k ? '#0A0A0C' : '#9C9CA8', onClick: () => this.setState({ bmSide: k }) })),
       bmBigFig: s.bmBig ? bodyFig((s.bmSide || 'front') === 'back' ? FIG_BACK : FIG_FRONT, statStyle, bmPick, !!bmSel, { uid: 'bx', big: true }) : null,
       bmChips: MUS.map(m => { const on = bmSel === m[0]; return { label: LANG === 'fr' ? m[2] : m[1], val: trim(Math.round(mVal(m[0]) * 10) / 10), bg: on ? ACC : '#16161A', color: on ? '#0A0A0C' : '#FFFFFF', border: on ? ACC : '#2A2A30', onClick: () => this.setState(st => { const k = m[0]; if (st.bmSel === k) return { bmSel: null }; const side = st.bmSide || 'front'; return { bmSel: k, bmSide: (side === 'front' ? FIG_FK : FIG_BK).has(k) ? side : (side === 'front' ? 'back' : 'front') }; }) }; }),
-      bmExpandLabel: bmSel ? L('Exercises for ') + musName(bmSel) : L('Enlarge map'),
       ...(() => { const list = bmSel ? all.map(l => { const mu = this.meta(l.name).mus; const p = mu.p.includes(bmSel); return p || mu.s.includes(bmSel) ? { n: l.name, p, c: (s.history[l.name] || []).length } : null; }).filter(Boolean).sort((a, b) => (b.p - a.p) || (b.c - a.c) || a.n.localeCompare(b.n)) : [];
-        return { bmExN: String(list.length), bmHasExList: list.length > 0, bmExList: list.map(e => { const inW = !!(w && w.ex.some(x => x.name === e.n)); return { name: e.n, tag: (e.p ? L('Primary') : L('Secondary')) + (e.c ? ' · ' + e.c + (LANG === 'fr' ? ' séance' : ' session') + (e.c > 1 ? 's' : '') : ''), tagColor: e.p ? ACC : '#9C9CA8',
-          addLabel: inW ? '✓' : w ? L('+ Workout') : L('▶ Start'), addBg: inW ? '#24242B' : e.p ? ACC : '#FFFFFF', addColor: inW ? '#9C9CA8' : '#0A0A0C', onAdd: this.gate('muscle', () => this.addFromMap(e.n)), onInfo: () => { this.setState({ bmBig: false }); this.openInfo(e.n); } }; }) }; })(),
+        const rows = list.map(e => { const inW = !!(w && w.ex.some(x => x.name === e.n)); return { name: e.n, tag: (e.p ? L('Primary') : L('Secondary')) + (e.c ? ' · ' + e.c + (LANG === 'fr' ? ' séance' : ' session') + (e.c > 1 ? 's' : '') : ''), tagColor: e.p ? ACC : '#9C9CA8',
+          addLabel: (inW ? '✓' : w ? L('+ Workout') : L('▶ Start')) + (inW || this.isPro() ? '' : ' ✦'), addBg: inW ? '#24242B' : e.p ? ACC : '#FFFFFF', addColor: inW ? '#9C9CA8' : '#0A0A0C', onAdd: this.gate('muscle', () => this.addFromMap(e.n)), onInfo: () => { this.setState({ bmBig: false }); this.openInfo(e.n); } }; });
+        return { bmExN: String(list.length), bmHasExList: list.length > 0, bmExList: rows, bmExTop: rows.slice(0, 5),
+          bmExpandLabel: bmSel ? (LANG === 'fr' ? 'Tous les exercices · ' : 'All exercises · ') + musName(bmSel) + ' (' + list.length + ')' : L('Enlarge map') }; })(),
       ...(() => { if (!sd) return { sdHasMus: false, sdMus: [], sdFront: null, sdBack: null }; const acc = {}; (sd.ex || []).forEach(x => { const mu = this.meta(x.name).mus; const n = work(x.sets).length; mu.p.forEach(k => acc[k] = (acc[k] || 0) + n); mu.s.forEach(k => acc[k] = (acc[k] || 0) + n * 0.5); });
         const mx = Math.max(0, ...Object.values(acc)); const lv = v => !v ? 0 : v >= mx * 0.66 ? 3 : v >= mx * 0.33 ? 2 : 1; const SF = [FIG_BASE, mixC(FIG_BASE, ACC, 0.3), mixC(FIG_BASE, ACC, 0.62), ACC];
         const sel = s.sdSel && s.sdSel.d === sd.date ? s.sdSel.k : null; const fx = v => trim(Math.round((v || 0) * 10) / 10);
@@ -3209,12 +3213,17 @@ class Component extends DCLogic {
       showInstall: !s.standalone && !s.installSeen, dismissInstall: go({ installSeen: true }),
       isToday: showTabs && s.tab === 'today', isPrograms: showTabs && s.tab === 'programs', isProgress: showTabs && s.tab === 'progress', isProfile: showTabs && s.tab === 'profile', isFeed: showTabs && s.tab === 'feed',
       isSession: s.screen === 'session' && !!sd,
-      progViews: [['sessions', L('Sessions')], ['lifts', L('Lifts')], ['stats', L('Stats')], ['body', L('Body')]].map(([k, label]) => ({ label: label + (k === 'stats' && !this.isPro() ? ' ✦' : ''), bg: s.progView === k ? '#24242B' : 'transparent', color: s.progView === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ progView: k }) })),
-      isSessView: !['lifts', 'stats', 'body'].includes(s.progView), isLiftView: s.progView === 'lifts', isStatsView: s.progView === 'stats',
-      stMaxH: this.isPro() ? 'none' : '1100px', lkStats: this.lockV(!this.isPro(), 'stats', LANG === 'fr' ? 'Tes stats sont prêtes' : 'Your stats are ready', LANG === 'fr' ? 'Muscles travaillés sur 4 semaines, régularité, volume par muscle et tendance de chaque exercice, calculés avec tes séances.' : '4-week muscle map, consistency, volume per muscle and every lift’s trend, built from your workouts.', { top: '210px' }),
+      progViews: [['sessions', L('Sessions')], ['lifts', L('Lifts')], ['body', L('Body')]].map(([k, label]) => ({ label, bg: s.progView === k ? '#24242B' : 'transparent', color: s.progView === k ? '#FFFFFF' : '#9C9CA8', onClick: go({ progView: k }) })),
+      isSessView: !['lifts', 'body'].includes(s.progView), isLiftView: s.progView === 'lifts',
+      lkReg: this.lockV(!this.isPro(), 'stats', LANG === 'fr' ? 'Ta régularité' : 'Your consistency', LANG === 'fr' ? 'Séances par semaine, objectif et semaines d’affilée, calculés avec tes séances.' : 'Workouts per week, target and weeks in a row, built from your workouts.'),
+      lkMus: this.lockV(!this.isPro(), 'stats', LANG === 'fr' ? 'Séries par muscle' : 'Sets per muscle', LANG === 'fr' ? 'Ta moyenne par semaine pour chaque groupe, comparée à la zone conseillée.' : 'Your weekly average per muscle group, against the recommended range.'),
+      lkTrend: this.lockV(!this.isPro(), 'stats', LANG === 'fr' ? 'La tendance de chaque exercice' : 'Every lift’s trend', LANG === 'fr' ? 'Qui progresse et qui stagne sur les 4 dernières semaines.' : 'What’s improving and what’s stalling over the last 4 weeks.'),
+      lfHead: LANG === 'fr' ? 'Progression par exercice' : 'Progress per lift',
       statTiles: [{ label: L('This week'), value: thisWk + '/' + planned }, { label: L('Last 4 wk'), value: Math.round(last4 / (4 * planned) * 100) + '%' }, { label: L('Streak'), value: streak + L(' wk') }],
       weekBars, plannedLabel: L('Target: ') + planned + L(' sessions per week (one per routine). Streak = weeks in a row at target.'),
-      muscleRows, liftTrends, stalledLine: (stalledN ? stalledN + L(' lift') + (stalledN > 1 ? 's' : '') + L(' without a PR for 3+ weeks.') : L('Every lift has set a PR in the last 3 weeks.')) + L(' Compared with the 4 weeks before, or with your first session of the period if there is no earlier data.'),
+      muscleRows, liftTrends: liftTrends.slice(0, !this.isPro() ? 4 : s.trAll ? liftTrends.length : 5),
+      trMoreOn: this.isPro() && liftTrends.length > 5, trMore: () => this.setState({ trAll: !s.trAll }), trMoreLabel: s.trAll ? (LANG === 'fr' ? 'Réduire' : 'Show less') : (LANG === 'fr' ? 'Voir les ' + liftTrends.length + ' exercices' : 'See all ' + liftTrends.length + ' lifts'),
+      stalledLine: !this.isPro() ? '' : (stalledN ? stalledN + L(' lift') + (stalledN > 1 ? 's' : '') + L(' without a PR for 3+ weeks.') : L('Every lift has set a PR in the last 3 weeks.')) + L(' Compared with the 4 weeks before, or with your first session of the period if there is no earlier data.'),
       calTitle: cm.toLocaleDateString(LOC(), { month: 'long', year: 'numeric' }), calCount: monthCount + L(' session') + (monthCount === 1 ? '' : 's'),
       calPrev: go({ calOff: s.calOff - 1 }), calNext: () => { if (s.calOff < 0) this.setState({ calOff: s.calOff + 1 }); }, calNextOpacity: s.calOff < 0 ? 1 : 0.3,
       calDays, noSess: !sessions.length,
