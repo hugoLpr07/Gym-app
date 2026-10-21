@@ -1716,7 +1716,8 @@ class Component extends DCLogic {
     this.sb().then(c => c.auth.signOut()).catch(() => {}).then(() => { try { localStorage.removeItem(SB_STORE); } catch (e) {} });
   }
   // ───── Sauvegarde en ligne de l'historique (compte) ─────
-  // Fichier compressé privé backups/<id>/latest.gz (+ prev.gz, copie de la veille) ; infos dans backups_meta.
+  // Fichier compressé privé backups/<id>/b<horodatage>.gz (nom unique à chaque envoi : jamais de copie en cache) ;
+  // backups_meta donne le chemin de la dernière (path) et de celle de la veille (prev_path, filet de sécurité).
   // Jamais destructif : une sauvegarde trouvée sur le compte est restaurée ou fusionnée avant toute nouvelle écriture.
   cbSet(p) { this.setState(st => ({ cloud: { ...(st.cloud || {}), ...p } })); }
   cbSoon(ms) { clearTimeout(this._cbT); this._cbT = setTimeout(() => { this._cbT = null; this.cbUp(); }, ms); }
@@ -1725,12 +1726,12 @@ class Component extends DCLogic {
     if (typeof CompressionStream === 'undefined') return Promise.resolve(new Blob([json], { type: 'application/json' }));
     return new Response(new Blob([json]).stream().pipeThrough(new CompressionStream('gzip'))).blob().then(b => new Blob([b], { type: 'application/gzip' }));
   }
-  cbFetch(c, uid) {
-    return c.storage.from('backups').download(uid + '/latest.gz').then(({ data, error }) => { if (error) throw error; return data.slice(0, 2).arrayBuffer().then(h => { const u = new Uint8Array(h);
+  cbFetch(c, m) {
+    return c.storage.from('backups').download(m.path).then(({ data, error }) => { if (error) throw error; return data.slice(0, 2).arrayBuffer().then(h => { const u = new Uint8Array(h);
       const gz = u[0] === 0x1f && u[1] === 0x8b; return gz ? new Response(data.stream().pipeThrough(new DecompressionStream('gzip'))).text() : data.text(); }); })
       .then(t => { const d = JSON.parse(t); if (!d || !d.history || !d.routines) throw new Error(LANG === 'fr' ? 'Sauvegarde illisible' : 'Unreadable backup'); return d; });
   }
-  cbWipe(c, uid) { if (!uid) return Promise.resolve(); return c.storage.from('backups').remove([uid + '/latest.gz', uid + '/prev.gz']); }
+  cbWipe(c, uid) { if (!uid) return Promise.resolve(); const b = c.storage.from('backups'); return b.list(uid, { limit: 100 }).then(({ data }) => { const rm = (data || []).map(o => uid + '/' + o.name); return rm.length ? b.remove(rm) : null; }); }
   // Fusion sans perte : on garde tout ce qui existe d'un côté ou de l'autre (ce téléphone l'emporte en cas de doublon).
   cbMerge(st, d) {
     const h = {}; const names = new Set([...Object.keys(st.history || {}), ...Object.keys(d.history || {})]);
@@ -1748,8 +1749,8 @@ class Component extends DCLogic {
     if (cl.link && cl.uid === a.uid) return this.cbSoon(3000);
     this._cbChk = true;
     this.sb().then(c => c.from('backups_meta').select('*').eq('user_id', a.uid).maybeSingle()).then(({ data, error }) => { if (error) throw error;
-      if (!data) { this.cbSet({ uid: a.uid, link: true, srvAt: 0 }); return this.cbUp(); }
-      this.setState({ cbAsk: { n: data.sessions, at: data.updated_at, loc: nSess(this.state.history), arm: false } }); })
+      if (!data || !data.path) { this.cbSet({ uid: a.uid, link: true, srvAt: 0 }); return this.cbUp(); }
+      this.setState({ cbAsk: { n: data.sessions, at: data.updated_at, path: data.path, loc: nSess(this.state.history), arm: false } }); })
       .catch(e => { if (manual) this.acErr(e, false, 'cb'); }).then(() => { this._cbChk = false; });
   }
   // mode : 'merge' (fusionner / restaurer) ou 'replace' (remplacer ce téléphone par la sauvegarde)
@@ -1757,7 +1758,7 @@ class Component extends DCLogic {
     const s = this.state; const a = s.acct; const fr = LANG === 'fr'; const q = s.cbAsk; if (!a || !q || q.busy) return;
     if (mode === 'replace' && !q.arm) { this.setState({ cbAsk: { ...q, arm: true } }); return; }
     this.setState({ cbAsk: { ...q, busy: true } });
-    this.sb().then(c => this.cbFetch(c, a.uid)).then(d => {
+    this.sb().then(c => this.cbFetch(c, q)).then(d => {
       this.setState(st => { const keep = { healthOn: st.healthOn, hkWSync: null, hkCSync: null };
         const o = mode === 'replace' ? { ...this.cbMerge({ ...st, history: {}, routines: [], custom: [], body: (st.body || []).filter(x => x.hk), sessMeta: {}, exMeta: {} }, d), ...keep } : { ...this.cbMerge(st, d), hkWSync: null, hkCSync: null };
         return { ...o, cbAsk: null, workout: st.workout, screen: st.workout ? st.screen : 'tabs', cloud: { ...(st.cloud || {}), uid: a.uid, link: true, srvAt: 0, err: null } }; });
@@ -1773,12 +1774,14 @@ class Component extends DCLogic {
     const B = () => this.sb().then(c => c.storage.from('backups'));
     const run = this.sb().then(c => c.from('backups_meta').select('*').eq('user_id', uid).maybeSingle().then(({ data: m, error }) => { if (error) throw error;
         // Sauvegarde plus récente faite sur un autre téléphone : on la fusionne d'abord, pour ne rien écraser.
-        const other = m && m.device !== dev && Date.parse(m.updated_at) > ((this.state.cloud || {}).srvAt || 0);
-        return (other ? this.cbFetch(c, uid).then(d => this.setState(st => this.cbMerge(st, d))) : Promise.resolve())
-          .then(() => m && Date.now() - Date.parse(m.updated_at) > 20 * 3600000 ? B().then(b => b.remove([uid + '/prev.gz']).then(() => b.copy(uid + '/latest.gz', uid + '/prev.gz'))).catch(() => {}) : null)
-          .then(() => { const st = this.state; const n = nSess(st.history); return this.cbGz(JSON.stringify(this.cbData(st))).then(b => B().then(bk => bk.upload(uid + '/latest.gz', b, { upsert: true, contentType: b.type, cacheControl: '0' }))
-            .then(({ error }) => { if (error) throw error; return c.from('backups_meta').upsert({ user_id: uid, sessions: n, size_bytes: b.size, device: dev, app_version: APP_VERSION }).select('updated_at').maybeSingle(); })
-            .then(({ data, error }) => { if (error) throw error; this.cbSet({ dev, at: Date.now(), srvAt: data ? Date.parse(data.updated_at) : Date.now(), n, err: null, busy: false }); })); }); }))
+        const other = m && m.path && m.device !== dev && Date.parse(m.updated_at) > ((this.state.cloud || {}).srvAt || 0);
+        const path = uid + '/b' + Date.now() + '.gz'; const prev = m && m.path ? (Date.now() - Date.parse(m.updated_at) > 20 * 3600000 ? m.path : m.prev_path || m.path) : null;
+        return (other ? this.cbFetch(c, m).then(d => this.setState(st => this.cbMerge(st, d))) : Promise.resolve())
+          .then(() => { const st = this.state; const n = nSess(st.history); return this.cbGz(JSON.stringify(this.cbData(st))).then(b => B().then(bk => bk.upload(path, b, { upsert: false, contentType: b.type }))
+            .then(({ error }) => { if (error) throw error; return c.from('backups_meta').upsert({ user_id: uid, sessions: n, size_bytes: b.size, device: dev, app_version: APP_VERSION, path, prev_path: prev }).select('updated_at').maybeSingle(); })
+            .then(({ data, error }) => { if (error) throw error; this.cbSet({ dev, at: Date.now(), srvAt: data ? Date.parse(data.updated_at) : Date.now(), n, err: null, busy: false });
+              // Ménage : on ne garde que la dernière sauvegarde et celle de la veille.
+              return B().then(bk => bk.list(uid, { limit: 100 }).then(({ data: fl }) => { const rm = (fl || []).map(o => uid + '/' + o.name).filter(x => x !== path && x !== prev); return rm.length ? bk.remove(rm) : null; })).catch(() => {}); })); }); }))
       .catch(e => this.cbSet({ err: this.acMsg(e), busy: false }))
       .then(() => { this._cbRun = null; if (this._cbAgain) { this._cbAgain = false; this.cbSoon(5000); } });
     this._cbRun = run; return run;
