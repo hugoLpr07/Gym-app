@@ -116,6 +116,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 <div style="flex:none;display:flex;flex-direction:column;gap:8px;">
 <button onClick="{{ obNext }}" style="height:60px;border-radius:16px;border:none;background:var(--acc);color:#0A0A0C;font-size:17px;font-weight:700;" style-active="transform:scale(0.98)">{{ obStartLabel }}</button>
+<button onClick="{{ obAcct }}" style="min-height:52px;border-radius:16px;border:1px solid #33333C;background:transparent;color:#FFFFFF;font-size:15px;font-weight:600;padding:0 12px;">{{ obAcctLabel }}</button>
 <button onClick="{{ obImportApp }}" style="min-height:52px;border-radius:16px;border:1px solid #33333C;background:transparent;color:#FFFFFF;font-size:15px;font-weight:600;padding:0 12px;">{{ obImportLabel }}</button>
 <button onClick="{{ obDemo }}" style="min-height:44px;border:none;background:transparent;color:#9C9CA8;font-size:14px;font-weight:600;">{{ obDemoLabel }}</button>
 </div>
@@ -726,6 +727,7 @@ input::placeholder{color:#9C9CA8}
 <div style="background:#16161A;border:1px solid #24242B;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
 <span style="font-size:17px;font-weight:700;">{{ acSocTitle }}</span>
 <span style="font-size:14px;line-height:20px;color:#9C9CA8;text-wrap:pretty;">{{ acSocText }}</span>
+<sc-if value="{{ acBackHint }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:19px;color:#D8D8DE;background:#0A0A0C;border:1px solid #33333C;border-radius:12px;padding:10px 12px;text-wrap:pretty;">{{ acBackHint }}</span></sc-if>
 <sc-if value="{{ acAsk }}" hint-placeholder-val="{{ false }}">
 <input type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" value="{{ acEmail }}" onChange="{{ onAcEmail }}" placeholder="{{ acEmailPh }}" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;padding:0 14px;">
 <button onClick="{{ acSend }}" style="height:52px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;opacity:{{ acOp }};">{{ acSendLabel }}</button>
@@ -778,7 +780,7 @@ input::placeholder{color:#9C9CA8}
 <button onClick="{{ acAvPick }}" aria-label="{{ acAvLabel }}" style="flex:none;position:relative;width:64px;height:64px;padding:0;border-radius:32px;border:none;background:var(--acc);background-image:{{ acAvImg }};background-size:cover;background-position:center;color:#0A0A0C;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;opacity:{{ acAvOp }};">{{ acAvIni }}<span style="position:absolute;right:-2px;bottom:-2px;width:24px;height:24px;border-radius:12px;background:#24242B;border:2px solid #16161A;color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;">✎</span></button>
 <div style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:17px;font-weight:700;overflow:hidden;text-overflow:ellipsis;">{{ acHandle }}</span><span style="font-size:13px;color:#9C9CA8;overflow:hidden;text-overflow:ellipsis;">{{ acMail }}</span></div>
 </div>
-<div style="display:flex;gap:8px;flex-wrap:wrap;"><button onClick="{{ acAvPick }}" style="min-height:40px;padding:4px 14px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#fff;font-size:14px;font-weight:600;opacity:{{ acAvOp }};">{{ acAvLabel }}</button><sc-if value="{{ acAvHas }}" hint-placeholder-val="{{ false }}"><button onClick="{{ acAvDel }}" style="min-height:40px;padding:4px 14px;border-radius:12px;border:1px solid {{ acAvDelBorder }};background:transparent;color:{{ acAvDelColor }};font-size:14px;font-weight:600;">{{ acAvDelLabel }}</button></sc-if></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;"><button onClick="{{ acAvCam }}" style="min-height:40px;padding:4px 14px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#fff;font-size:14px;font-weight:600;opacity:{{ acAvOp }};">{{ acAvCamLabel }}</button><button onClick="{{ acAvPick }}" style="min-height:40px;padding:4px 14px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#fff;font-size:14px;font-weight:600;opacity:{{ acAvOp }};">{{ acAvLabel }}</button><sc-if value="{{ acAvHas }}" hint-placeholder-val="{{ false }}"><button onClick="{{ acAvDel }}" style="min-height:40px;padding:4px 14px;border-radius:12px;border:1px solid {{ acAvDelBorder }};background:transparent;color:{{ acAvDelColor }};font-size:14px;font-weight:600;">{{ acAvDelLabel }}</button></sc-if></div>
 <sc-if value="{{ acAvErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ acAvErr }}</span></sc-if>
 </div>
 <button onClick="{{ acPubOpen }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:56px;gap:8px;text-align:left;font-size:16px;font-weight:500;"><span>{{ acPubLabel }}</span><span style="color:#9C9CA8;font-size:20px;">›</span></button>
@@ -1384,7 +1386,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.27.0';
+const APP_VERSION = '0.28.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive content'], ['Harcèlement ou intimidation', 'Harassment or bullying'], ['Spam ou arnaque', 'Spam or scam'], ['Usurpation d’identité', 'Impersonation'], ['Autre', 'Other']];
 const avUrl = p => p ? SB_URL + '/storage/v1/object/public/avatars/' + p : '', avImg = p => p ? "url('" + avUrl(p) + "')" : 'none';
@@ -1682,9 +1684,14 @@ class Component extends DCLogic {
     this.sb().then(c => c.auth.signOut()).catch(() => {}).then(() => { try { localStorage.removeItem(SB_STORE); } catch (e) {} });
   }
   // Photo de profil : carré 320 px en JPEG, rangé dans avatars/<id>/<horodatage>.jpg ; les anciennes sont effacées.
-  avPick() {
+  avPick(cam) {
     const s = this.state; const a = s.acct; if (!a || !a.profile || s.avBusy) return;
-    const i = document.createElement('input'); i.type = 'file'; i.accept = 'image/*'; i.onchange = () => { const f = i.files && i.files[0]; if (f) this.avSet(f); }; i.click();
+    // App native : plugin Camera (appareil photo ou galerie). Le champ fichier de la WebView n'offre pas l'appareil photo sur Android.
+    const P = this.nat(); const Cam = P && P.Camera;
+    if (Cam && Cam.takePhoto) return (cam ? Cam.takePhoto({ quality: 85, targetWidth: 800, targetHeight: 800, correctOrientation: true }) : Cam.chooseFromGallery({ allowMultipleSelection: false, limit: 1 }).then(r => (r && r.results && r.results[0]) || null))
+      .then(m => { const u = m && (m.webPath || (m.uri && window.Capacitor.convertFileSrc(m.uri))); if (!u) return; return fetch(u).then(r => r.blob()).then(b => this.avSet(b)); })
+      .catch(e => { const t = String((e && e.message) || e); if (!/cancel|annul/i.test(t)) this.acFail('av', (LANG === 'fr' ? 'Photo impossible : ' : 'Photo failed: ') + t.slice(0, 80)); });
+    const i = document.createElement('input'); i.type = 'file'; i.accept = 'image/*'; if (cam) i.setAttribute('capture', 'user'); i.onchange = () => { const f = i.files && i.files[0]; if (f) this.avSet(f); }; i.click();
   }
   avSet(file) {
     const a = this.state.acct; const fr = LANG === 'fr'; if (!a || !a.profile) return; const uid = a.uid; const path = uid + '/' + Date.now() + '.jpg';
@@ -2398,6 +2405,13 @@ class Component extends DCLogic {
     }).catch(() => this.flash(LANG === 'fr' ? 'Fichier non reconnu (CSV Strong ou Hevy attendu)' : 'File not recognized (Strong or Hevy CSV expected)')); };
     i.click();
   }
+  // Accueil → « J'ai déjà un compte » : sans données d'exemple, directement sur la connexion (Profil → Compte).
+  obAcct() {
+    const fr = LANG === 'fr'; const ob = this.state.ob || {}; const keep = !!ob.imported;
+    this.setState(st => ({ onboarded: true, ob: null, ...(keep ? {} : { routines: [], lastRoutineId: null, history: {}, sessMeta: {}, body: [] }), screen: 'tabs', tab: 'profile', obAcctHint: true }));
+    setTimeout(() => { const el = document.querySelector('input[type="email"]'); if (el) { el.scrollIntoView({ block: 'center' }); } }, 300);
+    this.flash(fr ? 'Connecte-toi avec ton e-mail' : 'Sign in with your email');
+  }
   finishOb(pick) {
     const s = this.state; const ob = s.ob || {}; const t = TEMPLATES.find(x => x.id === pick); const base = Date.now();
     const rs = t ? t.r.map(([n, ex], i) => ({ id: 'r' + base + '_' + i, name: n, ex: ex.map(([name, sets, reps, ss]) => ({ name, sets, reps, ss: !!ss })) })) : [];
@@ -2462,6 +2476,7 @@ class Component extends DCLogic {
       obWSub: fr ? 'Quatre questions et ton programme est prêt. Tout reste sur ton téléphone, sans compte.' : 'Four questions and your program is ready. Everything stays on your phone, no account.',
       obStartLabel: fr ? 'Commencer' : 'Get started', obNext: () => obSet({ step: 1 }),
       obImportLabel: fr ? 'J’ai déjà un historique (Strong, Hevy, Barlog)' : 'I have history (Strong, Hevy, Barlog)', obImportApp: () => this.importLifts(),
+      obAcctLabel: fr ? 'J’ai déjà un compte Barlog' : 'I already have a Barlog account', obAcct: () => this.obAcct(),
       obDemoLabel: fr ? 'Explorer avec des données d’exemple' : 'Explore with sample data', obDemo: () => this.setState({ onboarded: true, ob: null }),
       obTitle: cur ? cur[1] : '', obSub: cur ? (ob.imported && st === 1 ? (fr ? 'Historique importé ✓ · ' : 'History imported ✓ · ') : '') + cur[2] : '',
       obOpts: cur ? cur[3].map(([k, label, sub]) => { const v = ob[cur[0]] != null ? ob[cur[0]] : cur[0] === 'unit' ? s.unit : null; return { label, sub, ...selStyle(v === k), onClick: () => { const p = { [cur[0]]: k, step: st + 1 }; if (cur[0] !== 'unit') p.pick = undefined; else this.setState({ unit: k }); obSet(p); } }; }) : [],
@@ -2539,6 +2554,7 @@ class Component extends DCLogic {
       acTitle: fr ? 'Compte' : 'Account', acOff: !a, acAsk: !a && !s.acSent, acCodeOn: !a && !!s.acSent, acNoProf: !!a && p === null, acHasProf: !!p, acPending: !!a && p === undefined, acOp: busy ? 0.5 : 1,
       acSocTitle: fr ? 'Barlog social · bêta' : 'Barlog social · beta', acSocText: fr ? 'Crée un compte gratuit pour publier tes séances et suivre tes amis. Sans compte, Barlog fonctionne comme avant.' : 'Create a free account to post your workouts and follow your friends. Without an account, Barlog works just like before.',
       acEmail: s.acEmail || '', onAcEmail: e => this.setState({ acEmail: e.target.value }), acEmailPh: fr ? 'ton@email.com' : 'you@email.com',
+      acBackHint: s.obAcctHint ? (fr ? 'Utilise le même e-mail que sur ton ancien téléphone : ton profil, tes abonnés et tes publications reviennent. Ton historique de séances n’est pas encore dans le compte : pour le récupérer, utilise « Importer » (plus bas) avec ta sauvegarde.' : 'Use the same email as on your old phone: your profile, followers and posts come back. Your workout history isn’t in the account yet: to get it back, use “Import” (below) with your backup.') : '',
       acSend: () => this.acSend(), acSendLabel: busy ? (fr ? 'Envoi…' : 'Sending…') : (fr ? 'Recevoir un code' : 'Get a code'),
       acSentText: (fr ? 'Code à 6 chiffres envoyé à ' : '6-digit code sent to ') + (s.acSent || '') + (fr ? '. Pense à regarder dans les spams.' : '. Check your spam folder too.'),
       acCode: s.acCode || '', onAcCode: e => this.setState({ acCode: e.target.value.replace(/\D/g, '').slice(0, 10) }),
@@ -2554,7 +2570,7 @@ class Component extends DCLogic {
       acCreate: () => this.acCreate(), acCreateLabel: busy ? (fr ? 'Création…' : 'Creating…') : (fr ? 'Créer mon profil' : 'Create my profile'),
       acHandle: p ? '@' + p.username + ' · ' + p.display_name : '', acMail: (a && a.email) || '',
       acAvPick: () => this.avPick(), acAvImg: avImg(p && p.avatar), acAvIni: p && p.avatar ? '' : iniOf(p && (p.display_name || p.username)), acAvOp: s.avBusy ? 0.5 : 1, acAvHas: !!(p && p.avatar),
-      acAvLabel: s.avBusy ? (fr ? 'Envoi…' : 'Uploading…') : p && p.avatar ? (fr ? 'Changer la photo' : 'Change photo') : (fr ? 'Ajouter une photo' : 'Add a photo'),
+      acAvLabel: s.avBusy ? (fr ? 'Envoi…' : 'Uploading…') : (fr ? '🖼 Galerie' : '🖼 Gallery'), acAvCam: () => this.avPick(true), acAvCamLabel: fr ? '📷 Appareil photo' : '📷 Camera',
       acAvDel: () => this.avDel(), acAvDelLabel: s.avDelArm ? (fr ? 'Toucher encore' : 'Tap again') : (fr ? 'Retirer' : 'Remove'), acAvDelColor: s.avDelArm ? '#FF4D4D' : '#9C9CA8', acAvDelBorder: s.avDelArm ? '#FF4D4D' : '#33333C',
       acAvErr: (s.acE && s.acE.k === 'av' && s.acE.m) || '',
       acPendingText: busy ? (fr ? 'Chargement du profil…' : 'Loading profile…') : (fr ? 'Profil non chargé (pas de connexion ?)' : 'Profile not loaded (offline?)'), acRetry: () => { if (!busy) this.acBoot(); }, acRetryLabel: fr ? 'Réessayer' : 'Retry',

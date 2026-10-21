@@ -5,6 +5,10 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.28.0 — 2026-10-20
+- Accueil (première ouverture) : nouveau bouton « J’ai déjà un compte Barlog », qui mène directement à la connexion, sans données d’exemple.
+- Photo de profil : boutons « Appareil photo » et « Galerie » (plugin natif). Corrige le plantage sur iPhone à l’ouverture de l’appareil photo et l’absence d’appareil photo sur Android.
+
 ## 0.27.0 — 2026-10-20
 - Partage (bêta) : notifications dans le Fil (cloche + pastille) pour les demandes d’abonnement, nouveaux abonnés, demandes acceptées, bravos et commentaires.
 - Photo de profil : ajouter, changer ou retirer sa photo (Profil → Compte) ; affichée dans le Fil, les profils, les listes et les commentaires.
