@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.30.2 — 2026-10-21
+- Historique : dans une ancienne séance, toucher un muscle affiche maintenant gratuitement les exercices qui l’ont travaillé (principal / secondaire, séries). Ce n’est plus une fonction Pro.
+
 ## 0.30.1 — 2026-10-21
 - Sauvegarde en ligne : la restauration est maintenant toujours gratuite (Pro expiré, téléphone perdu ou cassé). Seul l’envoi de nouvelles sauvegardes est réservé à Pro. Sans Pro, Profil → Compte propose « Restaurer une sauvegarde ».
 - Restaurer une sauvegarde ne réactive plus le Pro (il viendra de la boutique).
