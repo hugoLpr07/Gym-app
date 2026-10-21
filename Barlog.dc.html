@@ -1791,7 +1791,7 @@ class Component extends DCLogic {
     if (!on) { this.cbSet({ on: false, link: false }); return; }
     this._cbLater = false; this.cbSet({ on: true }); setTimeout(() => this.cbCheck(true), 0);
   }
-  // Photo de profil : carré 320 px en JPEG, rangé dans avatars/<id>/<horodatage>.jpg ; les anciennes sont effacées.
+  // Photo de profil : carré 640 px en JPEG, rangé dans avatars/<id>/<horodatage>.jpg ; les anciennes sont effacées.
   avPick(cam) {
     const s = this.state; const a = s.acct; if (!a || !a.profile || s.avBusy) return;
     // App native : plugin Camera (appareil photo ou galerie). Le champ fichier de la WebView n'offre pas l'appareil photo sur Android.
@@ -1805,7 +1805,7 @@ class Component extends DCLogic {
     const a = this.state.acct; const fr = LANG === 'fr'; if (!a || !a.profile) return; const uid = a.uid; const path = uid + '/' + Date.now() + '.jpg';
     this.setState({ avBusy: true, acE: null });
     new Promise((ok, ko) => { const u = URL.createObjectURL(file); const im = new Image(); im.onload = () => { URL.revokeObjectURL(u); ok(im); }; im.onerror = () => { URL.revokeObjectURL(u); ko(new Error(fr ? 'Image illisible' : 'Unreadable image')); }; im.src = u; })
-      .then(im => new Promise((ok, ko) => { const N = 320, c = document.createElement('canvas'); c.width = c.height = N; const x = c.getContext('2d'); const w = im.naturalWidth, h = im.naturalHeight, m = Math.min(w, h);
+      .then(im => new Promise((ok, ko) => { const N = 640, c = document.createElement('canvas'); c.width = c.height = N; const x = c.getContext('2d'); const w = im.naturalWidth, h = im.naturalHeight, m = Math.min(w, h);
         x.fillStyle = '#24242B'; x.fillRect(0, 0, N, N); x.drawImage(im, (w - m) / 2, (h - m) / 2, m, m, 0, 0, N, N); c.toBlob(b => b ? ok(b) : ko(new Error(fr ? 'Image illisible' : 'Unreadable image')), 'image/jpeg', 0.85); }))
       .then(b => this.sb().then(c => c.storage.from('avatars').upload(path, b, { contentType: 'image/jpeg', upsert: false }).then(({ error }) => { if (error) throw error; return c.from('profiles').update({ avatar: path }).eq('id', uid); })
         .then(({ error }) => { if (error) throw error; this.avApply(uid, path); this.setState({ avBusy: false }); this.flash(fr ? 'Photo mise à jour' : 'Photo updated'); return this.avClean(c, uid, path).catch(() => {}); })))
