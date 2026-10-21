@@ -864,10 +864,9 @@ input::placeholder{color:#9C9CA8}
 </div>
 </div>
 <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #24242B;min-height:64px;gap:8px;">
-<span style="font-size:16px;font-weight:500;">{{ tx.nAccent }}</span>
+<span style="font-size:16px;font-weight:500;">{{ accLabel }}</span>
 <div style="display:flex;gap:2px;"><sc-for list="{{ accOpts }}" as="a" hint-placeholder-count="7"><button onClick="{{ a.onClick }}" aria-label="{{ a.label }}" style="width:32px;height:44px;border:none;background:transparent;padding:0;display:flex;align-items:center;justify-content:center;"><span style="width:28px;height:28px;border-radius:999px;background:{{ a.c }};box-shadow:{{ a.ring }};"></span></button></sc-for></div>
 </div>
-<sc-if value="{{ accPrevOn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid #24242B;"><span style="flex:1;min-width:0;font-size:13px;line-height:18px;color:#C8C8D0;text-wrap:pretty;">{{ accPrevText }}</span><button onClick="{{ accUndo }}" style="flex:none;min-height:40px;padding:0 12px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#fff;font-size:13px;font-weight:600;">{{ accUndoLabel }}</button><button onClick="{{ accKeep }}" style="flex:none;min-height:40px;padding:0 14px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:13px;font-weight:700;">{{ accKeepLabel }}</button></div></sc-if>
 <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #24242B;min-height:64px;gap:8px;">
 <span style="font-size:16px;font-weight:500;">{{ tx.k43 }}</span>
 <div style="display:flex;align-items:center;gap:6px;">
@@ -1429,12 +1428,12 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.30.0';
+const APP_VERSION = '0.30.1';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive content'], ['Harcèlement ou intimidation', 'Harassment or bullying'], ['Spam ou arnaque', 'Spam or scam'], ['Usurpation d’identité', 'Impersonation'], ['Autre', 'Other']];
 // Sauvegarde en ligne : ce qui n'est pas envoyé (propre à l'appareil, ou relu depuis Santé / Health Connect).
 const CB_SKIP = ['workout', 'focus', 'restEnd', 'restTotal', 'cloud', 'installSeen', 'lastExport', 'backupSnooze', 'healthOn', 'hkWSync', 'hkCSync', 'hkTag'];
-const CB_SET = ['bodyRange', 'bodyU', 'lenU', 'unit', 'haptics', 'sound', 'wake', 'autoRest', 'restDefault', 'dayWarn', 'lang', 'barLight', 'accent', 'restNotif', 'remind', 'goal', 'level', 'liveRest', 'pro', 'effort', 'bodyMetric', 'autoPub', 'lastRoutineId'];
+const CB_SET = ['bodyRange', 'bodyU', 'lenU', 'unit', 'haptics', 'sound', 'wake', 'autoRest', 'restDefault', 'dayWarn', 'lang', 'barLight', 'accent', 'restNotif', 'remind', 'goal', 'level', 'liveRest', 'effort', 'bodyMetric', 'autoPub', 'lastRoutineId'];
 const nSess = h => { const d = new Set(); Object.values(h || {}).forEach(a => (a || []).forEach(x => d.add(x.date))); return d.size; };
 // Pesées : on retire les valeurs lues dans Santé / Health Connect (marquées hk) — le nouveau téléphone les relit à la source.
 const bodyOut = b => (b || []).map(x => { if (!x.hk) return x; const y = { ...x }; Object.keys(x.hk).forEach(k => delete y[k]); delete y.hk; return y; }).filter(x => Object.keys(x).some(k => k !== 'date'));
@@ -1651,8 +1650,9 @@ class Component extends DCLogic {
     const prev = prevState || this._snap || {}; const st = this.state;
     this._snap = { ...st };
     if (PK.some(k => prev[k] !== st[k])) this.save();
-    if (st.accPrev && (st.tab !== 'profile' || st.screen !== 'tabs' || st.pro)) setTimeout(() => this.setState({ accPrev: null }), 0);
+    if (st.accPrev && !st.pw && !st.pro) setTimeout(() => this.setState({ accPrev: null }), 0);
     if (st.pro && !prev.pro && st.acct && st.acct.profile) setTimeout(() => this.cbCheck(true), 0);
+    if (st.pro && !prev.pro && st.healthOn) setTimeout(() => this.pullWeights(), 500);
     if (st.cloud && st.cloud.link && ['history', 'sessMeta', 'routines', 'body', 'custom', 'exMeta'].some(k => prev[k] !== st[k])) this.cbSoon(15000);
     if (prev.workout !== st.workout || prev.wake !== st.wake) this.syncWake();
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.workout !== st.workout || prev.restNotif !== st.restNotif) this.syncRestNotif();
@@ -1765,13 +1765,14 @@ class Component extends DCLogic {
     return o;
   }
   cbCheck(manual) {
-    const s = this.state; const a = s.acct; if (!a || !a.profile || this._cbChk || (!manual && this._cbLater)) return; const cl = s.cloud || {}; if (cl.on === false) return;
-    // Sauvegarde en ligne = Barlog Pro. Sans Pro : on signale seulement qu'une sauvegarde existe (restaurable en passant Pro).
-    const pro = this.isPro(); if (cl.link && cl.uid === a.uid) return pro ? this.cbSoon(3000) : undefined;
+    const s = this.state; const a = s.acct; if (!a || !a.profile || this._cbChk || (!manual && this._cbLater)) return; const cl = s.cloud || {}; if (cl.on === false && !manual) return;
+    // Envoyer une sauvegarde = Barlog Pro. Restaurer celle du compte reste toujours gratuit (Pro expiré, téléphone perdu…),
+    // y compris sur un téléphone déjà relié (bouton « Restaurer une sauvegarde » du Profil).
+    const pro = this.isPro(); if (cl.link && cl.uid === a.uid && (pro || !manual)) return pro ? this.cbSoon(3000) : undefined;
     this._cbChk = true;
     this.sb().then(c => c.from('backups_meta').select('*').eq('user_id', a.uid).maybeSingle()).then(({ data, error }) => { if (error) throw error;
-      if (!data || !data.path) { if (!pro) return; this.cbSet({ uid: a.uid, link: true, srvAt: 0 }); return this.cbUp(); }
-      this.setState({ cbAsk: { n: data.sessions, at: data.updated_at, path: data.path, loc: nSess(this.state.history), arm: false, locked: !pro } }); })
+      if (!data || !data.path) { if (!pro) { if (manual) this.flash(LANG === 'fr' ? 'Aucune sauvegarde sur ton compte' : 'No backup on your account'); return; } this.cbSet({ uid: a.uid, link: true, srvAt: 0 }); return this.cbUp(); }
+      this.setState({ cbAsk: { n: data.sessions, at: data.updated_at, path: data.path, loc: nSess(this.state.history), arm: false } }); })
       .catch(e => { if (manual) this.acErr(e, false, 'cb'); }).then(() => { this._cbChk = false; });
   }
   // mode : 'merge' (fusionner / restaurer) ou 'replace' (remplacer ce téléphone par la sauvegarde)
@@ -2147,7 +2148,7 @@ class Component extends DCLogic {
   saveBody() {
     const s = this.state; const b = s.bodyBuf || {}; const kg = (s.bodyU || s.unit) === 'kg'; const lu = s.lenU || (s.unit === 'kg' ? 'cm' : 'in');
     const num = v => { const n = parseFloat(String(v || '').replace(',', '.')); return isNaN(n) || n <= 0 ? null : n; };
-    const e = {}; const wv = num(b.w); if (wv) e.w = kg ? wv : wv / KG_LB; if (wv && this.state.healthOn && this.hk()) this.hk().saveWeight({ kg: e.w, date: Date.now() }).catch(() => {});
+    const e = {}; const wv = num(b.w); if (wv) e.w = kg ? wv : wv / KG_LB; if (wv && this.hkOn() && this.hk()) this.hk().saveWeight({ kg: e.w, date: Date.now() }).catch(() => {});
     const len = v => { const t = String(v || '').trim().replace(/,/g, '.'); if (!t) return null; if (lu === 'ft') { const m = t.match(/^(\d+(?:\.\d+)?)\s*(?:['′’]|ft|\s)\s*(\d+(?:\.\d+)?)?\s*(?:["″”]|in)?$/i); const tot = m ? parseFloat(m[1]) * 12 + (m[2] ? parseFloat(m[2]) : 0) : parseFloat(t) * 12; return isNaN(tot) || tot <= 0 ? null : tot * 2.54; } const n = parseFloat(t); return isNaN(n) || n <= 0 ? null : lu === 'cm' ? n : n * 2.54; };
     ['waist', 'hips', 'chest', 'arm', 'thigh'].forEach(k => { const v = len(b[k]); if (v) e[k] = v; });
     if (!Object.keys(e).length) { this.flash(L('Enter at least one value')); return; }
@@ -2385,6 +2386,7 @@ class Component extends DCLogic {
   deleteSession(date) {
     this.arm('delSessArm', () => {
       const s = this.state; const h = {};
+      // Même sans Pro : on retire de Santé la séance que Barlog y avait envoyée (pas de doublon orphelin).
       if (s.healthOn && this.hk()) { try { this.hk().deleteWorkout({ start: date }).catch(() => {}); } catch (e) {} }
       Object.entries(s.history).forEach(([k, a]) => { const f = a.filter(x => x.date !== date); if (f.length) h[k] = f; });
       const m = { ...(s.sessMeta || {}) }; const pb = m[date] && m[date].pub; delete m[date];
@@ -2483,8 +2485,11 @@ class Component extends DCLogic {
       effOpts: vals.map(v => { const on = cur === v; return { label: mode === 'rir' && v === 5 ? '5+' : String(v), bg: on ? ACC : 'transparent', color: on ? '#0A0A0C' : '#FFFFFF', border: on ? ACC : '#33333C', onClick: (e) => { e.stopPropagation(); this.updW(w => { const y = w.ex[ei].sets[si]; y[mode] = y[mode] === v ? null : v; }); } }; }) };
   }
   hk() { const pf = plat(); if (!this.nat() || (pf !== 'ios' && pf !== 'android')) return null; if (!this._hk) { try { const C = window.Capacitor; this._hk = (C.Plugins || {}).BarlogHealth || (pf === 'ios' && C.registerPlugin ? C.registerPlugin('BarlogHealth') : null); } catch (e) {} } return this._hk || null; }
+  // Liaison Santé / Health Connect = Barlog Pro. Sans Pro, healthOn est gardé mais rien n'est lu ni envoyé ; elle reprend dès que le Pro revient.
+  hkOn() { return !!this.state.healthOn && this.isPro(); }
   toggleHealth() {
-    const fr = LANG === 'fr'; if (this.state.healthOn) { this.setState({ healthOn: false }); return; }
+    const fr = LANG === 'fr'; if (this.hkOn()) { this.setState({ healthOn: false }); return; }
+    if (!this.isPro()) return this.need('health', () => { if (!this.state.healthOn) this.toggleHealth(); });
     const H = this.hk(); if (!H) { this.flash(fr ? 'Apple Health : disponible seulement dans l’app iPhone' : 'Apple Health: iPhone app only'); return; }
     this.flash(fr ? 'Connexion à ' + hkStore() + '…' : 'Connecting to ' + hkStore() + '…');
     const fail = e => { const m = (e && (e.message || e.code)) || String(e); try { console.log('BARLOG health error: ' + m); } catch (x) {} this.flash(hkName() + ' : ' + m); };
@@ -2495,7 +2500,7 @@ class Component extends DCLogic {
     } catch (e) { clearTimeout(to); fail(e); }
   }
   pullWeights(manual) {
-    const H = this.hk(); const s = this.state; if (!H || !s.healthOn || !H.readWeights) return; const fr = LANG === 'fr';
+    const H = this.hk(); const s = this.state; if (!H || !this.hkOn() || !H.readWeights) return; const fr = LANG === 'fr';
     const since = s.hkWSync && s.hkTag ? s.hkWSync - 3 * 86400000 : Date.now() - 400 * 86400000; const now = Date.now();
     try {
       Promise.resolve(H.readWeights({ since })).then(r => {
@@ -2515,7 +2520,7 @@ class Component extends DCLogic {
     } catch (e) {}
   }
   pushHealth(start, dur, exs, title) {
-    const H = this.hk(); const s = this.state; if (!H || !s.healthOn || !exs.length) return;
+    const H = this.hk(); const s = this.state; if (!H || !this.hkOn() || !exs.length) return;
     const car = exs.filter(x => this.meta(x.name).type === 'cardio'); const sum = (k) => car.reduce((a, x) => a + x.sets.reduce((b, y) => b + (y[k] || 0), 0), 0);
     const cMin = sum('r'), cKcal = sum('c'); const bw = ((s.body || []).filter(b => b.w).slice(-1)[0] || {}).w || 75; const allC = car.length === exs.length;
     const MAP = [[/run|course|treadmill|tapis/i, 'running'], [/cycl|bike|v[ée]lo/i, 'cycling'], [/row|rameur/i, 'rowing'], [/ellip/i, 'elliptical'], [/stair|escalier/i, 'stairs'], [/walk|marche/i, 'walking'], [/rope|corde/i, 'jumprope']];
@@ -2637,7 +2642,7 @@ class Component extends DCLogic {
           muscle: fr ? ['Trouve le bon exercice', 'Touche un muscle et ajoute un exercice qui le cible, en un geste.'] : ['Find the right exercise', 'Tap a muscle and add an exercise that targets it, in one tap.'],
           history: fr ? ['Revis chaque séance', 'Touche un muscle dans l’historique pour voir les exercices qui l’ont travaillé.'] : ['Relive every session', 'Tap a muscle in history to see which exercises worked it.'],
           program: fr ? ['Tous les programmes', 'Force 5×5, Haut / Bas et tous les programmes à venir.'] : ['Every program', 'Strength 5×5, Upper / Lower and every program to come.'],
-          health: fr ? ['Ta composition corporelle', 'Masse grasse, masse maigre et IMC récupérés depuis ' + (plat() === 'android' ? 'Health Connect (Samsung Health, balance connectée).' : 'Santé (Withings, balance connectée).')] : ['Your body composition', 'Body fat, lean mass and BMI pulled from ' + (plat() === 'android' ? 'Health Connect (Samsung Health, smart scale).' : 'Health (Withings, smart scale).')],
+          health: fr ? ['Barlog et ' + (plat() === 'android' ? 'Health Connect' : 'Apple Santé'), 'Tes séances envoyées dans ' + (plat() === 'android' ? 'Health Connect (Samsung Health)' : 'Santé') + ', ton poids, ta masse grasse, ta masse maigre et ton IMC récupérés automatiquement (balance connectée, Withings…).'] : ['Barlog and ' + hkName(), 'Your workouts sent to ' + (plat() === 'android' ? 'Health Connect (Samsung Health)' : 'Health') + ', and your weight, body fat, lean mass and BMI pulled in automatically (smart scale, Withings…).'],
           accent: fr ? ['Ta couleur', 'Choisis parmi 7 couleurs d’accent pour personnaliser Barlog.'] : ['Your color', 'Pick from 7 accent colors to make Barlog yours.'] };
         const hd = H[f] || (fr ? ['Passe à Barlog Pro', 'L’essentiel reste gratuit. Pro débloque tout le reste.'] : ['Go Barlog Pro', 'The essentials stay free. Pro unlocks everything else.']);
         const PK2 = [['backup', fr ? 'Sauvegarde en ligne' : 'Online backup', fr ? 'Automatique, sur tous tes téléphones' : 'Automatic, on all your phones', ['backup']],
@@ -2649,7 +2654,7 @@ class Component extends DCLogic {
           ['muscle', fr ? 'Muscle → exercices' : 'Muscle → exercises', fr ? 'Ajoute un exercice ciblé en un geste' : 'Add a targeted exercise in one tap', ['muscle']],
           ['program', fr ? 'Tous les programmes' : 'Every program', fr ? 'Force 5×5, Haut / Bas, et les prochains' : 'Strength 5×5, Upper / Lower, and more to come', ['program']],
           ['accent', fr ? 'Couleurs d’accent' : 'Accent colors', fr ? '7 thèmes pour l’app' : '7 themes for the app', ['accent']],
-          ['health', fr ? 'Composition depuis ' + hkStore() : 'Composition from ' + hkStore(), fr ? 'Masse grasse, masse maigre, IMC' : 'Body fat, lean mass, BMI', ['health']],
+          ['health', fr ? 'Liaison avec ' + hkStore() : hkStore() + ' sync', fr ? 'Séances envoyées, poids et composition récupérés' : 'Workouts sent, weight and composition pulled in', ['health']],
           ...(plat() === 'android' ? [['widget', fr ? 'Widget écran d’accueil' : 'Home screen widget', fr ? 'Prochaine séance et semaine en un coup d’œil' : 'Next workout and your week at a glance', ['widget']]] : [['soon', fr ? 'Bientôt : widget écran d’accueil' : 'Coming: home screen widget', fr ? 'Inclus dans ton abonnement dès sa sortie' : 'Included in your plan when it ships', []]])];
         // Prix en dollars canadiens (mode test). Avec les vrais achats, le prix affiché viendra de la boutique (devise du pays).
         const P = { month: [fr ? 'Mensuel' : 'Monthly', fr ? '4,99 $' : 'CA$4.99', fr ? 'par mois' : 'per month', null], year: [fr ? 'Annuel' : 'Yearly', fr ? '29,99 $' : 'CA$29.99', fr ? '2,50 $ / mois' : 'CA$2.50 / month', '−50 %'], life: [fr ? 'À vie' : 'Lifetime', fr ? '79,99 $' : 'CA$79.99', fr ? 'une fois' : 'one time', null] };
@@ -2674,7 +2679,8 @@ class Component extends DCLogic {
       effModes: [['off', fr ? 'Non' : 'Off'], ['rpe', 'RPE'], ['rir', 'RIR']].map(([k, label]) => { const on = (s.effort || 'off') === k; return { label, bg: on ? '#24242B' : 'transparent', color: on ? '#FFFFFF' : '#9C9CA8', onClick: () => this.setState({ effort: k === 'off' ? null : k }) }; }),
       nfToggles: [tgl(fr ? 'Fin de repos' : 'Rest finished', fr ? 'Une notification quand le repos est fini, même écran verrouillé.' : 'A notification when rest is over, even with the screen locked.', !!s.restNotif, () => this.toggleRestNotif()),
         ...(native ? [tgl(fr ? 'Minuteur sur l’écran verrouillé' : 'Lock screen timer', ios ? (fr ? 'Le repos défile en direct sur l’écran verrouillé (Live Activity).' : 'Rest counts down live on the lock screen (Live Activity).') : (fr ? 'Le repos défile en direct sur l’écran verrouillé et dans les notifications.' : 'Rest counts down live on the lock screen and in your notifications.'), s.liveRest !== false, () => this.setState({ liveRest: s.liveRest === false }))] : []),
-        ...(hkOk ? [tgl(hkName(), ios ? (fr ? 'Envoie tes séances dans Santé et récupère ton poids.' : 'Sends workouts to Health and pulls in your weight.') : (fr ? 'Envoie tes séances dans Health Connect (Samsung Health) et récupère ton poids.' : 'Sends workouts to Health Connect (Samsung Health) and pulls in your weight.') + (this.isPro() ? (fr ? ' Pro : masse grasse, masse maigre, IMC.' : ' Pro: body fat, lean mass, BMI.') : (fr ? ' ✦ Pro : masse grasse, IMC…' : ' ✦ Pro: body fat, BMI…')), !!s.healthOn, () => this.toggleHealth())] : []),
+        ...(hkOk ? [tgl(hkName() + (this.isPro() ? '' : ' ✦'), (ios ? (fr ? 'Envoie tes séances dans Santé et récupère ton poids, ta masse grasse, ta masse maigre et ton IMC.' : 'Sends workouts to Health and pulls in your weight, body fat, lean mass and BMI.') : (fr ? 'Envoie tes séances dans Health Connect (Samsung Health) et récupère ton poids, ta masse grasse, ta masse maigre et ton IMC.' : 'Sends workouts to Health Connect (Samsung Health) and pulls in your weight, body fat, lean mass and BMI.'))
+          + (this.isPro() ? '' : s.healthOn ? (fr ? ' En pause sans Barlog Pro : tes données déjà importées restent.' : ' Paused without Barlog Pro: data already imported stays.') : (fr ? ' Inclus dans Barlog Pro.' : ' Included in Barlog Pro.')), this.hkOn(), () => this.toggleHealth())] : []),
         tgl(fr ? 'Rappels d’entraînement' : 'Training reminders', fr ? 'Les jours choisis, à l’heure choisie.' : 'On the days and at the time you pick.', !!rm.on, () => this.toggleRemind())],
       rmOn: !!rm.on, rmDays: [1, 2, 3, 4, 5, 6, 0].map((d, i) => { const on = (rm.days || []).includes(d); return { label: DL[i], bg: on ? ACC : 'transparent', color: on ? '#0A0A0C' : '#9C9CA8', border: on ? ACC : '#33333C', onClick: () => setRm({ days: on ? rm.days.filter(x => x !== d) : [...(rm.days || []), d] }) }; }),
       rmTimeLabel: fr ? 'Heure' : 'Time', rmTime: rm.t || '18:00', onRmTime: e => setRm({ t: e.target.value || '18:00' }),
@@ -2704,20 +2710,20 @@ class Component extends DCLogic {
       acTitle: fr ? 'Compte' : 'Account', acOff: !a, acAsk: !a && !s.acSent, acCodeOn: !a && !!s.acSent, acNoProf: !!a && p === null, acHasProf: !!p, acPending: !!a && p === undefined, acOp: busy ? 0.5 : 1,
       acSocTitle: fr ? 'Barlog social · bêta' : 'Barlog social · beta', acSocText: fr ? 'Crée un compte gratuit pour publier tes séances et suivre tes amis. Sans compte, Barlog fonctionne comme avant.' : 'Create a free account to post your workouts and follow your friends. Without an account, Barlog works just like before.',
       acEmail: s.acEmail || '', onAcEmail: e => this.setState({ acEmail: e.target.value }), acEmailPh: fr ? 'ton@email.com' : 'you@email.com',
-      acBackHint: s.obAcctHint ? (fr ? 'Utilise le même e-mail que sur ton ancien téléphone : ton profil, tes abonnés et tes publications reviennent. Tes séances reviennent avec ta sauvegarde en ligne (Barlog Pro) ou en important ton export (plus bas, « Importer »).' : 'Use the same email as on your old phone: your profile, followers and posts come back. Your workouts come back with your online backup (Barlog Pro) or by importing your export (below, “Import”).') : '',
+      acBackHint: s.obAcctHint ? (fr ? 'Utilise le même e-mail que sur ton ancien téléphone : ton profil, tes abonnés et tes publications reviennent. Tes séances reviennent avec ta sauvegarde en ligne si tu en as une (la restauration est gratuite) ou en important ton export (plus bas, « Importer »).' : 'Use the same email as on your old phone: your profile, followers and posts come back. Your workouts come back with your online backup if you have one (restoring is free) or by importing your export (below, “Import”).') : '',
       ...(() => { const cl = s.cloud || {}; const on = cl.on !== false; const q = s.cbAsk; const dt = t => { try { return new Date(t).toLocaleDateString(fr ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ''; } };
         const ns = n => n + (fr ? ' séance' : ' workout') + (n > 1 ? 's' : ''); const pro = this.isPro(); const linked = pro && on && cl.link && a && cl.uid === a.uid;
-        const sub = !pro ? (fr ? 'Avec Barlog Pro : séances, routines, pesées et réglages sauvegardés automatiquement et retrouvés sur n’importe quel téléphone. Sans Pro, pense à exporter.' : 'With Barlog Pro: workouts, routines, weigh-ins and settings backed up automatically and restored on any phone. Without Pro, remember to export.') : !on ? (fr ? 'Désactivée. Sans sauvegarde, garde un export à jour.' : 'Off. Without it, keep an export up to date.') : cl.busy && this._cbRun ? (fr ? 'Sauvegarde en cours…' : 'Backing up…') : cl.err && linked ? (fr ? 'Dernier essai raté : ' : 'Last try failed: ') + cl.err
+        const sub = !pro ? (fr ? 'Avec Barlog Pro : séances, routines, pesées et réglages sauvegardés automatiquement et retrouvés sur n’importe quel téléphone. Restaurer une sauvegarde de ton compte reste gratuit. Sans Pro, pense à exporter.' : 'With Barlog Pro: workouts, routines, weigh-ins and settings backed up automatically and restored on any phone. Restoring a backup from your account stays free. Without Pro, remember to export.') : !on ? (fr ? 'Désactivée. Sans sauvegarde, garde un export à jour.' : 'Off. Without it, keep an export up to date.') : cl.busy && this._cbRun ? (fr ? 'Sauvegarde en cours…' : 'Backing up…') : cl.err && linked ? (fr ? 'Dernier essai raté : ' : 'Last try failed: ') + cl.err
           : linked && cl.at ? (fr ? 'Sauvegardé ' : 'Backed up ') + relT(new Date(cl.at).toISOString(), fr) + ' · ' + ns(cl.n || 0) + (fr ? '. Automatique après chaque changement.' : '. Automatic after every change.')
           : linked ? (fr ? 'Première sauvegarde en cours…' : 'First backup in progress…') : (fr ? 'Une sauvegarde existe sur ton compte : touche « Restaurer ou fusionner ».' : 'Your account has a backup: tap “Restore or merge”.');
         return { cbAskOn: !!q, cbAskTitle: fr ? 'Sauvegarde trouvée' : 'Backup found',
-          cbAskText: !q ? '' : q.locked ? (fr ? ns(q.n) + ' sauvegardées sur ton compte (' + dt(q.at) + '). La sauvegarde en ligne fait partie de Barlog Pro : passe Pro pour les retrouver sur ce téléphone.' : ns(q.n) + ' backed up on your account (' + dt(q.at) + '). Online backup is part of Barlog Pro: go Pro to get them back on this phone.') : q.loc ? (fr ? 'Ton compte a une sauvegarde de ' + ns(q.n) + ' (' + dt(q.at) + '). Ce téléphone en a ' + q.loc + '. « Fusionner » garde tout : rien n’est supprimé.' : 'Your account has a backup with ' + ns(q.n) + ' (' + dt(q.at) + '). This phone has ' + q.loc + '. “Merge” keeps everything: nothing is deleted.')
+          cbAskText: !q ? '' : q.loc ? (fr ? 'Ton compte a une sauvegarde de ' + ns(q.n) + ' (' + dt(q.at) + '). Ce téléphone en a ' + q.loc + '. « Fusionner » garde tout : rien n’est supprimé.' : 'Your account has a backup with ' + ns(q.n) + ' (' + dt(q.at) + '). This phone has ' + q.loc + '. “Merge” keeps everything: nothing is deleted.')
             : (fr ? ns(q.n) + ' sauvegardées sur ton compte (' + dt(q.at) + '). Les remettre sur ce téléphone ?' : ns(q.n) + ' backed up on your account (' + dt(q.at) + '). Put them back on this phone?'),
-          cbAskGoLabel: q && q.locked ? (fr ? 'Restaurer avec Pro ✦' : 'Restore with Pro ✦') : q && q.busy ? (fr ? 'Restauration…' : 'Restoring…') : q && q.loc ? (fr ? 'Fusionner' : 'Merge') : (fr ? 'Restaurer' : 'Restore'), cbAskGo: () => q && q.locked ? (this.setState({ cbAsk: null }), this.need('backup')) : this.cbRestore('merge'), cbAskOp: q && q.busy ? 0.5 : 1,
-          cbAskRepOn: !!(q && q.loc && !q.locked), cbAskRep: () => this.cbRestore('replace'), cbAskRepLabel: q && q.arm ? (fr ? 'Toucher encore : les séances de ce téléphone seront remplacées' : 'Tap again: this phone’s workouts will be replaced') : (fr ? 'Remplacer ce téléphone par la sauvegarde' : 'Replace this phone with the backup'),
+          cbAskGoLabel: q && q.busy ? (fr ? 'Restauration…' : 'Restoring…') : q && q.loc ? (fr ? 'Fusionner' : 'Merge') : (fr ? 'Restaurer' : 'Restore'), cbAskGo: () => this.cbRestore('merge'), cbAskOp: q && q.busy ? 0.5 : 1,
+          cbAskRepOn: !!(q && q.loc), cbAskRep: () => this.cbRestore('replace'), cbAskRepLabel: q && q.arm ? (fr ? 'Toucher encore : les séances de ce téléphone seront remplacées' : 'Tap again: this phone’s workouts will be replaced') : (fr ? 'Remplacer ce téléphone par la sauvegarde' : 'Replace this phone with the backup'),
           cbAskRepBorder: q && q.arm ? '#FF4D4D' : '#33333C', cbAskRepColor: q && q.arm ? '#FF4D4D' : '#FFFFFF', cbAskLater: () => this.cbLater(), cbAskLaterLabel: fr ? 'Pas maintenant' : 'Not now', cbAskErr: (s.acE && s.acE.k === 'cbask' && s.acE.m) || '',
           cbLabel: (fr ? 'Sauvegarde en ligne' : 'Online backup') + (pro ? '' : ' ✦'), cbSub: sub, cbSubColor: on && cl.err && linked ? '#FF8A65' : '#9C9CA8', cbTg: tg(pro && on), cbClick: () => this.cbToggle(),
-          cbNowOn: pro && on && !!a && !!p, cbNow: () => linked ? this.cbUp() : this.cbCheck(true), cbNowLabel: linked ? (fr ? 'Sauvegarder maintenant' : 'Back up now') : (fr ? 'Restaurer ou fusionner' : 'Restore or merge'), cbNowOp: cl.busy && this._cbRun ? 0.5 : 1, cbErr: (s.acE && s.acE.k === 'cb' && s.acE.m) || '',
+          cbNowOn: (!pro || on) && !!a && !!p, cbNow: () => linked ? this.cbUp() : this.cbCheck(true), cbNowLabel: linked ? (fr ? 'Sauvegarder maintenant' : 'Back up now') : pro ? (fr ? 'Restaurer ou fusionner' : 'Restore or merge') : (fr ? 'Restaurer une sauvegarde' : 'Restore a backup'), cbNowOp: cl.busy && this._cbRun ? 0.5 : 1, cbErr: (s.acE && s.acE.k === 'cb' && s.acE.m) || '',
           avBigOn: !!s.avBig, avBigImg: (s.avBig && s.avBig.img) || 'none', avBigName: (s.avBig && s.avBig.name) || '', avBigClose: () => this.setState({ avBig: null }) }; })(),
       acSend: () => this.acSend(), acSendLabel: busy ? (fr ? 'Envoi…' : 'Sending…') : (fr ? 'Recevoir un code' : 'Get a code'),
       acSentText: (fr ? 'Code à 6 chiffres envoyé à ' : '6-digit code sent to ') + (s.acSent || '') + (fr ? '. Pense à regarder dans les spams.' : '. Check your spam folder too.'),
@@ -3117,9 +3123,8 @@ class Component extends DCLogic {
       bmSelSub: bmSel ? (LANG === 'fr' ? 'séries · ' : 'sets · ') + (bmTotal ? Math.round(mVal(bmSel) / bmTotal * 100) : 0) + (LANG === 'fr' ? ' % du volume · rang ' : '% of volume · rank ') + (bmRank.indexOf(bmSel) + 1) + '/' + MUS.length : '',
       bmClear: () => this.setState({ bmSel: null }),
       fiFront: fiM ? bodyFig(FIG_FRONT, exStyleOf(fiM.mus), k => this.cycleMus(fi, k), false, { uid: 'ff' }) : null, fiBack: fiM ? bodyFig(FIG_BACK, exStyleOf(fiM.mus), k => this.cycleMus(fi, k), false, { uid: 'fb' }) : null,
-      accOpts: ACCENTS.map(([c, label]) => ({ c, label, ring: c.toLowerCase() === ACC.toLowerCase() ? '0 0 0 2px #0A0A0C, 0 0 0 4px #FFFFFF' : 'none', onClick: () => this.isPro() || c === '#CCFF00' ? this.setState({ accent: c, accPrev: null }) : this.setState({ accPrev: c }) })),
-      accPrevOn: !this.isPro() && !!s.accPrev, accPrevText: LANG === 'fr' ? 'Aperçu de la couleur. Garde-la avec Barlog Pro ✦' : 'Color preview. Keep it with Barlog Pro ✦', accKeepLabel: LANG === 'fr' ? 'Garder' : 'Keep', accUndoLabel: LANG === 'fr' ? 'Annuler' : 'Undo',
-      accKeep: () => { const c = s.accPrev; this.need('accent', () => this.setState({ accent: c, accPrev: null })); }, accUndo: () => this.setState({ accPrev: null }),
+      accOpts: ACCENTS.map(([c, label]) => ({ c, label, ring: c.toLowerCase() === ACC.toLowerCase() ? '0 0 0 2px #0A0A0C, 0 0 0 4px #FFFFFF' : 'none', onClick: () => this.isPro() || c === '#CCFF00' ? this.setState({ accent: c, accPrev: null }) : (this.setState({ accPrev: c }), this.need('accent', () => this.setState({ accent: c, accPrev: null }))) })),
+      accLabel: L(TX.nAccent) + (this.isPro() ? '' : ' ✦'),
       ...(() => { const z = MUS.filter(m => mVal(m[0]) <= 0).map(m => LANG === 'fr' ? m[2] : m[1]); return { bmHasZero: z.length > 0, bmZero: (LANG === 'fr' ? 'Pas travaillé : ' : 'Not trained: ') + z.join(', ') }; })(),
       bmRanges: [['7d', L('7 days')], ['4w', L('4-wk avg')]].map(([k, label]) => ({ label: label + (k === '4w' && !this.isPro() ? ' ✦' : ''), bg: (s.bmRange || '7d') === k ? '#24242B' : 'transparent', color: (s.bmRange || '7d') === k ? '#FFFFFF' : '#9C9CA8', onClick: k === '4w' ? this.gate('4w', go({ bmRange: k })) : go({ bmRange: k }) })),
       isInfo: !!fi, fiName: fi || '', fiSub: fiLib ? L(fiLib.group) : '',

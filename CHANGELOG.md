@@ -5,6 +5,13 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.30.1 — 2026-10-21
+- Sauvegarde en ligne : la restauration est maintenant toujours gratuite (Pro expiré, téléphone perdu ou cassé). Seul l’envoi de nouvelles sauvegardes est réservé à Pro. Sans Pro, Profil → Compte propose « Restaurer une sauvegarde ».
+- Restaurer une sauvegarde ne réactive plus le Pro (il viendra de la boutique).
+- Couleurs d’accent : de nouveau réservées à Pro. Toucher une couleur ouvre la page Pro déjà dans cette couleur ; sans achat, la couleur par défaut revient. ✦ ajouté au réglage.
+- Liaison Apple Santé / Health Connect réservée à Pro (séances envoyées, poids et composition récupérés). Sans Pro, la liaison est en pause : les données déjà importées restent, et supprimer une séance la retire aussi de Santé.
+- Politique de confidentialité et fiches des boutiques mises à jour.
+
 ## 0.30.0 — 2026-10-20
 - Nouveau découpage gratuit / Pro. Gratuit : séances illimitées, minuteur, records, social, export/import, 3 routines perso, 10 exercices perso, graphiques d’exercice et Corps sur 30 jours. Pro : sauvegarde en ligne, progression auto, onglet Stats, tout l’historique, routines et exercices illimités, programmes avancés, body map 4 semaines, couleurs, widgets, composition corporelle.
 - Aperçus Pro : au lieu d’ouvrir directement la page des prix, l’écran s’affiche avec tes propres données en partie floutées et une invitation (Stats, graphiques au-delà de la période gratuite, muscles d’une séance, progression proposée, couleurs en aperçu).
