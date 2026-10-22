@@ -32,7 +32,15 @@ jobs:
         with:
           ref: dev
           path: site/dev
-      - run: rm -rf site/.git site/.github site/dev/.git site/dev/.github
+      # Contrôle avant publication : si l'app ne se compile pas ou si un test échoue, rien n'est publié
+      # (le site garde la version précédente). Le contrôle de dev sert pour les deux branches.
+      - name: Contrôle (scripts/check.mjs + tests)
+        run: |
+          node --version
+          for d in site site/dev; do node site/dev/scripts/check.mjs "$d"; done
+          node --test site/dev/tests/*.test.mjs
+          if [ -d site/tests ]; then node --test site/tests/*.test.mjs; fi
+      - run: rm -rf site/.git site/.github site/scripts site/tests site/dev/.git site/dev/.github site/dev/scripts site/dev/tests
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
