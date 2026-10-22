@@ -61,7 +61,7 @@ test('cbRestore « Remplacer » demande confirmation, puis remplace l’historiq
   assert.equal(uploads, 1, 'la sauvegarde est renvoyée après restauration');
 });
 
-test('[BUG] cbMerge garde les deux blocs d’un exercice fait deux fois dans la même séance', { todo: 'à corriger au lot D2' }, () => {
+test('cbMerge garde les deux blocs d’un exercice fait deux fois dans la même séance', () => {
   const B = loadBarlog();
   const app = makeApp(B, { ...emptyData(), autoRest: false, libCtx: 'workout' });
   app.start(null, true);                                       // séance libre
@@ -77,7 +77,7 @@ test('[BUG] cbMerge garde les deux blocs d’un exercice fait deux fois dans la 
   assert.equal(setsOf(merged).length, 6, 'après fusion : aucune série perdue');
 });
 
-test('[BUG] une séance supprimée sur ce téléphone ne revient pas à la fusion suivante', { todo: 'à corriger au lot D2' }, async t => {
+test('une séance supprimée sur ce téléphone ne revient pas à la fusion suivante', async t => {
   t.mock.timers.enable({ apis: ['setTimeout'] });
   const B = loadBarlog();
   const backup = { history: { Squat: [{ date: T(2), sets: [set(100, 5)] }] }, routines: [], sessMeta: { [T(2)]: { name: 'Legs' } } };
@@ -121,4 +121,22 @@ test('[BUG] cbUp : deux téléphones qui envoient en même temps ne suppriment j
 
   assert.equal(A.state.cloud.err ?? null, null); assert.equal(Bp.state.cloud.err ?? null, null);
   assert.ok(store.files.has(store.meta.path), `le fichier désigné par backups_meta.path (${store.meta.path}) doit exister`);
+});
+
+test('cbMerge : une routine supprimée ici ne revient pas, une routine identique (même nom, mêmes exercices) n’est pas en double', () => {
+  const B = loadBarlog();
+  const app = makeApp(B, emptyData());
+  const r = (id, name) => ({ id, name, ex: [{ name: 'Squat', sets: 3, reps: 5 }] });
+  const st = { history: {}, routines: [r('a1', 'Jambes')], body: [], gone: { r: { old1: Date.now() } } };
+  const merged = app.cbMerge(st, { history: {}, routines: [r('old1', 'Ancienne'), r('b2', 'Jambes'), r('c3', 'Bras')] });
+  assert.deepEqual(merged.routines.map(x => x.name), ['Jambes', 'Bras']);
+});
+
+test('données d’exemple : jamais envoyées dans la sauvegarde, effacées par une vraie sauvegarde', () => {
+  const B = loadBarlog();
+  const app = makeApp(B, emptyData());
+  const st = { ...emptyData(), history: { Squat: [{ date: T(1), demo: 1, sets: [set(60, 5)] }] }, routines: [], body: [] };
+  assert.deepEqual(app.cbData(st).history, {}, 'rien de fictif dans la sauvegarde');
+  const merged = app.cbMerge(st, { history: { Squat: [{ date: T(2), sets: [set(100, 5)] }] }, routines: [] });
+  assert.deepEqual(merged.history.Squat.map(x => x.date), [T(2)], 'seule la vraie séance reste');
 });
