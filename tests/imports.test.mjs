@@ -39,7 +39,7 @@ test('mergeLifts : réimporter le même fichier n’ajoute aucun doublon et gard
   assert.deepEqual(s1.history.Squat, s0.history.Squat, 'séance existante intacte');
 });
 
-test('[BUG] l’import JSON ne reprend que les données : ni l’identité de sauvegarde, ni le jeton push, ni le Pro d’un autre téléphone', { todo: 'à corriger au lot D4' }, async t => {
+test('l’import JSON ne reprend que les données : ni l’identité de sauvegarde, ni le jeton push, ni le Pro d’un autre téléphone', async t => {
   const B = loadBarlog();
   // Téléphone A (Pro, relié à la sauvegarde en ligne) exporte ses données (Profil → Exporter).
   const A = makeApp(B, { ...emptyData(), history: { 'Bench Press': [{ date: 1, sets: [{ w: 80, r: 5 }] }] },
@@ -58,7 +58,7 @@ test('[BUG] l’import JSON ne reprend que les données : ni l’identité de sa
   assert.equal(Bt.isPro(), false, 'importer un fichier ne donne pas le Pro');
 });
 
-test('[BUG] un fichier JSON malformé est refusé et ne rend pas l’app inutilisable', { todo: 'à corriger au lot D4' }, async t => {
+test('un fichier JSON malformé est refusé et ne rend pas l’app inutilisable', async t => {
   const B = loadBarlog();
   const app = makeApp(B, { ...emptyData(), tab: 'today', screen: 'tabs' });
   const picker = fakeFilePicker(t);
@@ -74,4 +74,13 @@ test('[BUG] importBody lit une date américaine non ambiguë (10/26/2024) au bon
   app.importBody(); picker.choose('Date,Weight (lb)\n10/26/2024,180\n'); await flush();
 
   assert.deepEqual(app.state.body.map(b => new Date(b.date).toDateString()), [new Date(2024, 9, 26).toDateString()]);
+});
+
+test('import JSON : une séance réimportée n’est plus considérée comme supprimée (la fusion suivante la garde)', async t => {
+  const B = loadBarlog();
+  const app = makeApp(B, { ...emptyData(), gone: { s: { 5: Date.now() }, r: {} } });
+  const picker = fakeFilePicker(t);
+  app.importData(); picker.choose(JSON.stringify({ routines: [], history: { Squat: [{ date: 5, sets: [{ w: 100, r: 5 }] }] } })); await flush();
+  assert.ok(app.state.history.Squat, 'séance importée');
+  assert.equal(app.state.gone.s[5], undefined, 'plus marquée comme supprimée');
 });

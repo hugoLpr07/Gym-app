@@ -1466,6 +1466,17 @@ function goneMerge(a, b) {
 // Sauvegarde en ligne : fichier absent du stockage ; fichier envoyé il y a moins de 10 min (jamais effacé par le ménage).
 const cbMissing = e => !!e && (e.status === 404 || String(e.statusCode) === '404' || /not.?found/i.test(String(e.message || e)));
 const cbRecent = p => { const t = Number((String(p).match(/\/b(\d+)\.gz$/) || [])[1]); return !t || Date.now() - t < 600000; };
+// Export / import JSON : seulement les données de l'utilisateur, jamais l'identité de sauvegarde (cloud), le jeton push,
+// le Pro ni les réglages propres à un téléphone (CB_SKIP) ; la forme est vérifiée avant de remplacer quoi que ce soit.
+const ioKeys = () => PK.filter(k => !CB_SKIP.includes(k) && k !== 'pro');
+function ioCheck(d) {
+  const arr = Array.isArray, obj = x => !!x && typeof x === 'object' && !arr(x);
+  if (!obj(d) || !arr(d.routines) || !obj(d.history)) return false;
+  if (!d.routines.every(r => obj(r) && typeof r.name === 'string' && arr(r.ex) && r.ex.every(e => obj(e) && typeof e.name === 'string'))) return false;
+  if (!Object.values(d.history).every(a => arr(a) && a.every(x => obj(x) && Number.isFinite(x.date) && arr(x.sets) && x.sets.length && x.sets.every(obj)))) return false;
+  if (['sessMeta', 'exMeta'].some(k => d[k] != null && !obj(d[k])) || ['custom', 'body'].some(k => d[k] != null && !arr(d[k]))) return false;
+  return d.accent == null || /^#[0-9a-f]{6}$/i.test(d.accent);
+}
 function noDemo(h) { const o = {}; Object.entries(h || {}).forEach(([k, a]) => { const f = (a || []).filter(x => !x.demo); if (f.length) o[k] = f; }); return o; }
 const FREE_ROUT = 3, FREE_CUST = 10;
 let ACC = '#CCFF00';
@@ -2437,7 +2448,7 @@ class Component extends DCLogic {
     this.setState({ routines, gone: { ...g, r: { ...(g.r || {}), [s.editId]: Date.now() } }, screen: 'tabs', tab: 'programs', deleteArm: false, lastRoutineId: s.lastRoutineId === s.editId && routines.length ? routines[routines.length - 1].id : s.lastRoutineId });
   }
   exportData() {
-    const s = this.state; const o = {}; PK.forEach(k => o[k] = s[k]);
+    const s = this.state; const o = {}; ioKeys().forEach(k => o[k] = s[k]); o.v = 1;
     const name = 'barlog-' + new Date().toISOString().slice(0, 10) + '.json';
     const json = JSON.stringify(o, null, 2);
     this.shareFile(new Blob([json], { type: 'application/json' }), name, 'Barlog backup').then(ok => { if (ok) { this.setState({ lastExport: Date.now(), backupSnooze: null }); this.flash(L('Backup exported')); } });
@@ -2466,8 +2477,17 @@ class Component extends DCLogic {
   }
   importData() {
     const i = document.createElement('input'); i.type = 'file'; i.accept = 'application/json,.json';
-    i.onchange = () => { const f = i.files && i.files[0]; if (!f) return; f.text().then(t => { const d = JSON.parse(t); if (!d || !d.routines || !d.history) throw 0; this.setState({ ...d, sessMeta: d.sessMeta || {}, custom: d.custom || [], screen: d.workout ? 'workout' : 'tabs', tab: 'today', restAlert: false, calOff: 0 }); this.flash(L('Data imported')); }).catch(() => this.flash(L('Not a Barlog backup'))); };
+    i.onchange = () => { const f = i.files && i.files[0]; if (!f) return; f.text().then(t => this.importJson(JSON.parse(t))).catch(() => this.flash(L('Not a Barlog backup'))); };
     i.click();
+  }
+  // Seul chemin d'import JSON (Importer, et fichier .json choisi dans l'import Strong / Hevy) : refuse un fichier mal formé
+  // (rien n'est touché) et n'en reprend que les données de l'utilisateur. Les séances importées ne sont plus « supprimées ».
+  importJson(d, extra) {
+    if (!ioCheck(d)) throw new Error('format');
+    const o = {}; ioKeys().forEach(k => { if (d[k] !== undefined) o[k] = d[k]; });
+    const gone = goneMerge(this.state.gone, d.gone); Object.values(d.history).forEach(a => a.forEach(x => { delete gone.s[x.date]; }));
+    this.setState({ ...o, gone, sessMeta: d.sessMeta || {}, custom: d.custom || [], screen: 'tabs', tab: 'today', restAlert: false, calOff: 0, ...(extra || {}) });
+    this.flash(L('Data imported'));
   }
   arm(key, fn) {
     if (!this.state[key]) { this.setState({ [key]: true }); setTimeout(() => this.setState({ [key]: false }), 3000); return; }
@@ -2644,7 +2664,7 @@ class Component extends DCLogic {
   importLifts() {
     const i = document.createElement('input'); i.type = 'file'; i.accept = '.csv,text/csv,text/plain,.json,application/json';
     i.onchange = () => { const f = i.files && i.files[0]; if (!f) return; f.text().then(t => { t = t.replace(/^\uFEFF/, ''); const fr = LANG === 'fr'; const s = this.state;
-      if (/^\s*\{/.test(t)) { const d = JSON.parse(t); if (!d || !d.routines || !d.history) throw 0; this.setState({ ...d, sessMeta: d.sessMeta || {}, custom: d.custom || [], screen: d.workout ? 'workout' : 'tabs', tab: 'today', restAlert: false, calOff: 0, onboarded: true, ob: null }); this.flash(L('Data imported')); return; }
+      if (/^\s*\{/.test(t)) { this.importJson(JSON.parse(t), { onboarded: true, ob: null }); return; }
       const res = parseLifts(t, s.unit); if (!res) throw 0;
       const inOb = s.onboarded === false; const m = mergeLifts(s, res, inOb && !(s.ob && s.ob.imported));
       this.setState({ ...m.patch, ...(inOb ? { ob: { ...(s.ob || {}), imported: true, step: Math.max(1, (s.ob || {}).step || 0) } } : {}) });
