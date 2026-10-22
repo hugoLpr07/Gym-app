@@ -67,7 +67,7 @@ test('un fichier JSON malformé est refusé et ne rend pas l’app inutilisable'
   assert.doesNotThrow(() => app.renderVals(), 'l’écran doit encore s’afficher (sinon l’état cassé est sauvegardé et l’app plante à chaque lancement)');
 });
 
-test('[BUG] importBody lit une date américaine non ambiguë (10/26/2024) au bon jour', { todo: 'à corriger au lot D5' }, async t => {
+test('importBody lit une date américaine non ambiguë (10/26/2024) au bon jour', async t => {
   const B = loadBarlog();
   const app = makeApp(B, { ...emptyData() });
   const picker = fakeFilePicker(t);
@@ -83,4 +83,11 @@ test('import JSON : une séance réimportée n’est plus considérée comme sup
   app.importData(); picker.choose(JSON.stringify({ routines: [], history: { Squat: [{ date: 5, sets: [{ w: 100, r: 5 }] }] } })); await flush();
   assert.ok(app.state.history.Squat, 'séance importée');
   assert.equal(app.state.gone.s[5], undefined, 'plus marquée comme supprimée');
+});
+
+test('import Strong / Hevy : « Incline » ne range que les développés incliné haltères dans Incline DB Press', () => {
+  const B = loadBarlog();
+  assert.equal(B.mapEx('Incline Bench Press (Dumbbell)'), 'Incline DB Press');
+  assert.equal(B.mapEx('Incline Dumbbell Press'), 'Incline DB Press');
+  for (const n of ['Incline Curl (Dumbbell)', 'Incline Chest Fly (Dumbbell)', 'Incline Row (Dumbbell)']) assert.notEqual(B.mapEx(n), 'Incline DB Press', n);
 });

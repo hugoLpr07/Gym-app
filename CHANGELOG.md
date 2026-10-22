@@ -5,6 +5,16 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.33.0 — 2026-10-22
+- Sauvegarde en ligne plus sûre : un exercice fait deux fois dans la même séance garde toutes ses séries à la restauration ; une séance ou une routine supprimée sur un téléphone l’est partout ; les données d’exemple ne sont jamais envoyées ; une routine identique n’apparaît plus en double.
+- Deux téléphones qui sauvegardent en même temps ne s’effacent plus leur sauvegarde ; si le fichier a disparu, la copie de la veille est utilisée ; un envoi raté est retenté au retour du réseau.
+- Garde-fou : si ce téléphone a soudain beaucoup moins de séances que la sauvegarde (effacement, mauvais import), rien n’est écrasé et Barlog propose de les récupérer (« Récupérer mes séances »).
+- Import d’un fichier Barlog : un fichier abîmé est refusé sans rien changer ; seules tes données sont reprises (plus l’identité de sauvegarde, le jeton de notification ni le Pro d’un autre téléphone). L’export ne les contient plus.
+- Compte : « Se déconnecter » ne déconnecte plus que ce téléphone ; l’app retrouve ton compte toute seule si elle a été ouverte hors ligne ; une séance publiée puis supprimée hors ligne est retirée du Fil au retour du réseau ; une publication en attente ne part jamais sous un autre compte.
+- Fil : une publication aux données inattendues ne peut plus faire disparaître l’écran.
+- Import de pesées CSV : dates américaines (MM/JJ) reconnues, dates impossibles ou futures ignorées. Import Strong / Hevy : « Incline » ne range plus le curl, l’écarté ou le rowing incliné dans le développé incliné.
+- Contrôle automatique avant chaque publication du site (compilation de l’app et 21 tests).
+
 ## 0.32.1 — 2026-10-22
 - « Sauvegarde trouvée » : sans Pro, « Pas maintenant » est retenu pour cette sauvegarde, qui n’est plus reproposée avant 7 jours (une nouvelle sauvegarde, elle, est proposée tout de suite). Le bouton « Restaurer une sauvegarde » du Profil reste toujours disponible. Avec Pro, la question revient à chaque ouverture, car les envois attendent cette décision.
 

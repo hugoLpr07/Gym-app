@@ -199,3 +199,43 @@ test('cbUp : garde-fou — bien moins de séances ici que dans la sauvegarde, sa
   await A2.cbUp();
   assert.equal(s2.uploads, 1, 'suppressions voulues : la sauvegarde est mise à jour');
 });
+
+// ── Compte et social (lot D5) ──
+test('Fil : une publication piégée (prs: [null]) ne fait pas planter l’affichage', () => {
+  const B = loadBarlog();
+  const app = makeApp(B, { ...emptyData(), unit: 'kg', acct: { uid: 'moi', profile: { username: 'moi' } } });
+  const row = { id: 'a1', user_id: 'x', username: 'x', display_name: 'X', avatar: null, title: 'Push', created_at: new Date().toISOString(),
+    duration_s: 60, volume_kg: 1, sets: 1, prs: [null, { ex: 'Bench Press', w: 100, r: 5 }, 'x'], muscles: null, note: null, visibility: 'public' };
+  const out = app.cardVals(app.state, [row], 'fd');
+  assert.deepEqual(out[0].prList.map(p => p.text), ['Bench Press 100 kg × 5']);
+});
+
+test('publication en attente : jamais envoyée sous un autre compte', () => {
+  const B = loadBarlog();
+  const app = makeApp(B, { ...emptyData(), acct: { uid: 'u2', profile: { username: 'b' } },
+    sessMeta: { [T(1)]: { pub: { vis: 'public', pending: true, uid: 'u1' } }, [T(2)]: { pub: { vis: 'public', pending: true, uid: 'u2' } } } });
+  const sent = []; app.pubSend = d => sent.push(d);
+  app.pubFlush(true);
+  assert.deepEqual(sent, [T(2)]);
+});
+
+test('séance publiée supprimée hors ligne : la publication est retirée du serveur plus tard (pubQ)', async () => {
+  const B = loadBarlog();
+  let online = false; const deleted = [];
+  const client = { from: () => ({ delete: () => ({ eq: (k1, v1) => ({ eq: async (k2, v2) => { if (!online) return { error: new Error('Failed to fetch') }; deleted.push(v2); return { error: null }; } }) }) }) };
+  const app = makeApp(B, { ...emptyData(), acct: { uid: 'u1', profile: { username: 'a' } } });
+  app.sb = () => Promise.resolve(client);
+  await app.pubGone(T(3), 'u1');
+  assert.deepEqual(app.state.pubQ, { [T(3)]: 'u1' }, 'en attente');
+  online = true; app.pubFlush(true); await flush(); await flush();
+  assert.deepEqual(deleted, [T(3)]); assert.deepEqual(app.state.pubQ, {}, 'plus rien en attente');
+});
+
+test('déconnexion : seulement ce téléphone (scope local), jeton de notifications oublié', async () => {
+  const B = loadBarlog();
+  let scope;
+  const app = makeApp(B, { ...emptyData(), acct: { uid: 'u1', profile: { username: 'a' } }, push: { tok: null } });
+  app.sb = () => Promise.resolve({ auth: { signOut: async o => { scope = o && o.scope; return {}; } } });
+  app.acOut(); await flush(); await flush();
+  assert.equal(scope, 'local'); assert.equal(app.state.acct, null); assert.equal(app.state.push.tok, null);
+});
