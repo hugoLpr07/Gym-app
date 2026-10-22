@@ -90,7 +90,7 @@ test('une séance supprimée sur ce téléphone ne revient pas à la fusion suiv
   assert.equal(merged.history.Squat, undefined, 'la séance supprimée ne doit pas réapparaître');
 });
 
-test('[BUG] cbUp : deux téléphones qui envoient en même temps ne suppriment jamais la sauvegarde courante (meta.path)', { todo: 'à corriger au lot D3' }, async () => {
+test('cbUp : deux téléphones qui envoient en même temps ne suppriment jamais la sauvegarde courante (meta.path)', async () => {
   const B = loadBarlog();
   const old = new Date(Date.now() - 3600e3).toISOString();
   const store = { files: new Map([['u1/b1000000000.gz', new Blob(['{}'])]]), meta: { user_id: 'u1', path: 'u1/b1000000000.gz', prev_path: null, device: 'dA', updated_at: old } };
@@ -139,4 +139,63 @@ test('données d’exemple : jamais envoyées dans la sauvegarde, effacées par 
   assert.deepEqual(app.cbData(st).history, {}, 'rien de fictif dans la sauvegarde');
   const merged = app.cbMerge(st, { history: { Squat: [{ date: T(2), sets: [set(100, 5)] }] }, routines: [] });
   assert.deepEqual(merged.history.Squat.map(x => x.date), [T(2)], 'seule la vraie séance reste');
+});
+
+// Faux Supabase pour cbUp / cbFetch : une table backups_meta (une ligne) et un compartiment de fichiers en mémoire.
+function cloudApp(B, store, dev, history, extra = {}) {
+  const client = {
+    from: () => ({
+      select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: store.meta && { ...store.meta }, error: null }) }) }),
+      upsert: row => ({ select: () => ({ maybeSingle: async () => { store.meta = { ...row, updated_at: new Date().toISOString() }; return { data: { updated_at: store.meta.updated_at }, error: null }; } }) }),
+    }),
+    storage: { from: () => ({
+      upload: async (p, b) => { store.files.set(p, b); store.uploads = (store.uploads || 0) + 1; return { error: null }; },
+      download: async p => (store.files.has(p) ? { data: store.files.get(p), error: null } : { data: null, error: Object.assign(new Error('Object not found'), { statusCode: '404' }) }),
+      list: async uid => ({ data: [...store.files.keys()].filter(k => k.startsWith(uid + '/')).map(k => ({ name: k.slice(uid.length + 1) })) }),
+      remove: async rm => { rm.forEach(k => store.files.delete(k)); return { error: null }; },
+    }) },
+  };
+  const a = makeApp(B, { ...emptyData(), pro: { plan: 'year' }, acct: { uid: 'u1', profile: { username: 't' } },
+    cloud: { on: true, uid: 'u1', link: true, dev, srvAt: 0 }, history, ...extra });
+  a.sb = () => Promise.resolve(client); return a;
+}
+const hourAgo = () => new Date(Date.now() - 3600e3).toISOString();
+const backupBlob = history => new Blob([JSON.stringify({ history, routines: [] })]);
+
+test('cbFetch : fichier courant introuvable → la copie de la veille est utilisée', async () => {
+  const B = loadBarlog();
+  const store = { files: new Map([['u1/b999.gz', backupBlob({ Squat: [{ date: T(5), sets: [set(80, 5)] }] })]]),
+    meta: { user_id: 'u1', path: 'u1/b1000.gz', prev_path: 'u1/b999.gz', device: 'dB', sessions: 1, updated_at: hourAgo() } };
+  const A = cloudApp(B, store, 'dA', { Bench: [{ date: T(1), sets: [set(60, 5)] }] });
+  await A.cbUp();
+  assert.equal(A.state.cloud.err ?? null, null);
+  assert.deepEqual(A.state.history.Squat.map(x => x.date), [T(5)], 'les séances de la copie de la veille sont fusionnées');
+  assert.ok(store.files.has(store.meta.path), 'nouvelle sauvegarde envoyée');
+});
+
+test('cbUp : sauvegarde introuvable (fichiers effacés) → pas de blocage, ce téléphone envoie la sienne', async () => {
+  const B = loadBarlog();
+  const store = { files: new Map(), meta: { user_id: 'u1', path: 'u1/b1000.gz', prev_path: 'u1/b999.gz', device: 'dB', sessions: 1, updated_at: hourAgo() } };
+  const A = cloudApp(B, store, 'dA', { Bench: [{ date: T(1), sets: [set(60, 5)] }] });
+  await A.cbUp(); await A.cbUp();
+  assert.equal(A.state.cloud.err ?? null, null, 'aucune erreur « Object not found » à répétition');
+  assert.ok(store.files.has(store.meta.path), 'backups_meta désigne un fichier qui existe');
+});
+
+test('cbUp : garde-fou — bien moins de séances ici que dans la sauvegarde, sans suppressions → rien n’est écrasé', async () => {
+  const B = loadBarlog();
+  const store = { files: new Map([['u1/b1000.gz', backupBlob({})]]), meta: { user_id: 'u1', path: 'u1/b1000.gz', prev_path: null, device: 'dA', sessions: 20, updated_at: hourAgo() } };
+  const few = { Bench: [{ date: T(1), sets: [set(60, 5)] }, { date: T(2), sets: [set(60, 5)] }] };
+  const A = cloudApp(B, store, 'dA', few);
+  await A.cbUp();
+  assert.equal(store.uploads ?? 0, 0, 'aucun envoi');
+  assert.deepEqual(A.state.cloud.hold, { n: 2, m: 20 });
+  assert.equal(A.state.cbAsk && A.state.cbAsk.hold, true, 'la fenêtre propose de récupérer les séances');
+
+  // Mêmes chiffres, mais 18 séances supprimées volontairement ici depuis la dernière sauvegarde : l'envoi a lieu.
+  const s2 = { files: new Map([['u1/b1000.gz', backupBlob({})]]), meta: { ...store.meta } };
+  const gone = { s: Object.fromEntries(Array.from({ length: 18 }, (_, i) => [T(10 + i), Date.now()])), r: {} };
+  const A2 = cloudApp(B, s2, 'dA', few, { gone });
+  await A2.cbUp();
+  assert.equal(s2.uploads, 1, 'suppressions voulues : la sauvegarde est mise à jour');
 });

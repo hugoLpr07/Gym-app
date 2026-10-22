@@ -1463,6 +1463,9 @@ function goneMerge(a, b) {
   return o;
 }
 // Données d'exemple (« Explorer avec des données d'exemple », marquées demo) : jamais envoyées dans la sauvegarde en ligne.
+// Sauvegarde en ligne : fichier absent du stockage ; fichier envoyé il y a moins de 10 min (jamais effacé par le ménage).
+const cbMissing = e => !!e && (e.status === 404 || String(e.statusCode) === '404' || /not.?found/i.test(String(e.message || e)));
+const cbRecent = p => { const t = Number((String(p).match(/\/b(\d+)\.gz$/) || [])[1]); return !t || Date.now() - t < 600000; };
 function noDemo(h) { const o = {}; Object.entries(h || {}).forEach(([k, a]) => { const f = (a || []).filter(x => !x.demo); if (f.length) o[k] = f; }); return o; }
 const FREE_ROUT = 3, FREE_CUST = 10;
 let ACC = '#CCFF00';
@@ -1654,8 +1657,9 @@ class Component extends DCLogic {
       F.writeFile({ path: 'barlog-data.prev.json', data: r.data, directory: 'DATA', encoding: 'utf8' }).catch(() => {});
     }).catch(() => {}).then(() => { this.nativeReady = true; this.save(true); });
     this.iv = setInterval(() => this.tick(), 250);
-    this.onVis = () => { if (document.visibilityState === 'hidden' && this._cbT) { clearTimeout(this._cbT); this._cbT = null; this.cbUp(); } this.save(document.visibilityState === 'hidden'); this.syncWake(); this.tick(); this._rnAt = undefined; this.syncRestNotif(); if (document.visibilityState === 'visible') this.pullWeights(); if (document.visibilityState === 'visible') this.checkUpdate(); if (document.visibilityState === 'visible') this.pubFlush(); if (document.visibilityState === 'visible') this.reqCount(); };
-    this.onOnline = () => this.pubFlush(true); window.addEventListener('online', this.onOnline);
+    this.onVis = () => { if (document.visibilityState === 'hidden' && this._cbT) { clearTimeout(this._cbT); this._cbT = null; this.cbUp(); } this.save(document.visibilityState === 'hidden'); this.syncWake(); this.tick(); this._rnAt = undefined; this.syncRestNotif(); if (document.visibilityState === 'visible') { this.pullWeights(); if ((this.state.cloud || {}).err) this.cbSoon(3000); } if (document.visibilityState === 'visible') this.checkUpdate(); if (document.visibilityState === 'visible') this.pubFlush(); if (document.visibilityState === 'visible') this.reqCount(); };
+    // Retour du réseau : publications en attente, et sauvegarde dont le dernier envoi a échoué.
+    this.onOnline = () => { this.pubFlush(true); if ((this.state.cloud || {}).err) this.cbSoon(3000); }; window.addEventListener('online', this.onOnline);
     this.checkUpdate();
     this.loadMedia();
     setTimeout(() => this.syncReminders(), 600);
@@ -1820,8 +1824,10 @@ class Component extends DCLogic {
     return new Response(new Blob([json]).stream().pipeThrough(new CompressionStream('gzip'))).blob().then(b => new Blob([b], { type: 'application/gzip' }));
   }
   cbFetch(c, m) {
-    return c.storage.from('backups').download(m.path).then(({ data, error }) => { if (error) throw error; return data.slice(0, 2).arrayBuffer().then(h => { const u = new Uint8Array(h);
-      const gz = u[0] === 0x1f && u[1] === 0x8b; return gz ? new Response(data.stream().pipeThrough(new DecompressionStream('gzip'))).text() : data.text(); }); })
+    const get = p => c.storage.from('backups').download(p).then(({ data, error }) => { if (error) throw error; return data.slice(0, 2).arrayBuffer().then(h => { const u = new Uint8Array(h);
+      const gz = u[0] === 0x1f && u[1] === 0x8b; return gz ? new Response(data.stream().pipeThrough(new DecompressionStream('gzip'))).text() : data.text(); }); });
+    // Fichier courant introuvable (effacé par un autre téléphone, compte en cours de suppression) : copie de la veille.
+    return get(m.path).catch(e => m.prev_path && m.prev_path !== m.path && cbMissing(e) ? get(m.prev_path) : Promise.reject(e))
       .then(t => { const d = JSON.parse(t); if (!d || !d.history || !d.routines) throw new Error(LANG === 'fr' ? 'Sauvegarde illisible' : 'Unreadable backup'); return d; });
   }
   cbWipe(c, uid) { if (!uid) return Promise.resolve(); const b = c.storage.from('backups'); return b.list(uid, { limit: 100 }).then(({ data }) => { const rm = (data || []).map(o => uid + '/' + o.name); return rm.length ? b.remove(rm) : null; }); }
@@ -1856,7 +1862,7 @@ class Component extends DCLogic {
     this.sb().then(c => c.from('backups_meta').select('*').eq('user_id', a.uid).maybeSingle()).then(({ data, error }) => { if (error) throw error;
       if (!data || !data.path) { if (!pro) { if (manual) this.flash(LANG === 'fr' ? 'Aucune sauvegarde sur ton compte' : 'No backup on your account'); return; } this.cbSet({ uid: a.uid, link: true, srvAt: 0 }); return this.cbUp(); }
       const sn = this.state.cbSnooze; if (!manual && !pro && sn && sn.path === data.path && Date.now() < sn.until) return;
-      this.setState({ cbAsk: { n: data.sessions, at: data.updated_at, path: data.path, loc: nSess(this.state.history), arm: false } }); })
+      this.setState({ cbAsk: { n: data.sessions, at: data.updated_at, path: data.path, prev_path: data.prev_path, loc: nSess(this.state.history), arm: false } }); })
       .catch(e => { if (manual) this.acErr(e, false, 'cb'); }).then(() => { this._cbChk = false; });
   }
   // mode : 'merge' (fusionner / restaurer) ou 'replace' (remplacer ce téléphone par la sauvegarde)
@@ -1867,13 +1873,13 @@ class Component extends DCLogic {
     this.sb().then(c => this.cbFetch(c, q)).then(d => {
       this.setState(st => { const keep = { healthOn: st.healthOn, hkWSync: null, hkCSync: null };
         const o = mode === 'replace' ? { ...this.cbMerge({ ...st, history: {}, routines: [], custom: [], body: (st.body || []).filter(x => x.hk), sessMeta: {}, exMeta: {} }, d), ...keep } : { ...this.cbMerge(st, d), hkWSync: null, hkCSync: null };
-        return { ...o, cbAsk: null, cbSnooze: null, workout: st.workout, screen: st.workout ? st.screen : 'tabs', cloud: { ...(st.cloud || {}), uid: a.uid, link: true, srvAt: 0, err: null } }; });
+        return { ...o, cbAsk: null, cbSnooze: null, workout: st.workout, screen: st.workout ? st.screen : 'tabs', cloud: { ...(st.cloud || {}), uid: a.uid, link: true, srvAt: 0, err: null, hold: null } }; });
       this.flash((fr ? 'Sauvegarde restaurée · ' : 'Backup restored · ') + nSess(this.state.history) + (fr ? ' séances' : ' workouts'));
       setTimeout(() => { this.pullWeights(); this.cbUp(); }, 500); })
       .catch(e => { this.setState(st => st.cbAsk ? { cbAsk: { ...st.cbAsk, busy: false } } : null); this.acErr(e, false, 'cbask'); });
   }
   cbLater() { const q = this.state.cbAsk; this._cbLater = true; this.setState({ cbAsk: null, ...(q && q.path && !this.isPro() ? { cbSnooze: { path: q.path, until: Date.now() + CB_SNOOZE } } : {}) }); }
-  cbUp() {
+  cbUp(manual) {
     const s = this.state; const a = s.acct; const cl = s.cloud || {}; if (!a || !a.profile || !this.isPro() || cl.on === false || !cl.link || cl.uid !== a.uid) return Promise.resolve();
     if (this._cbRun) { this._cbAgain = true; return this._cbRun; }
     const uid = a.uid; const dev = cl.dev || ('d' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36)); this.cbSet({ busy: true });
@@ -1881,13 +1887,26 @@ class Component extends DCLogic {
     const run = this.sb().then(c => c.from('backups_meta').select('*').eq('user_id', uid).maybeSingle().then(({ data: m, error }) => { if (error) throw error;
         // Sauvegarde plus récente faite sur un autre téléphone : on la fusionne d'abord, pour ne rien écraser.
         const other = m && m.path && m.device !== dev && Date.parse(m.updated_at) > ((this.state.cloud || {}).srvAt || 0);
-        const path = uid + '/b' + Date.now() + '.gz'; const prev = m && m.path ? (Date.now() - Date.parse(m.updated_at) > 20 * 3600000 ? m.path : m.prev_path || m.path) : null;
-        return (other ? this.cbFetch(c, m).then(d => this.setState(st => this.cbMerge(st, d))) : Promise.resolve())
-          .then(() => { const st = this.state; const n = nSess(st.history); return this.cbGz(JSON.stringify(this.cbData(st))).then(b => B().then(bk => bk.upload(path, b, { upsert: false, contentType: b.type }))
+        const path = uid + '/b' + Date.now() + '.gz'; let prev = m && m.path ? (Date.now() - Date.parse(m.updated_at) > 20 * 3600000 ? m.path : m.prev_path || m.path) : null; let lost = false;
+        // Fichier de sauvegarde introuvable, copie de la veille comprise : on ne reste pas bloqué, on envoie celle de ce téléphone.
+        return (other ? this.cbFetch(c, m).then(d => this.setState(st => this.cbMerge(st, d))).catch(e => { if (!cbMissing(e)) throw e; lost = true; prev = null; }) : Promise.resolve())
+          .then(() => { const st = this.state; const n = nSess(st.history);
+            // Garde-fou : bien moins de séances ici que dans la sauvegarde, sans suppressions pour l'expliquer (« Tout effacer »,
+            // mauvais import…) → on n'écrase rien et on propose de récupérer les séances.
+            const since = m ? Date.parse(m.updated_at) : 0; const dels = Object.values((st.gone || {}).s || {}).filter(t => t > since).length;
+            if (m && m.path && !lost && m.sessions >= 4 && n < (m.sessions - dels) / 2) {
+              this.cbSet({ busy: false, err: null, hold: { n, m: m.sessions } });
+              if (!this.state.cbAsk && (manual || !this._cbLater)) this.setState({ cbAsk: { n: m.sessions, at: m.updated_at, path: m.path, prev_path: m.prev_path, loc: n, arm: false, hold: true } });
+              return null;
+            }
+            return this.cbGz(JSON.stringify(this.cbData(st))).then(b => B().then(bk => bk.upload(path, b, { upsert: false, contentType: b.type }))
             .then(({ error }) => { if (error) throw error; return c.from('backups_meta').upsert({ user_id: uid, sessions: n, size_bytes: b.size, device: dev, app_version: APP_VERSION, path, prev_path: prev }).select('updated_at').maybeSingle(); })
-            .then(({ data, error }) => { if (error) throw error; this.cbSet({ dev, at: Date.now(), srvAt: data ? Date.parse(data.updated_at) : Date.now(), n, err: null, busy: false });
-              // Ménage : on ne garde que la dernière sauvegarde et celle de la veille.
-              return B().then(bk => bk.list(uid, { limit: 100 }).then(({ data: fl }) => { const rm = (fl || []).map(o => uid + '/' + o.name).filter(x => x !== path && x !== prev); return rm.length ? bk.remove(rm) : null; })).catch(() => {}); })); }); }))
+            .then(({ data, error }) => { if (error) throw error; this.cbSet({ dev, at: Date.now(), srvAt: data ? Date.parse(data.updated_at) : Date.now(), n, err: null, hold: null, busy: false });
+              // Ménage : on garde la dernière sauvegarde et celle de la veille, celles que backups_meta désigne à cet instant
+              // (un autre téléphone a pu envoyer entre-temps) et tout fichier de moins de 10 min.
+              return c.from('backups_meta').select('path, prev_path').eq('user_id', uid).maybeSingle().then(({ data: f }) => B().then(bk => bk.list(uid, { limit: 100 }).then(({ data: fl }) => {
+                const keep = new Set([path, prev, f && f.path, f && f.prev_path]);
+                const rm = (fl || []).map(o => uid + '/' + o.name).filter(x => !keep.has(x) && !cbRecent(x)); return rm.length ? bk.remove(rm) : null; }))).catch(() => {}); })); }); }))
       .catch(e => this.cbSet({ err: this.acMsg(e), busy: false }))
       .then(() => { this._cbRun = null; if (this._cbAgain) { this._cbAgain = false; this.cbSoon(5000); } });
     this._cbRun = run; return run;
@@ -2802,17 +2821,17 @@ class Component extends DCLogic {
       acBackHint: s.obAcctHint ? (fr ? 'Utilise le même e-mail que sur ton ancien téléphone : ton profil, tes abonnés et tes publications reviennent. Tes séances reviennent avec ta sauvegarde en ligne si tu en as une (la restauration est gratuite) ou en important ton export (plus bas, « Importer »).' : 'Use the same email as on your old phone: your profile, followers and posts come back. Your workouts come back with your online backup if you have one (restoring is free) or by importing your export (below, “Import”).') : '',
       ...(() => { const cl = s.cloud || {}; const on = cl.on !== false; const q = s.cbAsk; const dt = t => { try { return new Date(t).toLocaleDateString(fr ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ''; } };
         const ns = n => n + (fr ? ' séance' : ' workout') + (n > 1 ? 's' : ''); const pro = this.isPro(); const linked = pro && on && cl.link && a && cl.uid === a.uid;
-        const sub = !pro ? (fr ? 'Avec Barlog Pro : séances, routines, pesées et réglages sauvegardés automatiquement et retrouvés sur n’importe quel téléphone. Restaurer une sauvegarde de ton compte reste gratuit. Sans Pro, pense à exporter.' : 'With Barlog Pro: workouts, routines, weigh-ins and settings backed up automatically and restored on any phone. Restoring a backup from your account stays free. Without Pro, remember to export.') : !on ? (fr ? 'Désactivée. Sans sauvegarde, garde un export à jour.' : 'Off. Without it, keep an export up to date.') : cl.busy && this._cbRun ? (fr ? 'Sauvegarde en cours…' : 'Backing up…') : cl.err && linked ? (fr ? 'Dernier essai raté : ' : 'Last try failed: ') + cl.err
+        const sub = !pro ? (fr ? 'Avec Barlog Pro : séances, routines, pesées et réglages sauvegardés automatiquement et retrouvés sur n’importe quel téléphone. Restaurer une sauvegarde de ton compte reste gratuit. Sans Pro, pense à exporter.' : 'With Barlog Pro: workouts, routines, weigh-ins and settings backed up automatically and restored on any phone. Restoring a backup from your account stays free. Without Pro, remember to export.') : !on ? (fr ? 'Désactivée. Sans sauvegarde, garde un export à jour.' : 'Off. Without it, keep an export up to date.') : cl.busy && this._cbRun ? (fr ? 'Sauvegarde en cours…' : 'Backing up…') : cl.hold && linked ? (fr ? 'Envoi suspendu : ta sauvegarde a ' + ns(cl.hold.m) + ', ce téléphone ' + cl.hold.n + '. Touche « Récupérer mes séances ».' : 'Backup paused: your backup has ' + ns(cl.hold.m) + ', this phone ' + cl.hold.n + '. Tap “Get my workouts back”.') : cl.err && linked ? (fr ? 'Dernier essai raté : ' : 'Last try failed: ') + cl.err
           : linked && cl.at ? (fr ? 'Sauvegardé ' : 'Backed up ') + relT(new Date(cl.at).toISOString(), fr) + ' · ' + ns(cl.n || 0) + (fr ? '. Automatique après chaque changement.' : '. Automatic after every change.')
           : linked ? (fr ? 'Première sauvegarde en cours…' : 'First backup in progress…') : (fr ? 'Une sauvegarde existe sur ton compte : touche « Restaurer ou fusionner ».' : 'Your account has a backup: tap “Restore or merge”.');
-        return { cbAskOn: !!q, cbAskTitle: fr ? 'Sauvegarde trouvée' : 'Backup found',
-          cbAskText: !q ? '' : q.loc ? (fr ? 'Ton compte a une sauvegarde de ' + ns(q.n) + ' (' + dt(q.at) + '). Ce téléphone en a ' + q.loc + '. « Fusionner » garde tout : rien n’est supprimé.' : 'Your account has a backup with ' + ns(q.n) + ' (' + dt(q.at) + '). This phone has ' + q.loc + '. “Merge” keeps everything: nothing is deleted.')
+        return { cbAskOn: !!q, cbAskTitle: q && q.hold ? (fr ? 'Ta sauvegarde est plus complète' : 'Your backup has more workouts') : fr ? 'Sauvegarde trouvée' : 'Backup found',
+          cbAskText: !q ? '' : q.hold ? (fr ? 'Ta sauvegarde en ligne a ' + ns(q.n) + ' (' + dt(q.at) + '), ce téléphone seulement ' + q.loc + '. Pour ne rien perdre, Barlog n’envoie plus rien tant que tu n’as pas choisi. « Fusionner » remet toutes tes séances ici.' : 'Your online backup has ' + ns(q.n) + ' (' + dt(q.at) + '), this phone only ' + q.loc + '. To lose nothing, Barlog sends nothing until you choose. “Merge” brings all your workouts back here.') : q.loc ? (fr ? 'Ton compte a une sauvegarde de ' + ns(q.n) + ' (' + dt(q.at) + '). Ce téléphone en a ' + q.loc + '. « Fusionner » garde tout : rien n’est supprimé.' : 'Your account has a backup with ' + ns(q.n) + ' (' + dt(q.at) + '). This phone has ' + q.loc + '. “Merge” keeps everything: nothing is deleted.')
             : (fr ? ns(q.n) + ' sauvegardées sur ton compte (' + dt(q.at) + '). Les remettre sur ce téléphone ?' : ns(q.n) + ' backed up on your account (' + dt(q.at) + '). Put them back on this phone?'),
           cbAskGoLabel: q && q.busy ? (fr ? 'Restauration…' : 'Restoring…') : q && q.loc ? (fr ? 'Fusionner' : 'Merge') : (fr ? 'Restaurer' : 'Restore'), cbAskGo: () => this.cbRestore('merge'), cbAskOp: q && q.busy ? 0.5 : 1,
           cbAskRepOn: !!(q && q.loc), cbAskRep: () => this.cbRestore('replace'), cbAskRepLabel: q && q.arm ? (fr ? 'Toucher encore : les séances de ce téléphone seront remplacées' : 'Tap again: this phone’s workouts will be replaced') : (fr ? 'Remplacer ce téléphone par la sauvegarde' : 'Replace this phone with the backup'),
           cbAskRepBorder: q && q.arm ? '#FF4D4D' : '#33333C', cbAskRepColor: q && q.arm ? '#FF4D4D' : '#FFFFFF', cbAskLater: () => this.cbLater(), cbAskLaterLabel: fr ? 'Pas maintenant' : 'Not now', cbAskErr: (s.acE && s.acE.k === 'cbask' && s.acE.m) || '',
-          cbLabel: (fr ? 'Sauvegarde en ligne' : 'Online backup') + (pro ? '' : ' ✦'), cbSub: sub, cbSubColor: on && cl.err && linked ? '#FF8A65' : '#9C9CA8', cbTg: tg(pro && on), cbClick: () => this.cbToggle(),
-          cbNowOn: (!pro || on) && !!a && !!p, cbNow: () => linked ? this.cbUp() : this.cbCheck(true), cbNowLabel: linked ? (fr ? 'Sauvegarder maintenant' : 'Back up now') : pro ? (fr ? 'Restaurer ou fusionner' : 'Restore or merge') : (fr ? 'Restaurer une sauvegarde' : 'Restore a backup'), cbNowOp: cl.busy && this._cbRun ? 0.5 : 1, cbErr: (s.acE && s.acE.k === 'cb' && s.acE.m) || '',
+          cbLabel: (fr ? 'Sauvegarde en ligne' : 'Online backup') + (pro ? '' : ' ✦'), cbSub: sub, cbSubColor: on && (cl.err || cl.hold) && linked ? '#FF8A65' : '#9C9CA8', cbTg: tg(pro && on), cbClick: () => this.cbToggle(),
+          cbNowOn: (!pro || on) && !!a && !!p, cbNow: () => linked ? this.cbUp(true) : this.cbCheck(true), cbNowLabel: linked ? (cl.hold ? (fr ? 'Récupérer mes séances' : 'Get my workouts back') : (fr ? 'Sauvegarder maintenant' : 'Back up now')) : pro ? (fr ? 'Restaurer ou fusionner' : 'Restore or merge') : (fr ? 'Restaurer une sauvegarde' : 'Restore a backup'), cbNowOp: cl.busy && this._cbRun ? 0.5 : 1, cbErr: (s.acE && s.acE.k === 'cb' && s.acE.m) || '',
           avBigOn: !!s.avBig, avBigImg: (s.avBig && s.avBig.img) || 'none', avBigName: (s.avBig && s.avBig.name) || '', avBigClose: () => this.setState({ avBig: null }) }; })(),
       acSend: () => this.acSend(), acSendLabel: busy ? (fr ? 'Envoi…' : 'Sending…') : (fr ? 'Recevoir un code' : 'Get a code'),
       acSentText: (fr ? 'Code à 6 chiffres envoyé à ' : '6-digit code sent to ') + (s.acSent || '') + (fr ? '. Pense à regarder dans les spams.' : '. Check your spam folder too.'),
