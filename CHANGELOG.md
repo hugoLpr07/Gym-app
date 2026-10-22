@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.32.1 — 2026-10-22
+- « Sauvegarde trouvée » : sans Pro, « Pas maintenant » est retenu pour cette sauvegarde, qui n’est plus reproposée avant 7 jours (une nouvelle sauvegarde, elle, est proposée tout de suite). Le bouton « Restaurer une sauvegarde » du Profil reste toujours disponible. Avec Pro, la question revient à chaque ouverture, car les envois attendent cette décision.
+
 ## 0.32.0 — 2026-10-22
 - Notifications push sur Android (même app fermée) : demandes d’abonnement, nouveaux abonnés, demandes acceptées, bravos (regroupés : « @alex et 2 autres ont donné un bravo à ta séance ») et commentaires. Envoyées par Supabase via Firebase Cloud Messaging.
 - Profil → Compte : réglage « Notifications push » (activé par défaut) et choix des types sur ce téléphone.
