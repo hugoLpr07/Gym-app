@@ -1456,6 +1456,9 @@ const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
 // Vérification anti-robot avant l'envoi d'un code (Cloudflare Turnstile) : clé publique du site ; vide = désactivée.
 // Le serveur ne l'exige qu'une fois activée dans Supabase (plan 0.10), quand toutes les versions installées l'envoient.
 const TS_KEY = '';
+// Bêta (TestFlight, test fermé Google) : Barlog Pro offert dans les apps, sans écran d'achat (Apple 3.1.1 et 2.5.19) ;
+// passer à false avec les vrais achats (plan, phase 3) retire automatiquement ce Pro offert. Le site garde le mode test.
+const BETA = true;
 const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive content'], ['Harcèlement ou intimidation', 'Harassment or bullying'], ['Spam ou arnaque', 'Spam or scam'], ['Usurpation d’identité', 'Impersonation'], ['Autre', 'Other']];
 // Sauvegarde en ligne : ce qui n'est pas envoyé (propre à l'appareil, ou relu depuis Santé / Health Connect).
 const CB_SKIP = ['workout', 'focus', 'restEnd', 'restTotal', 'cloud', 'installSeen', 'lastExport', 'backupSnooze', 'healthOn', 'hkWSync', 'hkCSync', 'hkTag', 'push', 'cbSnooze', 'pubQ'];
@@ -1731,8 +1734,9 @@ class Component extends DCLogic {
     }).catch(() => {}).then(() => F.readFile({ path: 'barlog-health.json', directory: 'LIBRARY_NO_CLOUD', encoding: 'utf8' }).then(r => {
       const h = JSON.parse(r.data); if (h && Array.isArray(h.body)) this.setState(st => ({ body: bodyHkIn(st.body, h.body) })); else throw new Error('health'); })
       .catch(() => this.setState({ hkWSync: null, hkCSync: null })))
-      .then(() => { this.nativeReady = true; this.save(true); this.instCheck(); });
+      .then(() => { this.nativeReady = true; this.betaPro(); this.save(true); this.instCheck(); });
   }
+  betaPro() { const p = this.state.pro; if (BETA && this.nat() && (!p || p.test)) this.setState({ pro: { plan: 'beta', since: Date.now(), beta: true } }); else if (!BETA && p && p.beta) this.setState({ pro: null }); }
   save(flush) { const o = {}; PK.forEach(k => o[k] = this.state[k]); o.body = bodyOut(o.body); o.savedAt = Date.now(); const j = JSON.stringify(o); try { localStorage.setItem('barlog-v1', j); } catch (e) {} this.saveNative(j, flush); this.saveHealth(); }
   // Valeurs lues dans Santé : fichier à part, hors des sauvegardes du téléphone (Apple interdit les données de santé dans iCloud).
   saveHealth() {
@@ -2976,7 +2980,7 @@ class Component extends DCLogic {
         // Prix en dollars canadiens (mode test). Avec les vrais achats, le prix affiché viendra de la boutique (devise du pays).
         const P = { month: [fr ? 'Mensuel' : 'Monthly', fr ? '4,99 $' : 'CA$4.99', fr ? 'par mois' : 'per month', null], year: [fr ? 'Annuel' : 'Yearly', fr ? '29,99 $' : 'CA$29.99', fr ? '2,50 $ / mois' : 'CA$2.50 / month', '−50 %'], life: [fr ? 'À vie' : 'Lifetime', fr ? '79,99 $' : 'CA$79.99', fr ? 'une fois' : 'one time', null] };
         const CTA = { month: fr ? 'S’abonner · 4,99 $ / mois' : 'Subscribe · CA$4.99 / month', year: fr ? 'Essayer 7 jours gratuitement' : 'Try 7 days free', life: fr ? 'Acheter · 79,99 $' : 'Buy · CA$79.99' };
-        const PN = { month: fr ? 'Mensuel' : 'Monthly', year: fr ? 'Annuel' : 'Yearly', life: fr ? 'À vie' : 'Lifetime' };
+        const PN = { month: fr ? 'Mensuel' : 'Monthly', year: fr ? 'Annuel' : 'Yearly', life: fr ? 'À vie' : 'Lifetime' }; const beta = !!(pro && pro.beta);
         return {
           pwOn: !!pw, pwClose: () => { this._pwThen = null; this.setState({ pw: null }); }, pwTitle: hd[0], pwSub: hd[1],
           pwPerks: PK2.map(([k, label, sub, fs]) => { const on = fs.includes(f); return { label, sub, color: on ? ACC : '#FFFFFF', dotBg: k === 'soon' ? '#24242B' : on ? ACC : accA(0.16), dotColor: k === 'soon' ? '#9C9CA8' : on ? '#0A0A0C' : ACC }; }),
@@ -2984,11 +2988,11 @@ class Component extends DCLogic {
           pwCta: CTA[plan], pwBuy: () => this.buyPro(plan),
           pwFine: (plan === 'year' ? (fr ? 'Puis 29,99 $ / an. Annulable à tout moment. ' : 'Then CA$29.99 / year. Cancel anytime. ') : '') + (fr ? 'Mode test : aucun paiement réel pour l’instant.' : 'Test mode: no real payment yet.'),
           pwRestoreLabel: fr ? 'Restaurer mes achats' : 'Restore purchases', pwRestore: () => this.flash(fr ? 'Aucun achat à restaurer (mode test)' : 'No purchases to restore (test mode)'),
-          proTitle: pro ? (fr ? 'Pro actif · ' : 'Pro active · ') + (PN[pro.plan] || '') + (pro.test ? ' (test)' : '') : (fr ? 'Débloque tout Barlog' : 'Unlock all of Barlog'),
-          proSub: pro ? (fr ? 'Merci ! Toutes les fonctions sont débloquées.' : 'Thanks! Every feature is unlocked.') : (fr ? 'Sauvegarde en ligne, progression auto, stats, tout ton historique, routines illimitées.' : 'Online backup, auto progression, stats, your full history, unlimited routines.'),
-          proBtn: pro ? (s.proArm ? (fr ? 'Désactiver ?' : 'Turn off?') : (fr ? 'Test : désactiver' : 'Test: turn off')) : (fr ? 'Voir les offres' : 'See plans'),
+          proTitle: beta ? (fr ? 'Offert pendant la bêta' : 'Free during the beta') : pro ? (fr ? 'Pro actif · ' : 'Pro active · ') + (PN[pro.plan] || '') + (pro.test ? ' (test)' : '') : (fr ? 'Débloque tout Barlog' : 'Unlock all of Barlog'),
+          proSub: beta ? (fr ? 'Merci de tester Barlog ! Toutes les fonctions Pro sont débloquées pendant la bêta, sans paiement.' : 'Thanks for testing Barlog! Every Pro feature is unlocked during the beta, no payment.') : pro ? (fr ? 'Merci ! Toutes les fonctions sont débloquées.' : 'Thanks! Every feature is unlocked.') : (fr ? 'Sauvegarde en ligne, progression auto, stats, tout ton historique, routines illimitées.' : 'Online backup, auto progression, stats, your full history, unlimited routines.'),
+          proBtn: beta ? (fr ? 'Bêta' : 'Beta') : pro ? (s.proArm ? (fr ? 'Désactiver ?' : 'Turn off?') : (fr ? 'Test : désactiver' : 'Test: turn off')) : (fr ? 'Voir les offres' : 'See plans'),
           proBtnBg: pro ? (s.proArm ? '#FF4D4D' : '#24242B') : ACC, proBtnColor: pro ? '#FFFFFF' : '#0A0A0C',
-          proCardClick: () => { if (!pro) return this.need(null); if (!s.proArm) { this.setState({ proArm: true }); clearTimeout(this.proArmT); this.proArmT = setTimeout(() => this.setState({ proArm: false }), 3000); return; } this.setState({ pro: null, proArm: false }); this.flash(fr ? 'Pro désactivé (test)' : 'Pro turned off (test)'); }
+          proCardClick: () => { if (beta) return; if (!pro) return this.need(null); if (!s.proArm) { this.setState({ proArm: true }); clearTimeout(this.proArmT); this.proArmT = setTimeout(() => this.setState({ proArm: false }), 3000); return; } this.setState({ pro: null, proArm: false }); this.flash(fr ? 'Pro désactivé (test)' : 'Pro turned off (test)'); }
         };
       })(),
       nfTitle: hkOk ? (fr ? 'Notifications et Santé' : 'Notifications & Health') : 'Notifications',

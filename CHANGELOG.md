@@ -14,6 +14,7 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - Sécurité : politique de sécurité de la page (CSP) — l’app ne peut charger que ses propres fichiers et ne parler qu’à son serveur, même si une faille apparaissait un jour ; vérifiée avant chaque publication.
 - Vérification anti-robot (Cloudflare Turnstile, le plus souvent invisible) avant l’envoi d’un code de connexion, pour empêcher un script de vider le quota d’e-mails ; prête, activée dès que la clé du site est ajoutée.
 - Connexion avec un mot de passe (lien sous le formulaire) pour les comptes créés avec un mot de passe, comme le compte de démonstration des réviseurs d’Apple et de Google ; la connexion habituelle reste le code par e-mail.
+- Bêta : dans les apps iPhone et Android, Barlog Pro est offert à tous les testeurs, sans écran d’achat (« Offert pendant la bêta » dans le Profil) ; le site garde le mode test.
 
 ## 0.35.0 — 2026-10-23
 - Widget Android : « Dernière fois il y a N jours », les jours de la semaine et la série restent justes même sans ouvrir l’app (le widget se recalcule chaque nuit au lieu de garder les textes de la dernière ouverture).

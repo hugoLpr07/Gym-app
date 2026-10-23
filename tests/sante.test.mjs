@@ -66,3 +66,23 @@ test('fusion : une valeur saisie à la main l’emporte ; deux mesures à la mê
   const out = B.bodyHkIn([{ date: D1, w: 81 }, { date: D1, waist: 85 }], [{ date: D1, hk: { w: 1, bf: 1 }, w: 80, bf: 18 }]);
   assert.deepEqual(out, [{ date: D1, w: 81, bf: 18, hk: { bf: 1 } }, { date: D1, waist: 85 }]);
 });
+
+// ── Pro offert pendant la bêta, dans les apps seulement (0.36) ──
+test('bêta : Pro offert dans l’app (sans écran d’achat), le Pro « test » remplacé ; rien sur le site', async t => {
+  const B = loadBarlog();
+  nativeEnv(t, { 'DATA/barlog-data.json': JSON.stringify({ routines: [{ id: 'r', name: 'R', ex: [] }], pro: { plan: 'year', test: true }, savedAt: 1 }) });
+  const app = makeApp(B, { ...emptyData(), lang: 'fr' }); app.instCheck = () => Promise.resolve();
+  await app.nativeBoot(null);
+  assert.equal(app.state.pro.beta, true); assert.equal(app.isPro(), true);
+  const v = app.renderVals(); assert.equal(v.proTitle, 'Offert pendant la bêta'); assert.equal(v.proBtn, 'Bêta');
+  v.proCardClick(); assert.equal(app.state.pro.beta, true, 'pas de « désactiver » ni d’écran d’achat');
+  const web = makeApp(loadBarlog(), { ...emptyData() }); delete globalThis.window; web.betaPro(); assert.equal(web.state.pro, undefined);
+});
+
+test('fin de la bêta (BETA = false) : le Pro offert est retiré, un vrai achat reste', async t => {
+  nativeEnv(t);
+  const html = (await import('node:fs')).readFileSync((await import('./harness.mjs')).HTML_PATH, 'utf8').replace('const BETA = true;', 'const BETA = false;');
+  const B = loadBarlog(html);
+  const a = makeApp(B, { ...emptyData(), pro: { plan: 'beta', beta: true } }); a.betaPro(); assert.equal(a.state.pro, null);
+  const b = makeApp(B, { ...emptyData(), pro: { plan: 'life' } }); b.betaPro(); assert.deepEqual(b.state.pro, { plan: 'life' });
+});
