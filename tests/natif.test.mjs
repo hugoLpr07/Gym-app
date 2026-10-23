@@ -71,6 +71,16 @@ test('instCheck : données d’un autre téléphone (identifiant différent) →
   assert.equal(app.state.push.tok, null);
 });
 
+test('instCheck : jeton de notifications déjà réenregistré par ce téléphone pendant cette ouverture → gardé', async t => {
+  const F = fakeFs(); nativeWindow(t, { Filesystem: F });
+  const app = makeApp(loadBarlog(), { ...emptyData(), acct: { uid: 'u1', profile: { username: 'moi' } }, cloud: { dev: 'dVieux' }, push: { tok: 'jetonVieux' } });
+  app.sb = () => new Promise(() => {}); // envoi au serveur sans réponse : seul l'état local compte ici
+  app.pushSave('jetonDeCeTelephone');
+  await app.instCheck();
+  assert.equal(app.state.push.tok, 'jetonDeCeTelephone');
+  assert.equal(app.state.cloud.dev, undefined);
+});
+
 // ---- Ouverture d'une notification push ----
 function pushApp(t) {
   t.mock.timers.enable({ apis: ['setTimeout'] });

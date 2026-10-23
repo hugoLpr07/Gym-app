@@ -1729,7 +1729,8 @@ class Component extends DCLogic {
   // Données restaurées depuis la sauvegarde d'un autre téléphone (Google, iCloud) : l'identifiant d'appareil de la sauvegarde
   // en ligne serait celui de l'ancien téléphone (les deux s'écraseraient la sauvegarde sans fusionner), de même que le jeton
   // de notifications. Un fichier jamais sauvegardé (iOS : Library/NoCloud ; Android : exclu des règles de sauvegarde) identifie
-  // cette installation : s'il ne correspond pas, nouvel identifiant d'appareil, et le jeton est réenregistré au démarrage du compte.
+  // cette installation : s'il ne correspond pas, nouvel identifiant d'appareil, et le jeton hérité est oublié (sauf s'il vient
+  // d'être réenregistré par ce téléphone : _tokNew) ; il est réenregistré au démarrage du compte.
   // iOS : recursive crée Library/NoCloud au besoin ; la relecture qui suit marque ce dossier « hors sauvegarde » (le plugin
   // ne peut le faire qu'une fois le dossier créé), comme chaque lecture aux ouvertures suivantes.
   instCheck() {
@@ -1737,7 +1738,7 @@ class Component extends DCLogic {
     return F.readFile(o).then(r => r && r.data, () => null)
       .then(id => id || F.writeFile({ ...o, data: 'i' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36), recursive: true }).then(() => F.readFile(o)).then(r => r && r.data))
       .then(id => { if (!id || (this.state.cloud || {}).inst === id) return;
-        this.setState(st => { const c = { ...(st.cloud || {}), inst: id }; delete c.dev; return { cloud: c, push: { ...(st.push || {}), tok: null } }; }); }).catch(() => {});
+        this.setState(st => { const c = { ...(st.cloud || {}), inst: id }; delete c.dev; return { cloud: c, ...(this._tokNew ? {} : { push: { ...(st.push || {}), tok: null } }) }; }); }).catch(() => {});
   }
   buzz(p) { if (!this.state.haptics) return; try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} }
   flash(msg) { this.setState({ toast: msg }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 1800); }
@@ -1821,7 +1822,7 @@ class Component extends DCLogic {
   }
   pushSave(tok) {
     const s = this.state; const a = s.acct; const ps = s.push || {}; if (!tok || !a || !a.profile || ps.off) return;
-    this.setState(st => ({ push: { ...(st.push || {}), tok, uid: a.uid } }));
+    this._tokNew = true; this.setState(st => ({ push: { ...(st.push || {}), tok, uid: a.uid } }));
     this.sb().then(c => c.from('push_tokens').upsert({ user_id: a.uid, token: tok, platform: 'android', lang: LANG === 'fr' ? 'fr' : 'en', prefs: ps.prefs || {}, updated_at: new Date().toISOString() }, { onConflict: 'user_id,token' }))
       .then(({ error }) => { if (error) throw error; }).catch(e => { try { console.log('BARLOG push save: ' + ((e && e.message) || e)); } catch (x) {} });
   }
