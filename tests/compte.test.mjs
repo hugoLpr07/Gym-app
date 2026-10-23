@@ -111,3 +111,15 @@ test('publication en arrière-plan (auto, en attente) : rien ne part tant que le
   app.pubSend(123, 'followers', ''); await flush();
   assert.equal(app.state.sure, 'terms', 'publier à la main demande les conditions');
 });
+
+// ── Filtre de mots du serveur (0.36) ──
+test('filtre de mots : message clair ; une publication automatique refusée ne reste pas en attente', async () => {
+  const B = loadBarlog();
+  const app = makeApp(B, { ...emptyData(), lang: 'fr', acct: { uid: 'u1', profile: { username: 'alex', terms_v: 1, default_visibility: 'followers' } },
+    sessMeta: { 123: { pub: { vis: 'followers', pending: true, uid: 'u1', note: 'fdp' } } } });
+  app.renderVals(); app.hasSess = () => true; app.pubRow = () => ({});
+  app.sb = () => Promise.resolve({ from: () => ({ upsert: () => ({ select: () => ({ single: async () => ({ data: null, error: { message: 'mot_interdit', code: 'P0001' } }) }) }) }) });
+  app.pubSend(123, 'followers', 'fdp', true); for (let i = 0; i < 4; i++) await flush();
+  assert.equal(app.state.sessMeta[123].pub, undefined, 'plus en attente : elle serait refusée à chaque fois');
+  assert.ok(app.toasts.includes('Ce texte contient un mot interdit par les conditions d’utilisation'), app.toasts.join(' | '));
+});

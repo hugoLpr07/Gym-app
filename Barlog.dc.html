@@ -1755,9 +1755,11 @@ class Component extends DCLogic {
   netErr(e) { const m = String((e && (e.message || e.error_description || e.msg)) || e || ''); return (typeof navigator !== 'undefined' && navigator.onLine === false) || /failed to fetch|network|load failed|offline|fetch/i.test(m); }
   acMsg(e, otp) {
     const fr = LANG === 'fr'; const m = String((e && (e.message || e.error_description || e.msg)) || e || ''); const c = (e && e.code) || '';
+    if (this.badWord(e)) return fr ? 'Ce texte contient un mot interdit par les conditions d’utilisation' : 'This text contains a word not allowed by the terms of use';
     return this.netErr(e) ? (fr ? 'Pas de connexion internet' : 'No internet connection') : (e && e.status === 429) || /rate.?limit/i.test(m + c) ? (fr ? 'Trop de demandes, réessaie dans quelques minutes' : 'Too many requests, try again in a few minutes') : otp && (/otp|expired|invalid|token/i.test(m + c) || (e && (e.status === 401 || e.status === 403))) ? (fr ? 'Code incorrect ou expiré' : 'Wrong or expired code') : m.slice(0, 90) || (fr ? 'Erreur' : 'Error');
   }
   acErr(e, otp, k) { this.acFail(k, this.acMsg(e, otp)); }
+  badWord(e) { return /mot_interdit/.test(String((e && (e.message || e.msg)) || '')); }   // refus du filtre de mots du serveur
   acFail(k, m) { this.flash(m); if (k) this.setState({ acE: { k, m } }); }
   acLoad(c, u) {
     return c.from('profiles').select('*').eq('id', u.id).maybeSingle().then(({ data, error }) => { if (error) throw error; this.setState({ acct: { uid: u.id, email: u.email, profile: data || null } }); if (data) setTimeout(() => this.pubFlush(true), 0);
@@ -2050,7 +2052,11 @@ class Component extends DCLogic {
     vis = ['public', 'followers', 'private'].includes(vis) ? vis : a.profile.default_visibility || 'followers'; note = (note || '').trim().slice(0, 500);
     const row = this.pubRow(d, vis, note); this.pubBusy(d, true); if (!quiet) this.setState({ acE: null });
     this.sb().then(c => c.from('activities').upsert(row, { onConflict: 'user_id,local_start' }).select('id').single()).then(({ data, error }) => { if (error) throw error; this.pubBusy(d, false); this.pubSet(d, { vis, at: Date.now(), id: (data && data.id) || null, ...(note ? { note } : {}) }); if (!quiet) { this.setState({ pubNote: null, pubVis: null }); this.flash(fr ? 'Séance publiée' : 'Workout posted'); } })
-      .catch(e => { this.pubBusy(d, false); if (quiet || this.netErr(e)) this.pubSet(d, { vis, pending: true, uid: a.uid, ...(note ? { note } : {}) }); if (!quiet) this.acErr(e, false, 'pub'); });
+      .catch(e => { this.pubBusy(d, false);
+        // Refus du filtre de mots : jamais remis en file (il serait refusé à chaque fois) ; une séance déjà publiée garde son texte.
+        if (this.badWord(e)) { const old = ((this.state.sessMeta || {})[d] || {}).pub; if (old && old.pending) this.pubSet(d, null); }
+        else if (quiet || this.netErr(e)) this.pubSet(d, { vis, pending: true, uid: a.uid, ...(note ? { note } : {}) });
+        if (!quiet || this.badWord(e)) this.acErr(e, false, 'pub'); });
   }
   pubFlush(force) {
     const s = this.state; if (!s.acct || !s.acct.profile || (!force && this._pfT && Date.now() - this._pfT < 5000)) return; this._pfT = Date.now();
