@@ -5,6 +5,11 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.34.1 — 2026-10-23
+- Plus fluide et moins gourmand en batterie pendant une séance : l’écran n’est plus recalculé que quand un chrono affiché change (une fois par seconde au lieu de quatre), et chaque calcul est environ 4 fois plus rapide avec un long historique (dates, calendrier, régularité).
+- App Android : plus de vérification de mise à jour ni de cache du site à chaque ouverture (inutiles dans l’app ; l’ancien cache est supprimé).
+- Site : le cache hors ligne ne garde plus que les fichiers de l’app, jamais les données du compte (profils, commentaires, sauvegarde en ligne). Babel, jamais utilisé, n’est plus téléchargé (≈ 650 Ko de moins à la première visite, 3 Mo de moins dans l’app).
+
 ## 0.34.0 — 2026-10-23
 - « Effacer l’historique » et « Tout effacer » : avec une sauvegarde en ligne, Barlog demande maintenant quoi faire. « Seulement ce téléphone » (proposé en premier) garde la sauvegarde intacte et met sa synchronisation en pause (à restaurer depuis le Profil). « Aussi en ligne » (en rouge, deux touches) supprime les séances partout, y compris celles qui ne sont que dans la sauvegarde et sur tes autres téléphones. Sans sauvegarde en ligne, rien ne change.
 - Profil → Sauvegarde en ligne : nouveau bouton « Supprimer ma sauvegarde en ligne » (fichier et copie de la veille effacés du serveur, séances du téléphone intactes, sauvegarde automatique désactivée), sans supprimer le compte.

@@ -7,7 +7,7 @@
 //   - parseDcText : gabarit = contenu de <x-dc>…</x-dc> ; code = textContent du premier <script data-dc-script>
 //     (<script> est une balise « texte brut » : le navigateur NE décode PAS les entités HTML, on lit donc le texte tel quel) ;
 //   - evalDcLogic : new Function('DCLogic', 'StreamableLogic', 'React', code + 'return Component') doit renvoyer une classe.
-//   Babel n'est pas utilisé pour ce script (support.js ne s'en sert que pour les <x-import> .jsx).
+//   Babel n'est pas utilisé pour ce script (support.js ne s'en sert que pour les <x-import> .jsx) ni embarqué : aucun <x-import> autorisé.
 // Puis : premier rendu des données (renderVals) sous Node, et sw.js (syntaxe + fichiers du cache hors ligne).
 
 import { existsSync, readFileSync } from 'node:fs';
@@ -60,6 +60,11 @@ ctx.closeAt && step('Script <script data-dc-script> unique, après le gabarit', 
   ctx.js = h.slice(start, start + end); ctx.jsLine = lineAt(h, start);
   if (ctx.js.includes('<!--')) fail(`le script contient « <!-- » (ligne ${ctx.jsLine - 1 + lineAt(ctx.js, ctx.js.indexOf('<!--'))}) : le navigateur peut couper le script ailleurs`);
   return `lignes ${ctx.jsLine}–${ctx.jsLine - 1 + lineAt(ctx.js, ctx.js.length)}`;
+});
+
+ctx.html && step('Aucun <x-import> (Babel n’est pas embarqué)', () => {
+  const i = ctx.html.search(/<x-import\b/i);
+  if (i >= 0) fail(`<x-import> ligne ${lineAt(ctx.html, i)} : support.js chargerait Babel depuis unpkg.com (appel externe). Remettre Babel dans vendor/, window.__resources et sw.js, ou s’en passer`);
 });
 
 class DCLogic { constructor(p) { this.props = p || {}; this.state = {}; } setState(u, cb) { this.state = { ...this.state, ...(typeof u === 'function' ? u(this.state) : u) }; if (cb) cb(); } forceUpdate() {} renderVals() { return {}; } }

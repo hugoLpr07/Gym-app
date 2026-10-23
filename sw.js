@@ -1,12 +1,14 @@
-const C = 'barlog-v8';
-const CORE = ['./', './Barlog.dc.html', './support.js', './manifest.json', './icon-180.png', './fonts/Archivo-latin.woff2', './fonts/Archivo-latin-ext.woff2', './fonts/JetBrainsMono-latin.woff2', './fonts/JetBrainsMono-latin-ext.woff2', './vendor/supabase.js', './vendor/react.production.min.js', './vendor/react-dom.production.min.js', './vendor/babel.min.js'];
+const C = 'barlog-v9';
+const CORE = ['./', './Barlog.dc.html', './support.js', './manifest.json', './icon-180.png', './fonts/Archivo-latin.woff2', './fonts/Archivo-latin-ext.woff2', './fonts/JetBrainsMono-latin.woff2', './fonts/JetBrainsMono-latin-ext.woff2', './vendor/supabase.js', './vendor/react.production.min.js', './vendor/react-dom.production.min.js'];
 self.addEventListener('install', e => { self.skipWaiting(); e.waitUntil(caches.open(C).then(c => c.addAll(CORE)).catch(() => {})); });
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== C).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 // Network first (always fresh when online), cache fallback (works offline at the gym).
+// Only the app's own files: Supabase and any other site go straight to the network, never cached (private data).
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  const u = new URL(e.request.url); if (u.origin !== location.origin) return;
   e.respondWith(
-    (() => { const u = new URL(e.request.url); if (u.origin !== location.origin) return fetch(e.request);
+    (() => {
       // Bypass GitHub Pages CDN cache (~10 min) for the app page itself.
       if (e.request.mode === 'navigate' || /\.(html|js|json)$/.test(u.pathname)) { u.searchParams.set('_', Date.now()); return fetch(u.href, { cache: 'no-store' }); }
       return fetch(e.request, { cache: 'no-cache' }); })().then(r => {

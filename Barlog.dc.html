@@ -12,11 +12,11 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="apple-touch-icon" href="./icon-180.png">
 <script>
-// React, ReactDOM et Babel sont embarqués (vendor/) : support.js les prend ici au lieu de unpkg.com → aucun appel externe.
+// React et ReactDOM sont embarqués (vendor/) : support.js les prend ici au lieu de unpkg.com → aucun appel externe.
+// Babel n'est pas embarqué : support.js ne s'en sert que pour les balises x-import .jsx, que Barlog n'utilise pas (vérifié par scripts/check.mjs).
 window.__resources = Object.assign(window.__resources || {}, {
   'https://unpkg.com/react@18.3.1/umd/react.production.min.js': 'vendor/react.production.min.js',
-  'https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js': 'vendor/react-dom.production.min.js',
-  'https://unpkg.com/@babel/standalone@7.29.0/babel.min.js': 'vendor/babel.min.js'
+  'https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js': 'vendor/react-dom.production.min.js'
 });
 </script>
 <script src="./support.js"></script>
@@ -1119,7 +1119,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 <sc-if value="{{ restOn }}" hint-placeholder-val="{{ false }}">
 <div style="margin:0 10px calc(10px + env(safe-area-inset-bottom));border-radius:18px;border:1px solid #33333C;background:{{ restBg }};position:relative;overflow:hidden;">
-<div style="position:absolute;left:0;top:0;bottom:0;width:{{ restPct }};background:color-mix(in srgb, var(--acc) 14%, transparent);transition:width 250ms linear;"></div>
+<div style="position:absolute;left:0;top:0;bottom:0;width:{{ restPct }};background:color-mix(in srgb, var(--acc) 14%, transparent);transition:width 1s linear;"></div>
 <div style="position:relative;display:flex;align-items:center;gap:6px;padding:8px 8px 8px 16px;">
 <div style="flex:1;display:flex;flex-direction:column;">
 <span style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:{{ restSub }};">{{ restLabel }}</span>
@@ -1439,7 +1439,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.34.0';
+const APP_VERSION = '0.34.1';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive content'], ['Harcèlement ou intimidation', 'Harassment or bullying'], ['Spam ou arnaque', 'Spam or scam'], ['Usurpation d’identité', 'Impersonation'], ['Autre', 'Other']];
 // Sauvegarde en ligne : ce qui n'est pas envoyé (propre à l'appareil, ou relu depuis Santé / Health Connect).
@@ -1681,7 +1681,7 @@ class Component extends DCLogic {
     setTimeout(() => this.pullWeights(), 1500);
     document.addEventListener('visibilitychange', this.onVis);
     window.addEventListener('pagehide', this.onVis);
-    try { if ('serviceWorker' in navigator && location.protocol === 'https:' && window.self === window.top) navigator.serviceWorker.register('./sw.js').catch(() => {}); } catch (e) {}
+    this.swSetup();
     try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch (e) {}
     try { if (localStorage.getItem(SB_STORE)) setTimeout(() => this.acBoot(), 400); } catch (e) {}
     try { const A = this.nat() && this.nat().App; if (A && plat() === 'android' && !this._backL) { this._backL = true; A.addListener('backButton', () => this.goBack()); A.addListener('appUrlOpen', e => { if (/\/\/pro/.test((e && e.url) || '') && !this.isPro()) this.need('widget'); }); } } catch (e) {}
@@ -2215,7 +2215,6 @@ class Component extends DCLogic {
   }
   tick() {
     const now = Date.now(); const s = this.state;
-    if (s.workout && now - (this._cRunT || 0) >= 1000 && s.workout.ex.some(e => e.sets.some(y => y.run))) { this._cRunT = now; this.setState({ now }); }
     if (s.hold && now >= s.hold.end) {
       const h = s.hold; const x = s.workout && s.workout.ex[h.ei] && s.workout.ex[h.ei].sets[h.si];
       if (h.side === 'l' && x) { const sec = Math.max(1, x.r2 != null ? x.r2 : x.r); this.setState({ hold: { ...h, side: 'r', start: now, end: now + sec * 1000 }, now }); this.buzz([60]); this.tone([[880, 0, 0.18]]); return; }
@@ -2227,11 +2226,16 @@ class Component extends DCLogic {
       if (!late) { this.buzz([80, 60, 80]); this.tone([[880, 0, 0.18], [880, 0.3, 0.18], [1320, 0.6, 0.35]]); }
       clearTimeout(this.ra); this.ra = setTimeout(() => this.setState({ restAlert: false, restEnd: null }), late ? 1200 : 3000); return;
     }
-    if (s.workout || s.restEnd || now - s.now > 20000) this.setState({ now });
+    // Rendu seulement quand un chrono affiché change de seconde (séance, repos, maintien, cardio) : avant, tout l'écran était recalculé 4 fois par seconde.
+    const sec = t => Math.ceil(t / 1000); let run = 0;
+    if (s.workout) s.workout.ex.forEach(e => e.sets.forEach(y => { if (y.run) run = y.run - (y.r || 0) * 60000; }));
+    const key = [s.workout ? sec(now - s.workout.start) : '', s.restEnd ? sec(s.restEnd - now) : '', s.hold ? sec(s.hold.end - now) : '', run ? sec(now - run) : ''].join();
+    if (key !== this._tKey || now - s.now > 20000) { this._tKey = key; this.setState({ now }); }
   }
   inc() { return this.state.unit === 'kg' ? 2.5 : 5 / KG_LB; }
   checkUpdate() {
-    if (location.protocol !== 'https:' || window.self !== window.top || !navigator.onLine) return;
+    // App native : la page fait partie de l'app (mise à jour = nouvelle version de l'app), rien à relire.
+    if (this.nat() || location.protocol !== 'https:' || window.self !== window.top || !navigator.onLine) return;
     const now = Date.now(); if (this.lastUpd && now - this.lastUpd < 60000) return; this.lastUpd = now;
     fetch('./Barlog.dc.html?v=' + now, { cache: 'no-store' }).then(r => r.ok ? r.text() : null).then(t => {
       if (!t) return;
@@ -2623,6 +2627,8 @@ class Component extends DCLogic {
   }
   minimizeApp() { try { const A = this.nat() && this.nat().App; if (A && A.minimizeApp) A.minimizeApp(); } catch (e) {} return false; }
   nat() { try { const C = window.Capacitor; return C && C.isNativePlatform && C.isNativePlatform() ? (C.Plugins || {}) : null; } catch (e) { return null; } }
+  // Service worker (cache hors ligne) : seulement sur le web. L'app native a ses fichiers ; on retire celui qu'avaient installé les anciennes versions Android.
+  swSetup() { try { if ('serviceWorker' in navigator && location.protocol === 'https:' && window.self === window.top) { if (this.nat()) { navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => r.unregister())).catch(() => {}); if (window.caches) caches.keys().then(ks => ks.forEach(k => { if (/^barlog-v/.test(k)) caches.delete(k); })).catch(() => {}); } else navigator.serviceWorker.register('./sw.js').catch(() => {}); } } catch (e) {} }
   swMsg(m) { try { navigator.serviceWorker && navigator.serviceWorker.controller && navigator.serviceWorker.controller.postMessage(m); } catch (e) {} }
   askNotif() {
     const P = this.nat(); if (P && P.LocalNotifications) return P.LocalNotifications.requestPermissions().then(r => r.display === 'granted').catch(() => false);
@@ -3073,7 +3079,7 @@ class Component extends DCLogic {
     }
     const d0 = new Date(now);
     const monday = new Date(d0.getFullYear(), d0.getMonth(), d0.getDate() - ((d0.getDay() + 6) % 7));
-    const dayKeys = new Set(); Object.values(s.history).forEach(a => a.forEach(x => dayKeys.add(new Date(x.date).toDateString())));
+    const dayKeys = new Set(), seenT = new Set(); Object.values(s.history).forEach(a => a.forEach(x => { if (!seenT.has(x.date)) { seenT.add(x.date); dayKeys.add(new Date(x.date).toDateString()); } }));
     const week = (LANG === 'fr' ? ['L','M','M','J','V','S','D'] : ['M','T','W','T','F','S','S']).map((label, i) => { const d = new Date(monday.getTime() + i * DAY); const done = dayKeys.has(d.toDateString()); const today = d.toDateString() === d0.toDateString(); return { label, dot: done ? ACC : '#24242B', border: today ? '#9C9CA8' : '#24242B' }; });
     { const fr = LANG === 'fr'; const wk = s.workout; const ymd = (t, k) => new Date(new Date(t).getFullYear(), new Date(t).getMonth(), new Date(t).getDate() + k);
       const hasWeek = t => [0, 1, 2, 3, 4, 5, 6].some(k => dayKeys.has(ymd(t, k).toDateString()));
@@ -3168,7 +3174,9 @@ class Component extends DCLogic {
     const topE = n => Math.max(0, ...(s.history[n] || []).flatMap(se => work(se.sets).map(x => e1(x.w, x.r))));
     const progEx = histNames.includes(s.progEx) ? s.progEx : (histNames.slice().sort((a, b) => topE(b) - topE(a))[0] || '');
     const T = Date.now();
-    const fmtD = (t) => new Date(t).toLocaleDateString(LOC(), { month: 'short', day: 'numeric' });
+    // Formats créés une fois par rendu : toLocaleDateString / toLocaleString en recréent un à chaque appel (coûteux sur un long historique).
+    const dfmt = o => { const f = new Intl.DateTimeFormat(LOC(), o); return t => { const d = new Date(t); return isNaN(d) ? String(d) : f.format(d); }; };
+    const fmtD = dfmt({ month: 'short', day: 'numeric' }), fmtMon = dfmt({ month: 'short' }), nfmt = new Intl.NumberFormat();
     const setTxt = x => this.dispW(x.w) + '×' + x.r;
     const sessAll = (s.history[progEx] || []).map(se => ({ date: se.date, ws: work(se.sets).filter(x => x.w > 0) })).filter(se => se.ws.length);
     const RANGES = [['4w', LANG === 'fr' ? '30 j' : '30 d', 30], ['3m', L('3 mo'), 91], ['all', L('All'), 0]];
@@ -3213,7 +3221,7 @@ class Component extends DCLogic {
     const histList = histRows.reverse().slice(0, 12);
 
     const sm = s.summary;
-    const volU = (v) => Math.round(kg ? v : v * KG_LB).toLocaleString();
+    const volU = (v) => nfmt.format(Math.round(kg ? v : v * KG_LB));
     const dv = sm ? sm.vol - sm.prevVol : 0;
     const toggleRow = (label, sub, on, key) => ({ label, sub, track: on ? ACC : '#24242B', knob: on ? '#0A0A0C' : '#9C9CA8', justify: on ? 'flex-end' : 'flex-start', onClick: () => { this.unlockAudio(); this.setState({ [key]: !s[key] }); } });
     const sessCount = new Set(Object.values(s.history).flatMap(a => a.map(x => x.date))).size;
@@ -3233,18 +3241,18 @@ class Component extends DCLogic {
     const cm = new Date(d0.getFullYear(), d0.getMonth() + s.calOff, 1);
     const dim = new Date(cm.getFullYear(), cm.getMonth() + 1, 0).getDate();
     const lead = (cm.getDay() + 6) % 7;
-    const dayMap = {}; sessions.forEach(se => { const k = new Date(se.date).toDateString(); if (!dayMap[k]) dayMap[k] = se; });
+    const dayMap = {}, dayN = {}; sessions.forEach(se => { const k = new Date(se.date).toDateString(); if (!dayMap[k]) dayMap[k] = se; dayN[k] = (dayN[k] || 0) + 1; });
     let monthCount = 0;
     const calDays = [];
     for (let i = 0; i < lead; i++) calDays.push({ label: '', bg: 'transparent', color: '#9C9CA8', border: 'transparent', weight: 400, opacity: 0, onClick: () => {} });
     for (let dd = 1; dd <= dim; dd++) {
       const dt = new Date(cm.getFullYear(), cm.getMonth(), dd); const se = dayMap[dt.toDateString()]; const isT = dt.toDateString() === d0.toDateString();
-      if (se) monthCount += sessions.filter(x => new Date(x.date).toDateString() === dt.toDateString()).length;
+      if (se) monthCount += dayN[dt.toDateString()];
       calDays.push({ label: String(dd), bg: se ? ACC : 'transparent', color: se ? '#0A0A0C' : dt > d0 ? '#55555F' : '#FFFFFF', border: isT ? '#FFFFFF' : 'transparent', weight: se ? 700 : 500, opacity: 1, onClick: se ? go({ openSess: se.date, screen: 'session', delSessArm: false, sessEdit: false, editBuf: {} }) : () => {} });
     }
     const fmtLong = t => new Date(t).toLocaleDateString(LOC(), { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
     const sd = s.openSess != null ? sessions.find(x => x.date === s.openSess) : null;
-    const wkStart = t => { const d = new Date(t); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - (d.getDay() + 6) % 7); return d.getTime(); };
+    const wkM = new Map(); const wkStart = t => { let k = wkM.get(t); if (k === undefined) { const d = new Date(t); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - (d.getDay() + 6) % 7); k = d.getTime(); wkM.set(t, k); } return k; };
     const planned = Math.max(1, routines.length);
     const w0 = wkStart(T);
     const wkKey = i => wkStart(w0 - i * 7 * DAY + 3 * DAY);
@@ -3431,7 +3439,7 @@ class Component extends DCLogic {
       calTitle: cm.toLocaleDateString(LOC(), { month: 'long', year: 'numeric' }), calCount: monthCount + L(' session') + (monthCount === 1 ? '' : 's'),
       calPrev: go({ calOff: s.calOff - 1 }), calNext: () => { if (s.calOff < 0) this.setState({ calOff: s.calOff + 1 }); }, calNextOpacity: s.calOff < 0 ? 1 : 0.3,
       calDays, noSess: !sessions.length,
-      sessList: sessions.slice(0, 100).map(se => { const dt = new Date(se.date); const pb = meta[se.date] && meta[se.date].pub; return { pub: pb ? (pb.pending ? '↗…' : '↗') : '', day: String(dt.getDate()), mon: dt.toLocaleDateString(LOC(), { month: 'short' }), name: se.name, meta: se.ex.length + L(' exercises · ') + se.sets + L(' sets · ') + volU(se.vol) + ' ' + s.unit + (se.dur ? ' · ' + clock(se.dur) : ''), onClick: go({ openSess: se.date, screen: 'session', delSessArm: false, sessEdit: false, editBuf: {} }) }; }),
+      sessList: sessions.slice(0, 100).map(se => { const dt = new Date(se.date); const pb = meta[se.date] && meta[se.date].pub; return { pub: pb ? (pb.pending ? '↗…' : '↗') : '', day: String(dt.getDate()), mon: fmtMon(dt), name: se.name, meta: se.ex.length + L(' exercises · ') + se.sets + L(' sets · ') + volU(se.vol) + ' ' + s.unit + (se.dur ? ' · ' + clock(se.dur) : ''), onClick: go({ openSess: se.date, screen: 'session', delSessArm: false, sessEdit: false, editBuf: {} }) }; }),
       sdName: sd ? sd.name : '', sdDate: sd ? fmtLong(sd.date) : '',
       sdStats: sd ? [{ label: L('Time'), value: sd.dur ? clock(sd.dur) : '—' }, { label: L('Sets'), value: String(sd.sets) }, { label: 'Vol ' + s.unit, value: volU(sd.vol) }] : [],
       sdEx: sd ? sd.ex.map(x => { let n = 0; return { name: x.name, sets: x.sets.map((y, i) => { const k = sd.date + '|' + x.name + '|' + i + '|'; return {
