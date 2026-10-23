@@ -54,6 +54,9 @@ ctx.html && step('Gabarit <x-dc>…</x-dc> présent et fermé (parseDcText)', ()
 ctx.html && step('Politique de sécurité (CSP) : en tête, empreinte de chaque script intégré, Supabase autorisé', () => {
   const h = ctx.html.replace(/<!--[\s\S]*?-->/g, c => ' '.repeat(c.length));   // commentaires ignorés, positions gardées
   const m = /<meta\s+http-equiv="Content-Security-Policy"\s+content="([^"]+)"\s*>/i.exec(h);
+  // Exigée depuis 0.36.0 ; GitHub Actions contrôle aussi main avec ce script : une version plus ancienne passe sans CSP.
+  const v = (/const APP_VERSION = '(\d+)\.(\d+)\.(\d+)'/.exec(ctx.html) || []).slice(1).map(Number);
+  if (!m && v.length && v[0] === 0 && v[1] < 36) return `absente (version ${v.join('.')}, antérieure à 0.36.0 : toléré)`;
   if (!m) fail('balise <meta http-equiv="Content-Security-Policy"> absente');
   const first = h.search(/<script\b/i);
   if (first >= 0 && first < m.index) fail('la CSP doit précéder tout <script> (sinon elle ne le couvre pas)');
