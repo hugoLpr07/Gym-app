@@ -166,3 +166,39 @@ test('compte suspendu : message clair au lieu de l’erreur brute', () => {
   const B = loadBarlog(); const app = makeApp(B, { ...emptyData(), lang: 'fr' }); app.renderVals();
   assert.match(app.acMsg({ message: 'compte_suspendu' }), /Ton compte est suspendu/);
 });
+
+// ── Vérification anti-robot (Turnstile) avant l'envoi d'un code (0.36) ──
+async function sendCode(t, { key = '', turnstile } = {}) {
+  const had = Object.getOwnPropertyDescriptor(globalThis, 'window'); const hadDoc = Object.getOwnPropertyDescriptor(globalThis, 'document');
+  Object.defineProperty(globalThis, 'window', { configurable: true, writable: true, value: { turnstile } });
+  const scripts = [];
+  Object.defineProperty(globalThis, 'document', { configurable: true, writable: true, value: { getElementById: id => id === 'bl-ts' ? { id } : null,
+    createElement: () => ({}), head: { appendChild: x => scripts.push(x) } } });
+  t.after(() => { if (had) Object.defineProperty(globalThis, 'window', had); else delete globalThis.window; if (hadDoc) Object.defineProperty(globalThis, 'document', hadDoc); else delete globalThis.document; });
+  const html = (await import('node:fs')).readFileSync((await import('./harness.mjs')).HTML_PATH, 'utf8').replace("const TS_KEY = '';", "const TS_KEY = '" + key + "';");
+  const B = loadBarlog(html); const sent = [];
+  const app = makeApp(B, { ...emptyData(), lang: 'fr', acEmail: 'A@b.co' });
+  app.sb = () => Promise.resolve({ auth: { signInWithOtp: async o => { sent.push(o); return { error: null }; } } });
+  app.renderVals(); app.acSend();
+  for (let i = 0; i < 100 && app.state.acBusy; i++) await new Promise(r => setTimeout(r, 2));   // jusqu’à la fin de l’envoi
+  return { app, sent, scripts };
+}
+
+test('anti-robot désactivé (clé vide) : code demandé sans jeton, Cloudflare jamais contacté', async t => {
+  const { sent, scripts } = await sendCode(t);
+  assert.deepEqual(sent, [{ email: 'a@b.co', options: { shouldCreateUser: true } }]); assert.equal(scripts.length, 0);
+});
+
+test('anti-robot activé : jeton Turnstile joint à la demande, widget retiré ensuite (nouveau jeton à chaque fois)', async t => {
+  const removed = [];
+  const turnstile = { render: (el, o) => { assert.equal(el.id, 'bl-ts'); assert.equal(o.sitekey, 'cle-test'); setTimeout(() => o.callback('jeton-1'), 0); return 'w1'; }, remove: id => removed.push(id) };
+  const { sent, app } = await sendCode(t, { key: 'cle-test', turnstile });
+  assert.equal(sent[0].options.captchaToken, 'jeton-1'); assert.deepEqual(removed, ['w1']); assert.equal(app.state.acSent, 'a@b.co');
+});
+
+test('anti-robot en échec : aucun code envoyé, message clair', async t => {
+  const turnstile = { render: (el, o) => { setTimeout(() => o['error-callback'](), 0); return 'w1'; }, remove: () => {} };
+  const { sent, app } = await sendCode(t, { key: 'cle-test', turnstile });
+  assert.equal(sent.length, 0); assert.equal(app.state.acBusy, false);
+  assert.ok(app.toasts.includes('Vérification anti-robot impossible, réessaie'), app.toasts.join(' | '));
+});

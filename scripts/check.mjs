@@ -51,7 +51,7 @@ ctx.html && step('Gabarit <x-dc>…</x-dc> présent et fermé (parseDcText)', ()
   return `lignes ${lineAt(h, open.index)}–${lineAt(h, close)}, ${holes} liaisons`;
 });
 
-ctx.html && step('Politique de sécurité (CSP) : en tête, empreinte de chaque script intégré, Supabase seul autorisé', () => {
+ctx.html && step('Politique de sécurité (CSP) : en tête, empreinte de chaque script intégré, Supabase autorisé', () => {
   const h = ctx.html.replace(/<!--[\s\S]*?-->/g, c => ' '.repeat(c.length));   // commentaires ignorés, positions gardées
   const m = /<meta\s+http-equiv="Content-Security-Policy"\s+content="([^"]+)"\s*>/i.exec(h);
   if (!m) fail('balise <meta http-equiv="Content-Security-Policy"> absente');

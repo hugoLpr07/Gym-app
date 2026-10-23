@@ -2,9 +2,9 @@
 <html>
 <head>
 <meta charset="utf-8">
-<!-- Politique de sécurité (CSP) : seulement nos fichiers et Supabase. 'unsafe-eval' : support.js exécute le code par new Function.
+<!-- Politique de sécurité (CSP) : seulement nos fichiers, Supabase et la vérification anti-robot de Cloudflare (Turnstile). 'unsafe-eval' : support.js exécute le code par new Function.
      L'empreinte sha256 est celle du petit script ci-dessous (window.__resources) : scripts/check.mjs refuse un écart. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'sha256-KtTB2c7nFIxiKLK6NLXOMq6KYMReLYCr0L41j4MGANM='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://yudeusxoogssqyenxslx.supabase.co; media-src 'self' blob:; font-src 'self'; connect-src 'self' https://yudeusxoogssqyenxslx.supabase.co; worker-src 'self'; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' https://challenges.cloudflare.com 'sha256-KtTB2c7nFIxiKLK6NLXOMq6KYMReLYCr0L41j4MGANM='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://yudeusxoogssqyenxslx.supabase.co; media-src 'self' blob:; font-src 'self'; connect-src 'self' https://yudeusxoogssqyenxslx.supabase.co https://challenges.cloudflare.com; worker-src 'self'; manifest-src 'self'; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Barlog</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -779,6 +779,7 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ acErrCode }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ acErrCode }}</span></sc-if>
 <div style="display:flex;justify-content:space-between;gap:12px;"><button onClick="{{ acChange }}" style="border:none;background:transparent;padding:0;color:#9C9CA8;text-decoration:underline;min-height:44px;font-size:13px;">{{ acChangeLabel }}</button><button onClick="{{ acResend }}" style="border:none;background:transparent;padding:0;color:#9C9CA8;text-decoration:underline;min-height:44px;font-size:13px;">{{ acResendLabel }}</button></div>
 </sc-if>
+<div id="bl-ts" style="display:flex;justify-content:center;"></div>
 <span style="font-size:12px;line-height:17px;color:#9C9CA8;text-wrap:pretty;">{{ acConsent }} <button onClick="{{ openPrivacy }}" style="border:none;background:transparent;padding:0;color:#9C9CA8;text-decoration:underline;font-size:12px;">{{ privacyLabel }}</button></span>
 </div>
 </sc-if>
@@ -1449,6 +1450,9 @@ const APP_VERSION = '0.36.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
+// Vérification anti-robot avant l'envoi d'un code (Cloudflare Turnstile) : clé publique du site ; vide = désactivée.
+// Le serveur ne l'exige qu'une fois activée dans Supabase (plan 0.10), quand toutes les versions installées l'envoient.
+const TS_KEY = '';
 const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive content'], ['Harcèlement ou intimidation', 'Harassment or bullying'], ['Spam ou arnaque', 'Spam or scam'], ['Usurpation d’identité', 'Impersonation'], ['Autre', 'Other']];
 // Sauvegarde en ligne : ce qui n'est pas envoyé (propre à l'appareil, ou relu depuis Santé / Health Connect).
 const CB_SKIP = ['workout', 'focus', 'restEnd', 'restTotal', 'cloud', 'installSeen', 'lastExport', 'backupSnooze', 'healthOn', 'hkWSync', 'hkCSync', 'hkTag', 'push', 'cbSnooze', 'pubQ'];
@@ -1801,7 +1805,19 @@ class Component extends DCLogic {
     const s = this.state; const fr = LANG === 'fr'; if (s.acBusy) return; const email = (s.acEmail || '').trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return this.acFail('send', fr ? 'E-mail invalide' : 'Invalid email');
     this.setState({ acBusy: true, acE: null });
-    this.sb().then(c => c.auth.signInWithOtp({ email, options: { shouldCreateUser: true } })).then(({ error }) => { if (error) throw error; this.setState({ acBusy: false, acSent: email, acCode: '' }); this.flash((fr ? 'Code envoyé à ' : 'Code sent to ') + email); }).catch(e => { this.setState({ acBusy: false }); this.acErr(e, false, 'send'); });
+    this.sb().then(c => this.tsToken().then(tok => c.auth.signInWithOtp({ email, options: { shouldCreateUser: true, ...(tok ? { captchaToken: tok } : {}) } }))).then(({ error }) => { if (error) throw error; this.setState({ acBusy: false, acSent: email, acCode: '' }); this.flash((fr ? 'Code envoyé à ' : 'Code sent to ') + email); }).catch(e => { this.setState({ acBusy: false }); this.acErr(e, false, 'send'); });
+  }
+  // Jeton Turnstile pour la demande de code (un nouveau à chaque fois) ; null si désactivé. Script chargé seulement ici.
+  tsToken() {
+    if (!TS_KEY) return Promise.resolve(null);
+    const fr = LANG === 'fr'; const err = () => new Error(fr ? 'Vérification anti-robot impossible, réessaie' : 'Bot check failed, try again');
+    const load = window.turnstile ? Promise.resolve() : this._tsP || (this._tsP = new Promise((ok, ko) => { const sc = document.createElement('script'); sc.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'; sc.async = true; sc.onload = ok; sc.onerror = () => { sc.remove(); this._tsP = null; ko(new Error('Failed to fetch')); }; document.head.appendChild(sc); }));
+    return load.then(() => new Promise((ok, ko) => {
+      const T = window.turnstile; const el = document.getElementById('bl-ts'); if (!T || !el) return ko(err());
+      let id = null; const done = (f, v) => { clearTimeout(to); try { if (id != null) T.remove(id); } catch (e) {} f(v); };
+      const to = setTimeout(() => done(ko, err()), 60000);
+      try { id = T.render(el, { sitekey: TS_KEY, theme: 'dark', language: fr ? 'fr' : 'en', appearance: 'interaction-only', callback: t => done(ok, t), 'error-callback': () => done(ko, err()) }); } catch (e) { done(ko, err()); }
+    }));
   }
   acVerify() {
     const s = this.state; const fr = LANG === 'fr'; if (s.acBusy || !s.acSent) return; const token = (s.acCode || '').replace(/\D/g, '');
