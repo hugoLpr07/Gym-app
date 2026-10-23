@@ -5,6 +5,10 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.34.0 — 2026-10-23
+- « Effacer l’historique » et « Tout effacer » : avec une sauvegarde en ligne, Barlog demande maintenant quoi faire. « Seulement ce téléphone » (proposé en premier) garde la sauvegarde intacte et met sa synchronisation en pause (à restaurer depuis le Profil). « Aussi en ligne » (en rouge, deux touches) supprime les séances partout, y compris celles qui ne sont que dans la sauvegarde et sur tes autres téléphones. Sans sauvegarde en ligne, rien ne change.
+- Profil → Sauvegarde en ligne : nouveau bouton « Supprimer ma sauvegarde en ligne » (fichier et copie de la veille effacés du serveur, séances du téléphone intactes, sauvegarde automatique désactivée), sans supprimer le compte.
+
 ## 0.33.0 — 2026-10-22
 - Sauvegarde en ligne plus sûre : un exercice fait deux fois dans la même séance garde toutes ses séries à la restauration ; une séance ou une routine supprimée sur un téléphone l’est partout ; les données d’exemple ne sont jamais envoyées ; une routine identique n’apparaît plus en double.
 - Deux téléphones qui sauvegardent en même temps ne s’effacent plus leur sauvegarde ; si le fichier a disparu, la copie de la veille est utilisée ; un envoi raté est retenté au retour du réseau.

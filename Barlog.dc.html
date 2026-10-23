@@ -233,6 +233,7 @@ input::placeholder{color:#9C9CA8}
 <span style="font-size:20px;font-weight:800;">{{ sureTitle }}</span>
 <span style="font-size:15px;line-height:21px;color:#9C9CA8;text-wrap:pretty;padding-bottom:6px;">{{ sureText }}</span>
 <button onClick="{{ sureGo }}" style="min-height:56px;border-radius:16px;border:none;background:{{ sureBg }};color:{{ sureColor }};font-size:16px;font-weight:700;padding:4px 12px;">{{ sureGoLabel }}</button>
+<sc-if value="{{ sureAltOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ sureAlt }}" style="min-height:52px;border-radius:16px;border:1px solid #FF4D4D;background:{{ sureAltBg }};color:{{ sureAltColor }};font-size:15px;font-weight:700;padding:4px 12px;">{{ sureAltLabel }}</button></sc-if>
 <button onClick="{{ sureNo }}" style="min-height:52px;border-radius:16px;border:none;background:#24242B;color:#FFFFFF;font-size:15px;font-weight:600;">{{ sureNoLabel }}</button>
 </div>
 </div>
@@ -844,7 +845,7 @@ input::placeholder{color:#9C9CA8}
 <div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:16px;font-weight:500;">{{ cbLabel }}</span><span style="font-size:13px;line-height:18px;color:{{ cbSubColor }};text-wrap:pretty;">{{ cbSub }}</span></div>
 <div style="flex:0 0 auto;width:52px;height:32px;border-radius:999px;background:{{ cbTg.track }};padding:3px;display:flex;justify-content:{{ cbTg.justify }};"><div style="width:26px;height:26px;border-radius:50%;background:{{ cbTg.knob }};"></div></div>
 </button>
-<sc-if value="{{ cbNowOn }}" hint-placeholder-val="{{ false }}"><div style="padding:0 16px 14px;display:flex;flex-direction:column;gap:6px;"><button onClick="{{ cbNow }}" style="min-height:44px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#fff;font-size:14px;font-weight:600;opacity:{{ cbNowOp }};">{{ cbNowLabel }}</button><sc-if value="{{ cbErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ cbErr }}</span></sc-if></div></sc-if>
+<sc-if value="{{ cbNowOn }}" hint-placeholder-val="{{ false }}"><div style="padding:0 16px 14px;display:flex;flex-direction:column;gap:6px;"><button onClick="{{ cbNow }}" style="min-height:44px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#fff;font-size:14px;font-weight:600;opacity:{{ cbNowOp }};">{{ cbNowLabel }}</button><sc-if value="{{ cbDelOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cbDelGo }}" style="min-height:40px;border-radius:12px;border:none;background:transparent;color:#FF6B6B;font-size:13px;font-weight:600;">{{ cbDelLabel }}</button></sc-if><sc-if value="{{ cbErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ cbErr }}</span></sc-if></div></sc-if>
 </div>
 </sc-if>
 </div>
@@ -1438,7 +1439,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.33.0';
+const APP_VERSION = '0.34.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive content'], ['Harcèlement ou intimidation', 'Harassment or bullying'], ['Spam ou arnaque', 'Spam or scam'], ['Usurpation d’identité', 'Impersonation'], ['Autre', 'Other']];
 // Sauvegarde en ligne : ce qui n'est pas envoyé (propre à l'appareil, ou relu depuis Santé / Health Connect).
@@ -1908,15 +1909,18 @@ class Component extends DCLogic {
     const B = () => this.sb().then(c => c.storage.from('backups'));
     const run = this.sb().then(c => c.from('backups_meta').select('*').eq('user_id', uid).maybeSingle().then(({ data: m, error }) => { if (error) throw error;
         // Sauvegarde plus récente faite sur un autre téléphone : on la fusionne d'abord, pour ne rien écraser.
-        const other = m && m.path && m.device !== dev && Date.parse(m.updated_at) > ((this.state.cloud || {}).srvAt || 0);
+        // « Effacer aussi en ligne » (wipe) : on lit toujours la sauvegarde, pour supprimer aussi ce qu'elle seule contient.
+        const wipe = this._cbWipe; this._cbWipe = null;
+        const other = m && m.path && (!!wipe || (m.device !== dev && Date.parse(m.updated_at) > ((this.state.cloud || {}).srvAt || 0)));
         const path = uid + '/b' + Date.now() + '.gz'; let prev = m && m.path ? (Date.now() - Date.parse(m.updated_at) > 20 * 3600000 ? m.path : m.prev_path || m.path) : null; let lost = false;
         // Fichier de sauvegarde introuvable, copie de la veille comprise : on ne reste pas bloqué, on envoie celle de ce téléphone.
         return (other ? this.cbFetch(c, m).then(d => this.setState(st => this.cbMerge(st, d))).catch(e => { if (!cbMissing(e)) throw e; lost = true; prev = null; }) : Promise.resolve())
-          .then(() => { const st = this.state; const n = nSess(st.history);
+          .then(() => { if (wipe) this.setState(st => this.eraseState(st, wipe, true));
+            const st = this.state; const n = nSess(st.history);
             // Garde-fou : bien moins de séances ici que dans la sauvegarde, sans suppressions pour l'expliquer (« Tout effacer »,
             // mauvais import…) → on n'écrase rien et on propose de récupérer les séances.
             const since = m ? Date.parse(m.updated_at) : 0; const dels = Object.values((st.gone || {}).s || {}).filter(t => t > since).length;
-            if (m && m.path && !lost && m.sessions >= 4 && n < (m.sessions - dels) / 2) {
+            if (!wipe && m && m.path && !lost && m.sessions >= 4 && n < (m.sessions - dels) / 2) {
               this.cbSet({ busy: false, err: null, hold: { n, m: m.sessions } });
               if (!this.state.cbAsk && (manual || !this._cbLater)) this.setState({ cbAsk: { n: m.sessions, at: m.updated_at, path: m.path, prev_path: m.prev_path, loc: n, arm: false, hold: true } });
               return null;
@@ -1973,8 +1977,11 @@ class Component extends DCLogic {
       return o; });
   }
   // Confirmation avant une action du compte (déconnexion, suppression).
-  sure(k, fn) { this._sureFn = fn; this.setState({ sure: k }); }
-  sureGo() { const f = this._sureFn; this._sureFn = null; this.setState({ sure: null }); if (f) f(); }
+  // Fenêtre de confirmation : fn = bouton principal, alt = 2ᵉ choix (rouge, demande une 2ᵉ touche).
+  sure(k, fn, alt) { this._sureFn = fn; this._sureAlt = alt || null; this.setState({ sure: k, sureArm: false }); }
+  sureGo() { const f = this._sureFn; this._sureFn = null; this._sureAlt = null; this.setState({ sure: null, sureArm: false }); if (f) f(); }
+  sureAlt() { if (!this.state.sureArm) return this.setState({ sureArm: true }); const f = this._sureAlt; this._sureFn = null; this._sureAlt = null; this.setState({ sure: null, sureArm: false }); if (f) f(); }
+  sureNo() { this._sureFn = null; this._sureAlt = null; this.setState({ sure: null, sureArm: false }); }
   acDelete() {
     if (this.state.acBusy) return;
     this.sure('del', () => { const fr = LANG === 'fr'; this.setState({ acBusy: true });
@@ -2520,8 +2527,40 @@ class Component extends DCLogic {
     if (!this.state[key]) { this.setState({ [key]: true }); setTimeout(() => this.setState({ [key]: false }), 3000); return; }
     this.setState({ [key]: false }); fn();
   }
-  clearHistory() { this.arm('clearArm', () => { clearTimeout(this.ra); this.setState({ history: {}, sessMeta: {}, workout: null, focus: null, restEnd: null, restAlert: false, summary: null }); this.flash(L('History cleared')); }); }
-  eraseAll() { this.arm('eraseArm', () => { clearTimeout(this.ra); this.setState({ history: {}, sessMeta: {}, routines: [], custom: [], lastRoutineId: null, workout: null, focus: null, restEnd: null, restAlert: false, summary: null, tab: 'today', screen: 'tabs' }); this.flash(L('All data erased')); }); }
+  clearHistory() { this.eraseAsk('h'); }
+  eraseAll() { this.eraseAsk('a'); }
+  // Effacer l'historique (h) / tout effacer (a). Sans sauvegarde en ligne : 2 touches, comme avant. Avec : « Seulement ce
+  // téléphone » (la sauvegarde reste intacte, sa synchronisation est mise en pause pour ne pas l'écraser) ou « Aussi en ligne »
+  // (supprimé partout : marqué supprimé, comme une suppression une par une, puis sauvegarde vide envoyée).
+  eraseAsk(kind) {
+    const s = this.state; const a = s.acct; const cl = s.cloud || {};
+    if (!(a && a.profile && cl.uid === a.uid && (cl.link || cl.at))) return this.arm(kind === 'h' ? 'clearArm' : 'eraseArm', () => this.eraseDo(kind, false, false));
+    this.sure('erase-' + kind, () => this.eraseDo(kind, false, true), () => this.eraseDo(kind, true, false));
+  }
+  eraseState(st, kind, mark) {
+    const now = Date.now(); const g = st.gone || {}; const gone = { s: { ...(g.s || {}) }, r: { ...(g.r || {}) } };
+    if (mark) { Object.values(st.history || {}).forEach(a => (a || []).forEach(x => { gone.s[x.date] = now; })); if (kind === 'a') (st.routines || []).forEach(r => { gone.r[r.id] = now; }); }
+    return { history: {}, sessMeta: {}, workout: null, focus: null, restEnd: null, restAlert: false, summary: null, gone,
+      ...(kind === 'a' ? { routines: [], custom: [], lastRoutineId: null, tab: 'today', screen: 'tabs' } : {}) };
+  }
+  eraseDo(kind, online, pause) {
+    const s = this.state; clearTimeout(this.ra);
+    this.setState({ ...this.eraseState(s, kind, online), ...(pause ? { cloud: { ...(s.cloud || {}), on: false } } : {}) });
+    this.flash(L(kind === 'a' ? 'All data erased' : 'History cleared'));
+    if (!online) return;
+    // Pro : l'envoi fusionne d'abord la sauvegarde (séances d'autres téléphones comprises), puis marque tout supprimé (_cbWipe).
+    if (this.isPro() && (s.cloud || {}).on !== false) { this._cbWipe = kind; this.cbSoon(1000); } else this.cbDelete(true);
+  }
+  // Supprimer la sauvegarde en ligne (fichiers + infos) sans toucher aux séances de ce téléphone. La sauvegarde automatique
+  // est désactivée, sinon elle serait recréée au prochain changement.
+  cbDelete(quiet) {
+    const a = this.state.acct; const fr = LANG === 'fr'; if (!a) return;
+    const go = () => this.sb().then(c => this.cbWipe(c, a.uid).then(() => c.from('backups_meta').delete().eq('user_id', a.uid))).then(r => { if (r && r.error) throw r.error;
+      this.setState(st => ({ cloud: { ...(st.cloud || {}), on: false, link: false, at: null, n: 0, err: null, hold: null }, cbAsk: null }));
+      this.flash(fr ? 'Sauvegarde en ligne supprimée' : 'Online backup deleted'); }).catch(e => this.acErr(e, false, 'cb'));
+    if (quiet) return go();
+    this.sure('delcb', go);
+  }
   editSessSet(date, name, i, field, val) {
     const s = this.state; const key = date + '|' + name + '|' + i + '|' + field;
     let v = field === 'w' ? parseFloat(String(val).replace(',', '.')) : parseInt(val, 10);
@@ -2878,7 +2917,8 @@ class Component extends DCLogic {
           cbAskRepOn: !!(q && q.loc), cbAskRep: () => this.cbRestore('replace'), cbAskRepLabel: q && q.arm ? (fr ? 'Toucher encore : les séances de ce téléphone seront remplacées' : 'Tap again: this phone’s workouts will be replaced') : (fr ? 'Remplacer ce téléphone par la sauvegarde' : 'Replace this phone with the backup'),
           cbAskRepBorder: q && q.arm ? '#FF4D4D' : '#33333C', cbAskRepColor: q && q.arm ? '#FF4D4D' : '#FFFFFF', cbAskLater: () => this.cbLater(), cbAskLaterLabel: fr ? 'Pas maintenant' : 'Not now', cbAskErr: (s.acE && s.acE.k === 'cbask' && s.acE.m) || '',
           cbLabel: (fr ? 'Sauvegarde en ligne' : 'Online backup') + (pro ? '' : ' ✦'), cbSub: sub, cbSubColor: on && (cl.err || cl.hold) && linked ? '#FF8A65' : '#9C9CA8', cbTg: tg(pro && on), cbClick: () => this.cbToggle(),
-          cbNowOn: (!pro || on) && !!a && !!p, cbNow: () => linked ? this.cbUp(true) : this.cbCheck(true), cbNowLabel: linked ? (cl.hold ? (fr ? 'Récupérer mes séances' : 'Get my workouts back') : (fr ? 'Sauvegarder maintenant' : 'Back up now')) : pro ? (fr ? 'Restaurer ou fusionner' : 'Restore or merge') : (fr ? 'Restaurer une sauvegarde' : 'Restore a backup'), cbNowOp: cl.busy && this._cbRun ? 0.5 : 1, cbErr: (s.acE && s.acE.k === 'cb' && s.acE.m) || '',
+          cbNowOn: (!pro || on) && !!a && !!p, cbNow: () => linked ? this.cbUp(true) : this.cbCheck(true), cbNowLabel: linked ? (cl.hold ? (fr ? 'Récupérer mes séances' : 'Get my workouts back') : (fr ? 'Sauvegarder maintenant' : 'Back up now')) : pro ? (fr ? 'Restaurer ou fusionner' : 'Restore or merge') : (fr ? 'Restaurer une sauvegarde' : 'Restore a backup'), cbNowOp: cl.busy && this._cbRun ? 0.5 : 1,
+          cbDelOn: !!a && !!p, cbDelGo: () => this.cbDelete(), cbDelLabel: fr ? 'Supprimer ma sauvegarde en ligne' : 'Delete my online backup', cbErr: (s.acE && s.acE.k === 'cb' && s.acE.m) || '',
           avBigOn: !!s.avBig, avBigImg: (s.avBig && s.avBig.img) || 'none', avBigName: (s.avBig && s.avBig.name) || '', avBigClose: () => this.setState({ avBig: null }) }; })(),
       acSend: () => this.acSend(), acSendLabel: busy ? (fr ? 'Envoi…' : 'Sending…') : (fr ? 'Recevoir un code' : 'Get a code'),
       acSentText: (fr ? 'Code à 6 chiffres envoyé à ' : '6-digit code sent to ') + (s.acSent || '') + (fr ? '. Pense à regarder dans les spams.' : '. Check your spam folder too.'),
@@ -2903,7 +2943,18 @@ class Component extends DCLogic {
       acSignOut: () => this.sure('out', () => this.acOut()), acSignOutLabel: fr ? 'Se déconnecter' : 'Sign out',
       acDelete: () => this.acDelete(), acDelLabel: fr ? 'Supprimer mon compte' : 'Delete my account', acDelBorder: '#33333C',
       ...(() => { const k = s.sure; const del = k === 'del'; const cbOn = !!(s.cloud && s.cloud.link && s.cloud.on !== false && this.isPro());
-        return { sureOn: !!k, sureNo: () => { this._sureFn = null; this.setState({ sure: null }); }, sureGo: () => this.sureGo(), sureNoLabel: fr ? 'Annuler' : 'Cancel',
+        // Effacer l'historique / tout effacer (avec une sauvegarde en ligne), supprimer la sauvegarde en ligne.
+        const er = k === 'erase-h' || k === 'erase-a'; const all = k === 'erase-a'; const dcb = k === 'delcb';
+        const X = er ? { t: fr ? (all ? 'Tout effacer ?' : 'Effacer l’historique ?') : (all ? 'Erase everything?' : 'Clear history?'),
+            x: fr ? (all ? 'Tes séances, routines et exercices perso' : 'Tes séances') + ' seront effacés de ce téléphone. « Seulement ce téléphone » garde ta sauvegarde en ligne intacte et met sa synchronisation en pause : tu pourras la restaurer depuis le Profil. « Aussi en ligne » les supprime partout, y compris sur tes autres téléphones.'
+              : (all ? 'Your workouts, routines and custom exercises' : 'Your workouts') + ' will be erased from this phone. “This phone only” keeps your online backup intact and pauses its sync: you can restore it from Profile. “Online too” deletes them everywhere, including your other phones.',
+            g: fr ? 'Seulement ce téléphone' : 'This phone only', bg: 'var(--acc)', c: '#0A0A0C' }
+          : dcb ? { t: fr ? 'Supprimer ta sauvegarde en ligne ?' : 'Delete your online backup?',
+            x: fr ? 'Le fichier de sauvegarde et sa copie de la veille seront effacés du serveur. Les séances de ce téléphone ne changent pas, et la sauvegarde automatique sera désactivée.' : 'The backup file and its previous-day copy will be erased from the server. Workouts on this phone stay as they are, and automatic backup will be turned off.',
+            g: fr ? 'Supprimer la sauvegarde' : 'Delete the backup', bg: '#FF4D4D', c: '#FFFFFF' } : null;
+        if (X) return { sureOn: true, sureNo: () => this.sureNo(), sureGo: () => this.sureGo(), sureNoLabel: fr ? 'Annuler' : 'Cancel', sureTitle: X.t, sureText: X.x, sureGoLabel: X.g, sureBg: X.bg, sureColor: X.c,
+          sureAltOn: er, sureAlt: () => this.sureAlt(), sureAltLabel: s.sureArm ? (fr ? 'Toucher encore : supprimer partout' : 'Tap again: delete everywhere') : (fr ? 'Aussi en ligne' : 'Online too'), sureAltBg: s.sureArm ? '#FF4D4D' : 'transparent', sureAltColor: s.sureArm ? '#FFFFFF' : '#FF6B6B' };
+        return { sureOn: !!k, sureNo: () => this.sureNo(), sureGo: () => this.sureGo(), sureNoLabel: fr ? 'Annuler' : 'Cancel', sureAltOn: false,
           sureTitle: del ? (fr ? 'Supprimer ton compte ?' : 'Delete your account?') : (fr ? 'Te déconnecter ?' : 'Sign out?'),
           sureText: del ? (fr ? 'C’est définitif. Ton profil, ta photo, tes publications, tes abonnements, tes bravos, tes commentaires' + (cbOn ? ' et ta sauvegarde en ligne' : '') + ' seront effacés. Tes séances sur ce téléphone restent intactes.' : 'This is permanent. Your profile, photo, posts, follows, kudos, comments' + (cbOn ? ' and online backup' : '') + ' will be erased. Workouts on this phone stay untouched.')
             : (fr ? 'Tes séances restent sur ce téléphone' + (cbOn ? ', et ta sauvegarde en ligne reste sur ton compte. La sauvegarde reprendra quand tu te reconnecteras.' : '.') : 'Your workouts stay on this phone' + (cbOn ? ', and your online backup stays on your account. Backups resume when you sign back in.' : '.')),

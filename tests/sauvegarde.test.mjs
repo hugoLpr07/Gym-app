@@ -146,6 +146,7 @@ function cloudApp(B, store, dev, history, extra = {}) {
   const client = {
     from: () => ({
       select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: store.meta && { ...store.meta }, error: null }) }) }),
+      delete: () => ({ eq: async () => { store.meta = null; return { error: null }; } }),
       upsert: row => ({ select: () => ({ maybeSingle: async () => { store.meta = { ...row, updated_at: new Date().toISOString() }; return { data: { updated_at: store.meta.updated_at }, error: null }; } }) }),
     }),
     storage: { from: () => ({
@@ -238,4 +239,42 @@ test('déconnexion : seulement ce téléphone (scope local), jeton de notificati
   app.sb = () => Promise.resolve({ auth: { signOut: async o => { scope = o && o.scope; return {}; } } });
   app.acOut(); await flush(); await flush();
   assert.equal(scope, 'local'); assert.equal(app.state.acct, null); assert.equal(app.state.push.tok, null);
+});
+
+// ── Effacer / supprimer la sauvegarde en ligne (0.34) ──
+test('Effacer l’historique sans sauvegarde en ligne : 2 touches, comme avant (pas de question)', () => {
+  const B = loadBarlog();
+  const app = makeApp(B, { ...emptyData(), history: { Squat: [{ date: T(1), sets: [set(100, 5)] }] } });
+  app.clearHistory(); assert.ok(app.state.history.Squat, '1ʳᵉ touche : rien d’effacé');
+  app.clearHistory(); assert.deepEqual(app.state.history, {}); assert.equal(app.state.sure ?? null, null);
+});
+
+test('Effacer — seulement ce téléphone : sauvegarde intacte, synchronisation en pause, rien marqué supprimé', () => {
+  const B = loadBarlog();
+  const app = makeApp(B, { ...emptyData(), acct: { uid: 'u1', profile: { username: 'a' } }, cloud: { on: true, uid: 'u1', link: true, dev: 'dA' },
+    history: { Squat: [{ date: T(1), sets: [set(100, 5)] }] } });
+  app.clearHistory(); assert.equal(app.state.sure, 'erase-h', 'la question est posée');
+  app.sureGo();
+  assert.deepEqual(app.state.history, {}); assert.equal(app.state.cloud.on, false, 'sauvegarde en pause'); assert.deepEqual(app.state.gone.s, {});
+});
+
+test('Effacer — aussi en ligne (Pro) : tout est marqué supprimé et la sauvegarde vide est envoyée (pas de garde-fou)', async () => {
+  const B = loadBarlog();
+  const store = { files: new Map([['u1/b1000.gz', backupBlob({ Bench: [{ date: T(9), sets: [set(80, 5)] }] })]]), meta: { user_id: 'u1', path: 'u1/b1000.gz', prev_path: null, device: 'dA', sessions: 20, updated_at: hourAgo() } };
+  const app = cloudApp(B, store, 'dA', { Squat: [{ date: T(1), sets: [set(100, 5)] }, { date: T(2), sets: [set(100, 5)] }] });
+  app.cbSoon = () => {};
+  app.clearHistory(); app.sureAlt(); assert.equal(app.state.sure, 'erase-h', '1ʳᵉ touche sur « Aussi en ligne » : confirmation demandée');
+  app.sureAlt(); await app.cbUp();
+  assert.deepEqual(app.state.history, {}); assert.ok(app.state.gone.s[T(1)] && app.state.gone.s[T(2)] && app.state.gone.s[T(9)], 'séances marquées supprimées partout, y compris celle qui n’était que dans la sauvegarde');
+  assert.equal(store.uploads, 1, 'sauvegarde vide envoyée'); assert.equal(app.state.cloud.hold ?? null, null);
+});
+
+test('Supprimer ma sauvegarde en ligne : fichiers et infos effacés, séances du téléphone intactes, sauvegarde désactivée', async () => {
+  const B = loadBarlog();
+  const store = { files: new Map([['u1/b1000.gz', backupBlob({})], ['u1/b999.gz', backupBlob({})]]), meta: { user_id: 'u1', path: 'u1/b1000.gz', prev_path: 'u1/b999.gz', device: 'dA', sessions: 1, updated_at: hourAgo() } };
+  const app = cloudApp(B, store, 'dA', { Squat: [{ date: T(1), sets: [set(100, 5)] }] });
+  app.cbDelete(); assert.equal(app.state.sure, 'delcb', 'confirmation demandée');
+  app.sureGo(); await flush(); await flush(); await flush();
+  assert.equal(store.files.size, 0); assert.equal(store.meta, null);
+  assert.ok(app.state.history.Squat, 'séances du téléphone intactes'); assert.equal(app.state.cloud.on, false); assert.equal(app.state.cloud.link, false);
 });
