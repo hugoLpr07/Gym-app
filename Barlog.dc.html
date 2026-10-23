@@ -232,6 +232,7 @@ input::placeholder{color:#9C9CA8}
 <div onClick="{{ stop }}" style="width:100%;max-width:480px;box-sizing:border-box;background:#16161A;border-top:1px solid #33333C;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;">
 <span style="font-size:20px;font-weight:800;">{{ sureTitle }}</span>
 <span style="font-size:15px;line-height:21px;color:#9C9CA8;text-wrap:pretty;padding-bottom:6px;">{{ sureText }}</span>
+<sc-if value="{{ sureLinkOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ sureLink }}" style="align-self:flex-start;min-height:40px;margin-top:-8px;padding:0;border:none;background:transparent;color:var(--acc);font-size:15px;font-weight:600;text-decoration:underline;">{{ sureLinkLabel }}</button></sc-if>
 <button onClick="{{ sureGo }}" style="min-height:56px;border-radius:16px;border:none;background:{{ sureBg }};color:{{ sureColor }};font-size:16px;font-weight:700;padding:4px 12px;">{{ sureGoLabel }}</button>
 <sc-if value="{{ sureAltOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ sureAlt }}" style="min-height:52px;border-radius:16px;border:1px solid #FF4D4D;background:{{ sureAltBg }};color:{{ sureAltColor }};font-size:15px;font-weight:700;padding:4px 12px;">{{ sureAltLabel }}</button></sc-if>
 <button onClick="{{ sureNo }}" style="min-height:52px;border-radius:16px;border:none;background:#24242B;color:#FFFFFF;font-size:15px;font-weight:600;">{{ sureNoLabel }}</button>
@@ -801,6 +802,7 @@ input::placeholder{color:#9C9CA8}
 <span style="font-size:16px;font-weight:500;min-width:0;">{{ acVisLabel }}</span>
 <div style="flex:none;display:flex;gap:3px;background:#0A0A0C;border-radius:10px;padding:3px;"><sc-for list="{{ acVisOpts }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.onClick }}" style="height:38px;padding:0 8px;border:none;border-radius:8px;background:{{ o.bg }};color:{{ o.color }};font-size:13px;font-weight:700;">{{ o.label }}</button></sc-for></div>
 </div>
+<div style="display:flex;align-items:center;gap:12px;padding:10px 16px 4px;"><button onClick="{{ acTermsClick }}" aria-label="{{ acTermsLabel }}" style="flex:none;width:30px;height:30px;border-radius:8px;border:1.5px solid {{ acTermsBorder }};background:{{ acTermsBg }};color:#0A0A0C;font-size:17px;font-weight:800;padding:0;">{{ acTermsMark }}</button><span style="font-size:14px;line-height:19px;color:#E4E4EA;min-width:0;text-wrap:pretty;">{{ acTermsLabel }} <button onClick="{{ openTerms }}" style="border:none;background:transparent;padding:0;color:var(--acc);text-decoration:underline;font-size:14px;">{{ termsLabel }}</button></span></div>
 <div style="padding:6px 16px 16px;display:flex;flex-direction:column;gap:8px;">
 <button onClick="{{ acCreate }}" style="height:52px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;opacity:{{ acOp }};">{{ acCreateLabel }}</button>
 <sc-if value="{{ acErrProf }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ acErrProf }}</span></sc-if>
@@ -941,7 +943,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-if>
 <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9C9CA8;text-align:center;">{{ appLabel }}</div>
-<button onClick="{{ openPrivacy }}" style="align-self:center;min-height:44px;padding:0 12px;border:none;background:transparent;color:#9C9CA8;font-size:13px;text-decoration:underline;">{{ privacyLabel }}</button>
+<div style="display:flex;flex-wrap:wrap;justify-content:center;column-gap:4px;"><button onClick="{{ openHelp }}" style="min-height:44px;padding:0 8px;border:none;background:transparent;color:#9C9CA8;font-size:13px;text-decoration:underline;">{{ helpLabel }}</button><button onClick="{{ openTerms }}" style="min-height:44px;padding:0 8px;border:none;background:transparent;color:#9C9CA8;font-size:13px;text-decoration:underline;">{{ termsLabel }}</button><button onClick="{{ openPrivacy }}" style="min-height:44px;padding:0 8px;border:none;background:transparent;color:#9C9CA8;font-size:13px;text-decoration:underline;">{{ privacyLabel }}</button></div>
 </div>
 </sc-if>
 
@@ -1441,6 +1443,8 @@ Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for deta
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
 const APP_VERSION = '0.36.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
+// Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
+const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
 const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive content'], ['Harcèlement ou intimidation', 'Harassment or bullying'], ['Spam ou arnaque', 'Spam or scam'], ['Usurpation d’identité', 'Impersonation'], ['Autre', 'Other']];
 // Sauvegarde en ligne : ce qui n'est pas envoyé (propre à l'appareil, ou relu depuis Santé / Health Connect).
 const CB_SKIP = ['workout', 'focus', 'restEnd', 'restTotal', 'cloud', 'installSeen', 'lastExport', 'backupSnooze', 'healthOn', 'hkWSync', 'hkCSync', 'hkTag', 'push', 'cbSnooze', 'pubQ'];
@@ -1756,7 +1760,8 @@ class Component extends DCLogic {
   acErr(e, otp, k) { this.acFail(k, this.acMsg(e, otp)); }
   acFail(k, m) { this.flash(m); if (k) this.setState({ acE: { k, m } }); }
   acLoad(c, u) {
-    return c.from('profiles').select('*').eq('id', u.id).maybeSingle().then(({ data, error }) => { if (error) throw error; this.setState({ acct: { uid: u.id, email: u.email, profile: data || null } }); if (data) setTimeout(() => this.pubFlush(true), 0); });
+    return c.from('profiles').select('*').eq('id', u.id).maybeSingle().then(({ data, error }) => { if (error) throw error; this.setState({ acct: { uid: u.id, email: u.email, profile: data || null } }); if (data) setTimeout(() => this.pubFlush(true), 0);
+      if (data && !this.termsOk() && !this._termsAsked) { this._termsAsked = true; setTimeout(() => { if (!this.state.sure) this.terms(() => this.pubFlush(true)); }, 1200); } });
   }
   acBoot() {
     this.setState({ acBusy: true });
@@ -1781,14 +1786,20 @@ class Component extends DCLogic {
     const username = (s.acUser || '').trim(); const display_name = (s.acName || '').trim().slice(0, 40);
     if (!UNAME.test(username)) return this.acFail('prof', fr ? 'Pseudo : 3 à 20 caractères (a-z, 0-9, _ .)' : 'Username: 3–20 characters (a-z, 0-9, _ .)');
     if (!display_name) return this.acFail('prof', fr ? 'Indique ton nom' : 'Enter your name');
-    const row = { id: a.uid, username, display_name, is_private: s.acPriv !== false, default_visibility: s.acVis || 'followers' };
+    if (!s.acTerms) return this.acFail('prof', fr ? 'Accepte les conditions d’utilisation pour continuer' : 'Accept the terms of use to continue');
+    const row = { id: a.uid, username, display_name, is_private: s.acPriv !== false, default_visibility: s.acVis || 'followers', terms_v: TERMS_V };
     this.setState({ acBusy: true, acE: null });
     this.sb().then(c => c.from('profiles').insert(row).select().maybeSingle()).then(({ data, error }) => { if (error) throw error; this.setState(st => ({ acBusy: false, acct: st.acct && { ...st.acct, profile: data || row } })); this.flash(fr ? 'Profil créé' : 'Profile created'); }).catch(e => { this.setState({ acBusy: false }); if (e && e.code === '23505') return this.acFail('prof', fr ? 'Ce pseudo est déjà pris' : 'This username is taken'); this.acErr(e, false, 'prof'); });
   }
-  acSet(p) {
+  // Conditions d'utilisation acceptées avant de créer du contenu (profil, publication, commentaire, photo) : règles
+  // Apple 1.2 et Google (contenu des utilisateurs). Le serveur date l'acceptation (profiles.terms_at).
+  termsOk() { const p = this.state.acct && this.state.acct.profile; return !!p && (p.terms_v || 0) >= TERMS_V; }
+  terms(fn) { if (this.termsOk()) return fn && fn(); this.sure('terms', () => this.acSet({ terms_v: TERMS_V }, fn)); }
+  openSite(f) { try { window.open(SITE + f + (LANG === 'fr' ? '' : '#en'), '_blank'); } catch (e) {} }
+  acSet(p, done) {
     const a = this.state.acct; if (!a || !a.profile) return; const old = a.profile;
     this.setState(st => ({ acct: st.acct && { ...st.acct, profile: { ...old, ...p } } }));
-    this.sb().then(c => c.from('profiles').update(p).eq('id', a.uid)).then(({ error }) => { if (error) throw error; }).catch(e => { this.setState(st => ({ acct: st.acct && { ...st.acct, profile: old } })); this.acErr(e); });
+    this.sb().then(c => c.from('profiles').update(p).eq('id', a.uid)).then(({ error }) => { if (error) throw error; if (done) done(); }).catch(e => { this.setState(st => ({ acct: st.acct && { ...st.acct, profile: old } })); this.acErr(e); });
   }
   acOut() {
     const drop = this.pushDrop(); const PN = this.pushPl(); this._acStale = false;
@@ -1963,7 +1974,7 @@ class Component extends DCLogic {
   }
   // Photo de profil : carré 640 px en JPEG, rangé dans avatars/<id>/<horodatage>.jpg ; les anciennes sont effacées.
   avPick(cam) {
-    const s = this.state; const a = s.acct; if (!a || !a.profile || s.avBusy) return;
+    const s = this.state; const a = s.acct; if (!a || !a.profile || s.avBusy) return; if (!this.termsOk()) return this.terms(() => this.avPick(cam));
     // App native : plugin Camera (appareil photo ou galerie). Le champ fichier de la WebView n'offre pas l'appareil photo sur Android.
     const P = this.nat(); const Cam = P && P.Camera;
     if (Cam && Cam.takePhoto) return (cam ? Cam.takePhoto({ quality: 85, targetWidth: 800, targetHeight: 800, correctOrientation: true }) : Cam.chooseFromGallery({ allowMultipleSelection: false, limit: 1 }).then(r => (r && r.results && r.results[0]) || null))
@@ -2035,6 +2046,7 @@ class Component extends DCLogic {
   pubBusy(d, on) { this.setState(st => { const b = { ...(st.pubBusy || {}) }; if (on) b[d] = 1; else delete b[d]; return { pubBusy: b }; }); }
   pubSend(d, vis, note, quiet) {
     const s = this.state; const a = s.acct; const fr = LANG === 'fr'; if (!a || !a.profile || (s.pubBusy || {})[d] || !this.hasSess(d)) return;
+    if (!this.termsOk()) { if (!quiet) this.terms(() => this.pubSend(d, vis, note)); return; }
     vis = ['public', 'followers', 'private'].includes(vis) ? vis : a.profile.default_visibility || 'followers'; note = (note || '').trim().slice(0, 500);
     const row = this.pubRow(d, vis, note); this.pubBusy(d, true); if (!quiet) this.setState({ acE: null });
     this.sb().then(c => c.from('activities').upsert(row, { onConflict: 'user_id,local_start' }).select('id').single()).then(({ data, error }) => { if (error) throw error; this.pubBusy(d, false); this.pubSet(d, { vis, at: Date.now(), id: (data && data.id) || null, ...(note ? { note } : {}) }); if (!quiet) { this.setState({ pubNote: null, pubVis: null }); this.flash(fr ? 'Séance publiée' : 'Workout posted'); } })
@@ -2084,7 +2096,7 @@ class Component extends DCLogic {
   }
   cmtSend() {
     const s = this.state; const m = s.cmt; const fr = LANG === 'fr'; if (!m || m.sending || !s.acct) return; const body = (m.text || '').trim().slice(0, 500);
-    if (!body) return this.acFail('cmt', fr ? 'Écris quelque chose' : 'Write something'); const id = m.id; this.cmtUp(id, { sending: true }); this.setState({ acE: null });
+    if (!body) return this.acFail('cmt', fr ? 'Écris quelque chose' : 'Write something'); if (!this.termsOk()) return this.terms(() => this.cmtSend()); const id = m.id; this.cmtUp(id, { sending: true }); this.setState({ acE: null });
     this.sb().then(c => c.from('comments').insert({ activity_id: id, body })).then(({ error }) => { if (error) throw error; this.cmtUp(id, { sending: false, text: '' }); this.feedPatch(id, x => ({ comments_count: (x.comments_count || 0) + 1 })); this.cmtLoad(id); })
       .catch(e => { this.cmtUp(id, { sending: false }); this.acErr(e, false, 'cmt'); });
   }
@@ -2966,7 +2978,7 @@ class Component extends DCLogic {
       acUserHint: un && !UNAME.test(un) ? (fr ? 'Au moins 3 caractères' : 'At least 3 characters') : (fr ? '3 à 20 caractères : lettres minuscules, chiffres, _ et .' : '3–20 characters: lowercase letters, digits, _ and .'), acUserHintColor: un && !UNAME.test(un) ? '#FF8A65' : '#9C9CA8',
       acNameLabel: fr ? 'Nom affiché' : 'Display name', acName: s.acName || '', onAcName: e => this.setState({ acName: e.target.value.slice(0, 40) }),
       acPrivLabel: fr ? 'Profil privé' : 'Private profile', acPrivSub: fr ? 'Les gens doivent te demander pour te suivre.' : 'People have to ask to follow you.', acPrivTg: tg(priv),
-      acPrivClick: () => p ? this.acSet({ is_private: !priv }) : this.setState({ acPriv: !priv }),
+      acPrivClick: () => p ? this.acSet({ is_private: !priv }) : this.setState({ acPriv: !priv }), acTermsClick: () => this.setState({ acTerms: !s.acTerms }), acTermsLabel: fr ? 'J’accepte les' : 'I accept the', acTermsMark: s.acTerms ? '✓' : '', acTermsBg: s.acTerms ? 'var(--acc)' : 'transparent', acTermsBorder: s.acTerms ? 'var(--acc)' : '#55555F',
       acVisLabel: fr ? 'Mes séances visibles par défaut' : 'Default workout visibility', acVisOpts: vis(p ? p.default_visibility || 'followers' : s.acVis || 'followers', k => p ? (p.default_visibility !== k && this.acSet({ default_visibility: k })) : this.setState({ acVis: k })),
       acCreate: () => this.acCreate(), acCreateLabel: busy ? (fr ? 'Création…' : 'Creating…') : (fr ? 'Créer mon profil' : 'Create my profile'),
       acHandle: p ? '@' + p.username + ' · ' + p.display_name : '', acMail: (a && a.email) || '',
@@ -2987,10 +2999,16 @@ class Component extends DCLogic {
             g: fr ? 'Seulement ce téléphone' : 'This phone only', bg: 'var(--acc)', c: '#0A0A0C' }
           : dcb ? { t: fr ? 'Supprimer ta sauvegarde en ligne ?' : 'Delete your online backup?',
             x: fr ? 'Le fichier de sauvegarde et sa copie de la veille seront effacés du serveur. Les séances de ce téléphone ne changent pas, et la sauvegarde automatique sera désactivée.' : 'The backup file and its previous-day copy will be erased from the server. Workouts on this phone stay as they are, and automatic backup will be turned off.',
-            g: fr ? 'Supprimer la sauvegarde' : 'Delete the backup', bg: '#FF4D4D', c: '#FFFFFF' } : null;
-        if (X) return { sureOn: true, sureNo: () => this.sureNo(), sureGo: () => this.sureGo(), sureNoLabel: fr ? 'Annuler' : 'Cancel', sureTitle: X.t, sureText: X.x, sureGoLabel: X.g, sureBg: X.bg, sureColor: X.c,
+            g: fr ? 'Supprimer la sauvegarde' : 'Delete the backup', bg: '#FF4D4D', c: '#FFFFFF' }
+          : k === 'terms' ? { t: fr ? 'Conditions d’utilisation' : 'Terms of use',
+            x: fr ? 'Pour publier, commenter ou ajouter une photo, accepte les conditions d’utilisation de Barlog. En bref : respecte les autres ; aucun contenu haineux, sexuel, violent, illégal ou harcelant. Chaque signalement est examiné sous 24 heures, et un compte qui enfreint les règles peut être suspendu.'
+              : 'To post, comment or add a photo, accept Barlog’s terms of use. In short: respect others; no hateful, sexual, violent, illegal or harassing content. Every report is reviewed within 24 hours, and an account that breaks the rules may be suspended.',
+            g: fr ? 'J’accepte' : 'I accept', bg: 'var(--acc)', c: '#0A0A0C', no: fr ? 'Plus tard' : 'Not now',
+            link: fr ? 'Lire les conditions' : 'Read the terms', go: () => this.openSite('terms.html') } : null;
+        if (X) return { sureOn: true, sureNo: () => this.sureNo(), sureGo: () => this.sureGo(), sureNoLabel: X.no || (fr ? 'Annuler' : 'Cancel'), sureTitle: X.t, sureText: X.x, sureGoLabel: X.g, sureBg: X.bg, sureColor: X.c,
+          sureLinkOn: !!X.link, sureLinkLabel: X.link || '', sureLink: X.go || null,
           sureAltOn: er, sureAlt: () => this.sureAlt(), sureAltLabel: s.sureArm ? (fr ? 'Toucher encore : supprimer partout' : 'Tap again: delete everywhere') : (fr ? 'Aussi en ligne' : 'Online too'), sureAltBg: s.sureArm ? '#FF4D4D' : 'transparent', sureAltColor: s.sureArm ? '#FFFFFF' : '#FF6B6B' };
-        return { sureOn: !!k, sureNo: () => this.sureNo(), sureGo: () => this.sureGo(), sureNoLabel: fr ? 'Annuler' : 'Cancel', sureAltOn: false,
+        return { sureOn: !!k, sureNo: () => this.sureNo(), sureGo: () => this.sureGo(), sureNoLabel: fr ? 'Annuler' : 'Cancel', sureAltOn: false, sureLinkOn: false,
           sureTitle: del ? (fr ? 'Supprimer ton compte ?' : 'Delete your account?') : (fr ? 'Te déconnecter ?' : 'Sign out?'),
           sureText: del ? (fr ? 'C’est définitif. Ton profil, ta photo, tes publications, tes abonnements, tes bravos, tes commentaires' + (cbOn ? ' et ta sauvegarde en ligne' : '') + ' seront effacés. Tes séances sur ce téléphone restent intactes.' : 'This is permanent. Your profile, photo, posts, follows, kudos, comments' + (cbOn ? ' and online backup' : '') + ' will be erased. Workouts on this phone stay untouched.')
             : (fr ? 'Tes séances restent sur ce téléphone' + (cbOn ? ', et ta sauvegarde en ligne reste sur ton compte. La sauvegarde reprendra quand tu te reconnecteras.' : '.') : 'Your workouts stay on this phone' + (cbOn ? ', and your online backup stays on your account. Backups resume when you sign back in.' : '.')),
@@ -3447,7 +3465,7 @@ class Component extends DCLogic {
         addLabel: PRO_TPL.includes(t.id) && !this.isPro() ? (fr ? 'Débloquer avec Pro ✦' : 'Unlock with Pro ✦') : (fr ? 'Ajouter ' : 'Add ') + t.r.length + ' routines', onAdd: this.gate(PRO_TPL.includes(t.id) ? 'program' : null, () => this.addTemplate(t)) })),
       sdHasNote: !!(sd && meta[sd.date] && meta[sd.date].note), sdNote: sd && meta[sd.date] ? meta[sd.date].note || '' : '',
       toastOn: !!s.toast, toast: s.toast,
-      tx: Object.fromEntries(Object.entries(TX).map(([k, v]) => [k, L(v)])), appLabel: 'Barlog v' + APP_VERSION, storeSub: this.isPro() && this.state.cloud && this.state.cloud.link && this.state.cloud.on !== false && this.state.acct ? (LANG === 'fr' ? 'Sur cet appareil, avec une copie dans ta sauvegarde en ligne.' : 'On this device, with a copy in your online backup.') : L('Everything lives on this device.'), storeTitle: this.state.acct ? (this.isPro() && this.state.cloud && this.state.cloud.link && this.state.cloud.on !== false ? (LANG === 'fr' ? 'Tes séances sont sur ton téléphone et dans ta sauvegarde en ligne privée. Seules celles que tu publies sont partagées.' : 'Your workouts are on your phone and in your private online backup. Only the ones you publish are shared.') : (LANG === 'fr' ? 'Tes séances restent sur ton téléphone. Seules celles que tu publies sont partagées.' : 'Your workouts stay on your phone. Only the ones you publish are shared.')) : L('No account. Your data stays on your phone.'), privacyLabel: LANG === 'fr' ? 'Politique de confidentialité' : 'Privacy policy', openPrivacy: () => { try { window.open('https://hugolpr07.github.io/Gym-app/privacy.html' + (LANG === 'fr' ? '' : '#en'), '_blank'); } catch (e) {} },
+      tx: Object.fromEntries(Object.entries(TX).map(([k, v]) => [k, L(v)])), appLabel: 'Barlog v' + APP_VERSION, storeSub: this.isPro() && this.state.cloud && this.state.cloud.link && this.state.cloud.on !== false && this.state.acct ? (LANG === 'fr' ? 'Sur cet appareil, avec une copie dans ta sauvegarde en ligne.' : 'On this device, with a copy in your online backup.') : L('Everything lives on this device.'), storeTitle: this.state.acct ? (this.isPro() && this.state.cloud && this.state.cloud.link && this.state.cloud.on !== false ? (LANG === 'fr' ? 'Tes séances sont sur ton téléphone et dans ta sauvegarde en ligne privée. Seules celles que tu publies sont partagées.' : 'Your workouts are on your phone and in your private online backup. Only the ones you publish are shared.') : (LANG === 'fr' ? 'Tes séances restent sur ton téléphone. Seules celles que tu publies sont partagées.' : 'Your workouts stay on your phone. Only the ones you publish are shared.')) : L('No account. Your data stays on your phone.'), privacyLabel: LANG === 'fr' ? 'Politique de confidentialité' : 'Privacy policy', openPrivacy: () => this.openSite('privacy.html'), termsLabel: LANG === 'fr' ? 'Conditions d’utilisation' : 'Terms of use', openTerms: () => this.openSite('terms.html'), helpLabel: LANG === 'fr' ? 'Aide et contact' : 'Help & contact', openHelp: () => this.openSite('support.html'),
       calHead: LANG === 'fr' ? ['L','M','M','J','V','S','D'] : ['M','T','W','T','F','S','S'],
       enBg: LANG === 'en' ? '#24242B' : 'transparent', enColor: LANG === 'en' ? '#fff' : '#9C9CA8', frBg: LANG === 'fr' ? '#24242B' : 'transparent', frColor: LANG === 'fr' ? '#fff' : '#9C9CA8',
       setEn: go({ lang: 'en' }), setFr: go({ lang: 'fr' }),

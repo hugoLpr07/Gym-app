@@ -14,7 +14,7 @@
   header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
   header img { width: 44px; height: 44px; border-radius: 10px; }
   .brand { font-weight: 800; letter-spacing: .12em; color: var(--acc); font-size: 14px; }
-  nav { display: flex; gap: 8px; margin: 16px 0 24px; }
+  nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 24px; }
   nav a { color: var(--text); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 14px; font-weight: 600; }
   nav a:hover { border-color: var(--acc); }
   h1 { font-size: 30px; line-height: 1.15; margin: 8px 0 4px; }
@@ -33,11 +33,11 @@
 <body>
 <main>
   <header><img src="icon-192.png" alt=""><span class="brand">BARLOG</span></header>
-  <nav><a href="#fr">Français</a><a href="#en">English</a></nav>
+  <nav><a href="#fr">Français</a><a href="#en">English</a><a href="terms.html">Conditions / Terms</a><a href="support.html">Aide / Help</a></nav>
 
   <section id="fr" lang="fr">
     <h1>Politique de confidentialité</h1>
-    <p class="muted">En vigueur le 22 octobre 2026 · s’applique à l’app Barlog sur iPhone, sur Android et à sa version web.</p>
+    <p class="muted">En vigueur le 23 octobre 2026 · s’applique à l’app Barlog sur iPhone, sur Android et à sa version web.</p>
 
     <div class="summary">
       <ul>
@@ -84,8 +84,9 @@
       <li>Ces fournisseurs n’utilisent pas tes données pour leur propre compte ; ils ne servent qu’à faire fonctionner Barlog.</li>
     </ul>
 
-    <h2>5. Conservation et suppression</h2>
-    <p>Les données de ton compte sont conservées tant que ton compte existe. <strong>Profil → Compte → Supprimer mon compte</strong> efface immédiatement ton compte, ton profil, ta photo de profil, ta sauvegarde en ligne, tes séances publiées, tes abonnements, tes bravos, tes commentaires, tes notifications et tes blocages. Des copies de sécurité techniques chez l’hébergeur peuvent subsister quelques jours avant d’être effacées automatiquement. Les signalements que tu as envoyés sont conservés sans lien avec ton compte, le temps de les traiter. Tes séances locales ne sont pas touchées : elles restent sur ton téléphone.</p>
+    <h2 id="conservation">5. Conservation et suppression</h2>
+    <p>Les données de ton compte sont conservées tant que ton compte existe, sauf : les <strong>notifications</strong>, effacées après 90 jours ; un <strong>compte jamais confirmé</strong> (code jamais saisi), effacé après 7 jours ; la <strong>sauvegarde en ligne</strong>, qui ne garde que sa dernière version et celle de la veille.</p>
+    <p><strong>Profil → Compte → Supprimer mon compte</strong> efface immédiatement ton compte, ton adresse e-mail, ton profil, ta photo de profil, ta sauvegarde en ligne, tes séances publiées, tes abonnements, tes bravos, tes commentaires, tes notifications et tes blocages. Tu peux aussi le demander sans l’app (<a href="support.html#suppression">page d’aide</a>). Un fichier envoyé au même moment par un autre de tes téléphones est effacé automatiquement dans les 2 jours. Des copies de sécurité et des journaux techniques chez l’hébergeur peuvent subsister quelques jours avant d’être effacés automatiquement. Les signalements que tu as envoyés sont conservés sans lien avec ton compte, le temps de les traiter et 1 an au plus. Tes séances locales ne sont pas touchées : elles restent sur ton téléphone.</p>
 
     <h2>6. Données de santé</h2>
     <p>Si tu l’actives (fonction Barlog Pro), Barlog se connecte à l’app de santé de ton téléphone. Tu choisis les autorisations et tu peux les retirer à tout moment dans les réglages du téléphone. Sans Pro, la liaison est en pause : Barlog n’y lit et n’y enregistre plus rien, sauf pour retirer une séance que tu supprimes dans Barlog.</p>
@@ -120,7 +121,7 @@
 
   <section id="en" lang="en">
     <h1>Privacy policy</h1>
-    <p class="muted">Effective October 22, 2026 · applies to the Barlog app on iPhone, on Android and to its web version.</p>
+    <p class="muted">Effective October 23, 2026 · applies to the Barlog app on iPhone, on Android and to its web version.</p>
 
     <div class="summary">
       <ul>
@@ -167,8 +168,9 @@
       <li>These providers do not use your data for their own purposes; they only help run Barlog.</li>
     </ul>
 
-    <h2>5. Retention and deletion</h2>
-    <p>Account data is kept as long as your account exists. <strong>Profile → Account → Delete my account</strong> immediately erases your account, profile, profile photo, online backup, published workouts, follows, kudos, comments, notifications and blocks. Technical backups at our host may remain for a few days before being erased automatically. Reports you sent are kept, no longer linked to your account, while they are handled. Your local workouts are not affected: they stay on your phone.</p>
+    <h2 id="retention">5. Retention and deletion</h2>
+    <p>Account data is kept as long as your account exists, except: <strong>notifications</strong>, erased after 90 days; an <strong>account never confirmed</strong> (code never entered), erased after 7 days; the <strong>online backup</strong>, which only keeps its latest version and the previous day’s.</p>
+    <p><strong>Profile → Account → Delete my account</strong> immediately erases your account, email address, profile, profile photo, online backup, published workouts, follows, kudos, comments, notifications and blocks. You can also request it without the app (<a href="support.html#delete">help page</a>). A file sent at the same moment by another of your phones is erased automatically within 2 days. Backups and technical logs at our host may remain for a few days before being erased automatically. Reports you sent are kept, no longer linked to your account, while they are handled and for 1 year at most. Your local workouts are not affected: they stay on your phone.</p>
 
     <h2>6. Health data</h2>
     <p>If you turn it on (a Barlog Pro feature), Barlog connects to your phone’s health app. You choose the permissions and can revoke them at any time in your phone’s settings. Without Pro, the link is paused: Barlog no longer reads or writes anything there, except to remove a workout you delete in Barlog.</p>

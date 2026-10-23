@@ -62,3 +62,52 @@ test('suppression sans réseau : « Pas de connexion internet », compte gardé'
   assert.deepEqual(app.state.acct, acct);
   assert.ok(app.toasts.includes('Pas de connexion internet'), app.toasts.join(' | '));
 });
+
+// ── Conditions d'utilisation (0.36) ──
+function profClient(log) {
+  return {
+    from: t => ({
+      insert: row => { log.push(['insert', t, row]); const r = Promise.resolve({ error: null }); r.select = () => ({ maybeSingle: async () => ({ data: row, error: null }) }); return r; },
+      update: p => ({ eq: async () => { log.push(['update', t, p]); return { error: null }; } }),
+      select: () => ({ eq: () => ({ order: async () => ({ data: [], error: null }) }) }),
+    }),
+  };
+}
+function acctApp(profile, extra = {}) {
+  const B = loadBarlog(); const log = [];
+  const app = makeApp(B, { ...emptyData(), lang: 'fr', acct: { uid: 'u1', email: 'a@b.c', profile }, ...extra });
+  app.sb = () => Promise.resolve(profClient(log));
+  app.renderVals();
+  return { app, log };
+}
+
+test('création du profil : impossible sans accepter les conditions ; acceptées → terms_v envoyé au serveur', async () => {
+  const { app, log } = acctApp(null, { acUser: 'alex', acName: 'Alex' });
+  app.acCreate(); await flush();
+  assert.equal(log.length, 0);
+  assert.match(app.state.acE.m, /conditions d’utilisation/);
+  app.renderVals().acTermsClick(); app.acCreate(); for (let i = 0; i < 4; i++) await flush();
+  assert.equal(log[0][1], 'profiles'); assert.equal(log[0][2].terms_v, 1);
+  assert.equal(app.state.acct.profile.username, 'alex');
+});
+
+test('compte existant sans les conditions : commenter les demande d’abord, puis envoie le commentaire', async () => {
+  const { app, log } = acctApp({ username: 'alex', default_visibility: 'followers' }, { cmt: { id: 'a1', text: 'Bravo !' } });
+  app.cmtSend(); await flush();
+  assert.equal(app.state.sure, 'terms'); assert.equal(log.length, 0, 'rien n’est envoyé avant l’acceptation');
+  const v = app.renderVals();
+  assert.equal(v.sureGoLabel, 'J’accepte'); assert.equal(v.sureNoLabel, 'Plus tard'); assert.equal(v.sureLinkOn, true);
+  app.sureGo(); for (let i = 0; i < 6; i++) await flush();
+  assert.deepEqual(log.map(x => [x[0], x[1]]), [['update', 'profiles'], ['insert', 'comments']]);
+  assert.deepEqual(log[0][2], { terms_v: 1 });
+  assert.equal(app.termsOk(), true);
+});
+
+test('publication en arrière-plan (auto, en attente) : rien ne part tant que les conditions ne sont pas acceptées', async () => {
+  const { app, log } = acctApp({ username: 'alex', default_visibility: 'followers' });
+  app.hasSess = () => true;
+  app.pubSend(123, 'followers', '', true); await flush();
+  assert.equal(log.length, 0); assert.equal(app.state.sure, undefined, 'pas de fenêtre pour un envoi automatique');
+  app.pubSend(123, 'followers', ''); await flush();
+  assert.equal(app.state.sure, 'terms', 'publier à la main demande les conditions');
+});
