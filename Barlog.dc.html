@@ -769,8 +769,11 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ acBackHint }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:19px;color:#D8D8DE;background:#0A0A0C;border:1px solid #33333C;border-radius:12px;padding:10px 12px;text-wrap:pretty;">{{ acBackHint }}</span></sc-if>
 <sc-if value="{{ acAsk }}" hint-placeholder-val="{{ false }}">
 <input type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" value="{{ acEmail }}" onChange="{{ onAcEmail }}" placeholder="{{ acEmailPh }}" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;padding:0 14px;">
-<button onClick="{{ acSend }}" style="height:52px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;opacity:{{ acOp }};">{{ acSendLabel }}</button>
+<sc-if value="{{ acPwOn }}" hint-placeholder-val="{{ false }}"><input type="password" autocomplete="current-password" value="{{ acPw }}" onChange="{{ onAcPw }}" placeholder="{{ acPwPh }}" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;padding:0 14px;">
+<button onClick="{{ acPwGo }}" style="height:52px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;opacity:{{ acOp }};">{{ acPwGoLabel }}</button></sc-if>
+<sc-if value="{{ acPwOff }}" hint-placeholder-val="{{ false }}"><button onClick="{{ acSend }}" style="height:52px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;opacity:{{ acOp }};">{{ acSendLabel }}</button></sc-if>
 <sc-if value="{{ acErrSend }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ acErrSend }}</span></sc-if>
+<button onClick="{{ acPwToggle }}" style="align-self:flex-start;border:none;background:transparent;padding:0;color:#9C9CA8;text-decoration:underline;min-height:40px;font-size:13px;">{{ acPwToggleLabel }}</button>
 </sc-if>
 <sc-if value="{{ acCodeOn }}" hint-placeholder-val="{{ false }}">
 <span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ acSentText }}</span>
@@ -1783,6 +1786,7 @@ class Component extends DCLogic {
   netErr(e) { const m = String((e && (e.message || e.error_description || e.msg)) || e || ''); return (typeof navigator !== 'undefined' && navigator.onLine === false) || /failed to fetch|network|load failed|offline|fetch/i.test(m); }
   acMsg(e, otp) {
     const fr = LANG === 'fr'; const m = String((e && (e.message || e.error_description || e.msg)) || e || ''); const c = (e && e.code) || '';
+    if (/invalid login credentials/i.test(m)) return fr ? 'E-mail ou mot de passe incorrect' : 'Wrong email or password';
     if (/compte_suspendu/.test(m)) return fr ? 'Ton compte est suspendu (conditions d’utilisation). Écris à barlog.gym.app@gmail.com' : 'Your account is suspended (terms of use). Write to barlog.gym.app@gmail.com';
     if (this.badWord(e)) return fr ? 'Ce texte contient un mot interdit par les conditions d’utilisation' : 'This text contains a word not allowed by the terms of use';
     return this.netErr(e) ? (fr ? 'Pas de connexion internet' : 'No internet connection') : (e && e.status === 429) || /rate.?limit/i.test(m + c) ? (fr ? 'Trop de demandes, réessaie dans quelques minutes' : 'Too many requests, try again in a few minutes') : otp && (/otp|expired|invalid|token/i.test(m + c) || (e && (e.status === 401 || e.status === 403))) ? (fr ? 'Code incorrect ou expiré' : 'Wrong or expired code') : m.slice(0, 90) || (fr ? 'Erreur' : 'Error');
@@ -1818,6 +1822,17 @@ class Component extends DCLogic {
       const to = setTimeout(() => done(ko, err()), 60000);
       try { id = T.render(el, { sitekey: TS_KEY, theme: 'dark', language: fr ? 'fr' : 'en', appearance: 'interaction-only', callback: t => done(ok, t), 'error-callback': () => done(ko, err()) }); } catch (e) { done(ko, err()); }
     }));
+  }
+  // Connexion par mot de passe : seulement les comptes créés avec un mot de passe dans le tableau de bord (compte de revue
+  // d'Apple et de Google, règle 2.1) ; l'app ne permet de définir aucun mot de passe : la connexion normale reste le code.
+  acPwLogin() {
+    const s = this.state; const fr = LANG === 'fr'; if (s.acBusy) return; const email = (s.acEmail || '').trim().toLowerCase(); const password = s.acPw || '';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return this.acFail('send', fr ? 'E-mail invalide' : 'Invalid email');
+    if (!password) return this.acFail('send', fr ? 'Entre ton mot de passe' : 'Enter your password');
+    this.setState({ acBusy: true, acE: null });
+    this.sb().then(c => this.tsToken().then(tok => c.auth.signInWithPassword({ email, password, ...(tok ? { options: { captchaToken: tok } } : {}) })).then(({ data, error }) => { if (error) throw error; const u = data && data.user; if (!u) throw new Error('login');
+      this.setState({ acPw: '', acPwOn: false, acct: { uid: u.id, email: u.email, profile: undefined } }); return this.acLoad(c, u).catch(e => this.acErr(e)); }))
+      .then(() => this.setState({ acBusy: false })).catch(e => { this.setState({ acBusy: false }); this.acErr(e, false, 'send'); });
   }
   acVerify() {
     const s = this.state; const fr = LANG === 'fr'; if (s.acBusy || !s.acSent) return; const token = (s.acCode || '').replace(/\D/g, '');
@@ -3037,7 +3052,9 @@ class Component extends DCLogic {
       acSentText: (fr ? 'Code à 6 chiffres envoyé à ' : '6-digit code sent to ') + (s.acSent || '') + (fr ? '. Pense à regarder dans les spams.' : '. Check your spam folder too.'),
       acCode: s.acCode || '', onAcCode: e => this.setState({ acCode: e.target.value.replace(/\D/g, '').slice(0, 10) }),
       acVerify: () => this.acVerify(), acVerifyLabel: busy ? (fr ? 'Vérification…' : 'Checking…') : (fr ? 'Valider' : 'Verify'),
-      acChange: () => this.setState({ acSent: null, acCode: '' }), acChangeLabel: fr ? 'Changer d’e-mail' : 'Change email', acResendLabel: fr ? 'Renvoyer le code' : 'Resend code', acResend: () => { if (s.acSent) { this.setState({ acEmail: s.acSent }); setTimeout(() => this.acSend(), 0); } },
+      acChange: () => this.setState({ acSent: null, acCode: '' }), acPwOn: !!s.acPwOn, acPwOff: !s.acPwOn, acPw: s.acPw || '', onAcPw: e => this.setState({ acPw: e.target.value }), acPwPh: fr ? 'Mot de passe' : 'Password',
+      acPwGo: () => this.acPwLogin(), acPwGoLabel: fr ? 'Se connecter' : 'Sign in', acPwToggle: () => this.setState({ acPwOn: !s.acPwOn, acPw: '', acE: null }),
+      acPwToggleLabel: s.acPwOn ? (fr ? 'Recevoir plutôt un code par e-mail' : 'Get a code by email instead') : (fr ? 'Se connecter avec un mot de passe' : 'Sign in with a password'), acChangeLabel: fr ? 'Changer d’e-mail' : 'Change email', acResendLabel: fr ? 'Renvoyer le code' : 'Resend code', acResend: () => { if (s.acSent) { this.setState({ acEmail: s.acSent }); setTimeout(() => this.acSend(), 0); } },
       acConsent: fr ? 'Compte réservé aux 14 ans et plus. En créant un compte, ton e-mail, ton pseudo, ton nom et les séances que tu choisis de publier sont stockés sur nos serveurs au Canada (Montréal).' : 'Accounts are for ages 14 and up. By creating an account, your email, username, name and the workouts you choose to post are stored on our servers in Canada (Montréal).',
       acPickTitle: fr ? 'Choisis ton pseudo' : 'Pick your username', acUserLabel: fr ? 'Pseudo' : 'Username', acUser: un, acUserPh: fr ? 'ton.pseudo' : 'your.username', acNamePh: fr ? 'Ton nom' : 'Your name', onAcUser: e => this.setState({ acUser: e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, '').slice(0, 20) }),
       acUserHint: un && !UNAME.test(un) ? (fr ? 'Au moins 3 caractères' : 'At least 3 characters') : (fr ? '3 à 20 caractères : lettres minuscules, chiffres, _ et .' : '3–20 characters: lowercase letters, digits, _ and .'), acUserHintColor: un && !UNAME.test(un) ? '#FF8A65' : '#9C9CA8',

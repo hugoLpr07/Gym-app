@@ -202,3 +202,26 @@ test('anti-robot en échec : aucun code envoyé, message clair', async t => {
   assert.equal(sent.length, 0); assert.equal(app.state.acBusy, false);
   assert.ok(app.toasts.includes('Vérification anti-robot impossible, réessaie'), app.toasts.join(' | '));
 });
+
+// ── Connexion par mot de passe (compte de revue Apple / Google, 0.36) ──
+function pwApp(result) {
+  const B = loadBarlog(); const calls = [];
+  const app = makeApp(B, { ...emptyData(), lang: 'fr', acEmail: 'Revue@Barlog.app', acPw: 'secret', acPwOn: true });
+  app.sb = () => Promise.resolve({ auth: { signInWithPassword: async o => { calls.push(o); return result; } },
+    from: () => ({ select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: { username: 'revue', terms_v: 1 }, error: null }) }) }) }) });
+  app.renderVals();
+  return { app, calls };
+}
+test('mot de passe : lien visible de tous, connexion sans e-mail, compte chargé', async () => {
+  const B = loadBarlog(); const a = makeApp(B, { ...emptyData(), lang: 'fr' });
+  const v = a.renderVals(); assert.equal(v.acPwToggleLabel, 'Se connecter avec un mot de passe'); assert.equal(v.acPwOff, true);
+  const { app, calls } = pwApp({ data: { user: { id: 'r1', email: 'revue@barlog.app' } }, error: null });
+  app.acPwLogin(); for (let i = 0; i < 6; i++) await flush();
+  assert.deepEqual(calls, [{ email: 'revue@barlog.app', password: 'secret' }]);
+  assert.equal(app.state.acct.uid, 'r1'); assert.equal(app.state.acct.profile.username, 'revue'); assert.equal(app.state.acPw, '', 'mot de passe effacé de l’état');
+});
+test('mot de passe incorrect : message clair, pas connecté', async () => {
+  const { app } = pwApp({ data: { user: null }, error: { message: 'Invalid login credentials', status: 400 } });
+  app.acPwLogin(); for (let i = 0; i < 6; i++) await flush();
+  assert.equal(app.state.acct, undefined); assert.ok(app.toasts.includes('E-mail ou mot de passe incorrect'), app.toasts.join(' | '));
+});
