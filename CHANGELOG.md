@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.36.0 — 2026-10-23 (en cours sur dev : préparation des boutiques)
+- Supprimer son compte efface maintenant tout côté serveur, y compris la photo de profil et toutes les sauvegardes en ligne ; si la suppression est interrompue, le compte reste intact et on peut réessayer (la sauvegarde en ligne reste branchée).
+
 ## 0.35.0 — 2026-10-23
 - Widget Android : « Dernière fois il y a N jours », les jours de la semaine et la série restent justes même sans ouvrir l’app (le widget se recalcule chaque nuit au lieu de garder les textes de la dernière ouverture).
 - Minuteur sur l’écran verrouillé : sur iPhone, la fin du repos affiche toujours le bon texte, même après un cardio ou un maintien, et il ne reste jamais deux minuteurs ; sur Android, la notification ne réapparaît plus après « passer le repos » ou après l’avoir balayée, un canal de notifications coupé est signalé, et le chrono du cardio disparaît quand l’app est fermée.

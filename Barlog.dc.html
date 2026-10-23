@@ -1439,7 +1439,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.35.0';
+const APP_VERSION = '0.36.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive content'], ['Harcèlement ou intimidation', 'Harassment or bullying'], ['Spam ou arnaque', 'Spam or scam'], ['Usurpation d’identité', 'Impersonation'], ['Autre', 'Other']];
 // Sauvegarde en ligne : ce qui n'est pas envoyé (propre à l'appareil, ou relu depuis Santé / Health Connect).
@@ -2000,10 +2000,22 @@ class Component extends DCLogic {
   sureGo() { const f = this._sureFn; this._sureFn = null; this._sureAlt = null; this.setState({ sure: null, sureArm: false }); if (f) f(); }
   sureAlt() { if (!this.state.sureArm) return this.setState({ sureArm: true }); const f = this._sureAlt; this._sureFn = null; this._sureAlt = null; this.setState({ sure: null, sureArm: false }); if (f) f(); }
   sureNo() { this._sureFn = null; this._sureAlt = null; this.setState({ sure: null, sureArm: false }); }
+  // Suppression complète par le serveur (fonction « delete-account » : photo, sauvegardes, puis le compte et tout le reste).
+  // Serveur sans cette fonction (404) : ancien chemin, fichiers effacés d'ici puis delete_account ; le balayage de nuit rattrape.
+  acWipe(c, uid) {
+    const fr = LANG === 'fr';
+    return c.functions.invoke('delete-account', { method: 'POST' }).then(({ data, error }) => {
+      if (!error && data && data.ok) return;
+      const st = error && error.context && error.context.status;
+      if (st === 404) return this.avClean(c, uid, null).catch(() => {}).then(() => this.cbWipe(c, uid).catch(() => {})).then(() => c.rpc('delete_account')).then(({ error: e }) => { if (e) throw e; });
+      if (error && error.name === 'FunctionsFetchError') throw new Error('Failed to fetch');
+      throw new Error(fr ? 'Suppression interrompue, réessaie dans un moment' : 'Deletion interrupted, try again in a moment');
+    });
+  }
   acDelete() {
     if (this.state.acBusy) return;
-    this.sure('del', () => { const fr = LANG === 'fr'; this.setState({ acBusy: true });
-      this.sb().then(c => this.avClean(c, this.state.acct && this.state.acct.uid, null).catch(() => {}).then(() => this.cbWipe(c, this.state.acct && this.state.acct.uid).catch(() => {})).then(() => { this.cbSet({ link: false, uid: null, at: null, n: null }); return c.rpc('delete_account'); }).then(({ error }) => { if (error) throw error; return c.auth.signOut({ scope: 'local' }).catch(() => {}); })).then(() => { try { localStorage.removeItem(SB_STORE); } catch (e) {} this.setState(st => ({ acBusy: false, acct: null, acUser: '', acName: '', autoPub: false, sessMeta: Object.fromEntries(Object.entries(st.sessMeta || {}).map(([k, m]) => { if (!m || !m.pub) return [k, m]; const { pub, ...r } = m; return [k, r]; })) })); this.flash(fr ? 'Compte supprimé' : 'Account deleted'); }).catch(e => { this.setState({ acBusy: false }); this.acErr(e); }); });
+    this.sure('del', () => { const fr = LANG === 'fr'; this.setState({ acBusy: true }); const cl = this.state.cloud || {}; const was = { link: cl.link, uid: cl.uid, at: cl.at, n: cl.n };
+      this.sb().then(c => { this.cbSet({ link: false, uid: null, at: null, n: null }); return this.acWipe(c, this.state.acct && this.state.acct.uid).then(() => c.auth.signOut({ scope: 'local' }).catch(() => {})); }).then(() => { try { localStorage.removeItem(SB_STORE); } catch (e) {} this.setState(st => ({ acBusy: false, acct: null, acUser: '', acName: '', autoPub: false, sessMeta: Object.fromEntries(Object.entries(st.sessMeta || {}).map(([k, m]) => { if (!m || !m.pub) return [k, m]; const { pub, ...r } = m; return [k, r]; })) })); this.flash(fr ? 'Compte supprimé' : 'Account deleted'); }).catch(e => { if (this.state.acct) this.cbSet(was); this.setState({ acBusy: false }); this.acErr(e); }); });
   }
   hasSess(d) { return Object.values(this.state.history || {}).some(a => a.some(x => x.date === d)); }
   pubRow(d, vis, note) {
