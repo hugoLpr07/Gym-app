@@ -55,7 +55,7 @@ export const FakeReact = { createElement: (type, props, ...children) => ({ type,
 
 // Symboles de haut niveau exposés aux tests. S'il en manque un (renommé), seul le test qui s'en sert échoue.
 const EXPOSE = ['Component', 'PK', 'CB_SKIP', 'CB_SET', 'KG_LB', 'DAY', 'APP_VERSION', 'LIB', 'e1', 'nSess', 'bodyOut',
-  'csvRows', 'parseDT', 'parseDur', 'numV', 'mapEx', 'parseLifts', 'mergeLifts', 'autoType'];
+  'csvRows', 'parseDT', 'parseDur', 'numV', 'mapEx', 'parseLifts', 'mergeLifts', 'autoType', 'bodyHk', 'bodyHkIn'];
 
 /** Charge une copie neuve du code (≈ 3 ms) : chaque test a ses propres variables de module (LANG, ACC…). */
 export function loadBarlog(html = readFileSync(HTML_PATH, 'utf8')) {

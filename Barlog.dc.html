@@ -1455,6 +1455,13 @@ const CB_SET = ['bodyRange', 'bodyU', 'lenU', 'unit', 'haptics', 'sound', 'wake'
 const nSess = h => { const d = new Set(); Object.values(h || {}).forEach(a => (a || []).forEach(x => d.add(x.date))); return d.size; };
 // Pesées : on retire les valeurs lues dans Santé / Health Connect (marquées hk) — le nouveau téléphone les relit à la source.
 const bodyOut = b => (b || []).map(x => { if (!x.hk) return x; const y = { ...x }; Object.keys(x.hk).forEach(k => delete y[k]); delete y.hk; return y; }).filter(x => Object.keys(x).some(k => k !== 'date'));
+// Valeurs lues dans Santé / Health Connect (marquées hk) : seulement ces champs, par date ; rangées hors des sauvegardes
+// du téléphone (barlog-health.json, dossier LIBRARY_NO_CLOUD) et remises dans body au démarrage (bodyHkIn).
+const bodyHk = b => (b || []).filter(x => x.hk).map(x => { const y = { date: x.date, hk: x.hk }; Object.keys(x.hk).forEach(k => { if (x[k] != null) y[k] = x[k]; }); return y; });
+const bodyHkIn = (b, hk) => { const out = (b || []).map(x => ({ ...x })); const at = new Map(); out.forEach((x, i) => { if (!at.has(x.date)) at.set(x.date, i); });
+  (hk || []).forEach(h => { if (!h || !h.date || !h.hk) return; let i = at.get(h.date); if (i == null) { i = out.length; out.push({ date: h.date }); at.set(h.date, i); }
+    const x = out[i]; const f = { ...(x.hk || {}) }; Object.keys(h.hk).forEach(k => { if (x[k] == null && h[k] != null) { x[k] = h[k]; f[k] = 1; } }); if (Object.keys(f).length) x.hk = f; });
+  return out.sort((a, c) => a.date - c.date); };
 const avUrl = p => p ? SB_URL + '/storage/v1/object/public/avatars/' + p : '', avImg = p => p ? "url('" + avUrl(p) + "')" : 'none';
 const iniOf = n => (String(n || '?').trim().split(/\s+/).slice(0, 2).map(w => [...w][0] || '').join('') || '?').toUpperCase();
 const relT = (iso, fr) => { const now = Date.now(); const t = Date.parse(iso); if (!t) return ''; const m = Math.floor((now - t) / 60000); if (m < 1) return fr ? 'à l’instant' : 'just now'; if (m < 60) return fr ? 'il y a ' + m + ' min' : m + ' min ago'; const h = Math.floor(m / 60); if (h < 24) return fr ? 'il y a ' + h + ' h' : h + 'h ago'; const d = Math.floor(h / 24); if (d < 7) return fr ? 'il y a ' + d + ' j' : d + 'd ago'; return new Date(t).toLocaleDateString(fr ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'short', ...(new Date(t).getFullYear() !== new Date(now).getFullYear() ? { year: 'numeric' } : {}) }); };
@@ -1670,12 +1677,7 @@ class Component extends DCLogic {
     const extra = d && d.routines ? { ...d, restAlert: false, onboarded: d.onboarded !== false } : { onboarded: false, ob: { step: 0 } };
     if (extra.workout) extra.screen = 'workout';
     this.setState({ ...extra, standalone });
-    const F = this.fs();
-    if (F) F.readFile({ path: 'barlog-data.json', directory: 'DATA', encoding: 'utf8' }).then(r => {
-      const fd = JSON.parse(r.data);
-      if (fd && fd.routines && (!d || !d.routines || (fd.savedAt || 0) > (d.savedAt || 0))) { const ex = { ...fd, restAlert: false, onboarded: fd.onboarded !== false, ob: null }; if (ex.workout) ex.screen = 'workout'; delete ex.savedAt; this.setState(ex); }
-      F.writeFile({ path: 'barlog-data.prev.json', data: r.data, directory: 'DATA', encoding: 'utf8' }).catch(() => {});
-    }).catch(() => {}).then(() => { this.nativeReady = true; this.save(true); this.instCheck(); });
+    this.nativeBoot(d);
     this.iv = setInterval(() => this.tick(), 250);
     this.onVis = () => { if (document.visibilityState === 'hidden' && this._cbT) { clearTimeout(this._cbT); this._cbT = null; this.cbUp(); } this.save(document.visibilityState === 'hidden'); this.syncWake(); this.tick(); this._rnAt = undefined; this.syncRestNotif(); if (document.visibilityState === 'visible') { this.pullWeights(); if ((this.state.cloud || {}).err) this.cbSoon(3000); } if (document.visibilityState === 'visible') this.checkUpdate(); if (document.visibilityState === 'visible') this.pubFlush(); if (document.visibilityState === 'visible') this.reqCount(); };
     // Retour du réseau : publications en attente, et sauvegarde dont le dernier envoi a échoué.
@@ -1708,7 +1710,25 @@ class Component extends DCLogic {
     if (st.acct && st.acct.profile && !((prev.acct && prev.acct.uid) === st.acct.uid && prev.acct.profile)) setTimeout(() => { this.reqCount(true); this.blkLoad(true); this.cbCheck(); this.pushInit(); }, 0);
     const fOn = x => x.screen === 'tabs' && x.tab === 'feed' && !!(x.acct && x.acct.profile); if (fOn(st) && !fOn(prev)) this.feedEnter();
   }
-  save(flush) { const o = {}; PK.forEach(k => o[k] = this.state[k]); o.savedAt = Date.now(); const j = JSON.stringify(o); try { localStorage.setItem('barlog-v1', j); } catch (e) {} this.saveNative(j, flush); }
+  // App native : fichier de données (plus récent que le localStorage ?), copie de la veille, puis valeurs lues dans Santé
+  // (barlog-health.json, hors sauvegardes ; absent = nouveau téléphone ou restauration → Santé relue entièrement).
+  nativeBoot(d) {
+    const F = this.fs(); if (!F) return Promise.resolve();
+    return F.readFile({ path: 'barlog-data.json', directory: 'DATA', encoding: 'utf8' }).then(r => {
+      const fd = JSON.parse(r.data);
+      if (fd && fd.routines && (!d || !d.routines || (fd.savedAt || 0) > (d.savedAt || 0))) { const ex = { ...fd, restAlert: false, onboarded: fd.onboarded !== false, ob: null }; if (ex.workout) ex.screen = 'workout'; delete ex.savedAt; this.setState(ex); }
+      F.writeFile({ path: 'barlog-data.prev.json', data: r.data, directory: 'DATA', encoding: 'utf8' }).catch(() => {});
+    }).catch(() => {}).then(() => F.readFile({ path: 'barlog-health.json', directory: 'LIBRARY_NO_CLOUD', encoding: 'utf8' }).then(r => {
+      const h = JSON.parse(r.data); if (h && Array.isArray(h.body)) this.setState(st => ({ body: bodyHkIn(st.body, h.body) })); else throw new Error('health'); })
+      .catch(() => this.setState({ hkWSync: null, hkCSync: null })))
+      .then(() => { this.nativeReady = true; this.save(true); this.instCheck(); });
+  }
+  save(flush) { const o = {}; PK.forEach(k => o[k] = this.state[k]); o.body = bodyOut(o.body); o.savedAt = Date.now(); const j = JSON.stringify(o); try { localStorage.setItem('barlog-v1', j); } catch (e) {} this.saveNative(j, flush); this.saveHealth(); }
+  // Valeurs lues dans Santé : fichier à part, hors des sauvegardes du téléphone (Apple interdit les données de santé dans iCloud).
+  saveHealth() {
+    const F = this.fs(); if (!F || !this.nativeReady) return; const j = JSON.stringify({ v: 1, body: bodyHk(this.state.body) }); if (j === this._hkJ) return; this._hkJ = j;
+    F.writeFile({ path: 'barlog-health.json', data: j, directory: 'LIBRARY_NO_CLOUD', encoding: 'utf8', recursive: true }).catch(() => { this._hkJ = null; });
+  }
   fs() { const P = this.nat(); return P && P.Filesystem; }
   saveNative(j, now) {
     const F = this.fs(); if (!F || !this.nativeReady) return; this._pend = j; clearTimeout(this.nsT);
