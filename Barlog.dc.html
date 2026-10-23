@@ -1439,7 +1439,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.34.1';
+const APP_VERSION = '0.35.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive content'], ['Harcèlement ou intimidation', 'Harassment or bullying'], ['Spam ou arnaque', 'Spam or scam'], ['Usurpation d’identité', 'Impersonation'], ['Autre', 'Other']];
 // Sauvegarde en ligne : ce qui n'est pas envoyé (propre à l'appareil, ou relu depuis Santé / Health Connect).
@@ -1670,7 +1670,7 @@ class Component extends DCLogic {
       const fd = JSON.parse(r.data);
       if (fd && fd.routines && (!d || !d.routines || (fd.savedAt || 0) > (d.savedAt || 0))) { const ex = { ...fd, restAlert: false, onboarded: fd.onboarded !== false, ob: null }; if (ex.workout) ex.screen = 'workout'; delete ex.savedAt; this.setState(ex); }
       F.writeFile({ path: 'barlog-data.prev.json', data: r.data, directory: 'DATA', encoding: 'utf8' }).catch(() => {});
-    }).catch(() => {}).then(() => { this.nativeReady = true; this.save(true); });
+    }).catch(() => {}).then(() => { this.nativeReady = true; this.save(true); this.instCheck(); });
     this.iv = setInterval(() => this.tick(), 250);
     this.onVis = () => { if (document.visibilityState === 'hidden' && this._cbT) { clearTimeout(this._cbT); this._cbT = null; this.cbUp(); } this.save(document.visibilityState === 'hidden'); this.syncWake(); this.tick(); this._rnAt = undefined; this.syncRestNotif(); if (document.visibilityState === 'visible') { this.pullWeights(); if ((this.state.cloud || {}).err) this.cbSoon(3000); } if (document.visibilityState === 'visible') this.checkUpdate(); if (document.visibilityState === 'visible') this.pubFlush(); if (document.visibilityState === 'visible') this.reqCount(); };
     // Retour du réseau : publications en attente, et sauvegarde dont le dernier envoi a échoué.
@@ -1725,6 +1725,19 @@ class Component extends DCLogic {
       const t0 = this.ac.currentTime;
       notes.forEach(([f, at, dur]) => { const o = this.ac.createOscillator(), g = this.ac.createGain(); o.type = 'sine'; o.frequency.value = f; g.gain.setValueAtTime(0.0001, t0 + at); g.gain.exponentialRampToValueAtTime(0.5, t0 + at + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t0 + at + dur); o.connect(g); g.connect(this.ac.destination); o.start(t0 + at); o.stop(t0 + at + dur + 0.05); });
     } catch (e) {}
+  }
+  // Données restaurées depuis la sauvegarde d'un autre téléphone (Google, iCloud) : l'identifiant d'appareil de la sauvegarde
+  // en ligne serait celui de l'ancien téléphone (les deux s'écraseraient la sauvegarde sans fusionner), de même que le jeton
+  // de notifications. Un fichier jamais sauvegardé (iOS : Library/NoCloud ; Android : exclu des règles de sauvegarde) identifie
+  // cette installation : s'il ne correspond pas, nouvel identifiant d'appareil, et le jeton est réenregistré au démarrage du compte.
+  // iOS : recursive crée Library/NoCloud au besoin ; la relecture qui suit marque ce dossier « hors sauvegarde » (le plugin
+  // ne peut le faire qu'une fois le dossier créé), comme chaque lecture aux ouvertures suivantes.
+  instCheck() {
+    const F = this.fs(); if (!F) return Promise.resolve(); const o = { path: 'barlog-install', directory: 'LIBRARY_NO_CLOUD', encoding: 'utf8' };
+    return F.readFile(o).then(r => r && r.data, () => null)
+      .then(id => id || F.writeFile({ ...o, data: 'i' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36), recursive: true }).then(() => F.readFile(o)).then(r => r && r.data))
+      .then(id => { if (!id || (this.state.cloud || {}).inst === id) return;
+        this.setState(st => { const c = { ...(st.cloud || {}), inst: id }; delete c.dev; return { cloud: c, push: { ...(st.push || {}), tok: null } }; }); }).catch(() => {});
   }
   buzz(p) { if (!this.state.haptics) return; try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} }
   flash(msg) { this.setState({ toast: msg }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 1800); }
@@ -1833,7 +1846,11 @@ class Component extends DCLogic {
     const d = this._pnOpen; const s = this.state; const a = s.acct; if (!d || !a || !a.profile) return; this._pnOpen = null;
     if (s.workout && s.screen !== 'tabs') return this.reqCount(true);
     this.setState({ tab: 'feed', screen: 'tabs', sv: [] });
-    setTimeout(() => { this.svOpen({ v: 'ntf' }); if (d.kind && d.kind !== 'kudo') setTimeout(() => this.ntfOpen({ kind: d.kind, activity_id: d.activity || null, actor: d.actor || null }), 0); }, 0);
+    // L'ouverture peut aussi venir d'une autre app (l'écran principal accepte les intentions des autres apps) : on ne suit que la
+    // notification relue sur le serveur (seulement les siennes, RLS), jamais le profil ou la séance indiqués dans les données reçues.
+    const id = /^[0-9]{1,18}$/.test(String(d.ntf || '')) ? String(d.ntf) : null;
+    setTimeout(() => { this.svOpen({ v: 'ntf' }); if (id) this.sb().then(c => c.from('notifications').select('kind, actor, activity_id').eq('id', id).maybeSingle())
+      .then(({ data: n }) => { if (n && n.kind !== 'kudo' && (this.state.acct || {}).uid === a.uid) this.ntfOpen({ kind: n.kind, activity_id: n.activity_id, actor: n.actor }); }).catch(() => {}); }, 0);
   }
   // ───── Sauvegarde en ligne de l'historique (compte) ─────
   // Fichier compressé privé backups/<id>/b<horodatage>.gz (nom unique à chaque envoi : jamais de copie en cache) ;
@@ -3062,7 +3079,9 @@ class Component extends DCLogic {
     LANG = s.lang === 'fr' ? 'fr' : 'en'; try { document.documentElement.lang = LANG; } catch (e) {}
     const go = (p) => () => this.setState(p);
     const routines = s.routines;
-    const ago = (t) => { const fr = LANG === 'fr'; if (!t) return fr ? 'jamais' : 'never'; const d = Math.floor((now - t) / DAY); return d <= 0 ? (fr ? 'aujourd’hui' : 'today') : d === 1 ? (fr ? 'hier' : 'yesterday') : fr ? 'il y a ' + d + ' jours' : d + ' days ago'; };
+    // Textes de « il y a N jours », aussi envoyés au widget (qui recalcule lui-même la durée chaque jour).
+    const AGO = LANG === 'fr' ? { never: 'jamais', today: 'aujourd’hui', yesterday: 'hier', ago: 'il y a {n} jours' } : { never: 'never', today: 'today', yesterday: 'yesterday', ago: '{n} days ago' };
+    const ago = (t) => { if (!t) return AGO.never; const d = Math.floor((now - t) / DAY); return d <= 0 ? AGO.today : d === 1 ? AGO.yesterday : AGO.ago.replace('{n}', d); };
     const lastOf = (r) => { let t = 0; r.ex.forEach(e => { const l = (s.history[e.name] || []).slice(-1)[0]; if (l) t = Math.max(t, l.date); }); return t; };
     const dayStart = new Date(now); dayStart.setHours(0, 0, 0, 0);
     let next = null;
@@ -3083,15 +3102,19 @@ class Component extends DCLogic {
     const week = (LANG === 'fr' ? ['L','M','M','J','V','S','D'] : ['M','T','W','T','F','S','S']).map((label, i) => { const d = new Date(monday.getTime() + i * DAY); const done = dayKeys.has(d.toDateString()); const today = d.toDateString() === d0.toDateString(); return { label, dot: done ? ACC : '#24242B', border: today ? '#9C9CA8' : '#24242B' }; });
     { const fr = LANG === 'fr'; const wk = s.workout; const ymd = (t, k) => new Date(new Date(t).getFullYear(), new Date(t).getMonth(), new Date(t).getDate() + k);
       const hasWeek = t => [0, 1, 2, 3, 4, 5, 6].some(k => dayKeys.has(ymd(t, k).toDateString()));
-      let streak = 0, m = monday.getTime(); if (!hasWeek(m)) m = ymd(m, -7).getTime(); while (streak < 520 && hasWeek(m)) { streak++; m = ymd(m, -7).getTime(); }
+      let streak = 0, m = monday.getTime(); if (!hasWeek(m)) m = ymd(m, -7).getTime(); const top = m; while (streak < 520 && hasWeek(m)) { streak++; m = ymd(m, -7).getTime(); }
+      const iso = t => { const d = new Date(t); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
       const starts = new Set(); Object.values(s.history).forEach(a => a.forEach(x => { if (x.date >= monday.getTime()) starts.add(x.date); }));
-      this.syncWidget({ pro: this.isPro() ? 1 : 0, lockTitle: 'Barlog Pro', lockSub: fr ? 'Débloque le widget avec Barlog Pro. Touche pour voir.' : 'Unlock the widget with Barlog Pro. Tap to see.', acc: ACC, label: wk ? (fr ? 'EN COURS' : 'IN PROGRESS') : (fr ? 'À SUIVRE' : 'NEXT UP'),
+      // Widget (v2) : dates brutes + textes à compléter. Le widget en tire lui-même « il y a N jours » (last), les points
+      // et le nombre de séances de la semaine en cours (starts) et la série (streak, valable si streakWeek est cette semaine
+      // ou la précédente), et se recalcule chaque nuit : il reste juste même si l'app n'est pas ouverte.
+      this.syncWidget({ v: 2, pro: this.isPro() ? 1 : 0, lockTitle: 'Barlog Pro', lockSub: fr ? 'Débloque le widget avec Barlog Pro. Touche pour voir.' : 'Unlock the widget with Barlog Pro. Tap to see.', acc: ACC, label: wk ? (fr ? 'EN COURS' : 'IN PROGRESS') : (fr ? 'À SUIVRE' : 'NEXT UP'),
         title: wk ? wk.name : next ? next.name : L('No routines'),
-        sub: wk ? (fr ? 'Touche pour reprendre' : 'Tap to resume') : next ? L('Last done') + ' ' + ago(lastOf(next)) : L('Create one in Programs.'),
+        sub: wk ? (fr ? 'Touche pour reprendre' : 'Tap to resume') : next ? '' : L('Create one in Programs.'), ...(!wk && next ? { last: lastOf(next) } : {}),
         subM: wk ? (fr ? 'Séance en cours · touche pour reprendre' : 'Workout in progress · tap to resume') : next ? next.ex.map(e => e.name).join(' · ') : L('Create one in Programs.'),
-        foot: streak ? (fr ? streak + (streak > 1 ? ' semaines' : ' semaine') + ' d’affilée' : streak + '-week streak') : '',
-        weekLabel: fr ? 'CETTE SEMAINE' : 'THIS WEEK', weekCount: starts.size + (fr ? (starts.size > 1 ? ' séances' : ' séance') : (starts.size === 1 ? ' workout' : ' workouts')),
-        week: week.map((d, k) => [d.label, dayKeys.has(ymd(monday.getTime(), k).toDateString()) ? 1 : 0, ymd(monday.getTime(), k).toDateString() === d0.toDateString() ? 1 : 0]) }); }
+        streak, streakWeek: iso(top), starts: [...starts].sort((a, b) => a - b), weekLabel: fr ? 'CETTE SEMAINE' : 'THIS WEEK',
+        tx: { lastDone: L('Last done'), ...AGO, days: week.map(d => d.label), n0: fr ? '{n} séance' : '{n} workouts', n1: fr ? '{n} séance' : '{n} workout', nN: fr ? '{n} séances' : '{n} workouts',
+          s1: fr ? '{n} semaine d’affilée' : '{n}-week streak', sN: fr ? '{n} semaines d’affilée' : '{n}-week streak' } }); }
 
     const w = s.workout;
     const wStepKg = this.inc();

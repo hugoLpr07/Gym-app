@@ -5,6 +5,13 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.35.0 — 2026-10-23
+- Widget Android : « Dernière fois il y a N jours », les jours de la semaine et la série restent justes même sans ouvrir l’app (le widget se recalcule chaque nuit au lieu de garder les textes de la dernière ouverture).
+- Minuteur sur l’écran verrouillé : sur iPhone, la fin du repos affiche toujours le bon texte, même après un cardio ou un maintien, et il ne reste jamais deux minuteurs ; sur Android, la notification ne réapparaît plus après « passer le repos » ou après l’avoir balayée, un canal de notifications coupé est signalé, et le chrono du cardio disparaît quand l’app est fermée.
+- Santé : une séance ou une pesée n’est jamais enregistrée deux fois dans Apple Santé, et la suppression d’une séance vise exactement la bonne ; si tu refuses l’accès, Barlog le dit au lieu d’afficher « connecté » ; sur Android, une autorisation refusée (ex. Taille) ne fait plus perdre les autres mesures de composition.
+- Nouveau téléphone restauré depuis une sauvegarde (Google, iCloud) : Barlog le reconnaît comme un nouvel appareil, donc sa sauvegarde en ligne fusionne au lieu d’écraser celle de l’ancien. Sur Android, la sauvegarde du téléphone ne contient plus que l’historique (pas la connexion au compte : il faut se reconnecter sur le nouveau téléphone).
+- Notifications push : toucher une notification n’ouvre que ce qu’elle concerne vraiment (vérifié auprès du serveur).
+
 ## 0.34.1 — 2026-10-23
 - Plus fluide et moins gourmand en batterie pendant une séance : l’écran n’est plus recalculé que quand un chrono affiché change (une fois par seconde au lieu de quatre), et chaque calcul est environ 4 fois plus rapide avec un long historique (dates, calendrier, régularité).
 - App Android : plus de vérification de mise à jour ni de cache du site à chaque ouverture (inutiles dans l’app ; l’ancien cache est supprimé).
