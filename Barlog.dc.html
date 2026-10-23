@@ -822,6 +822,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 <button onClick="{{ acPubOpen }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:56px;gap:8px;text-align:left;font-size:16px;font-weight:500;"><span>{{ acPubLabel }}</span><span style="color:#9C9CA8;font-size:20px;">›</span></button>
 <button onClick="{{ acBlkOpen }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:56px;gap:8px;text-align:left;font-size:16px;font-weight:500;"><span>{{ acBlkLabel }}</span><span style="color:#9C9CA8;font-size:20px;">›</span></button>
+<sc-if value="{{ acMqOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ acMqOpen }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:56px;gap:8px;text-align:left;font-size:16px;font-weight:500;"><span>{{ acMqLabel }}</span><span style="color:{{ acMqColor }};font-size:20px;">›</span></button></sc-if>
 <button onClick="{{ acPrivClick }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
 <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">{{ acPrivLabel }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;">{{ acPrivSub }}</span></div>
 <div style="flex:0 0 auto;width:52px;height:32px;border-radius:999px;background:{{ acPrivTg.track }};padding:3px;display:flex;justify-content:{{ acPrivTg.justify }};"><div style="width:26px;height:26px;border-radius:50%;background:{{ acPrivTg.knob }};"></div></div>
@@ -1755,6 +1756,7 @@ class Component extends DCLogic {
   netErr(e) { const m = String((e && (e.message || e.error_description || e.msg)) || e || ''); return (typeof navigator !== 'undefined' && navigator.onLine === false) || /failed to fetch|network|load failed|offline|fetch/i.test(m); }
   acMsg(e, otp) {
     const fr = LANG === 'fr'; const m = String((e && (e.message || e.error_description || e.msg)) || e || ''); const c = (e && e.code) || '';
+    if (/compte_suspendu/.test(m)) return fr ? 'Ton compte est suspendu (conditions d’utilisation). Écris à barlog.gym.app@gmail.com' : 'Your account is suspended (terms of use). Write to barlog.gym.app@gmail.com';
     if (this.badWord(e)) return fr ? 'Ce texte contient un mot interdit par les conditions d’utilisation' : 'This text contains a word not allowed by the terms of use';
     return this.netErr(e) ? (fr ? 'Pas de connexion internet' : 'No internet connection') : (e && e.status === 429) || /rate.?limit/i.test(m + c) ? (fr ? 'Trop de demandes, réessaie dans quelques minutes' : 'Too many requests, try again in a few minutes') : otp && (/otp|expired|invalid|token/i.test(m + c) || (e && (e.status === 401 || e.status === 403))) ? (fr ? 'Code incorrect ou expiré' : 'Wrong or expired code') : m.slice(0, 90) || (fr ? 'Erreur' : 'Error');
   }
@@ -1763,6 +1765,7 @@ class Component extends DCLogic {
   acFail(k, m) { this.flash(m); if (k) this.setState({ acE: { k, m } }); }
   acLoad(c, u) {
     return c.from('profiles').select('*').eq('id', u.id).maybeSingle().then(({ data, error }) => { if (error) throw error; this.setState({ acct: { uid: u.id, email: u.email, profile: data || null } }); if (data) setTimeout(() => this.pubFlush(true), 0);
+      if (data) setTimeout(() => this.mqCount(true), 0);
       if (data && !this.termsOk() && !this._termsAsked) { this._termsAsked = true; setTimeout(() => { if (!this.state.sure) this.terms(() => this.pubFlush(true)); }, 1200); } });
   }
   acBoot() {
@@ -2116,7 +2119,7 @@ class Component extends DCLogic {
   actFind(s, id) { const f = ((s.feed || {}).items || []).find(x => x.id === id); if (f) return f; for (const u of Object.values(s.up || {})) { const y = (u.items || []).find(x => x.id === id); if (y) return y; } return null; }
   feedDirty() { this.setState(st => st.feed ? { feed: { ...st.feed, at: 0 } } : null); }
   socArmSet(k) { this.setState({ socArm: k }); clearTimeout(this._saT); this._saT = setTimeout(() => this.setState(st => st.socArm === k ? { socArm: null } : null), 3000); }
-  svOpen(v) { const t = (this.state.sv || []).slice(-1)[0]; if (t && t.v === v.v && t.id === v.id && t.k === v.k) return; this.setState(st => ({ sv: [...(st.sv || []), v], socArm: null, acE: null, cmt: null })); setTimeout(() => v.v === 'user' ? this.upLoad(v.id) : v.v === 'list' ? this.plLoad(v.id, v.k) : v.v === 'reqs' ? this.reqLoad() : v.v === 'ntf' ? this.ntfLoad() : v.v === 'blocks' ? this.blkLoad() : null, 0); }
+  svOpen(v) { const t = (this.state.sv || []).slice(-1)[0]; if (t && t.v === v.v && t.id === v.id && t.k === v.k) return; this.setState(st => ({ sv: [...(st.sv || []), v], socArm: null, acE: null, cmt: null })); setTimeout(() => v.v === 'user' ? this.upLoad(v.id) : v.v === 'list' ? this.plLoad(v.id, v.k) : v.v === 'reqs' ? this.reqLoad() : v.v === 'ntf' ? this.ntfLoad() : v.v === 'blocks' ? this.blkLoad() : v.v === 'mq' ? this.mqLoad() : null, 0); }
   svPop() { const sv = (this.state.sv || []).slice(0, -1); const t = sv[sv.length - 1]; this.setState({ sv, socArm: null, acE: null }); if (t && t.v === 'user' && !((this.state.up || {})[t.id] || {}).at) setTimeout(() => this.upLoad(t.id), 0); return true; }
   userOpen(id, seed) { if (!id) return; if (seed) this.setState(st => { const u = (st.up || {})[id] || {}; return u.prof ? null : { up: { ...(st.up || {}), [id]: { ...u, prof: { id, username: seed.username, display_name: seed.display_name, is_private: seed.is_private, avatar: seed.avatar } } } }; }); this.svOpen({ v: 'user', id }); }
   upUp(id, p) { this.setState(st => { const u = (st.up || {})[id] || {}; return { up: { ...(st.up || {}), [id]: { ...u, ...(typeof p === 'function' ? p(u) : p) } } }; }); }
@@ -2231,6 +2234,23 @@ class Component extends DCLogic {
     this.sb().then(c => c.rpc('my_blocks'))
       .then(({ data, error }) => { if (error) throw error; const items = (data || []).map(r => ({ id: r.blocked, at: r.created_at, username: r.username, display_name: r.display_name })).filter(x => x.id); this.setState(st => { const old = (st.blk || {}).items || []; return { blk: { ...(st.blk || {}), items: items.map(x => { const o = old.find(y => y.id === x.id); return x.username || !o ? x : { ...x, username: o.username, display_name: o.display_name }; }), busy: false } }; }); })
       .catch(e => { this.setState(st => ({ blk: { ...(st.blk || {}), busy: false, err: this.acMsg(e) } })); if (!quiet) this.acErr(e, false, 'bk'); });
+  }
+  // Modération (administrateurs ; le serveur refuse tout autre compte) : signalements en attente, masquer / suspendre / ignorer.
+  mqCount(boot) {
+    this.sb().then(c => c.rpc('mod_count')).then(({ data, error }) => { if (error) throw error; const n = typeof data === 'number' ? data : null; this.setState({ mqN: n });
+      if (boot && n && !this._mqTold) { this._mqTold = true; const fr = LANG === 'fr'; this.flash(fr ? n + ' signalement' + (n > 1 ? 's' : '') + ' à traiter (Profil → Modération)' : n + ' report' + (n > 1 ? 's' : '') + ' to review (Profile → Moderation)'); } }).catch(() => {});
+  }
+  mqLoad() {
+    this.setState(st => ({ mq: { ...(st.mq || {}), busy: true, err: null } }));
+    this.sb().then(c => c.rpc('mod_reports', { lim: 100 })).then(({ data, error }) => { if (error) throw error; const items = data || []; this.setState(st => ({ mq: { ...(st.mq || {}), items, busy: false }, mqN: items.length })); })
+      .catch(e => { this.setState(st => ({ mq: { ...(st.mq || {}), busy: false, err: this.acMsg(e) } })); });
+  }
+  mqAct(id, act) {
+    const s = this.state; const fr = LANG === 'fr'; const r = s.mq || {}; const old = r.items || []; const ak = 'q' + act + id;
+    if (act === 'suspend' && s.socArm !== ak) return this.socArmSet(ak);
+    this.setState({ socArm: null, acE: null, mq: { ...r, items: old.filter(y => y.id !== id) }, mqN: Math.max(0, (s.mqN || 1) - 1) });
+    this.sb().then(c => c.rpc('mod_act', { report: id, act })).then(({ error }) => { if (error) throw error; this.feedDirty(); this.flash(act === 'hide' ? (fr ? 'Contenu masqué' : 'Content hidden') : act === 'suspend' ? (fr ? 'Compte suspendu' : 'Account suspended') : (fr ? 'Signalement ignoré' : 'Report dismissed')); })
+      .catch(e => { this.setState(st => ({ mq: { ...(st.mq || {}), items: old }, mqN: old.length })); this.acErr(e, false, 'q' + id); });
   }
   blkUn(x) {
     const s = this.state; const a = s.acct; const fr = LANG === 'fr'; const r = s.blk || {}; const old = r.items || []; const it = old.find(y => y.id === x); if (!a || !it) return; const ak = 'u' + x; if (s.socArm !== ak) return this.socArmSet(ak);
@@ -2993,7 +3013,8 @@ class Component extends DCLogic {
       acAvDel: () => this.avDel(), acAvDelLabel: s.avDelArm ? (fr ? 'Toucher encore' : 'Tap again') : (fr ? 'Retirer' : 'Remove'), acAvDelColor: s.avDelArm ? '#FF4D4D' : '#9C9CA8', acAvDelBorder: s.avDelArm ? '#FF4D4D' : '#33333C',
       acAvErr: (s.acE && s.acE.k === 'av' && s.acE.m) || '',
       acPendingText: busy ? (fr ? 'Chargement du profil…' : 'Loading profile…') : (fr ? 'Profil non chargé (pas de connexion ?)' : 'Profile not loaded (offline?)'), acRetry: () => { if (!busy) this.acBoot(); }, acRetryLabel: fr ? 'Réessayer' : 'Retry',
-      acBlkOpen: () => this.svOpen({ v: 'blocks' }), acBlkLabel: (fr ? 'Comptes bloqués' : 'Blocked accounts') + (s.blk && s.blk.items ? ' (' + s.blk.items.length + ')' : ''), acPubOpen: () => a && this.userOpen(a.uid), acPubLabel: fr ? 'Mon profil public' : 'My public profile',
+      acBlkOpen: () => this.svOpen({ v: 'blocks' }), acMqOn: s.mqN != null, acMqOpen: () => this.svOpen({ v: 'mq' }), acMqColor: s.mqN ? ACC : '#9C9CA8',
+      acMqLabel: (fr ? 'Modération' : 'Moderation') + (s.mqN ? (fr ? ' · ' + s.mqN + ' à traiter' : ' · ' + s.mqN + ' to review') : ''), acBlkLabel: (fr ? 'Comptes bloqués' : 'Blocked accounts') + (s.blk && s.blk.items ? ' (' + s.blk.items.length + ')' : ''), acPubOpen: () => a && this.userOpen(a.uid), acPubLabel: fr ? 'Mon profil public' : 'My public profile',
       acSignOut: () => this.sure('out', () => this.acOut()), acSignOutLabel: fr ? 'Se déconnecter' : 'Sign out',
       acDelete: () => this.acDelete(), acDelLabel: fr ? 'Supprimer mon compte' : 'Delete my account', acDelBorder: '#33333C',
       ...(() => { const k = s.sure; const del = k === 'del'; const cbOn = !!(s.cloud && s.cloud.link && s.cloud.on !== false && this.isPro());
@@ -3059,6 +3080,20 @@ class Component extends DCLogic {
       return fin({ ...o, plOn: true, svTitle: 'Notifications', plState: !r.items && r.busy ? LD : !r.items && r.err ? r.err : r.items && !it.length ? (fr ? 'Aucune notification pour l’instant. Les bravos, commentaires et abonnements apparaîtront ici.' : 'No notifications yet. Kudos, comments and follows will show up here.') : '', plErrOn: !r.items && !!r.err,
         plRetryOn: !r.items && !r.busy && !!r.err, plRetry: () => this.ntfLoad(),
         pList: it.map(x => row({ id: x.actor, username: x.username, display_name: x.display_name, avatar: x.avatar }, { key: 'n' + x.id, handle: relT(x.created_at, fr), txt: say(x), bd: x.read ? '#24242B' : ACC, onOpen: () => this.ntfOpen(x), err: '' })) }); }
+    if (sv.v === 'mq') { const r = s.mq || {}; const it = r.items || [];
+      const what = x => { const c = x.comment_id ? (fr ? 'Commentaire : « ' : 'Comment: “') + (x.comment_body || '—') + (fr ? ' »' : '”') + (x.comment_hidden ? (fr ? ' (masqué)' : ' (hidden)') : '')
+        : x.activity_id ? (fr ? 'Séance « ' : 'Workout “') + (x.activity_title || '—') + (fr ? ' »' : '”') + (x.activity_note ? ' — ' + x.activity_note : '') + (x.activity_hidden ? (fr ? ' (masquée)' : ' (hidden)') : '') : (fr ? 'Profil' : 'Profile');
+        return (fr ? 'Motif : ' : 'Reason: ') + (x.reason || '—') + ' · ' + c + (x.target_suspended ? (fr ? ' · compte déjà suspendu' : ' · account already suspended') : ''); };
+      return fin({ ...o, plOn: true, svTitle: fr ? 'Modération' : 'Moderation', plNote: it.length ? (fr ? 'À traiter sous 24 h. Masquer retire le contenu signalé ; Suspendre cache tout le compte et l’empêche de publier.' : 'Review within 24 h. Hide removes the reported content; Suspend hides the whole account and stops it from posting.') : '',
+        plState: !r.items && r.busy ? LD : !r.items && r.err ? r.err : r.items && !it.length ? (fr ? 'Aucun signalement en attente.' : 'No pending reports.') : '', plErrOn: !r.items && !!r.err,
+        plRetryOn: !r.items && !r.busy && !!r.err, plRetry: () => this.mqLoad(),
+        pList: it.map(x => { const sk = 'qsuspend' + x.id; const canHide = (x.comment_id && !x.comment_hidden) || (!x.comment_id && x.activity_id && !x.activity_hidden);
+          return row({ id: x.target_id, username: x.target_username, display_name: x.target_name, avatar: x.target_avatar }, { key: 'q' + x.id,
+            handle: '@' + (x.target_username || '—') + ' · ' + relT(x.created_at, fr) + (x.reporter_username ? (fr ? ' · par @' : ' · by @') + x.reporter_username : ''), txt: what(x), bd: ACC, err: er('q' + x.id),
+            onOpen: () => x.target_id && this.userOpen(x.target_id, { username: x.target_username, display_name: x.target_name, avatar: x.target_avatar }),
+            ...(canHide ? btn(1, fr ? 'Masquer' : 'Hide', () => this.mqAct(x.id, 'hide'), true) : {}),
+            ...(x.target_suspended ? {} : btn(2, arm(sk) ? (fr ? 'Toucher encore' : 'Tap again') : (fr ? 'Suspendre' : 'Suspend'), () => this.mqAct(x.id, 'suspend'), false, true)),
+            ...btn(3, fr ? 'Ignorer' : 'Dismiss', () => this.mqAct(x.id, 'dismiss')) }); }) }); }
     if (sv.v === 'blocks') { const r = s.blk || {}; const it = r.items || []; const dt = t => { try { return new Date(t).toLocaleDateString(fr ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' }); } catch (e) { return ''; } };
       return fin({ ...o, plOn: true, svTitle: fr ? 'Comptes bloqués' : 'Blocked accounts', plNote: it.length ? (fr ? 'Débloquer ne rétablit pas les abonnements.' : 'Unblocking doesn’t restore follows.') : '', plState: !r.items && r.busy ? LD : !r.items && r.err ? r.err : r.items && !it.length ? (fr ? 'Aucun compte bloqué.' : 'No blocked accounts.') : '', plErrOn: !r.items && !!r.err,
         plRetryOn: !r.items && !r.busy && !!r.err, plRetry: () => this.blkLoad(), pList: it.map(x => { const ak = 'u' + x.id; return row(x, { ...(x.username ? {} : { ini: '⊘', name: fr ? 'Compte bloqué' : 'Blocked account' }), handle: (x.username ? '@' + x.username + ' · ' : '') + (fr ? 'Bloqué le ' : 'Blocked on ') + dt(x.at), onOpen: () => {}, err: er(ak), ...btn(1, arm(ak) ? (fr ? 'Toucher encore' : 'Tap again') : (fr ? 'Débloquer' : 'Unblock'), () => this.blkUn(x.id), false, arm(ak)) }); }) }); }

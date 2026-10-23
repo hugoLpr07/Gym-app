@@ -123,3 +123,46 @@ test('filtre de mots : message clair ; une publication automatique refusée ne r
   assert.equal(app.state.sessMeta[123].pub, undefined, 'plus en attente : elle serait refusée à chaque fois');
   assert.ok(app.toasts.includes('Ce texte contient un mot interdit par les conditions d’utilisation'), app.toasts.join(' | '));
 });
+
+// ── Modération (0.36) ──
+function mqApp(rpc) {
+  const B = loadBarlog(); const calls = [];
+  const app = makeApp(B, { ...emptyData(), lang: 'fr', screen: 'tabs', acct: { uid: 'h1', profile: { username: 'hugo', terms_v: 1 } } });
+  app.sb = () => Promise.resolve({ rpc: async (n, a) => { calls.push([n, a]); return rpc(n, a); } });
+  app.renderVals();
+  return { app, calls };
+}
+const report = (id, o = {}) => ({ id, created_at: new Date().toISOString(), reason: 'insulte', reporter_username: 'dave', target_id: 'u2', target_username: 'bob', target_name: 'Bob',
+  target_avatar: null, target_suspended: false, activity_id: 'a1', activity_title: 'Push', activity_note: null, activity_hidden: false, comment_id: 'c1', comment_body: 'texte signalé', comment_hidden: false, ...o });
+
+test('modération : invisible pour un compte ordinaire (mod_count = null)', async () => {
+  const { app } = mqApp(() => ({ data: null, error: null }));
+  app.mqCount(true); await flush(); await flush();
+  assert.equal(app.state.mqN, null); assert.equal(app.renderVals().acMqOn, false); assert.equal(app.toasts.length, 0);
+});
+
+test('modération : administrateur prévenu à l’ouverture, liste, masquer, suspendre en 2 touches, ignorer', async () => {
+  const { app, calls } = mqApp((n, a) => n === 'mod_count' ? { data: 3, error: null } : n === 'mod_reports' ? { data: [report('r1'), report('r2'), report('r3', { comment_id: null })], error: null } : { data: null, error: null });
+  app.mqCount(true); await flush(); await flush();
+  assert.ok(app.toasts.includes('3 signalements à traiter (Profil → Modération)'), app.toasts.join(' | '));
+  let v = app.renderVals(); assert.equal(v.acMqOn, true); assert.equal(v.acMqLabel, 'Modération · 3 à traiter');
+  app.setState({ sv: [{ v: 'mq' }] }); app.mqLoad(); await flush(); await flush();
+  v = app.renderVals(); assert.equal(v.pList.length, 3);
+  assert.match(v.pList[0].txt, /Motif : insulte · Commentaire : « texte signalé »/); assert.match(v.pList[2].txt, /Séance « Push »/);
+  assert.equal(v.pList[0].b1Label, 'Masquer'); assert.equal(v.pList[0].b2Label, 'Suspendre'); assert.equal(v.pList[0].b3Label, 'Ignorer');
+  v.pList[0].on1(); await flush(); await flush();
+  assert.deepEqual(calls.at(-1), ['mod_act', { report: 'r1', act: 'hide' }]);
+  v = app.renderVals(); v.pList[0].on2(); await flush();
+  assert.notEqual(calls.at(-1)[1] && calls.at(-1)[1].act, 'suspend', '1re touche : rien n’est envoyé');
+  assert.equal(app.renderVals().pList[0].b2Label, 'Toucher encore');
+  app.renderVals().pList[0].on2(); await flush(); await flush();
+  assert.deepEqual(calls.at(-1), ['mod_act', { report: 'r2', act: 'suspend' }]);
+  app.renderVals().pList[0].on3(); await flush(); await flush();
+  assert.deepEqual(calls.at(-1), ['mod_act', { report: 'r3', act: 'dismiss' }]);
+  assert.equal(app.state.mqN, 0); assert.equal(app.renderVals().plState, 'Aucun signalement en attente.');
+});
+
+test('compte suspendu : message clair au lieu de l’erreur brute', () => {
+  const B = loadBarlog(); const app = makeApp(B, { ...emptyData(), lang: 'fr' }); app.renderVals();
+  assert.match(app.acMsg({ message: 'compte_suspendu' }), /Ton compte est suspendu/);
+});
