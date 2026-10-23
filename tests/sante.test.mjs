@@ -86,3 +86,29 @@ test('fin de la bêta (BETA = false) : le Pro offert est retiré, un vrai achat 
   const a = makeApp(B, { ...emptyData(), pro: { plan: 'beta', beta: true } }); a.betaPro(); assert.equal(a.state.pro, null);
   const b = makeApp(B, { ...emptyData(), pro: { plan: 'life' } }); b.betaPro(); assert.deepEqual(b.state.pro, { plan: 'life' });
 });
+
+test('fichier Santé abîmé (écriture interrompue) : sa copie de secours est utilisée, rien n’est perdu', async t => {
+  const B = loadBarlog();
+  const env = nativeEnv(t, { 'DATA/barlog-data.json': JSON.stringify({ routines: [{ id: 'r', name: 'R', ex: [] }], body: B.bodyOut(body()), hkWSync: 5, savedAt: 1 }),
+    'LIBRARY_NO_CLOUD/barlog-health.json': '{"v":1,"body":[{"da', 'LIBRARY_NO_CLOUD/barlog-health.prev.json': JSON.stringify({ v: 1, body: B.bodyHk(body()) }) });
+  const app = makeApp(B, { ...emptyData() }); app.instCheck = () => Promise.resolve();
+  await app.nativeBoot(null); await flush();
+  assert.deepEqual(app.state.body, body()); assert.equal(app.state.hkWSync, 5);
+  assert.equal(JSON.parse(env.fsMem['LIBRARY_NO_CLOUD/barlog-health.json']).body.length, 2, 'réécrit à partir de la copie, pas vidé');
+});
+
+test('mise à jour depuis 0.35 : la copie de la veille (sauvegardée par le téléphone) ne garde pas les valeurs de Santé', async t => {
+  const B = loadBarlog();
+  const env = nativeEnv(t, { 'DATA/barlog-data.json': JSON.stringify({ routines: [{ id: 'r', name: 'R', ex: [] }], body: body(), savedAt: 1 }) });
+  const app = makeApp(B, { ...emptyData() }); app.instCheck = () => Promise.resolve();
+  await app.nativeBoot(null); await flush();
+  assert.deepEqual(JSON.parse(env.fsMem['DATA/barlog-data.prev.json']).body, [{ date: D1, w: 80 }, { date: D3, w: 79 }]);
+});
+
+test('site web (pas de sauvegarde du téléphone) : des valeurs de Santé importées restent après rechargement', t => {
+  const ls = {}; const hadLs = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+  Object.defineProperty(globalThis, 'localStorage', { configurable: true, writable: true, value: { getItem: k => ls[k] ?? null, setItem: (k, v) => { ls[k] = String(v); } } });
+  t.after(() => { if (hadLs) Object.defineProperty(globalThis, 'localStorage', hadLs); else delete globalThis.localStorage; });
+  const B = loadBarlog(); const app = makeApp(B, { ...emptyData(), body: body() }); app.save(true);
+  assert.deepEqual(JSON.parse(ls['barlog-v1']).body, body());
+});

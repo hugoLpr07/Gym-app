@@ -49,8 +49,13 @@ test('suppression : serveur sans la fonction (404) → ancien chemin (fichiers d
   assert.equal(app.state.acct, null);
 });
 
-test('suppression interrompue (500) : compte gardé, message clair, on peut réessayer', async () => {
+test('fonction de suppression en panne (500) → ancien chemin aussi (le balayage de nuit rattrape les fichiers)', async () => {
   const { app, calls } = await del(() => httpErr(500));
+  assert.deepEqual(calls.slice(-2), ['rpc delete_account', 'signOut local']); assert.equal(app.state.acct, null);
+});
+
+test('suppression refusée (401) : compte gardé, message clair, on peut réessayer', async () => {
+  const { app, calls } = await del(() => httpErr(401));
   assert.deepEqual(calls, ['invoke delete-account POST']);
   assert.deepEqual(app.state.acct, acct); assert.equal(app.state.acBusy, false);
   assert.equal(app.state.cloud.link, true, 'sauvegarde en ligne rebranchée');
@@ -106,10 +111,24 @@ test('compte existant sans les conditions : commenter les demande d’abord, pui
 test('publication en arrière-plan (auto, en attente) : rien ne part tant que les conditions ne sont pas acceptées', async () => {
   const { app, log } = acctApp({ username: 'alex', default_visibility: 'followers' });
   app.hasSess = () => true;
+  app.pubRow = () => ({ title: 'Push' });
   app.pubSend(123, 'followers', '', true); await flush();
   assert.equal(log.length, 0); assert.equal(app.state.sure, undefined, 'pas de fenêtre pour un envoi automatique');
+  assert.equal(app.state.sessMeta[123].pub.pending, true, 'gardée en attente, pas perdue');
   app.pubSend(123, 'followers', ''); await flush();
   assert.equal(app.state.sure, 'terms', 'publier à la main demande les conditions');
+});
+
+test('conditions acceptées : la publication en attente part aussitôt', async () => {
+  const B = loadBarlog(); const log = [];
+  const app = makeApp(B, { ...emptyData(), lang: 'fr', acct: { uid: 'u1', email: 'a@b.c', profile: { username: 'alex', default_visibility: 'followers' } } });
+  app.sb = () => Promise.resolve({ from: t => ({ update: p => ({ eq: async () => { log.push(['update', t, p]); return { error: null }; } }),
+    upsert: row => { log.push(['upsert', t]); return { select: () => ({ single: async () => ({ data: { id: 'a9' }, error: null }) }) }; } }) });
+  app.hasSess = () => true; app.pubRow = () => ({ title: 'Push' }); app.renderVals();
+  app.pubSend(123, 'followers', '', true); await flush();
+  app.terms(); app.sureGo(); for (let i = 0; i < 8; i++) await flush();
+  assert.deepEqual(log.map(x => x[0]), ['update', 'upsert']);
+  assert.equal(app.state.sessMeta[123].pub.id, 'a9'); assert.equal(app.state.sessMeta[123].pub.pending, undefined);
 });
 
 // ── Filtre de mots du serveur (0.36) ──
@@ -132,7 +151,7 @@ function mqApp(rpc) {
   app.renderVals();
   return { app, calls };
 }
-const report = (id, o = {}) => ({ id, created_at: new Date().toISOString(), reason: 'insulte', reporter_username: 'dave', target_id: 'u2', target_username: 'bob', target_name: 'Bob',
+const report = (id, o = {}) => ({ id, created_at: new Date().toISOString(), reason: 'insulte', kind: o.comment_id === null ? 'activity' : 'comment', reporter_username: 'dave', target_id: 'u2', target_username: 'bob', target_name: 'Bob',
   target_avatar: null, target_suspended: false, activity_id: 'a1', activity_title: 'Push', activity_note: null, activity_hidden: false, comment_id: 'c1', comment_body: 'texte signalé', comment_hidden: false, ...o });
 
 test('modération : invisible pour un compte ordinaire (mod_count = null)', async () => {
@@ -224,4 +243,10 @@ test('mot de passe incorrect : message clair, pas connecté', async () => {
   const { app } = pwApp({ data: { user: null }, error: { message: 'Invalid login credentials', status: 400 } });
   app.acPwLogin(); for (let i = 0; i < 6; i++) await flush();
   assert.equal(app.state.acct, undefined); assert.ok(app.toasts.includes('E-mail ou mot de passe incorrect'), app.toasts.join(' | '));
+});
+
+test('modération : commentaire signalé puis supprimé → pas de « Masquer » (la séance où il était n’est pas visée)', async () => {
+  const { app } = mqApp(n => n === 'mod_reports' ? { data: [report('r9', { comment_id: null, comment_body: null })].map(x => ({ ...x, kind: 'comment' })), error: null } : { data: 1, error: null });
+  app.setState({ sv: [{ v: 'mq' }] }); app.mqLoad(); await flush(); await flush();
+  const v = app.renderVals(); assert.equal(v.pList[0].b1On, false); assert.match(v.pList[0].txt, /Commentaire \(supprimé depuis\)/);
 });

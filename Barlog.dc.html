@@ -1730,14 +1730,18 @@ class Component extends DCLogic {
     return F.readFile({ path: 'barlog-data.json', directory: 'DATA', encoding: 'utf8' }).then(r => {
       const fd = JSON.parse(r.data);
       if (fd && fd.routines && (!d || !d.routines || (fd.savedAt || 0) > (d.savedAt || 0))) { const ex = { ...fd, restAlert: false, onboarded: fd.onboarded !== false, ob: null }; if (ex.workout) ex.screen = 'workout'; delete ex.savedAt; this.setState(ex); }
-      F.writeFile({ path: 'barlog-data.prev.json', data: r.data, directory: 'DATA', encoding: 'utf8' }).catch(() => {});
-    }).catch(() => {}).then(() => F.readFile({ path: 'barlog-health.json', directory: 'LIBRARY_NO_CLOUD', encoding: 'utf8' }).then(r => {
-      const h = JSON.parse(r.data); if (h && Array.isArray(h.body)) this.setState(st => ({ body: bodyHkIn(st.body, h.body) })); else throw new Error('health'); })
-      .catch(() => this.setState({ hkWSync: null, hkCSync: null })))
+      const pv = fd && Array.isArray(fd.body) ? JSON.stringify({ ...fd, body: bodyOut(fd.body) }) : r.data;   // copie sauvegardée : sans valeurs de Santé
+      F.writeFile({ path: 'barlog-data.prev.json', data: pv, directory: 'DATA', encoding: 'utf8' }).catch(() => {});
+    }).catch(() => {}).then(() => {
+      const rd = f => F.readFile({ path: f, directory: 'LIBRARY_NO_CLOUD', encoding: 'utf8' }).then(r => { const h = JSON.parse(r.data); if (!h || !Array.isArray(h.body)) throw new Error('health'); return { h, raw: r.data }; });
+      // Fichier abîmé (écriture interrompue) : sa copie de secours ; aucun des deux : Santé relue entièrement.
+      return rd('barlog-health.json').catch(() => rd('barlog-health.prev.json')).then(({ h, raw }) => { this.setState(st => ({ body: bodyHkIn(st.body, h.body) }));
+        F.writeFile({ path: 'barlog-health.prev.json', data: raw, directory: 'LIBRARY_NO_CLOUD', encoding: 'utf8', recursive: true }).catch(() => {}); })
+        .catch(() => this.setState({ hkWSync: null, hkCSync: null })); })
       .then(() => { this.nativeReady = true; this.betaPro(); this.save(true); this.instCheck(); });
   }
   betaPro() { const p = this.state.pro; if (BETA && this.nat() && (!p || p.test)) this.setState({ pro: { plan: 'beta', since: Date.now(), beta: true } }); else if (!BETA && p && p.beta) this.setState({ pro: null }); }
-  save(flush) { const o = {}; PK.forEach(k => o[k] = this.state[k]); o.body = bodyOut(o.body); o.savedAt = Date.now(); const j = JSON.stringify(o); try { localStorage.setItem('barlog-v1', j); } catch (e) {} this.saveNative(j, flush); this.saveHealth(); }
+  save(flush) { const o = {}; PK.forEach(k => o[k] = this.state[k]); if (this.fs()) o.body = bodyOut(o.body); o.savedAt = Date.now(); const j = JSON.stringify(o); try { localStorage.setItem('barlog-v1', j); } catch (e) {} this.saveNative(j, flush); this.saveHealth(); }
   // Valeurs lues dans Santé : fichier à part, hors des sauvegardes du téléphone (Apple interdit les données de santé dans iCloud).
   saveHealth() {
     const F = this.fs(); if (!F || !this.nativeReady) return; const j = JSON.stringify({ v: 1, body: bodyHk(this.state.body) }); if (j === this._hkJ) return; this._hkJ = j;
@@ -1801,7 +1805,7 @@ class Component extends DCLogic {
   acLoad(c, u) {
     return c.from('profiles').select('*').eq('id', u.id).maybeSingle().then(({ data, error }) => { if (error) throw error; this.setState({ acct: { uid: u.id, email: u.email, profile: data || null } }); if (data) setTimeout(() => this.pubFlush(true), 0);
       if (data) setTimeout(() => this.mqCount(true), 0);
-      if (data && !this.termsOk() && !this._termsAsked) { this._termsAsked = true; setTimeout(() => { if (!this.state.sure) this.terms(() => this.pubFlush(true)); }, 1200); } });
+      if (data && !this.termsOk() && !this._termsAsked) { this._termsAsked = true; setTimeout(() => { if (!this.state.sure) this.terms(); }, 1200); } });
   }
   acBoot() {
     this.setState({ acBusy: true });
@@ -1857,7 +1861,7 @@ class Component extends DCLogic {
   // Conditions d'utilisation acceptées avant de créer du contenu (profil, publication, commentaire, photo) : règles
   // Apple 1.2 et Google (contenu des utilisateurs). Le serveur date l'acceptation (profiles.terms_at).
   termsOk() { const p = this.state.acct && this.state.acct.profile; return !!p && (p.terms_v || 0) >= TERMS_V; }
-  terms(fn) { if (this.termsOk()) return fn && fn(); this.sure('terms', () => this.acSet({ terms_v: TERMS_V }, fn)); }
+  terms(fn) { if (this.termsOk()) return fn && fn(); this.sure('terms', () => this.acSet({ terms_v: TERMS_V }, () => { if (fn) fn(); this.pubFlush(true); })); }
   openSite(f) { try { window.open(SITE + f + (LANG === 'fr' ? '' : '#en'), '_blank'); } catch (e) {} }
   acSet(p, done) {
     const a = this.state.acct; if (!a || !a.profile) return; const old = a.profile;
@@ -2037,7 +2041,7 @@ class Component extends DCLogic {
   }
   // Photo de profil : carré 640 px en JPEG, rangé dans avatars/<id>/<horodatage>.jpg ; les anciennes sont effacées.
   avPick(cam) {
-    const s = this.state; const a = s.acct; if (!a || !a.profile || s.avBusy) return; if (!this.termsOk()) return this.terms(() => this.avPick(cam));
+    const s = this.state; const a = s.acct; if (!a || !a.profile || s.avBusy) return; if (!this.termsOk()) return this.terms(() => { if (this.nat()) this.avPick(cam); });
     // App native : plugin Camera (appareil photo ou galerie). Le champ fichier de la WebView n'offre pas l'appareil photo sur Android.
     const P = this.nat(); const Cam = P && P.Camera;
     if (Cam && Cam.takePhoto) return (cam ? Cam.takePhoto({ quality: 85, targetWidth: 800, targetHeight: 800, correctOrientation: true }) : Cam.chooseFromGallery({ allowMultipleSelection: false, limit: 1 }).then(r => (r && r.results && r.results[0]) || null))
@@ -2075,13 +2079,13 @@ class Component extends DCLogic {
   sureAlt() { if (!this.state.sureArm) return this.setState({ sureArm: true }); const f = this._sureAlt; this._sureFn = null; this._sureAlt = null; this.setState({ sure: null, sureArm: false }); if (f) f(); }
   sureNo() { this._sureFn = null; this._sureAlt = null; this.setState({ sure: null, sureArm: false }); }
   // Suppression complète par le serveur (fonction « delete-account » : photo, sauvegardes, puis le compte et tout le reste).
-  // Serveur sans cette fonction (404) : ancien chemin, fichiers effacés d'ici puis delete_account ; le balayage de nuit rattrape.
+  // Fonction absente (404) ou en panne (5xx) : ancien chemin, fichiers effacés d'ici puis delete_account ; le balayage de nuit rattrape.
   acWipe(c, uid) {
     const fr = LANG === 'fr';
     return c.functions.invoke('delete-account', { method: 'POST' }).then(({ data, error }) => {
       if (!error && data && data.ok) return;
       const st = error && error.context && error.context.status;
-      if (st === 404) return this.avClean(c, uid, null).catch(() => {}).then(() => this.cbWipe(c, uid).catch(() => {})).then(() => c.rpc('delete_account')).then(({ error: e }) => { if (e) throw e; });
+      if (st === 404 || st >= 500) return this.avClean(c, uid, null).catch(() => {}).then(() => this.cbWipe(c, uid).catch(() => {})).then(() => c.rpc('delete_account')).then(({ error: e }) => { if (e) throw e; });
       if (error && error.name === 'FunctionsFetchError') throw new Error('Failed to fetch');
       throw new Error(fr ? 'Suppression interrompue, réessaie dans un moment' : 'Deletion interrupted, try again in a moment');
     });
@@ -2109,15 +2113,16 @@ class Component extends DCLogic {
   pubBusy(d, on) { this.setState(st => { const b = { ...(st.pubBusy || {}) }; if (on) b[d] = 1; else delete b[d]; return { pubBusy: b }; }); }
   pubSend(d, vis, note, quiet) {
     const s = this.state; const a = s.acct; const fr = LANG === 'fr'; if (!a || !a.profile || (s.pubBusy || {})[d] || !this.hasSess(d)) return;
-    if (!this.termsOk()) { if (!quiet) this.terms(() => this.pubSend(d, vis, note)); return; }
+    if (!this.termsOk()) { if (quiet) this.pubSet(d, { vis, pending: true, uid: a.uid, ...(note ? { note } : {}) }); else this.terms(() => this.pubSend(d, vis, note)); return; }
     vis = ['public', 'followers', 'private'].includes(vis) ? vis : a.profile.default_visibility || 'followers'; note = (note || '').trim().slice(0, 500);
     const row = this.pubRow(d, vis, note); this.pubBusy(d, true); if (!quiet) this.setState({ acE: null });
     this.sb().then(c => c.from('activities').upsert(row, { onConflict: 'user_id,local_start' }).select('id').single()).then(({ data, error }) => { if (error) throw error; this.pubBusy(d, false); this.pubSet(d, { vis, at: Date.now(), id: (data && data.id) || null, ...(note ? { note } : {}) }); if (!quiet) { this.setState({ pubNote: null, pubVis: null }); this.flash(fr ? 'Séance publiée' : 'Workout posted'); } })
       .catch(e => { this.pubBusy(d, false);
-        // Refus du filtre de mots : jamais remis en file (il serait refusé à chaque fois) ; une séance déjà publiée garde son texte.
-        if (this.badWord(e)) { const old = ((this.state.sessMeta || {})[d] || {}).pub; if (old && old.pending) this.pubSet(d, null); }
+        // Refus définitif (filtre de mots, compte suspendu) : jamais remis en file ; une séance déjà publiée garde son texte.
+        const final = this.badWord(e) || /compte_suspendu/.test(String((e && e.message) || ''));
+        if (final) { const old = ((this.state.sessMeta || {})[d] || {}).pub; if (old && old.pending) this.pubSet(d, null); }
         else if (quiet || this.netErr(e)) this.pubSet(d, { vis, pending: true, uid: a.uid, ...(note ? { note } : {}) });
-        if (!quiet || this.badWord(e)) this.acErr(e, false, 'pub'); });
+        if (!quiet || final) this.acErr(e, false, 'pub'); });
   }
   pubFlush(force) {
     const s = this.state; if (!s.acct || !s.acct.profile || (!force && this._pfT && Date.now() - this._pfT < 5000)) return; this._pfT = Date.now();
@@ -2308,7 +2313,7 @@ class Component extends DCLogic {
     if (act === 'suspend' && s.socArm !== ak) return this.socArmSet(ak);
     this.setState({ socArm: null, acE: null, mq: { ...r, items: old.filter(y => y.id !== id) }, mqN: Math.max(0, (s.mqN || 1) - 1) });
     this.sb().then(c => c.rpc('mod_act', { report: id, act })).then(({ error }) => { if (error) throw error; this.feedDirty(); this.flash(act === 'hide' ? (fr ? 'Contenu masqué' : 'Content hidden') : act === 'suspend' ? (fr ? 'Compte suspendu' : 'Account suspended') : (fr ? 'Signalement ignoré' : 'Report dismissed')); })
-      .catch(e => { this.setState(st => ({ mq: { ...(st.mq || {}), items: old }, mqN: old.length })); this.acErr(e, false, 'q' + id); });
+      .catch(e => { this.acErr(e, false, 'mq'); this.mqLoad(); });
   }
   blkUn(x) {
     const s = this.state; const a = s.acct; const fr = LANG === 'fr'; const r = s.blk || {}; const old = r.items || []; const it = old.find(y => y.id === x); if (!a || !it) return; const ak = 'u' + x; if (s.socArm !== ak) return this.socArmSet(ak);
@@ -3141,13 +3146,14 @@ class Component extends DCLogic {
         plRetryOn: !r.items && !r.busy && !!r.err, plRetry: () => this.ntfLoad(),
         pList: it.map(x => row({ id: x.actor, username: x.username, display_name: x.display_name, avatar: x.avatar }, { key: 'n' + x.id, handle: relT(x.created_at, fr), txt: say(x), bd: x.read ? '#24242B' : ACC, onOpen: () => this.ntfOpen(x), err: '' })) }); }
     if (sv.v === 'mq') { const r = s.mq || {}; const it = r.items || [];
-      const what = x => { const c = x.comment_id ? (fr ? 'Commentaire : « ' : 'Comment: “') + (x.comment_body || '—') + (fr ? ' »' : '”') + (x.comment_hidden ? (fr ? ' (masqué)' : ' (hidden)') : '')
-        : x.activity_id ? (fr ? 'Séance « ' : 'Workout “') + (x.activity_title || '—') + (fr ? ' »' : '”') + (x.activity_note ? ' — ' + x.activity_note : '') + (x.activity_hidden ? (fr ? ' (masquée)' : ' (hidden)') : '') : (fr ? 'Profil' : 'Profile');
+      const what = x => { const k = x.kind || (x.comment_id ? 'comment' : x.activity_id ? 'activity' : 'profile');
+        const c = k === 'comment' ? (x.comment_id ? (fr ? 'Commentaire : « ' : 'Comment: “') + (x.comment_body || '—') + (fr ? ' »' : '”') + (x.comment_hidden ? (fr ? ' (masqué)' : ' (hidden)') : '') : (fr ? 'Commentaire (supprimé depuis)' : 'Comment (since deleted)'))
+        : k === 'activity' && x.activity_id ? (fr ? 'Séance « ' : 'Workout “') + (x.activity_title || '—') + (fr ? ' »' : '”') + (x.activity_note ? ' — ' + x.activity_note : '') + (x.activity_hidden ? (fr ? ' (masquée)' : ' (hidden)') : '') : (fr ? 'Profil' : 'Profile');
         return (fr ? 'Motif : ' : 'Reason: ') + (x.reason || '—') + ' · ' + c + (x.target_suspended ? (fr ? ' · compte déjà suspendu' : ' · account already suspended') : ''); };
       return fin({ ...o, plOn: true, svTitle: fr ? 'Modération' : 'Moderation', plNote: it.length ? (fr ? 'À traiter sous 24 h. Masquer retire le contenu signalé ; Suspendre cache tout le compte et l’empêche de publier.' : 'Review within 24 h. Hide removes the reported content; Suspend hides the whole account and stops it from posting.') : '',
         plState: !r.items && r.busy ? LD : !r.items && r.err ? r.err : r.items && !it.length ? (fr ? 'Aucun signalement en attente.' : 'No pending reports.') : '', plErrOn: !r.items && !!r.err,
         plRetryOn: !r.items && !r.busy && !!r.err, plRetry: () => this.mqLoad(),
-        pList: it.map(x => { const sk = 'qsuspend' + x.id; const canHide = (x.comment_id && !x.comment_hidden) || (!x.comment_id && x.activity_id && !x.activity_hidden);
+        pList: it.map(x => { const sk = 'qsuspend' + x.id; const k = x.kind || (x.comment_id ? 'comment' : x.activity_id ? 'activity' : 'profile'); const canHide = k === 'comment' ? !!x.comment_id && !x.comment_hidden : k === 'activity' && !!x.activity_id && !x.activity_hidden;
           return row({ id: x.target_id, username: x.target_username, display_name: x.target_name, avatar: x.target_avatar }, { key: 'q' + x.id,
             handle: '@' + (x.target_username || '—') + ' · ' + relT(x.created_at, fr) + (x.reporter_username ? (fr ? ' · par @' : ' · by @') + x.reporter_username : ''), txt: what(x), bd: ACC, err: er('q' + x.id),
             onOpen: () => x.target_id && this.userOpen(x.target_id, { username: x.target_username, display_name: x.target_name, avatar: x.target_avatar }),
