@@ -14,6 +14,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import vm from 'node:vm';
 
 const ROOT = resolve(process.argv[2] || join(dirname(fileURLToPath(import.meta.url)), '..'));
@@ -48,6 +49,25 @@ ctx.html && step('Gabarit <x-dc>…</x-dc> présent et fermé (parseDcText)', ()
   }
   ctx.closeAt = close;
   return `lignes ${lineAt(h, open.index)}–${lineAt(h, close)}, ${holes} liaisons`;
+});
+
+ctx.html && step('Politique de sécurité (CSP) : en tête, empreinte de chaque script intégré, Supabase seul autorisé', () => {
+  const h = ctx.html.replace(/<!--[\s\S]*?-->/g, c => ' '.repeat(c.length));   // commentaires ignorés, positions gardées
+  const m = /<meta\s+http-equiv="Content-Security-Policy"\s+content="([^"]+)"\s*>/i.exec(h);
+  if (!m) fail('balise <meta http-equiv="Content-Security-Policy"> absente');
+  const first = h.search(/<script\b/i);
+  if (first >= 0 && first < m.index) fail('la CSP doit précéder tout <script> (sinon elle ne le couvre pas)');
+  const csp = Object.fromEntries(m[1].split(';').map(d => d.trim().split(/\s+/)).filter(d => d[0]).map(([k, ...v]) => [k, v]));
+  for (const [k, v] of [['object-src', "'none'"], ['base-uri', "'none'"], ['default-src', "'self'"]]) if (!(csp[k] || []).includes(v)) fail(`CSP : ${k} ${v} manquant`);
+  const sb = /SB_URL = '([^']+)'/.exec(ctx.html); if (!sb) fail('SB_URL introuvable');
+  if (!(csp['connect-src'] || []).includes(sb[1])) fail(`CSP : connect-src doit autoriser ${sb[1]} (Supabase)`);
+  // Scripts exécutés par le navigateur et écrits dans la page (ni src, ni type text/x-dc) : chacun doit avoir son empreinte.
+  const inl = [...h.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)].filter(x => !/\bsrc\s*=/.test(x[1]) && !/type\s*=\s*"text\/x-dc"/.test(x[1]));
+  for (const x of inl) {
+    const sum = "'sha256-" + createHash('sha256').update(ctx.html.slice(x.index + x[0].indexOf('>') + 1, x.index + x[0].lastIndexOf('</'))).digest('base64') + "'";
+    if (!(csp['script-src'] || []).includes(sum)) fail(`script intégré ligne ${lineAt(h, x.index)} modifié : remplacer son empreinte dans script-src par ${sum}`);
+  }
+  return `${inl.length} script(s) intégré(s), connect-src : ${csp['connect-src'].join(' ')}`;
 });
 
 ctx.closeAt && step('Script <script data-dc-script> unique, après le gabarit', () => {

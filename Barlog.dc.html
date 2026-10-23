@@ -2,6 +2,9 @@
 <html>
 <head>
 <meta charset="utf-8">
+<!-- Politique de sécurité (CSP) : seulement nos fichiers et Supabase. 'unsafe-eval' : support.js exécute le code par new Function.
+     L'empreinte sha256 est celle du petit script ci-dessous (window.__resources) : scripts/check.mjs refuse un écart. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'sha256-KtTB2c7nFIxiKLK6NLXOMq6KYMReLYCr0L41j4MGANM='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://yudeusxoogssqyenxslx.supabase.co; media-src 'self' blob:; font-src 'self'; connect-src 'self' https://yudeusxoogssqyenxslx.supabase.co; worker-src 'self'; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Barlog</title>
 <meta name="apple-mobile-web-app-capable" content="yes">

@@ -11,6 +11,7 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - Filtre de mots (serveur) : un pseudo, un nom, une séance publiée ou un commentaire contenant une insulte ou un mot choquant est refusé, avec un message clair ; une publication automatique refusée n’est plus réessayée sans fin.
 - Modération : les signalements arrivent dans un écran « Modération » réservé à l’administrateur (Profil → Compte), qui peut masquer le contenu signalé, suspendre le compte (invisible, ne peut plus publier) ou ignorer ; un compte suspendu voit un message clair.
 - Santé : les valeurs lues dans Apple Santé ou Health Connect ne sont plus copiées dans la sauvegarde du téléphone (iCloud, Google) ; elles sont gardées à part sur le téléphone et relues depuis Santé sur un nouveau téléphone (exigence Apple).
+- Sécurité : politique de sécurité de la page (CSP) — l’app ne peut charger que ses propres fichiers et ne parler qu’à son serveur, même si une faille apparaissait un jour ; vérifiée avant chaque publication.
 
 ## 0.35.0 — 2026-10-23
 - Widget Android : « Dernière fois il y a N jours », les jours de la semaine et la série restent justes même sans ouvrir l’app (le widget se recalcule chaque nuit au lieu de garder les textes de la dernière ouverture).
