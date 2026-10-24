@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.36.1 — 2026-10-23
+- Maintien par côté (ex. GHD Hold per side) : à la fin du côté gauche, le côté droit ne démarre plus tout seul ; le bouton affiche « ▶ Droite » et on le lance quand on est en place. Arrêter le gauche plus tôt garde son temps et propose aussi de lancer le droit. Pendant l'attente, aucun chrono n'est affiché sur l'écran verrouillé.
+
 ## 0.36.0 — 2026-10-23 (préparation des boutiques)
 - Supprimer son compte efface maintenant tout côté serveur, y compris la photo de profil et toutes les sauvegardes en ligne ; si la suppression est interrompue, le compte reste intact et on peut réessayer (la sauvegarde en ligne reste branchée).
 - Conditions d’utilisation (nouvelle page) : à accepter pour créer son profil, et une fois pour les comptes existants avant de publier, commenter ou ajouter une photo ; nouvelle page d’aide (contact, questions fréquentes, supprimer son compte sans l’app) ; liens Aide · Conditions · Confidentialité en bas du Profil ; politique de confidentialité : durées de conservation précisées.

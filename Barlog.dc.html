@@ -1460,7 +1460,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.36.0';
+const APP_VERSION = '0.36.1';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
@@ -2362,9 +2362,10 @@ class Component extends DCLogic {
   }
   tick() {
     const now = Date.now(); const s = this.state;
-    if (s.hold && now >= s.hold.end) {
+    if (s.hold && !s.hold.wait && now >= s.hold.end) {
       const h = s.hold; const x = s.workout && s.workout.ex[h.ei] && s.workout.ex[h.ei].sets[h.si];
-      if (h.side === 'l' && x) { const sec = Math.max(1, x.r2 != null ? x.r2 : x.r); this.setState({ hold: { ...h, side: 'r', start: now, end: now + sec * 1000 }, now }); this.buzz([60]); this.tone([[880, 0, 0.18]]); return; }
+      // Gauche terminé : le droit attend qu'on le lance (le temps de changer de côté).
+      if (h.side === 'l' && x) { this.setState({ hold: { ...h, side: 'r', wait: true }, now }); this.buzz([60]); this.tone([[880, 0, 0.18]]); return; }
       this.setState({ hold: null, now }); this.buzz([80, 60, 80]); this.tone([[880, 0, 0.18], [1320, 0.25, 0.3]]); if (x && !x.done) { this.lastCheck = 0; this.check(h.ei, h.si); } return;
     }
     if (s.restEnd && !s.restAlert && now >= s.restEnd) {
@@ -2376,7 +2377,7 @@ class Component extends DCLogic {
     // Rendu seulement quand un chrono affiché change de seconde (séance, repos, maintien, cardio) : avant, tout l'écran était recalculé 4 fois par seconde.
     const sec = t => Math.ceil(t / 1000); let run = 0;
     if (s.workout) s.workout.ex.forEach(e => e.sets.forEach(y => { if (y.run) run = y.run - (y.r || 0) * 60000; }));
-    const key = [s.workout ? sec(now - s.workout.start) : '', s.restEnd ? sec(s.restEnd - now) : '', s.hold ? sec(s.hold.end - now) : '', run ? sec(now - run) : ''].join();
+    const key = [s.workout ? sec(now - s.workout.start) : '', s.restEnd ? sec(s.restEnd - now) : '', s.hold && !s.hold.wait ? sec(s.hold.end - now) : '', run ? sec(now - run) : ''].join();
     if (key !== this._tKey || now - s.now > 20000) { this._tKey = key; this.setState({ now }); }
   }
   inc() { return this.state.unit === 'kg' ? 2.5 : 5 / KG_LB; }
@@ -2427,7 +2428,8 @@ class Component extends DCLogic {
   typeR2(ei, si, val) { this.updW(w => { const x = w.ex[ei].sets[si]; x.r2Str = val; const v = parseInt(val, 10); if (!isNaN(v)) x.r2 = v; else if (val === '') x.r2 = 0; }); }
   holdToggle(ei, si) {
     const s = this.state; this.unlockAudio(); const h = s.hold;
-    if (h && h.ei === ei && h.si === si) { const el = Math.max(1, Math.round((Date.now() - h.start) / 1000)); this.setState({ hold: null }); this.updW(w => { const x = w.ex[ei].sets[si]; if (h.side === 'r') { x.r2 = el; x.r2Str = null; } else { if (h.side === 'l' && x.r2 == null) x.r2 = x.r; x.r = el; x.rStr = null; } }); return; }
+    if (h && h.ei === ei && h.si === si && h.wait) { const x = s.workout.ex[ei].sets[si]; const sec = Math.max(1, x.r2 != null ? x.r2 : x.r); const t = Date.now(); this.setState({ hold: { ...h, wait: false, start: t, end: t + sec * 1000 } }); return; }
+    if (h && h.ei === ei && h.si === si) { const el = Math.max(1, Math.round((Date.now() - h.start) / 1000)); this.setState({ hold: h.side === 'l' ? { ...h, side: 'r', wait: true } : null }); this.updW(w => { const x = w.ex[ei].sets[si]; if (h.side === 'r') { x.r2 = el; x.r2Str = null; } else { if (h.side === 'l' && x.r2 == null) x.r2 = x.r; x.r = el; x.rStr = null; } }); return; }
     const x = s.workout.ex[ei].sets[si]; const sec = Math.max(1, x.r || 30); const t = Date.now();
     const side = isU(this.meta(s.workout.ex[ei].name).type) ? 'l' : null;
     this.setState({ hold: { ei, si, side, start: t, end: t + sec * 1000 }, focus: { ei, si } });
@@ -2804,7 +2806,7 @@ class Component extends DCLogic {
     const LA = this.liveAct(); if (!LA) return; const s = this.state; const fr = LANG === 'fr'; const w = s.workout; const now = Date.now();
     let run = null; if (w) w.ex.forEach(ex => ex.sets.forEach(x => { if (x.run && !run) run = { ex, x }; }));
     let p = null; const hd = s.hold; const hx = hd && w && w.ex[hd.ei];
-    if (s.liveRest !== false && hx && hd.end > now + 500) { const sd = hd.side ? (hd.side === 'l' ? (fr ? ' · gauche' : ' · left') : (fr ? ' · droite' : ' · right')) : '';
+    if (s.liveRest !== false && hx && !hd.wait && hd.end > now + 500) { const sd = hd.side ? (hd.side === 'l' ? (fr ? ' · gauche' : ' · left') : (fr ? ' · droite' : ' · right')) : '';
       p = { mode: 'down', start: hd.start || now, end: hd.end, title: fr ? 'Maintien' : 'Hold', done: fr ? 'Terminé' : 'Done', next: hx.name + sd + (fr ? ' · série ' : ' · set ') + (hd.si + 1) }; }
     else if (s.liveRest !== false && run) { const st = run.x.run - (run.x.r || 0) * 60000; const g = run.ex.target ? st + run.ex.target * 60000 : 0;
       p = { mode: 'up', start: st, end: g || st + 3600000, title: 'Cardio', done: '', next: run.ex.name + (run.ex.target ? (fr ? ' · objectif ' : ' · goal ') + run.ex.target + ' min' : '') }; }
@@ -3291,7 +3293,7 @@ class Component extends DCLogic {
         onAddSet: () => this.addSet(ei),
         sets: ex.sets.map((x, si) => {
           const active = !!(s.focus && s.focus.ei === ei && s.focus.si === si && !x.done);
-          const hOn = !!(s.hold && s.hold.ei === ei && s.hold.si === si);
+          const hOn = !!(s.hold && s.hold.ei === ei && s.hold.si === si && !s.hold.wait), hWait = !!(s.hold && s.hold.ei === ei && s.hold.si === si && s.hold.wait);
           const pc = m.bar && active && x.w > 0 ? plateCalc(parseFloat(this.dispW(x.w)), kg, s.barLight) : null;
           const big = kg ? 20 : 45;
           const o = {
@@ -3314,7 +3316,7 @@ class Component extends DCLogic {
             rMinus: tim && uni ? () => this.adjBoth(ei, si, -5) : tim ? () => this.adj(ei, si, 'r', -5) : uni ? () => this.adjBoth(ei, si, -1) : () => this.adj(ei, si, 'r', -1),
             rPlus: tim && uni ? () => this.adjBoth(ei, si, 5) : tim ? () => this.adj(ei, si, 'r', 5) : uni ? () => this.adjBoth(ei, si, 1) : () => this.adj(ei, si, 'r', 1),
             rmL: tim ? '−5s' : L('−1 rep'), rpL: tim ? '+5s' : L('+1 rep'),
-            holdLabel: hOn ? (s.hold.side ? L(s.hold.side === 'l' ? 'Left' : 'Right') + ' · ' : L('Stop') + ' · ') + clock(s.hold.end - now) : L('▶ Start ') + clock((x.r || 0) * 1000) + (uni ? ' + ' + clock((x.r2 != null ? x.r2 : x.r) * 1000) : ''),
+            holdLabel: hWait ? '▶ ' + L('Right') + ' ' + clock((x.r2 != null ? x.r2 : x.r) * 1000) : hOn ? (s.hold.side ? L(s.hold.side === 'l' ? 'Left' : 'Right') + ' · ' : L('Stop') + ' · ') + clock(s.hold.end - now) : L('▶ Start ') + clock((x.r || 0) * 1000) + (uni ? ' + ' + clock((x.r2 != null ? x.r2 : x.r) * 1000) : ''),
             holdBg: hOn ? ACC : '#24242B', holdColor: hOn ? '#0A0A0C' : '#FFFFFF',
             onHold: (e) => { e.stopPropagation(); this.holdToggle(ei, si); },
             hasPlates: !!pc, plateHead: pc ? L('Per side') + ' · ' + L('bar') + ' ' + pc.bar + ' ' + s.unit : '',
