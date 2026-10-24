@@ -278,3 +278,54 @@ test('Supprimer ma sauvegarde en ligne : fichiers et infos effacés, séances du
   assert.equal(store.files.size, 0); assert.equal(store.meta, null);
   assert.ok(app.state.history.Squat, 'séances du téléphone intactes'); assert.equal(app.state.cloud.on, false); assert.equal(app.state.cloud.link, false);
 });
+
+// ── Sauvegarde en ligne sur demande (Loi 25, 0.36) : avec Pro, rien n'est envoyé sans un oui ──
+function optApp(cloud = { link: true, uid: 'u1', dev: 'dA' }) {
+  const B = loadBarlog(); let calls = 0;
+  const app = makeApp(B, { ...emptyData(), lang: 'fr', pro: { plan: 'life', beta: true }, acct: { uid: 'u1', profile: { username: 'a' } }, cloud,
+    history: { Squat: [{ date: T(1), sets: [set(100, 5)] }] } });
+  app.sb = () => { calls++; return Promise.reject(new Error('rien ne doit partir sans accord')); };
+  return { app, calls: () => calls };
+}
+
+test('Loi 25 : Pro mais jamais demandé → une seule question, rien n’est lu ni envoyé (même déjà relié par une ancienne version)', async () => {
+  const { app, calls } = optApp();
+  app.cbCheck(); await app.cbUp(); await flush();
+  assert.equal(app.state.cbOpt, true, 'question posée'); assert.equal(calls(), 0, 'aucun appel au serveur');
+  const v = app.renderVals();
+  assert.equal(v.cbOptOn, true); assert.equal(v.cbOptGoLabel, 'Activer la sauvegarde'); assert.match(v.cbOptText, /Rien n’est envoyé sans ton accord/);
+  assert.equal(v.cbTg.justify, 'flex-start', 'interrupteur du Profil éteint tant que rien n’est accepté');
+});
+
+test('Loi 25 : « Non merci » → sauvegarde désactivée, plus de question, toujours rien d’envoyé', async () => {
+  const { app, calls } = optApp();
+  app.cbCheck(); app.cbOptSet(false);
+  assert.equal(app.state.cbOpt, false); assert.equal(app.state.cloud.on, false); assert.equal(app.state.cloud.link, false);
+  app.cbCheck(); await app.cbUp(); await flush();
+  assert.equal(app.state.cbOpt, false, 'pas reposée'); assert.equal(calls(), 0);
+});
+
+test('Loi 25 : « Activer la sauvegarde » → activée, première sauvegarde lancée', async t => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const { app } = optApp({});
+  let ups = 0; app.cbUp = () => { ups++; return Promise.resolve(); };
+  app.sb = () => Promise.resolve({ from: () => ({ select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: null, error: null }) }) }) }) });
+  app.cbCheck(); app.cbOptSet(true);
+  assert.equal(app.state.cloud.on, true); assert.equal(app.state.cbOpt, false);
+  t.mock.timers.tick(0); await flush(); await flush();
+  assert.equal(ups, 1, 'envoi après le oui'); assert.equal(app.state.cloud.link, true);
+});
+
+test('Pages Aide / Conditions : l’app native ouvre le site public, le site /dev/ ses propres pages', t => {
+  const had = Object.getOwnPropertyDescriptor(globalThis, 'window'); const hadLoc = Object.getOwnPropertyDescriptor(globalThis, 'location');
+  t.after(() => { if (had) Object.defineProperty(globalThis, 'window', had); else delete globalThis.window; if (hadLoc) Object.defineProperty(globalThis, 'location', hadLoc); else delete globalThis.location; });
+  const opened = []; const page = (href, native) => {
+    Object.defineProperty(globalThis, 'location', { configurable: true, writable: true, value: new URL(href) });
+    Object.defineProperty(globalThis, 'window', { configurable: true, writable: true, value: { open: u => opened.push(u), Capacitor: native ? { isNativePlatform: () => true, Plugins: {} } : undefined } });
+    makeApp(loadBarlog(), emptyData()).openSite('terms.html'); return opened.pop().replace('#en', '');
+  };
+  assert.equal(page('https://hugolpr07.github.io/Gym-app/dev/Barlog.dc.html'), 'https://hugolpr07.github.io/Gym-app/dev/terms.html');
+  assert.equal(page('https://hugolpr07.github.io/Gym-app/'), 'https://hugolpr07.github.io/Gym-app/terms.html');
+  assert.equal(page('https://localhost/', true), 'https://hugolpr07.github.io/Gym-app/terms.html', 'Android (https://localhost) : site public');
+  assert.equal(page('capacitor://localhost/', true), 'https://hugolpr07.github.io/Gym-app/terms.html');
+});

@@ -254,6 +254,17 @@ input::placeholder{color:#9C9CA8}
 </div>
 </div>
 </sc-if>
+<sc-if value="{{ cbOptOn }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:61;background:rgba(0,0,0,0.65);display:flex;align-items:flex-end;justify-content:center;">
+<div style="width:100%;max-width:480px;box-sizing:border-box;background:#16161A;border-top:1px solid #33333C;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;">
+<span style="font-size:20px;font-weight:800;">{{ cbOptTitle }}</span>
+<span style="font-size:15px;line-height:21px;color:#9C9CA8;text-wrap:pretty;padding-bottom:6px;">{{ cbOptText }}</span>
+<button onClick="{{ cbOptGo }}" style="min-height:56px;border-radius:16px;border:none;background:var(--acc);color:#0A0A0C;font-size:16px;font-weight:700;">{{ cbOptGoLabel }}</button>
+<button onClick="{{ cbOptNo }}" style="min-height:52px;border-radius:16px;border:none;background:#24242B;color:#FFFFFF;font-size:15px;font-weight:600;">{{ cbOptNoLabel }}</button>
+<button onClick="{{ cbOptPriv }}" style="min-height:44px;border:none;background:transparent;color:#9C9CA8;font-size:14px;font-weight:600;text-decoration:underline;">{{ cbOptPrivLabel }}</button>
+</div>
+</div>
+</sc-if>
 <sc-if value="{{ avBigOn }}" hint-placeholder-val="{{ false }}">
 <div onClick="{{ avBigClose }}" style="position:fixed;inset:0;z-index:62;background:rgba(0,0,0,0.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:16px;">
 <div style="width:min(78vw,340px);height:min(78vw,340px);border-radius:50%;background-color:#24242B;background-image:{{ avBigImg }};background-size:cover;background-position:center;"></div>
@@ -1712,7 +1723,7 @@ class Component extends DCLogic {
     this._snap = { ...st };
     if (PK.some(k => prev[k] !== st[k])) this.save();
     if (st.accPrev && !st.pw && !st.pro) setTimeout(() => this.setState({ accPrev: null }), 0);
-    if (st.pro && !prev.pro && st.acct && st.acct.profile) setTimeout(() => this.cbCheck(true), 0);
+    if (st.pro && !prev.pro && st.acct && st.acct.profile) setTimeout(() => this.cbCheck((this.state.cloud || {}).on === true), 0);
     if (st.pro && !prev.pro && st.healthOn) setTimeout(() => this.pullWeights(), 500);
     if (st.cloud && st.cloud.link && ['history', 'sessMeta', 'routines', 'body', 'custom', 'exMeta'].some(k => prev[k] !== st[k])) this.cbSoon(15000);
     if (prev.workout !== st.workout || prev.wake !== st.wake) this.syncWake();
@@ -1862,7 +1873,8 @@ class Component extends DCLogic {
   // Apple 1.2 et Google (contenu des utilisateurs). Le serveur date l'acceptation (profiles.terms_at).
   termsOk() { const p = this.state.acct && this.state.acct.profile; return !!p && (p.terms_v || 0) >= TERMS_V; }
   terms(fn) { if (this.termsOk()) return fn && fn(); this.sure('terms', () => this.acSet({ terms_v: TERMS_V }, () => { if (fn) fn(); this.pubFlush(true); })); }
-  openSite(f) { try { window.open(SITE + f + (LANG === 'fr' ? '' : '#en'), '_blank'); } catch (e) {} }
+  // App native : site public (SITE) ; version web : pages du même dossier (/dev/ ouvre les pages de /dev/).
+  openSite(f) { try { const base = this.nat() || !/^https?:$/.test(location.protocol) ? SITE : new URL('.', location.href).href; window.open(base + f + (LANG === 'fr' ? '' : '#en'), '_blank'); } catch (e) {} }
   acSet(p, done) {
     const a = this.state.acct; if (!a || !a.profile) return; const old = a.profile;
     this.setState(st => ({ acct: st.acct && { ...st.acct, profile: { ...old, ...p } } }));
@@ -1976,7 +1988,9 @@ class Component extends DCLogic {
     const s = this.state; const a = s.acct; if (!a || !a.profile || this._cbChk || (!manual && this._cbLater)) return; const cl = s.cloud || {}; if (cl.on === false && !manual) return;
     // Envoyer une sauvegarde = Barlog Pro. Restaurer celle du compte reste toujours gratuit (Pro expiré, téléphone perdu…),
     // y compris sur un téléphone déjà relié (bouton « Restaurer une sauvegarde » du Profil).
-    const pro = this.isPro(); if (cl.link && cl.uid === a.uid && (pro || !manual)) return pro ? this.cbSoon(3000) : undefined;
+    // Loi 25 : avec Pro, rien n'est envoyé sans un oui. Jamais demandé → une seule question (cbOpt) ; « Non merci » = désactivée.
+    const pro = this.isPro(); if (pro && cl.on !== true && !manual) { this.setState({ cbOpt: true }); return; }
+    if (cl.link && cl.uid === a.uid && (pro || !manual)) return pro ? this.cbSoon(3000) : undefined;
     this._cbChk = true;
     this.sb().then(c => c.from('backups_meta').select('*').eq('user_id', a.uid).maybeSingle()).then(({ data, error }) => { if (error) throw error;
       if (!data || !data.path) { if (!pro) { if (manual) this.flash(LANG === 'fr' ? 'Aucune sauvegarde sur ton compte' : 'No backup on your account'); return; } this.cbSet({ uid: a.uid, link: true, srvAt: 0 }); return this.cbUp(); }
@@ -1999,7 +2013,7 @@ class Component extends DCLogic {
   }
   cbLater() { const q = this.state.cbAsk; this._cbLater = true; this.setState({ cbAsk: null, ...(q && q.path && !this.isPro() ? { cbSnooze: { path: q.path, until: Date.now() + CB_SNOOZE } } : {}) }); }
   cbUp(manual) {
-    const s = this.state; const a = s.acct; const cl = s.cloud || {}; if (!a || !a.profile || !this.isPro() || cl.on === false || !cl.link || cl.uid !== a.uid) return Promise.resolve();
+    const s = this.state; const a = s.acct; const cl = s.cloud || {}; if (!a || !a.profile || !this.isPro() || cl.on !== true || !cl.link || cl.uid !== a.uid) return Promise.resolve();
     if (this._cbRun) { this._cbAgain = true; return this._cbRun; }
     const uid = a.uid; const dev = cl.dev || ('d' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36)); this.cbSet({ busy: true });
     const B = () => this.sb().then(c => c.storage.from('backups'));
@@ -2035,10 +2049,12 @@ class Component extends DCLogic {
   }
   cbToggle() {
     if (!this.isPro()) return this.need('backup');
-    const s = this.state; const cl = s.cloud || {}; const on = cl.on === false;
+    const s = this.state; const cl = s.cloud || {}; const on = cl.on !== true;
     if (!on) { this.cbSet({ on: false, link: false }); return; }
     this._cbLater = false; this.cbSet({ on: true }); setTimeout(() => this.cbCheck(true), 0);
   }
+  // Réponse à la question cbOpt : « Activer » = comme le bouton du Profil ; « Non merci » = désactivée (réactivable dans le Profil).
+  cbOptSet(yes) { this.setState({ cbOpt: false }); if (yes) this.cbToggle(); else this.cbSet({ on: false, link: false }); }
   // Photo de profil : carré 640 px en JPEG, rangé dans avatars/<id>/<horodatage>.jpg ; les anciennes sont effacées.
   avPick(cam) {
     const s = this.state; const a = s.acct; if (!a || !a.profile || s.avBusy) return; if (!this.termsOk()) return this.terms(() => { if (this.nat()) this.avPick(cam); });
@@ -2684,7 +2700,7 @@ class Component extends DCLogic {
     this.flash(L(kind === 'a' ? 'All data erased' : 'History cleared'));
     if (!online) return;
     // Pro : l'envoi fusionne d'abord la sauvegarde (séances d'autres téléphones comprises), puis marque tout supprimé (_cbWipe).
-    if (this.isPro() && (s.cloud || {}).on !== false) { this._cbWipe = kind; this.cbSoon(1000); } else this.cbDelete(true);
+    if (this.isPro() && (s.cloud || {}).on === true) { this._cbWipe = kind; this.cbSoon(1000); } else this.cbDelete(true);
   }
   // Supprimer la sauvegarde en ligne (fichiers + infos) sans toucher aux séances de ce téléphone. La sauvegarde automatique
   // est désactivée, sinon elle serait recréée au prochain changement.
@@ -3042,12 +3058,16 @@ class Component extends DCLogic {
       acSocTitle: fr ? 'Barlog social · bêta' : 'Barlog social · beta', acSocText: fr ? 'Crée un compte gratuit pour publier tes séances et suivre tes amis. Sans compte, Barlog fonctionne comme avant.' : 'Create a free account to post your workouts and follow your friends. Without an account, Barlog works just like before.',
       acEmail: s.acEmail || '', onAcEmail: e => this.setState({ acEmail: e.target.value }), acEmailPh: fr ? 'ton@email.com' : 'you@email.com',
       acBackHint: s.obAcctHint ? (fr ? 'Utilise le même e-mail que sur ton ancien téléphone : ton profil, tes abonnés et tes publications reviennent. Tes séances reviennent avec ta sauvegarde en ligne si tu en as une (la restauration est gratuite) ou en important ton export (plus bas, « Importer »).' : 'Use the same email as on your old phone: your profile, followers and posts come back. Your workouts come back with your online backup if you have one (restoring is free) or by importing your export (below, “Import”).') : '',
-      ...(() => { const cl = s.cloud || {}; const on = cl.on !== false; const q = s.cbAsk; const dt = t => { try { return new Date(t).toLocaleDateString(fr ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ''; } };
+      ...(() => { const cl = s.cloud || {}; const on = cl.on === true; const q = s.cbAsk; const dt = t => { try { return new Date(t).toLocaleDateString(fr ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ''; } };
         const ns = n => n + (fr ? ' séance' : ' workout') + (n > 1 ? 's' : ''); const pro = this.isPro(); const linked = pro && on && cl.link && a && cl.uid === a.uid;
         const sub = !pro ? (fr ? 'Avec Barlog Pro : séances, routines, pesées et réglages sauvegardés automatiquement et retrouvés sur n’importe quel téléphone. Restaurer une sauvegarde de ton compte reste gratuit. Sans Pro, pense à exporter.' : 'With Barlog Pro: workouts, routines, weigh-ins and settings backed up automatically and restored on any phone. Restoring a backup from your account stays free. Without Pro, remember to export.') : !on ? (fr ? 'Désactivée. Sans sauvegarde, garde un export à jour.' : 'Off. Without it, keep an export up to date.') : cl.busy && this._cbRun ? (fr ? 'Sauvegarde en cours…' : 'Backing up…') : cl.hold && linked ? (fr ? 'Envoi suspendu : ta sauvegarde a ' + ns(cl.hold.m) + ', ce téléphone ' + cl.hold.n + '. Touche « Récupérer mes séances ».' : 'Backup paused: your backup has ' + ns(cl.hold.m) + ', this phone ' + cl.hold.n + '. Tap “Get my workouts back”.') : cl.err && linked ? (fr ? 'Dernier essai raté : ' : 'Last try failed: ') + cl.err
           : linked && cl.at ? (fr ? 'Sauvegardé ' : 'Backed up ') + relT(new Date(cl.at).toISOString(), fr) + ' · ' + ns(cl.n || 0) + (fr ? '. Automatique après chaque changement.' : '. Automatic after every change.')
           : linked ? (fr ? 'Première sauvegarde en cours…' : 'First backup in progress…') : (fr ? 'Une sauvegarde existe sur ton compte : touche « Restaurer ou fusionner ».' : 'Your account has a backup: tap “Restore or merge”.');
-        return { cbAskOn: !!q, cbAskTitle: q && q.hold ? (fr ? 'Ta sauvegarde est plus complète' : 'Your backup has more workouts') : fr ? 'Sauvegarde trouvée' : 'Backup found',
+        return { cbOptOn: !!s.cbOpt && pro && !!a && !q, cbOptTitle: fr ? 'Sauvegarder en ligne ?' : 'Back up online?',
+          cbOptText: fr ? 'Barlog Pro peut garder une copie de tes séances, routines, pesées et mensurations sur ton compte, pour les retrouver sur un autre téléphone. Copie privée, visible par toi seul·e. Rien n’est envoyé sans ton accord ; tu peux l’arrêter et la supprimer quand tu veux (Profil → Compte).' : 'Barlog Pro can keep a copy of your workouts, routines, weigh-ins and measurements on your account, so you get them back on another phone. Private copy, only you can see it. Nothing is sent without your OK; you can stop it and delete it anytime (Profile → Account).',
+          cbOptGo: () => this.cbOptSet(true), cbOptGoLabel: fr ? 'Activer la sauvegarde' : 'Turn on backup', cbOptNo: () => this.cbOptSet(false), cbOptNoLabel: fr ? 'Non merci' : 'No thanks',
+          cbOptPriv: () => this.openSite('privacy.html'), cbOptPrivLabel: fr ? 'Politique de confidentialité' : 'Privacy policy',
+          cbAskOn: !!q, cbAskTitle: q && q.hold ? (fr ? 'Ta sauvegarde est plus complète' : 'Your backup has more workouts') : fr ? 'Sauvegarde trouvée' : 'Backup found',
           cbAskText: !q ? '' : q.hold ? (fr ? 'Ta sauvegarde en ligne a ' + ns(q.n) + ' (' + dt(q.at) + '), ce téléphone seulement ' + q.loc + '. Pour ne rien perdre, Barlog n’envoie plus rien tant que tu n’as pas choisi. « Fusionner » remet toutes tes séances ici.' : 'Your online backup has ' + ns(q.n) + ' (' + dt(q.at) + '), this phone only ' + q.loc + '. To lose nothing, Barlog sends nothing until you choose. “Merge” brings all your workouts back here.') : q.loc ? (fr ? 'Ton compte a une sauvegarde de ' + ns(q.n) + ' (' + dt(q.at) + '). Ce téléphone en a ' + q.loc + '. « Fusionner » garde tout : rien n’est supprimé.' : 'Your account has a backup with ' + ns(q.n) + ' (' + dt(q.at) + '). This phone has ' + q.loc + '. “Merge” keeps everything: nothing is deleted.')
             : (fr ? ns(q.n) + ' sauvegardées sur ton compte (' + dt(q.at) + '). Les remettre sur ce téléphone ?' : ns(q.n) + ' backed up on your account (' + dt(q.at) + '). Put them back on this phone?'),
           cbAskGoLabel: q && q.busy ? (fr ? 'Restauration…' : 'Restoring…') : q && q.loc ? (fr ? 'Fusionner' : 'Merge') : (fr ? 'Restaurer' : 'Restore'), cbAskGo: () => this.cbRestore('merge'), cbAskOp: q && q.busy ? 0.5 : 1,
@@ -3082,7 +3102,7 @@ class Component extends DCLogic {
       acMqLabel: (fr ? 'Modération' : 'Moderation') + (s.mqN ? (fr ? ' · ' + s.mqN + ' à traiter' : ' · ' + s.mqN + ' to review') : ''), acBlkLabel: (fr ? 'Comptes bloqués' : 'Blocked accounts') + (s.blk && s.blk.items ? ' (' + s.blk.items.length + ')' : ''), acPubOpen: () => a && this.userOpen(a.uid), acPubLabel: fr ? 'Mon profil public' : 'My public profile',
       acSignOut: () => this.sure('out', () => this.acOut()), acSignOutLabel: fr ? 'Se déconnecter' : 'Sign out',
       acDelete: () => this.acDelete(), acDelLabel: fr ? 'Supprimer mon compte' : 'Delete my account', acDelBorder: '#33333C',
-      ...(() => { const k = s.sure; const del = k === 'del'; const cbOn = !!(s.cloud && s.cloud.link && s.cloud.on !== false && this.isPro());
+      ...(() => { const k = s.sure; const del = k === 'del'; const cbOn = !!(s.cloud && s.cloud.link && s.cloud.on === true && this.isPro());
         // Effacer l'historique / tout effacer (avec une sauvegarde en ligne), supprimer la sauvegarde en ligne.
         const er = k === 'erase-h' || k === 'erase-a'; const all = k === 'erase-a'; const dcb = k === 'delcb';
         const X = er ? { t: fr ? (all ? 'Tout effacer ?' : 'Effacer l’historique ?') : (all ? 'Erase everything?' : 'Clear history?'),
@@ -3572,7 +3592,7 @@ class Component extends DCLogic {
         addLabel: PRO_TPL.includes(t.id) && !this.isPro() ? (fr ? 'Débloquer avec Pro ✦' : 'Unlock with Pro ✦') : (fr ? 'Ajouter ' : 'Add ') + t.r.length + ' routines', onAdd: this.gate(PRO_TPL.includes(t.id) ? 'program' : null, () => this.addTemplate(t)) })),
       sdHasNote: !!(sd && meta[sd.date] && meta[sd.date].note), sdNote: sd && meta[sd.date] ? meta[sd.date].note || '' : '',
       toastOn: !!s.toast, toast: s.toast,
-      tx: Object.fromEntries(Object.entries(TX).map(([k, v]) => [k, L(v)])), appLabel: 'Barlog v' + APP_VERSION, storeSub: this.isPro() && this.state.cloud && this.state.cloud.link && this.state.cloud.on !== false && this.state.acct ? (LANG === 'fr' ? 'Sur cet appareil, avec une copie dans ta sauvegarde en ligne.' : 'On this device, with a copy in your online backup.') : L('Everything lives on this device.'), storeTitle: this.state.acct ? (this.isPro() && this.state.cloud && this.state.cloud.link && this.state.cloud.on !== false ? (LANG === 'fr' ? 'Tes séances sont sur ton téléphone et dans ta sauvegarde en ligne privée. Seules celles que tu publies sont partagées.' : 'Your workouts are on your phone and in your private online backup. Only the ones you publish are shared.') : (LANG === 'fr' ? 'Tes séances restent sur ton téléphone. Seules celles que tu publies sont partagées.' : 'Your workouts stay on your phone. Only the ones you publish are shared.')) : L('No account. Your data stays on your phone.'), privacyLabel: LANG === 'fr' ? 'Politique de confidentialité' : 'Privacy policy', openPrivacy: () => this.openSite('privacy.html'), termsLabel: LANG === 'fr' ? 'Conditions d’utilisation' : 'Terms of use', openTerms: () => this.openSite('terms.html'), helpLabel: LANG === 'fr' ? 'Aide et contact' : 'Help & contact', openHelp: () => this.openSite('support.html'),
+      tx: Object.fromEntries(Object.entries(TX).map(([k, v]) => [k, L(v)])), appLabel: 'Barlog v' + APP_VERSION, storeSub: this.isPro() && this.state.cloud && this.state.cloud.link && this.state.cloud.on === true && this.state.acct ? (LANG === 'fr' ? 'Sur cet appareil, avec une copie dans ta sauvegarde en ligne.' : 'On this device, with a copy in your online backup.') : L('Everything lives on this device.'), storeTitle: this.state.acct ? (this.isPro() && this.state.cloud && this.state.cloud.link && this.state.cloud.on === true ? (LANG === 'fr' ? 'Tes séances sont sur ton téléphone et dans ta sauvegarde en ligne privée. Seules celles que tu publies sont partagées.' : 'Your workouts are on your phone and in your private online backup. Only the ones you publish are shared.') : (LANG === 'fr' ? 'Tes séances restent sur ton téléphone. Seules celles que tu publies sont partagées.' : 'Your workouts stay on your phone. Only the ones you publish are shared.')) : L('No account. Your data stays on your phone.'), privacyLabel: LANG === 'fr' ? 'Politique de confidentialité' : 'Privacy policy', openPrivacy: () => this.openSite('privacy.html'), termsLabel: LANG === 'fr' ? 'Conditions d’utilisation' : 'Terms of use', openTerms: () => this.openSite('terms.html'), helpLabel: LANG === 'fr' ? 'Aide et contact' : 'Help & contact', openHelp: () => this.openSite('support.html'),
       calHead: LANG === 'fr' ? ['L','M','M','J','V','S','D'] : ['M','T','W','T','F','S','S'],
       enBg: LANG === 'en' ? '#24242B' : 'transparent', enColor: LANG === 'en' ? '#fff' : '#9C9CA8', frBg: LANG === 'fr' ? '#24242B' : 'transparent', frColor: LANG === 'fr' ? '#fff' : '#9C9CA8',
       setEn: go({ lang: 'en' }), setFr: go({ lang: 'fr' }),
@@ -3581,7 +3601,7 @@ class Component extends DCLogic {
           confirmGo: () => cr && this.start(cr.id, true), confirmCancel: go({ confirmStart: null }),
           confirmHasToday: !!(cr && tr && tr !== cr), confirmTodayLabel: tr ? L('Start today’s: ') + tr.name : '', confirmToday: () => tr && this.start(tr.id, true) }; })(),
       updateOn: !!s.updateReady && !s.workout && s.screen === 'tabs', applyUpdate: () => { this.save(); location.reload(); },
-      ...(() => { const n = sessions.length; const le = s.lastExport; const cbOk = !!(this.isPro() && s.cloud && s.cloud.link && s.cloud.on !== false && s.cloud.at && now - s.cloud.at < 7 * DAY); const due = !cbOk && n >= 3 && (!le || now - le > 14 * DAY) && !(s.backupSnooze && now < s.backupSnooze);
+      ...(() => { const n = sessions.length; const le = s.lastExport; const cbOk = !!(this.isPro() && s.cloud && s.cloud.link && s.cloud.on === true && s.cloud.at && now - s.cloud.at < 7 * DAY); const due = !cbOk && n >= 3 && (!le || now - le > 14 * DAY) && !(s.backupSnooze && now < s.backupSnooze);
         return { backupOn: due, backupHint: plat() === 'android' ? (LANG === 'fr' ? 'Touche Exporter, puis enregistre le fichier dans Google Drive ou Téléchargements.' : 'Tap Export, then save the file to Google Drive or Downloads.') : L('Tap Export, then “Save to Files” → iCloud Drive.'), backupText: le ? (LANG === 'fr' ? 'Dernière sauvegarde il y a ' + Math.floor((now - le) / DAY) + ' jours. Tes données sont uniquement sur ce téléphone.' : 'Last backup ' + Math.floor((now - le) / DAY) + ' days ago. Your data lives only on this phone.') : L('No backup yet. Your data lives only on this phone.'), backupPro: (this.isPro() ? '' : (LANG === 'fr' ? ' ✦ Ou passe à Barlog Pro : la sauvegarde se fait toute seule.' : ' ✦ Or go Barlog Pro: backups happen on their own.')), backupNow: () => this.exportData(), backupLater: go({ backupSnooze: now + 3 * DAY }) }; })(),
       showInstall: !s.standalone && !s.installSeen, dismissInstall: go({ installSeen: true }),
       isToday: showTabs && s.tab === 'today', isPrograms: showTabs && s.tab === 'programs', isProgress: showTabs && s.tab === 'progress', isProfile: showTabs && s.tab === 'profile', isFeed: showTabs && s.tab === 'feed',
