@@ -5,7 +5,7 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
-## 0.36.0 — 2026-10-23 (en cours sur dev : préparation des boutiques)
+## 0.36.0 — 2026-10-23 (préparation des boutiques)
 - Supprimer son compte efface maintenant tout côté serveur, y compris la photo de profil et toutes les sauvegardes en ligne ; si la suppression est interrompue, le compte reste intact et on peut réessayer (la sauvegarde en ligne reste branchée).
 - Conditions d’utilisation (nouvelle page) : à accepter pour créer son profil, et une fois pour les comptes existants avant de publier, commenter ou ajouter une photo ; nouvelle page d’aide (contact, questions fréquentes, supprimer son compte sans l’app) ; liens Aide · Conditions · Confidentialité en bas du Profil ; politique de confidentialité : durées de conservation précisées.
 - Filtre de mots (serveur) : un pseudo, un nom, une séance publiée ou un commentaire contenant une insulte ou un mot choquant est refusé, avec un message clair ; une publication automatique refusée n’est plus réessayée sans fin.
