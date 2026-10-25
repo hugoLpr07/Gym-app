@@ -250,3 +250,17 @@ test('modération : commentaire signalé puis supprimé → pas de « Masquer »
   app.setState({ sv: [{ v: 'mq' }] }); app.mqLoad(); await flush(); await flush();
   const v = app.renderVals(); assert.equal(v.pList[0].b1On, false); assert.match(v.pList[0].txt, /Commentaire \(supprimé depuis\)/);
 });
+
+// ── Fil : séance sans nom ni durée enregistrés (0.36.3) ──
+test('publier une séance sans nom ni routine : titre de la routine devinée par ses exercices ; sans durée → « — » dans le Fil', () => {
+  const B = loadBarlog(); const d = Date.UTC(2026, 9, 20, 15);
+  const routines = [{ id: 'p', name: 'Push A', ex: [{ name: 'Bench Press' }] }, { id: 'l', name: 'Legs A', ex: [{ name: 'Squat' }, { name: 'Leg Press' }] }];
+  const history = { Squat: [{ date: d, sets: [{ w: 100, r: 5 }] }], 'Leg Press': [{ date: d, sets: [{ w: 200, r: 10 }] }] };
+  const app = makeApp(B, { ...emptyData(), lang: 'fr', acct, routines, history });
+  app.renderVals();
+  const row = app.pubRow(d, 'followers', '');
+  assert.equal(row.title, 'Legs A'); assert.equal(row.duration_s, 0);
+  app.state.sessMeta = { [d]: { name: 'Mon nom' } }; assert.equal(app.pubRow(d, 'followers', '').title, 'Mon nom', 'un nom enregistré reste prioritaire');
+  const card = n => app.cardVals(app.state, [{ id: 'a1', user_id: 'u2', username: 'bo', title: 'Legs A', duration_s: n, volume_kg: 0, sets: 2 }], 't')[0].stats[0].value;
+  assert.equal(card(0), '—'); assert.equal(card(undefined), '—'); assert.equal(card(3900), '1:05');
+});

@@ -1460,7 +1460,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.36.2';
+const APP_VERSION = '0.36.3';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
@@ -1657,6 +1657,8 @@ function mergeLifts(s, res, fresh) {
   Object.keys(h).forEach(k => { h[k] = h[k].slice().sort((a, b) => a.date - b.date); });
   return { patch: { history: h, sessMeta: sm, custom, exMeta }, n, dup };
 }
+// Séance sans nom ni routine enregistrés (anciennes séances, imports) : la routine qui partage le plus d'exercices.
+const guessR = (routines, names) => { let r = null, best = 0; routines.forEach(x => { const o = x.ex.filter(e => names.includes(e.name)).length; if (o > best) { best = o; r = x; } }); return r; };
 const LOC = () => LANG === 'fr' ? 'fr-CA' : 'en-US';
 const WD_FR = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
 const WD = { dimanche: 0, lundi: 1, mardi: 2, mercredi: 3, jeudi: 4, vendredi: 5, samedi: 6, sunday: 0, monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6 };
@@ -2122,7 +2124,7 @@ class Component extends DCLogic {
       if (e1(b.w, b.r) > prev + 0.01) prs.push({ ex: name.slice(0, 60), w: Math.round(b.w * 100) / 100, r: b.r });
     });
     Object.keys(mus).forEach(k => { mus[k] = Math.round(mus[k] * 2) / 2; if (!mus[k]) delete mus[k]; });
-    const r = m.rid && (s.routines || []).find(x => x.id === m.rid);
+    const r = m.rid ? (s.routines || []).find(x => x.id === m.rid) : !m.name && guessR(s.routines || [], Object.keys(s.history || {}).filter(n => s.history[n].some(x => x.date === d)));
     return { user_id: s.acct && s.acct.uid, local_start: d, title: (String(m.name || (r && r.name) || L('Workout')).trim() || 'Workout').slice(0, 80), started_at: new Date(d).toISOString(), duration_s: Math.max(0, Math.min(86400, Math.round((m.dur || 0) / 1000))), volume_kg: Math.round(vol * 10) / 10, sets, prs: prs.slice(0, 40), muscles: mus, note: (note || '').trim().slice(0, 500) || null, visibility: vis };
   }
   pubSet(d, p) { this.setState(st => { const mm = { ...(st.sessMeta || {}) }; const o = { ...(mm[d] || {}) }; if (p) o.pub = p; else delete o.pub; mm[d] = o; return { sessMeta: mm }; }); }
@@ -2496,7 +2498,7 @@ class Component extends DCLogic {
     const mu = x.muscles && typeof x.muscles === 'object' ? x.muscles : {}; const ord = Object.keys(mu).filter(k => mu[k] > 0 && MUS.some(q => q[0] === k)).sort((q, r) => mu[r] - mu[q]);
     const musName = k => { const q = MUS.find(y => y[0] === k); return q ? (fr ? q[2] : q[1]) : k; };
     this.shareCard({ name: x.title || L('Workout'), by: x.username ? '@' + x.username : '', date: new Date(x.started_at || x.created_at),
-      stats: [{ label: fr ? 'Durée' : 'Time', value: Math.floor(m / 60) + ':' + pad(m % 60) }, { label: 'Volume', value: Math.round(kg ? vol : vol * KG_LB).toLocaleString() + ' ' + s.unit }, { label: L('Sets'), value: String(x.sets || 0) }],
+      stats: [{ label: fr ? 'Durée' : 'Time', value: x.duration_s > 0 ? Math.floor(m / 60) + ':' + pad(m % 60) : '—' }, { label: 'Volume', value: Math.round(kg ? vol : vol * KG_LB).toLocaleString() + ' ' + s.unit }, { label: L('Sets'), value: String(x.sets || 0) }],
       mus: ord.map(musName) }, document.querySelectorAll('[data-cf="' + id + '"] svg'));
   }
   // Image 1080×1350 de la séance (résumé de fin de séance ou publication du Fil), puis feuille de partage du téléphone.
@@ -3133,7 +3135,7 @@ class Component extends DCLogic {
   cardVals(s, items, pfx) {
     const fr = LANG === 'fr'; const a = s.acct; const kg = s.unit === 'kg'; const er = k => (s.acE && s.acE.k === k && s.acE.m) || ''; const VN = { public: 'Public', followers: fr ? 'Abonnés' : 'Followers', private: fr ? 'Moi seul' : 'Only me' };
     const musName = k => { const m = MUS.find(x => x[0] === k); return m ? (fr ? m[2] : m[1]) : k; }; const SF = [FIG_BASE, mixC(FIG_BASE, ACC, 0.3), mixC(FIG_BASE, ACC, 0.62), ACC];
-    const hm = sec => { const m = Math.round((sec || 0) / 60); return Math.floor(m / 60) + ':' + pad(m % 60); };
+    const hm = sec => { const m = Math.round((sec || 0) / 60); return sec > 0 ? Math.floor(m / 60) + ':' + pad(m % 60) : '—'; };
     return items.map((x, i) => { const mine = !!a && x.user_id === a.uid; const mu = x.muscles && typeof x.muscles === 'object' ? x.muscles : {}; const ord = Object.keys(mu).filter(k => mu[k] > 0 && MUS.some(m => m[0] === k)).sort((q, r) => mu[r] - mu[q]);
       const mx = Math.max(0, ...ord.map(k => mu[k])); const lv = v => !v ? 0 : v >= mx * 0.66 ? 3 : v >= mx * 0.33 ? 2 : 1; const sty = k => { const l = lv(mu[k]); return { fill: SF[l], glow: false, op: 1 }; }; const nop = () => {};
       const prs = (Array.isArray(x.prs) ? x.prs : []).filter(q => q && typeof q === 'object'); /* données d'un autre compte : jamais fiables */ const vol = Number(x.volume_kg) || 0; const k = 'k' + x.id;
@@ -3416,7 +3418,7 @@ class Component extends DCLogic {
     const sessions = Object.keys(byDate).map(Number).sort((a, b) => b - a).map(date => {
       const ex = byDate[date]; const m = meta[date] || {};
       let r = m.rid ? routines.find(x => x.id === m.rid) : null;
-      if (!r && !m.name) { let best = 0; routines.forEach(x => { const o = x.ex.filter(e => ex.some(y => y.name === e.name)).length; if (o > best) { best = o; r = x; } }); }
+      if (!r && !m.name) r = guessR(routines, ex.map(y => y.name));
       if (r) { const ix = n => { const i = r.ex.findIndex(e => e.name === n); return i < 0 ? 99 : i; }; ex.sort((a, b) => ix(a.name) - ix(b.name)); }
       const vol = ex.reduce((a, x) => a + (isT(this.meta(x.name).type) ? 0 : work(x.sets).reduce((b, y) => b + y.w * y.r, 0)), 0);
       return { date, name: m.name || (r ? r.name : L('Workout')), dur: m.dur, ex, vol, sets: ex.reduce((a, x) => a + x.sets.length, 0) };
