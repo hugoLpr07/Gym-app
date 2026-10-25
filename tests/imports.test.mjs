@@ -93,11 +93,12 @@ test('import Strong / Hevy : « Incline » ne range que les développés inclin�
 });
 
 // Export Strong récent : unité dans le titre de colonne, pas de colonne « Weight Unit » / « Distance Unit ».
-test('parseLifts lit un export Strong récent (« Weight (kg) », « Weight (lbs) », « Distance (mi) »)', () => {
+test('parseLifts lit un export Strong récent (« Weight (kg) », « Weight (lbs) », « Distance (mi) », « Duration (sec) »)', () => {
   const B = loadBarlog();
   const csv = u => [`Date,Workout Name,Duration,Exercise Name,Set Order,Weight (${u}),Reps,Distance (${u === 'kg' ? 'km' : 'mi'}),Seconds,Notes,Workout Notes,RPE`,
     '2025-03-01 10:00:00,Push,45m,Bench Press (Barbell),1,100,5,0,0,,,',
     '2025-03-01 10:00:00,Push,45m,Running,1,0,0,2,600,,,'].join('\n');
+  assert.equal(B.parseLifts(csv('kg').replace('Duration,', 'Duration (sec),').replace(/,45m,/g, ',2700,'), 'kg').sessions[0].dur, 2700e3, 'durée en secondes');
   for (const appUnit of ['kg', 'lb']) {
     const kg = B.parseLifts(csv('kg'), appUnit).sessions[0].ex, lb = B.parseLifts(csv('lbs'), appUnit).sessions[0].ex;
     assert.deepEqual([kg[0].sets[0].w, kg[1].sets[0].d], [100, 2], 'kg / km : rien à convertir, peu importe l’unité de l’app');

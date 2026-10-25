@@ -1628,7 +1628,7 @@ function parseLifts(t, unit) {
   const hd = rows[0].map(x => x.trim().toLowerCase()); const ix = (...a) => hd.findIndex(h => a.includes(h));
   const hevy = ix('exercise_title') >= 0, strong = !hevy && ix('exercise name') >= 0; if (!hevy && !strong) return null;
   const I = hevy ? { d: ix('start_time'), e: ix('end_time'), n: ix('title'), x: ix('exercise_title'), t: ix('set_type'), w: ix('weight_kg', 'weight_lbs'), r: ix('reps'), k: ix('distance_km', 'distance_miles'), s: ix('duration_seconds') }
-    : { d: ix('date'), n: ix('workout name'), du: ix('duration', 'workout duration'), x: ix('exercise name'), t: ix('set order'), w: ix('weight', 'weight (kg)', 'weight (lbs)', 'weight (lb)'), wu: ix('weight unit'), r: ix('reps'), k: ix('distance', 'distance (km)', 'distance (mi)', 'distance (miles)'), ku: ix('distance unit'), s: ix('seconds') };
+    : { d: ix('date'), n: ix('workout name'), du: ix('duration', 'workout duration', 'duration (sec)', 'duration (s)', 'duration (seconds)'), x: ix('exercise name'), t: ix('set order'), w: ix('weight', 'weight (kg)', 'weight (lbs)', 'weight (lb)'), wu: ix('weight unit'), r: ix('reps'), k: ix('distance', 'distance (km)', 'distance (mi)', 'distance (miles)'), ku: ix('distance unit'), s: ix('seconds') };
   if (I.d < 0 || I.x < 0) return null;
   // Strong récent : unité dans le titre de colonne (« Weight (kg) ») ; sinon colonne « Weight Unit » ou unité de l'app.
   const hu = (i, re) => /\(/.test(hd[i] || '') ? re.test(hd[i]) : unit === 'lb';
@@ -1640,7 +1640,7 @@ function parseLifts(t, unit) {
     if (strong && I.ku >= 0 ? /mi/i.test(g('ku')) : kMi) dist *= 1.60934;
     if (!reps && !sec && !dist) return;
     const name = mapEx(raw), key = date + '|' + g('n');
-    const se = S[key] || (S[key] = { date, name: g('n') || 'Workout', dur: hevy ? Math.max(0, (parseDT(g('e')) || date) - date) : parseDur(g('du')), ex: {}, order: [] });
+    const se = S[key] || (S[key] = { date, name: g('n') || 'Workout', dur: hevy ? Math.max(0, (parseDT(g('e')) || date) - date) : /\(s/.test(hd[I.du] || '') ? numV(g('du')) * 1000 : parseDur(g('du')), ex: {}, order: [] });
     const ty = dist > 0 || (sec > 0 && autoType(name) === 'cardio') ? 'cardio' : sec > 0 && !reps ? 'time' : 'reps';
     const x = se.ex[name] || (se.ex[name] = { name, type: ty, sets: [] }); if (!se.order.includes(name)) se.order.push(name);
     const o = ty === 'cardio' ? { w: 0, r: Math.round(sec / 6) / 10, d: Math.round(dist * 100) / 100, c: 0 } : { w: Math.round(w * 100) / 100, r: Math.round(ty === 'time' ? sec : reps) };
