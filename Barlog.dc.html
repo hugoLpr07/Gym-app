@@ -1628,9 +1628,11 @@ function parseLifts(t, unit) {
   const hd = rows[0].map(x => x.trim().toLowerCase()); const ix = (...a) => hd.findIndex(h => a.includes(h));
   const hevy = ix('exercise_title') >= 0, strong = !hevy && ix('exercise name') >= 0; if (!hevy && !strong) return null;
   const I = hevy ? { d: ix('start_time'), e: ix('end_time'), n: ix('title'), x: ix('exercise_title'), t: ix('set_type'), w: ix('weight_kg', 'weight_lbs'), r: ix('reps'), k: ix('distance_km', 'distance_miles'), s: ix('duration_seconds') }
-    : { d: ix('date'), n: ix('workout name'), du: ix('duration', 'workout duration'), x: ix('exercise name'), t: ix('set order'), w: ix('weight'), wu: ix('weight unit'), r: ix('reps'), k: ix('distance'), ku: ix('distance unit'), s: ix('seconds') };
+    : { d: ix('date'), n: ix('workout name'), du: ix('duration', 'workout duration'), x: ix('exercise name'), t: ix('set order'), w: ix('weight', 'weight (kg)', 'weight (lbs)', 'weight (lb)'), wu: ix('weight unit'), r: ix('reps'), k: ix('distance', 'distance (km)', 'distance (mi)', 'distance (miles)'), ku: ix('distance unit'), s: ix('seconds') };
   if (I.d < 0 || I.x < 0) return null;
-  const wLb = hevy ? hd[I.w] === 'weight_lbs' : unit === 'lb', kMi = hevy ? hd[I.k] === 'distance_miles' : unit === 'lb'; const S = {};
+  // Strong récent : unité dans le titre de colonne (« Weight (kg) ») ; sinon colonne « Weight Unit » ou unité de l'app.
+  const hu = (i, re) => /\(/.test(hd[i] || '') ? re.test(hd[i]) : unit === 'lb';
+  const wLb = hevy ? hd[I.w] === 'weight_lbs' : hu(I.w, /\(lbs?\)/), kMi = hevy ? hd[I.k] === 'distance_miles' : hu(I.k, /\(mi/); const S = {};
   rows.slice(1).forEach(c => { const g = k => I[k] != null && I[k] >= 0 ? String(c[I[k]] == null ? '' : c[I[k]]).trim() : '';
     const date = parseDT(g('d')), raw = g('x'); if (!date || !raw) return;
     const reps = numV(g('r')), sec = numV(g('s')); let dist = numV(g('k')), w = numV(g('w'));

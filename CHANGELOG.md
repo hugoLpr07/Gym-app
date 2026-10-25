@@ -7,6 +7,7 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 
 ## 0.36.3 — 2026-10-24
 - Fil : une séance enregistrée sans nom (anciennes séances, imports) est publiée sous le nom de la routine qui lui correspond (ex. « Legs A »), comme dans sa fiche, au lieu de « Séance » ; sans durée enregistrée, le Fil et l’image partagée affichent « — » au lieu de « 0:00 ».
+- Import Strong : les exports récents dont les colonnes s’appellent « Weight (kg) », « Weight (lbs) », « Distance (km) » ou « Distance (mi) » sont lus correctement (les charges et distances étaient importées à 0) ; les livres et les miles sont convertis.
 
 ## 0.36.2 — 2026-10-24
 - L’app reste toujours en vertical, même quand on tourne le téléphone (iPhone, Android et site ajouté à l’écran d’accueil sur Android).
