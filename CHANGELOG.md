@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.36.2 — 2026-10-24
+- L’app reste toujours en vertical, même quand on tourne le téléphone (iPhone, Android et site ajouté à l’écran d’accueil sur Android).
+
 ## 0.36.1 — 2026-10-23
 - Maintien par côté (ex. GHD Hold per side) : à la fin du côté gauche, le côté droit ne démarre plus tout seul ; le bouton affiche « ▶ Droite » et on le lance quand on est en place. Arrêter le gauche plus tôt garde son temps et propose aussi de lancer le droit. Pendant l'attente, aucun chrono n'est affiché sur l'écran verrouillé.
 
