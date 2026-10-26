@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.36.4 — 2026-10-25
+- Android : le bouton « Fin de repos » s’active de nouveau, le minuteur réapparaît sur l’écran verrouillé et les notifications push (bravos, commentaires) sont de nouveau reçues. L’APK optimisé de la 0.36.0 à la 0.36.3 empêchait l’app de demander l’autorisation d’afficher des notifications (aucune réponse, donc rien ne s’activait). Rien ne change sur iPhone.
+
 ## 0.36.3 — 2026-10-24
 - Fil : une séance enregistrée sans nom (anciennes séances, imports) est publiée sous le nom de la routine qui lui correspond (ex. « Legs A »), comme dans sa fiche, au lieu de « Séance » ; sans durée enregistrée, le Fil et l’image partagée affichent « — » au lieu de « 0:00 ».
 - Import Strong : les exports récents dont les colonnes s’appellent « Weight (kg) », « Weight (lbs) », « Distance (km) », « Distance (mi) » ou « Duration (sec) » sont lus correctement (les charges, distances et durées étaient importées à 0) ; les livres et les miles sont convertis.
