@@ -842,15 +842,15 @@ input::placeholder{color:#9C9CA8}
 <button onClick="{{ acPubOpen }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:56px;gap:8px;text-align:left;font-size:16px;font-weight:500;"><span>{{ acPubLabel }}</span><span style="color:#9C9CA8;font-size:20px;">›</span></button>
 <button onClick="{{ acBlkOpen }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:56px;gap:8px;text-align:left;font-size:16px;font-weight:500;"><span>{{ acBlkLabel }}</span><span style="color:#9C9CA8;font-size:20px;">›</span></button>
 <sc-if value="{{ acMqOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ acMqOpen }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:56px;gap:8px;text-align:left;font-size:16px;font-weight:500;"><span>{{ acMqLabel }}</span><span style="color:{{ acMqColor }};font-size:20px;">›</span></button></sc-if>
-<button onClick="{{ pwOpen }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:{{ pwRowBorder }};background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
-<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">{{ pwLabel }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ pwSub }}</span></div><span style="color:#9C9CA8;font-size:20px;">{{ pwArrow }}</span></button>
-<sc-if value="{{ pwOn }}" hint-placeholder-val="{{ false }}"><div style="padding:0 16px 16px;border-bottom:1px solid #24242B;display:flex;flex-direction:column;gap:10px;">
+<button onClick="{{ mdpOpen }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:{{ mdpRowBorder }};background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">{{ mdpLabel }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ mdpSub }}</span></div><span style="color:#9C9CA8;font-size:20px;">{{ mdpArrow }}</span></button>
+<sc-if value="{{ mdpOn }}" hint-placeholder-val="{{ false }}"><div style="padding:0 16px 16px;border-bottom:1px solid #24242B;display:flex;flex-direction:column;gap:10px;">
 <input type="email" autocomplete="username" value="{{ acMail }}" readonly tabindex="-1" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;">
-<input type="password" autocomplete="new-password" value="{{ pwNew }}" onChange="{{ onPwNew }}" placeholder="{{ pwNewPh }}" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;padding:0 14px;">
-<input type="password" autocomplete="new-password" value="{{ pwNew2 }}" onChange="{{ onPwNew2 }}" placeholder="{{ pwNew2Ph }}" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;padding:0 14px;">
-<button onClick="{{ pwSave }}" style="height:52px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;opacity:{{ acOp }};">{{ pwSaveLabel }}</button>
-<sc-if value="{{ pwErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ pwErr }}</span></sc-if>
-<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ pwHint }}</span>
+<input type="password" autocomplete="new-password" value="{{ mdpNew }}" onChange="{{ onMdpNew }}" placeholder="{{ mdpNewPh }}" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;padding:0 14px;">
+<input type="password" autocomplete="new-password" value="{{ mdpNew2 }}" onChange="{{ onMdpNew2 }}" placeholder="{{ mdpNew2Ph }}" style="width:100%;box-sizing:border-box;height:48px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:16px;padding:0 14px;">
+<button onClick="{{ mdpSave }}" style="height:52px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;opacity:{{ acOp }};">{{ mdpSaveLabel }}</button>
+<sc-if value="{{ mdpErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ mdpErr }}</span></sc-if>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ mdpHint }}</span>
 </div></sc-if>
 <button onClick="{{ acPrivClick }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
 <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">{{ acPrivLabel }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;">{{ acPrivSub }}</span></div>
@@ -1471,7 +1471,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.37.0';
+const APP_VERSION = '0.37.1';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
@@ -1875,17 +1875,17 @@ class Component extends DCLogic {
   // Définir ou changer le mot de passe (Profil → Compte) : la session prouve déjà l'identité (code ou mot de passe),
   // aucun e-mail n'est envoyé. 8 caractères au moins (le serveur en exige 6) ; 72 au plus (limite de Supabase).
   acPwSet() {
-    const s = this.state; const fr = LANG === 'fr'; if (s.acBusy || !s.acct) return; const password = s.pwNew || '';
-    if (password.length < 8) return this.acFail('pw', fr ? 'Au moins 8 caractères' : 'At least 8 characters');
-    if (password.length > 72) return this.acFail('pw', fr ? '72 caractères au plus' : '72 characters at most');
-    if (password !== (s.pwNew2 || '')) return this.acFail('pw', fr ? 'Les deux mots de passe ne sont pas identiques' : 'The two passwords don’t match');
+    const s = this.state; const fr = LANG === 'fr'; if (s.acBusy || !s.acct) return; const password = s.mdpNew || '';
+    if (password.length < 8) return this.acFail('mdp', fr ? 'Au moins 8 caractères' : 'At least 8 characters');
+    if (password.length > 72) return this.acFail('mdp', fr ? '72 caractères au plus' : '72 characters at most');
+    if (password !== (s.mdpNew2 || '')) return this.acFail('mdp', fr ? 'Les deux mots de passe ne sont pas identiques' : 'The two passwords don’t match');
     this.setState({ acBusy: true, acE: null });
-    this.sb().then(c => c.auth.updateUser({ password })).then(({ error }) => { if (error) throw error; this.setState({ acBusy: false, pwOn: false, pwNew: '', pwNew2: '' }); this.flash(fr ? 'Mot de passe enregistré' : 'Password saved'); })
+    this.sb().then(c => c.auth.updateUser({ password })).then(({ error }) => { if (error) throw error; this.setState({ acBusy: false, mdpOn: false, mdpNew: '', mdpNew2: '' }); this.flash(fr ? 'Mot de passe enregistré' : 'Password saved'); })
       .catch(e => { this.setState({ acBusy: false }); const c = (e && e.code) || '';
-        if (c === 'same_password') return this.acFail('pw', fr ? 'C’est déjà ton mot de passe' : 'That’s already your password');
-        if (c === 'weak_password') return this.acFail('pw', fr ? 'Mot de passe trop faible, choisis-en un plus long' : 'Password too weak, pick a longer one');
-        if (c === 'reauthentication_needed') return this.acFail('pw', fr ? 'Par sécurité, déconnecte-toi, reconnecte-toi avec un code puis réessaie' : 'For security, sign out, sign back in with a code, then try again');
-        this.acErr(e, false, 'pw'); });
+        if (c === 'same_password') return this.acFail('mdp', fr ? 'C’est déjà ton mot de passe' : 'That’s already your password');
+        if (c === 'weak_password') return this.acFail('mdp', fr ? 'Mot de passe trop faible, choisis-en un plus long' : 'Password too weak, pick a longer one');
+        if (c === 'reauthentication_needed') return this.acFail('mdp', fr ? 'Par sécurité, déconnecte-toi, reconnecte-toi avec un code puis réessaie' : 'For security, sign out, sign back in with a code, then try again');
+        this.acErr(e, false, 'mdp'); });
   }
   acVerify() {
     const s = this.state; const fr = LANG === 'fr'; if (s.acBusy || !s.acSent) return; const token = (s.acCode || '').replace(/\D/g, '');
@@ -1916,7 +1916,7 @@ class Component extends DCLogic {
   }
   acOut() {
     const drop = this.pushDrop(); const PN = this.pushPl(); this._acStale = false;
-    this.setState(st => ({ acct: null, acctSeen: false, acDelArm: false, acSent: null, acCode: '', pwOn: false, pwNew: '', pwNew2: '', acUser: '', acName: '', cbAsk: null, cloud: { ...(st.cloud || {}), link: false, uid: null }, push: { ...(st.push || {}), tok: null, uid: null } }));
+    this.setState(st => ({ acct: null, acctSeen: false, acDelArm: false, acSent: null, acCode: '', mdpOn: false, mdpNew: '', mdpNew2: '', acUser: '', acName: '', cbAsk: null, cloud: { ...(st.cloud || {}), link: false, uid: null }, push: { ...(st.push || {}), tok: null, uid: null } }));
     // Le jeton de notifications de ce téléphone est aussi annulé auprès de Google : même si sa suppression côté serveur
     // a échoué (hors ligne), les envois suivants seront refusés et la fonction push l'oubliera.
     // Déconnexion de CE téléphone seulement (scope local) : les autres appareils du compte restent connectés.
@@ -3140,12 +3140,12 @@ class Component extends DCLogic {
       acAvDel: () => this.avDel(), acAvDelLabel: s.avDelArm ? (fr ? 'Toucher encore' : 'Tap again') : (fr ? 'Retirer' : 'Remove'), acAvDelColor: s.avDelArm ? '#FF4D4D' : '#9C9CA8', acAvDelBorder: s.avDelArm ? '#FF4D4D' : '#33333C',
       acAvErr: (s.acE && s.acE.k === 'av' && s.acE.m) || '',
       acPendingText: busy ? (fr ? 'Chargement du profil…' : 'Loading profile…') : (fr ? 'Profil non chargé (pas de connexion ?)' : 'Profile not loaded (offline?)'), acRetry: () => { if (!busy) this.acBoot(); }, acRetryLabel: fr ? 'Réessayer' : 'Retry',
-      acBlkOpen: () => this.svOpen({ v: 'blocks' }), pwOn: !!s.pwOn, pwOpen: () => this.setState({ pwOn: !s.pwOn, pwNew: '', pwNew2: '', acE: null }), pwArrow: s.pwOn ? '⌄' : '›', pwRowBorder: s.pwOn ? 'none' : '1px solid #24242B',
-      pwLabel: fr ? 'Mot de passe' : 'Password', pwSub: fr ? 'Définir ou changer : te connecter sans attendre le code' : 'Set or change: sign in without waiting for a code',
-      pwNew: s.pwNew || '', onPwNew: e => this.setState({ pwNew: e.target.value }), pwNewPh: fr ? 'Nouveau mot de passe (8 caractères ou plus)' : 'New password (8+ characters)',
-      pwNew2: s.pwNew2 || '', onPwNew2: e => this.setState({ pwNew2: e.target.value }), pwNew2Ph: fr ? 'Confirmer le mot de passe' : 'Confirm password',
-      pwSave: () => this.acPwSet(), pwSaveLabel: busy ? (fr ? 'Enregistrement…' : 'Saving…') : (fr ? 'Enregistrer' : 'Save'), pwErr: (s.acE && s.acE.k === 'pw' && s.acE.m) || '',
-      pwHint: fr ? 'La connexion par code e-mail reste possible. Mot de passe oublié : connecte-toi avec un code, puis choisis-en un nouveau ici.' : 'Signing in with an email code still works. Forgot it? Sign in with a code, then pick a new one here.',
+      acBlkOpen: () => this.svOpen({ v: 'blocks' }), mdpOn: !!s.mdpOn, mdpOpen: () => this.setState({ mdpOn: !s.mdpOn, mdpNew: '', mdpNew2: '', acE: null }), mdpArrow: s.mdpOn ? '⌄' : '›', mdpRowBorder: s.mdpOn ? 'none' : '1px solid #24242B',
+      mdpLabel: fr ? 'Mot de passe' : 'Password', mdpSub: fr ? 'Définir ou changer : te connecter sans attendre le code' : 'Set or change: sign in without waiting for a code',
+      mdpNew: s.mdpNew || '', onMdpNew: e => this.setState({ mdpNew: e.target.value }), mdpNewPh: fr ? 'Nouveau mot de passe (8 caractères ou plus)' : 'New password (8+ characters)',
+      mdpNew2: s.mdpNew2 || '', onMdpNew2: e => this.setState({ mdpNew2: e.target.value }), mdpNew2Ph: fr ? 'Confirmer le mot de passe' : 'Confirm password',
+      mdpSave: () => this.acPwSet(), mdpSaveLabel: busy ? (fr ? 'Enregistrement…' : 'Saving…') : (fr ? 'Enregistrer' : 'Save'), mdpErr: (s.acE && s.acE.k === 'mdp' && s.acE.m) || '',
+      mdpHint: fr ? 'La connexion par code e-mail reste possible. Mot de passe oublié : connecte-toi avec un code, puis choisis-en un nouveau ici.' : 'Signing in with an email code still works. Forgot it? Sign in with a code, then pick a new one here.',
       acMqOn: s.mqN != null, acMqOpen: () => this.svOpen({ v: 'mq' }), acMqColor: s.mqN ? ACC : '#9C9CA8',
       acMqLabel: (fr ? 'Modération' : 'Moderation') + (s.mqN ? (fr ? ' · ' + s.mqN + ' à traiter' : ' · ' + s.mqN + ' to review') : ''), acBlkLabel: (fr ? 'Comptes bloqués' : 'Blocked accounts') + (s.blk && s.blk.items ? ' (' + s.blk.items.length + ')' : ''), acPubOpen: () => a && this.userOpen(a.uid), acPubLabel: fr ? 'Mon profil public' : 'My public profile',
       acSignOut: () => this.sure('out', () => this.acOut()), acSignOutLabel: fr ? 'Se déconnecter' : 'Sign out',

@@ -276,34 +276,42 @@ function mdpApp(res, state = {}) {
 
 test('mot de passe : enregistré par updateUser (aucun e-mail), panneau refermé et champs vidés', async () => {
   const { app, calls } = mdpApp({ data: { user: { id: 'u1' } }, error: null });
-  let v = app.renderVals(); assert.equal(v.pwOn, false); v.pwOpen();
-  app.setState({ pwNew: 'barre-olympique', pwNew2: 'barre-olympique' }); app.renderVals().pwSave(); await flush(); await flush();
+  let v = app.renderVals(); assert.equal(v.mdpOn, false); v.mdpOpen();
+  app.setState({ mdpNew: 'barre-olympique', mdpNew2: 'barre-olympique' }); app.renderVals().mdpSave(); await flush(); await flush();
   assert.deepEqual(calls, [{ password: 'barre-olympique' }]);
-  assert.equal(app.state.pwOn, false); assert.equal(app.state.pwNew, ''); assert.equal(app.state.pwNew2, ''); assert.equal(app.state.acBusy, false);
+  assert.equal(app.state.mdpOn, false); assert.equal(app.state.mdpNew, ''); assert.equal(app.state.mdpNew2, ''); assert.equal(app.state.acBusy, false);
   assert.ok(app.toasts.includes('Mot de passe enregistré'));
 });
 
 test('mot de passe : trop court, trop long ou confirmation différente → refusé avant le serveur', async () => {
   const { app, calls } = mdpApp({ error: null });
   for (const [a, b, m] of [['court1', 'court1', /Au moins 8/], ['x'.repeat(73), 'x'.repeat(73), /72 caractères/], ['barre-olympique', 'barre-olympiqu', /pas identiques/]]) {
-    app.setState({ pwOn: true, pwNew: a, pwNew2: b }); app.acPwSet(); await flush();
-    assert.match(app.renderVals().pwErr, m);
+    app.setState({ mdpOn: true, mdpNew: a, mdpNew2: b }); app.acPwSet(); await flush();
+    assert.match(app.renderVals().mdpErr, m);
   }
-  assert.equal(calls.length, 0); assert.equal(app.state.pwOn, true, 'le panneau reste ouvert pour corriger');
+  assert.equal(calls.length, 0); assert.equal(app.state.mdpOn, true, 'le panneau reste ouvert pour corriger');
 });
 
 test('mot de passe : refus du serveur → message clair, saisie gardée', async () => {
   const err = code => ({ data: null, error: Object.assign(new Error('x'), { code, status: 422 }) });
   for (const [code, m] of [['same_password', /déjà ton mot de passe/], ['weak_password', /trop faible/], ['reauthentication_needed', /reconnecte-toi avec un code/]]) {
-    const { app } = mdpApp(err(code), { pwOn: true, pwNew: 'barre-olympique', pwNew2: 'barre-olympique' });
+    const { app } = mdpApp(err(code), { mdpOn: true, mdpNew: 'barre-olympique', mdpNew2: 'barre-olympique' });
     app.acPwSet(); await flush(); await flush();
-    assert.match(app.renderVals().pwErr, m); assert.equal(app.state.pwNew, 'barre-olympique'); assert.equal(app.state.acBusy, false);
+    assert.match(app.renderVals().mdpErr, m); assert.equal(app.state.mdpNew, 'barre-olympique'); assert.equal(app.state.acBusy, false);
   }
 });
 
 test('mot de passe : déconnexion → saisie effacée ; écran de connexion explique comment en avoir un', async () => {
-  const { app } = mdpApp({ error: null }, { pwOn: true, pwNew: 'barre-olympique', pwNew2: 'barre-olympique' });
+  const { app } = mdpApp({ error: null }, { mdpOn: true, mdpNew: 'barre-olympique', mdpNew2: 'barre-olympique' });
   app.pushDrop = () => Promise.resolve(); app.acOut();
-  assert.equal(app.state.pwOn, false); assert.equal(app.state.pwNew, ''); assert.equal(app.state.pwNew2, '');
+  assert.equal(app.state.mdpOn, false); assert.equal(app.state.mdpNew, ''); assert.equal(app.state.mdpNew2, '');
   assert.match(app.renderVals().acPwHint, /Profil → Compte → Mot de passe/);
+});
+
+test('mot de passe : la ligne « Mot de passe » n’ouvre pas l’écran Pro, et l’écran Pro se referme (noms pw… = écran Pro)', () => {
+  const { app } = mdpApp({ error: null });
+  app.renderVals().mdpOpen(); let v = app.renderVals();
+  assert.equal(v.mdpOn, true); assert.equal(v.pwOn, false, 'écran Pro fermé');
+  app.setState({ mdpOn: false, pw: { f: null } }); v = app.renderVals(); assert.equal(v.pwOn, true); assert.equal(v.mdpOn, false);
+  v.pwClose(); assert.equal(app.renderVals().pwOn, false, 'Fermer referme l’écran Pro');
 });
