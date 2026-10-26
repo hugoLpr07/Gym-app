@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.36.5 — 2026-10-25
+- Réinstallation (Android) : quand le téléphone remet tes séances depuis sa sauvegarde mais que tu n’es plus connecté, Barlog propose « Content de te revoir » → « Me reconnecter », qui mène directement à la connexion (Profil → Compte). Avant, l’accueil « J’ai déjà un compte » ne s’affichait pas dans ce cas et rien ne signalait la déconnexion. La question n’est posée qu’une fois, et pas après une déconnexion voulue.
+
 ## 0.36.4 — 2026-10-25
 - Android : le bouton « Fin de repos » s’active de nouveau, le minuteur réapparaît sur l’écran verrouillé et les notifications push (bravos, commentaires) sont de nouveau reçues. L’APK optimisé de la 0.36.0 à la 0.36.3 empêchait l’app de demander l’autorisation d’afficher des notifications (aucune réponse, donc rien ne s’activait). Rien ne change sur iPhone.
 

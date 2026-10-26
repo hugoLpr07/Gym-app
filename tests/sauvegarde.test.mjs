@@ -235,10 +235,11 @@ test('séance publiée supprimée hors ligne : la publication est retirée du se
 test('déconnexion : seulement ce téléphone (scope local), jeton de notifications oublié', async () => {
   const B = loadBarlog();
   let scope;
-  const app = makeApp(B, { ...emptyData(), acct: { uid: 'u1', profile: { username: 'a' } }, push: { tok: null } });
+  const app = makeApp(B, { ...emptyData(), acct: { uid: 'u1', profile: { username: 'a' } }, push: { tok: null }, acctSeen: true });
   app.sb = () => Promise.resolve({ auth: { signOut: async o => { scope = o && o.scope; return {}; } } });
   app.acOut(); await flush(); await flush();
   assert.equal(scope, 'local'); assert.equal(app.state.acct, null); assert.equal(app.state.push.tok, null);
+  assert.equal(app.state.acctSeen, false, 'déconnexion voulue : pas de « reconnecte-toi » après une réinstallation');
 });
 
 // ── Effacer / supprimer la sauvegarde en ligne (0.34) ──

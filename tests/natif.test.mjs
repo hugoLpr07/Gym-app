@@ -81,6 +81,51 @@ test('instCheck : jeton de notifications déjà réenregistré par ce téléphon
   assert.equal(app.state.cloud.dev, undefined);
 });
 
+// Réinstallation (Android) : la sauvegarde Google remet les séances mais pas la session → l'accueil « J'ai déjà un compte »
+// ne s'affiche pas ; on propose une fois de se reconnecter (0.36.5).
+function backApp(t, data, sess) {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const F = fakeFs({ 'LIBRARY_NO_CLOUD/barlog-install': 'iNouveau' }); nativeWindow(t, { Filesystem: F });
+  const hadLs = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+  Object.defineProperty(globalThis, 'localStorage', { configurable: true, writable: true, value: { getItem: k => (sess && k === 'barlog-sb-auth' ? '{}' : null) } });
+  t.after(() => { if (hadLs) Object.defineProperty(globalThis, 'localStorage', hadLs); else delete globalThis.localStorage; });
+  return makeApp(loadBarlog(), { ...emptyData(), lang: 'fr', screen: 'tabs', tab: 'today', cloud: { inst: 'iAncien' }, acctSeen: true, ...data });
+}
+
+test('réinstallation : séances revenues sans la session → « Content de te revoir », puis Profil → Compte', async t => {
+  const app = backApp(t);
+  await app.instCheck();
+  assert.equal(app.state.sure, 'back');
+  const v = app.renderVals(); assert.equal(v.sureTitle, 'Content de te revoir'); assert.equal(v.sureGoLabel, 'Me reconnecter'); assert.equal(v.sureNoLabel, 'Plus tard');
+  app.sureGo();
+  assert.deepEqual([app.state.sure, app.state.screen, app.state.tab, app.state.obAcctHint], [null, 'tabs', 'profile', 'back']);
+  assert.match(app.renderVals().acBackHint, /^Utilise le même e-mail qu’avant/, 'pas de « tes séances reviennent avec ta sauvegarde » : elles sont déjà là');
+  assert.equal(app.state.history && Object.keys(app.state.history).length, Object.keys(emptyData().history || {}).length, 'rien d’effacé, contrairement à l’accueil');
+});
+
+test('réinstallation : « Plus tard » → plus redemandé aux ouvertures suivantes', async t => {
+  const app = backApp(t);
+  await app.instCheck(); app.sureNo();
+  await app.instCheck();
+  assert.equal(app.state.sure, null);
+});
+
+test('réinstallation : pas de question sans compte avant, après une déconnexion voulue, avec une session gardée, ou à la mise à jour', async t => {
+  for (const [why, data, sess] of [['jamais connecté', { acctSeen: undefined }], ['déconnecté exprès', { acctSeen: false }], ['session gardée (restauration iCloud)', {}, true],
+    ['mise à jour depuis une version sans identifiant', { cloud: {} }], ['déjà connecté', { acct: { uid: 'u1', profile: { username: 'moi' } } }]]) {
+    await t.test(why, async t2 => { const app = backApp(t2, data, sess); await app.instCheck(); assert.equal(app.state.sure, undefined); });
+  }
+});
+
+test('marque « compte utilisé ici » posée à chaque connexion (acLoad), jamais envoyée en ligne ni exportée', async () => {
+  const B = loadBarlog();
+  const app = makeApp(B, { ...emptyData() });
+  const c = { from: () => ({ select: () => ({ eq: () => ({ maybeSingle: () => Promise.resolve({ data: null, error: null }) }) }) }) };
+  await app.acLoad(c, { id: 'u1', email: 'a@b.c' });
+  assert.equal(app.state.acctSeen, true);
+  assert.ok(B.PK.includes('acctSeen'), 'gardée sur le téléphone'); assert.ok(B.CB_SKIP.includes('acctSeen'), 'propre à ce téléphone');
+});
+
 // ---- Ouverture d'une notification push ----
 function pushApp(t) {
   t.mock.timers.enable({ apis: ['setTimeout'] });
