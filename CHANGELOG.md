@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.37.0 — 2026-10-26
+- Compte : nouvelle ligne « Mot de passe » dans Profil → Compte pour définir ou changer son mot de passe (8 caractères ou plus, à saisir deux fois), puis se connecter avec « Se connecter avec un mot de passe » sans attendre le code. Aucun e-mail n’est envoyé. La connexion par code e-mail reste possible et sert aussi en cas d’oubli : se connecter avec un code, puis choisir un nouveau mot de passe.
+
 ## 0.36.5 — 2026-10-25
 - Réinstallation (Android) : quand le téléphone remet tes séances depuis sa sauvegarde mais que tu n’es plus connecté, Barlog propose « Content de te revoir » → « Me reconnecter », qui mène directement à la connexion (Profil → Compte). Avant, l’accueil « J’ai déjà un compte » ne s’affichait pas dans ce cas et rien ne signalait la déconnexion. La question n’est posée qu’une fois, et pas après une déconnexion voulue.
 

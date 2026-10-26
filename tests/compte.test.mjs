@@ -264,3 +264,46 @@ test('publier une séance sans nom ni routine : titre de la routine devinée par
   const card = n => app.cardVals(app.state, [{ id: 'a1', user_id: 'u2', username: 'bo', title: 'Legs A', duration_s: n, volume_kg: 0, sets: 2 }], 't')[0].stats[0].value;
   assert.equal(card(0), '—'); assert.equal(card(undefined), '—'); assert.equal(card(3900), '1:05');
 });
+
+// ── Mot de passe défini dans Profil → Compte (0.37.0) ──
+function mdpApp(res, state = {}) {
+  const B = loadBarlog(); const calls = [];
+  const app = makeApp(B, { ...emptyData(), lang: 'fr', acct, ...state });
+  app.sb = () => Promise.resolve({ auth: { updateUser: async o => { calls.push(o); return typeof res === 'function' ? res() : res; } } });
+  app.renderVals();
+  return { app, calls };
+}
+
+test('mot de passe : enregistré par updateUser (aucun e-mail), panneau refermé et champs vidés', async () => {
+  const { app, calls } = mdpApp({ data: { user: { id: 'u1' } }, error: null });
+  let v = app.renderVals(); assert.equal(v.pwOn, false); v.pwOpen();
+  app.setState({ pwNew: 'barre-olympique', pwNew2: 'barre-olympique' }); app.renderVals().pwSave(); await flush(); await flush();
+  assert.deepEqual(calls, [{ password: 'barre-olympique' }]);
+  assert.equal(app.state.pwOn, false); assert.equal(app.state.pwNew, ''); assert.equal(app.state.pwNew2, ''); assert.equal(app.state.acBusy, false);
+  assert.ok(app.toasts.includes('Mot de passe enregistré'));
+});
+
+test('mot de passe : trop court, trop long ou confirmation différente → refusé avant le serveur', async () => {
+  const { app, calls } = mdpApp({ error: null });
+  for (const [a, b, m] of [['court1', 'court1', /Au moins 8/], ['x'.repeat(73), 'x'.repeat(73), /72 caractères/], ['barre-olympique', 'barre-olympiqu', /pas identiques/]]) {
+    app.setState({ pwOn: true, pwNew: a, pwNew2: b }); app.acPwSet(); await flush();
+    assert.match(app.renderVals().pwErr, m);
+  }
+  assert.equal(calls.length, 0); assert.equal(app.state.pwOn, true, 'le panneau reste ouvert pour corriger');
+});
+
+test('mot de passe : refus du serveur → message clair, saisie gardée', async () => {
+  const err = code => ({ data: null, error: Object.assign(new Error('x'), { code, status: 422 }) });
+  for (const [code, m] of [['same_password', /déjà ton mot de passe/], ['weak_password', /trop faible/], ['reauthentication_needed', /reconnecte-toi avec un code/]]) {
+    const { app } = mdpApp(err(code), { pwOn: true, pwNew: 'barre-olympique', pwNew2: 'barre-olympique' });
+    app.acPwSet(); await flush(); await flush();
+    assert.match(app.renderVals().pwErr, m); assert.equal(app.state.pwNew, 'barre-olympique'); assert.equal(app.state.acBusy, false);
+  }
+});
+
+test('mot de passe : déconnexion → saisie effacée ; écran de connexion explique comment en avoir un', async () => {
+  const { app } = mdpApp({ error: null }, { pwOn: true, pwNew: 'barre-olympique', pwNew2: 'barre-olympique' });
+  app.pushDrop = () => Promise.resolve(); app.acOut();
+  assert.equal(app.state.pwOn, false); assert.equal(app.state.pwNew, ''); assert.equal(app.state.pwNew2, '');
+  assert.match(app.renderVals().acPwHint, /Profil → Compte → Mot de passe/);
+});
