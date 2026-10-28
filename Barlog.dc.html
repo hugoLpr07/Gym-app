@@ -1138,6 +1138,7 @@ input::placeholder{color:#9C9CA8}
 <div style="flex:1;min-width:0;display:flex;gap:4px;overflow-x:auto;"><sc-for list="{{ s.effOpts }}" as="o" hint-placeholder-count="8"><button onClick="{{ o.onClick }}" style="flex:none;min-width:40px;height:40px;padding:0 6px;border-radius:10px;border:1px solid {{ o.border }};background:{{ o.bg }};color:{{ o.color }};font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;">{{ o.label }}</button></sc-for></div>
 </div>
 </sc-if>
+<div style="display:flex;justify-content:flex-end;padding:0 12px 8px;"><button onClick="{{ s.onDel }}" style="min-height:44px;padding:0 12px;border:none;border-radius:10px;background:transparent;color:#9C9CA8;font-size:14px;font-weight:600;" style-active="background:#24242B">{{ tx.nDelSet }}</button></div>
 </sc-if>
 </div>
 </sc-for>
@@ -1468,10 +1469,10 @@ Object.assign(FR, { 'Session note (optional)': 'Note de séance (optionnelle)', 
   'Body': 'Corps', 'Reps': 'Reps', 'Per side': 'Par côté', 'per side': 'par côté', 'Plate calculator': 'Calculateur de disques', 'Shows the plates to load on each side of the bar.': 'Affiche les disques à mettre de chaque côté de la barre.', 'Superset with next': 'Superset avec le suivant', 'No rest between linked exercises — rest starts after the last one.': 'Pas de repos entre les exercices liés — le repos démarre après le dernier.', 'SUPERSET': 'SUPERSET', 'Stop': 'Stop', '▶ Start ': '▶ Lancer ', 'Below bar weight': 'Sous le poids de la barre', 'Empty bar': 'Barre vide', 'bar': 'barre', '+ Superset with next': '+ Superset avec le suivant', 'Superset ✓ · tap to unlink': 'Superset ✓ · toucher pour délier', 'Light bar (15 kg / 35 lb)': 'Barre légère (15 kg / 35 lb)', 'For the plate calculator. Off = 20 kg / 45 lb.': 'Pour le calculateur de disques. Désactivé = 20 kg / 45 lb.', 'Program added': 'Programme ajouté', 'Saved': 'Enregistré', 'Enter at least one value': 'Entre au moins une valeur', 'SEC': 'SEC', 'SET': 'SÉRIE', 'Left': 'Gauche', 'Right': 'Droite', 'Left and right logged separately.': 'Gauche et droite saisis séparément.' });
 Object.assign(TX, { nInfo: 'Info', nLibrary: 'Exercise library', nSheetInfo: 'Exercise sheet · muscles, photo, video', nBodyMap: 'Body map', nScale: 'sets', nBodyMapHint: 'Work sets per muscle (secondary muscles count half). Brighter = more trained. Tap any exercise in the library to adjust its muscles.', nFront: 'Front', nBack: 'Back', nNoMedia: 'No photo or video yet', nNoMediaSub: 'Add your own clip or photo of the movement — it stays on this phone.', nDemo: 'Watch a demo', nMuscles: 'Muscles worked', nPrimary: 'Primary', nSecondary: 'Secondary', nMusHint: 'Tap a muscle: primary → secondary → off. Used for the body map and stats.' });
 Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exercices', 'Exercise sheet · muscles, photo, video': 'Fiche de l’exercice · muscles, photo, vidéo', 'Body map': 'Carte du corps', '15+ sets': '15+ séries', 'Work sets per muscle (secondary muscles count half). Brighter = more trained. Tap any exercise in the library to adjust its muscles.': 'Séries de travail par muscle (les muscles secondaires comptent pour moitié). Plus c’est lumineux, plus c’est travaillé. Touche un exercice dans la bibliothèque pour ajuster ses muscles.', 'Front': 'Avant', 'Back': 'Arrière', 'No photo or video yet': 'Aucune photo ou vidéo', 'Add your own clip or photo of the movement — it stays on this phone.': 'Ajoute ta propre vidéo ou photo du mouvement — elle reste sur ce téléphone.', 'Watch a demo': 'Voir une démo', 'Muscles worked': 'Muscles travaillés', 'Primary': 'Principal', 'Secondary': 'Secondaire', 'Tap a muscle: primary → secondary → off. Used for the body map and stats.': 'Touche un muscle (sur le corps ou ci-dessous) : principal → secondaire → retiré.', 'Add photo or video': 'Ajouter photo ou vidéo', 'Replace media': 'Remplacer', 'Remove media': 'Retirer le média', 'Media saved': 'Média enregistré', 'Could not save media': 'Impossible d’enregistrer le média', 'Add to workout': 'Ajouter à la séance', 'Add to routine': 'Ajouter à la routine', 'Best e1RM': 'Meilleur e1RM', 'Last done': 'Dernière fois', 'Sessions logged': 'Séances enregistrées', '7 days': '7 jours', '4-wk avg': 'Moy. 4 sem.', ' · media': ' · média', 'Browse, add photos or videos, set muscles': 'Parcourir, ajouter photos ou vidéos, régler les muscles' });
-Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle' });
-Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance' });
+Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle', nDelSet: 'Remove set' });
+Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance', 'Remove set': 'Retirer la série' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.37.1';
+const APP_VERSION = '0.38.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
@@ -2614,6 +2615,24 @@ class Component extends DCLogic {
       return { focus: { ei, si: ex.sets.length - 1 } };
     });
   }
+  // Retirer une série de la séance en cours (ex. ajoutée par erreur). Si c'était la série en cours, le focus passe à la
+  // suivante à faire du même exercice, sinon à la précédente, sinon à un autre exercice. Le focus et le maintien qui
+  // visent une série plus bas dans le même exercice reculent d'un rang ; le maintien de la série retirée s'arrête.
+  delSet(ei, si) {
+    this.updW((w, s) => {
+      const ex = w.ex[ei]; if (!ex || !ex.sets[si]) return;
+      ex.sets.splice(si, 1);
+      const f = s.focus, h = s.hold; const o = {};
+      if (f && f.ei === ei && f.si > si) o.focus = { ei, si: f.si - 1 };
+      else if (f && f.ei === ei && f.si === si) {
+        const todo = ex.sets.map((x, k) => x.done ? -1 : k).filter(k => k >= 0);
+        const j = todo.find(k => k >= si); const k = j != null ? j : todo[todo.length - 1];
+        o.focus = k != null ? { ei, si: k } : this.nextFocus(w, ei, ex.sets.length - 1);
+      }
+      if (h && h.ei === ei && h.si >= si) o.hold = h.si === si ? null : { ...h, si: h.si - 1 };
+      return o;
+    });
+  }
   restAdj(d) { const s = this.state; if (!s.restEnd || s.restAlert) return; this.setState({ restEnd: Math.max(Date.now(), s.restEnd + d * 1000), restTotal: Math.max(1, s.restTotal + d) }); }
   restSkip() { clearTimeout(this.ra); this.setState({ restEnd: null, restAlert: false }); }
   finish() {
@@ -3359,7 +3378,7 @@ class Component extends DCLogic {
             onFocus: () => { if (!x.done) this.setState({ focus: { ei, si } }); },
             onWarm: (e) => { e.stopPropagation(); this.toggleWarm(ei, si); },
             onSelect: (e) => { const t = e.target; setTimeout(() => { try { t.setSelectionRange(0, t.value.length); } catch (er) {} }, 0); },
-            onCheck: (e) => { e.stopPropagation(); this.check(ei, si); },
+            onCheck: (e) => { e.stopPropagation(); this.check(ei, si); }, onDel: () => this.delSet(ei, si),
             onW: (e) => this.typeW(ei, si, e.target.value), onR: (e) => this.typeR(ei, si, e.target.value), onR2: (e) => this.typeR2(ei, si, e.target.value),
             wMinus: () => this.adj(ei, si, 'w', -wStepKg), wPlus: () => this.adj(ei, si, 'w', wStepKg),
             rMinus: tim && uni ? () => this.adjBoth(ei, si, -5) : tim ? () => this.adj(ei, si, 'r', -5) : uni ? () => this.adjBoth(ei, si, -1) : () => this.adj(ei, si, 'r', -1),

@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.38.0 — 2026-10-28
+- Séance en cours : nouveau bouton « Retirer la série » sous la série en cours, pour enlever une série ajoutée par erreur (ou en trop). Pour une série déjà cochée, la décocher d’abord. Après le retrait, l’app passe à la prochaine série à faire.
+
 ## 0.37.1 — 2026-10-26
 - Profil → Compte : toucher « Mot de passe » ouvrait l’écran Barlog Pro, impossible à refermer. La ligne ouvre maintenant bien le panneau du mot de passe.
 
