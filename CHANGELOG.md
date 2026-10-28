@@ -5,6 +5,10 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.39.0 — 2026-10-28
+- Séance passée → « Modifier » : on peut maintenant ajouter une série oubliée (par exemple pas cochée avant « Finir ») avec « + Ajouter une série » sous chaque exercice, ajouter un exercice avec « + Ajouter un exercice » en bas, et retirer une série avec ✕. La nouvelle série reprend la dernière série de l’exercice ; un exercice ajouté reprend ce que tu as fait la fois d’avant. Si la séance est publiée, la publication (séries, volume, records) se met à jour avec « Terminé » ou en revenant avec ‹.
+- Un exercice fait deux fois dans la même séance : corriger une charge ne change plus les deux.
+
 ## 0.38.2 — 2026-10-28
 - Fil et profils : jusqu’à 3 records, la carte d’une séance les affiche tous. À partir de 4, elle en montre 3 suivis de « +1 autre » (ou « +2 autres »…) ; toucher les records affiche la liste complète.
 
