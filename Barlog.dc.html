@@ -1472,7 +1472,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle', nDelSet: 'Remove set' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance', 'Remove set': 'Retirer la série' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.38.1';
+const APP_VERSION = '0.38.2';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
@@ -3206,14 +3206,14 @@ class Component extends DCLogic {
     return items.map((x, i) => { const mine = !!a && x.user_id === a.uid; const mu = x.muscles && typeof x.muscles === 'object' ? x.muscles : {}; const ord = Object.keys(mu).filter(k => mu[k] > 0 && MUS.some(m => m[0] === k)).sort((q, r) => mu[r] - mu[q]);
       const mx = Math.max(0, ...ord.map(k => mu[k])); const lv = v => !v ? 0 : v >= mx * 0.66 ? 3 : v >= mx * 0.33 ? 2 : 1; const sty = k => { const l = lv(mu[k]); return { fill: SF[l], glow: false, op: 1 }; }; const nop = () => {};
       const prs = (Array.isArray(x.prs) ? x.prs : []).filter(q => q && typeof q === 'object'); /* données d'un autre compte : jamais fiables */ const vol = Number(x.volume_kg) || 0; const k = 'k' + x.id;
-      // Carte réduite (2 records, description de 4 lignes / 180 caractères au plus) ; un toucher l'affiche au complet.
+      // Carte réduite (3 records, description de 4 lignes / 180 caractères au plus) ; un toucher l'affiche au complet.
       const full = !!(s.fdFull || {})[x.id]; const open = () => this.feedFull(x.id); const nt = String(x.note || ''); let nc = nt.split('\n').slice(0, 4).join('\n');
-      if (nc.length > 180) nc = nc.slice(0, 180).replace(/\s+\S*$/, ''); const cut = !full && nc.length < nt.length; const prMore = !full && prs.length > 2;
+      if (nc.length > 180) nc = nc.slice(0, 180).replace(/\s+\S*$/, ''); const cut = !full && nc.length < nt.length; const prMore = !full && prs.length > 3;
       return { key: x.id, ini: x.avatar ? '' : iniOf(x.display_name || x.username), avImg: avImg(x.avatar), avBg: mine ? ACC : '#24242B', avColor: mine ? '#0A0A0C' : '#FFFFFF', name: x.display_name || x.username || '—', handle: '@' + (x.username || ''), when: relT(x.created_at || x.started_at, fr),
         onUser: () => this.userOpen(x.user_id, { username: x.username, display_name: x.display_name, avatar: x.avatar }),
         visOn: mine, vis: VN[x.visibility] || x.visibility || '', title: x.title || L('Workout'),
         stats: [[fr ? 'Durée' : 'Time', hm(x.duration_s)], ['Volume', Math.round(kg ? vol : vol * KG_LB).toLocaleString() + ' ' + s.unit], [L('Sets'), String(x.sets || 0)]].map(([label, value]) => ({ label, value })),
-        prOn: prs.length > 0, prTitle: '🏆 ' + prs.length + (fr ? ' record' : ' PR') + (prs.length > 1 ? 's' : ''), prList: (prMore ? prs.slice(0, 2) : prs).map(q => ({ text: L(String(q.ex || '')) + ' ' + this.dispW(Number(q.w) || 0) + ' ' + s.unit + ' × ' + (Number(q.r) || 0) })), prMore, prOpen: prMore ? open : nop, prMoreText: '+' + (prs.length - 2) + (fr ? ' autre' + (prs.length > 3 ? 's' : '') : ' more'),
+        prOn: prs.length > 0, prTitle: '🏆 ' + prs.length + (fr ? ' record' : ' PR') + (prs.length > 1 ? 's' : ''), prList: (prMore ? prs.slice(0, 3) : prs).map(q => ({ text: L(String(q.ex || '')) + ' ' + this.dispW(Number(q.w) || 0) + ' ' + s.unit + ' × ' + (Number(q.r) || 0) })), prMore, prOpen: prMore ? open : nop, prMoreText: '+' + (prs.length - 3) + (fr ? ' autre' + (prs.length > 4 ? 's' : '') : ' more'),
         musOn: ord.length > 0, fFront: ord.length ? bodyFig(FIG_FRONT, sty, nop, false, { uid: pfx + i + 'f' }) : null, fBack: ord.length ? bodyFig(FIG_BACK, sty, nop, false, { uid: pfx + i + 'b' }) : null,
         mus: ord.slice(0, 3).map(q => ({ label: musName(q), bg: lv(mu[q]) === 3 ? ACC : '#24242B', color: lv(mu[q]) === 3 ? '#0A0A0C' : '#FFFFFF' })),
         noteOn: !!nt, note: cut ? nc.replace(/[\s.,;:!?…]+$/, '') + '…' : nt, noteCut: cut, noteCutText: fr ? ' voir plus' : ' more', noteOpen: cut ? open : nop,

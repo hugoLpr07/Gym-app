@@ -211,24 +211,25 @@ test('Fil : une publication piégée (prs: [null]) ne fait pas planter l’affic
   assert.deepEqual(out[0].prList.map(p => p.text), ['Bench Press 100 kg × 5']);
 });
 
-test('Fil : « +1 autre » et une longue description s’affichent au complet quand on les touche (0.38.1)', () => {
+test('Fil : jusqu’à 3 records affichés ; au-delà « +N autres », et une longue description, s’affichent au complet quand on les touche (0.38.2)', () => {
   const B = loadBarlog();
   const app = makeApp(B, { ...emptyData(), lang: 'fr', unit: 'kg', acct: { uid: 'moi', profile: { username: 'moi' } } });
   app.renderVals();
   const long = 'Grosse séance de jambes aujourd’hui, le squat montait bien et la presse aussi, mais les fentes à la fin étaient vraiment dures. '.repeat(3).trim();
   const row = { id: 'a1', user_id: 'x', username: 'x', title: 'Legs', duration_s: 60, volume_kg: 1, sets: 9, note: long, visibility: 'public',
-    prs: [{ ex: 'Squat', w: 140, r: 5 }, { ex: 'Leg Press', w: 250, r: 10 }, { ex: 'Lunge', w: 30, r: 12 }] };
+    prs: [{ ex: 'Squat', w: 140, r: 5 }, { ex: 'Leg Press', w: 250, r: 10 }, { ex: 'Lunge', w: 30, r: 12 }, { ex: 'Leg Curl', w: 50, r: 10 }] };
   const card = () => app.cardVals(app.state, [row], 'fd')[0];
   let c = card();
-  assert.equal(c.prList.length, 2); assert.ok(c.prMore); assert.equal(c.prMoreText, '+1 autre');
+  assert.equal(c.prList.length, 3); assert.ok(c.prMore); assert.equal(c.prMoreText, '+1 autre');
   assert.ok(c.noteCut); assert.ok(c.note.length <= 181 && c.note.endsWith('…'));
   c.prOpen();
   c = card();
-  assert.deepEqual(c.prList.map(p => p.text), ['Squat 140 kg × 5', 'Leg Press 250 kg × 10', 'Lunge 30 kg × 12']);
+  assert.deepEqual(c.prList.map(p => p.text), ['Squat 140 kg × 5', 'Leg Press 250 kg × 10', 'Lunge 30 kg × 12', 'Leg Curl 50 kg × 10']);
   assert.equal(c.prMore, false); assert.equal(c.noteCut, false); assert.equal(c.note, long);
-  // Courte description, 2 records : rien à déplier, toucher ne change rien.
-  const c2 = app.cardVals(app.state, [{ ...row, id: 'a2', note: 'Bonne séance', prs: row.prs.slice(0, 2) }], 'fd')[0];
-  assert.equal(c2.prMore, false); assert.equal(c2.noteCut, false); assert.equal(c2.note, 'Bonne séance');
+  assert.equal(app.cardVals(app.state, [{ ...row, id: 'a5', prs: [...row.prs, row.prs[0]] }], 'fd')[0].prMoreText, '+2 autres');
+  // Courte description, 3 records : tout est affiché, rien à déplier, toucher ne change rien.
+  const c2 = app.cardVals(app.state, [{ ...row, id: 'a2', note: 'Bonne séance', prs: row.prs.slice(0, 3) }], 'fd')[0];
+  assert.equal(c2.prList.length, 3); assert.equal(c2.prMore, false); assert.equal(c2.noteCut, false); assert.equal(c2.note, 'Bonne séance');
   c2.prOpen(); c2.noteOpen(); assert.ok(!(app.state.fdFull || {}).a2);
   // Beaucoup de retours à la ligne : coupée après 4 lignes.
   const c3 = app.cardVals(app.state, [{ ...row, id: 'a3', note: '1\n2\n3\n4\n5\n6' }], 'fd')[0];

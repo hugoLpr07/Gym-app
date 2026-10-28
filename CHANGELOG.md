@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.38.2 — 2026-10-28
+- Fil et profils : jusqu’à 3 records, la carte d’une séance les affiche tous. À partir de 4, elle en montre 3 suivis de « +1 autre » (ou « +2 autres »…) ; toucher les records affiche la liste complète.
+
 ## 0.38.1 — 2026-10-28
 - Fil et profils : toucher « +1 autre » sous les records d’une séance n’affichait rien. Toucher les records affiche maintenant la liste complète. Une longue description est d’abord raccourcie (4 lignes au plus, « … voir plus ») ; la toucher l’affiche en entier.
 
