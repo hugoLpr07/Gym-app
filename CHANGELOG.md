@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.40.1 — 2026-11-01
+- En livres, l’augmentation proposée passe de +5 lb à +2,5 lb (comme +2,5 kg en kilos) : à toi d’arrondir selon les poids de ta salle. Les boutons −/+ du poids pendant la séance gardent un pas de 5 lb.
+
 ## 0.40.0 — 2026-11-01
 - Lancer une séance d’un programme : chaque série est préremplie avec les reps prévues dans le programme (par exemple 3 × 10 → 10, 10, 10), et plus avec celles faites la dernière fois. Le poids reste celui de la dernière fois, et la colonne « PRÉC. » montre toujours ce que tu as fait. Pareil pour les deux côtés d’un exercice unilatéral et pour la durée d’un exercice chronométré ; les échauffements (W) gardent leurs valeurs de la dernière fois.
 - Augmenter la charge n’est proposé que si, la dernière fois, toutes les séries prévues ont été faites au même poids avec au moins les reps du programme (par exemple 5 × 5 à 55 lb → la fois suivante, on propose d’augmenter). Une série manquée, une série sous les reps prévues ou des poids différents : pas de proposition.

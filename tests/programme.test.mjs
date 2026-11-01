@@ -50,3 +50,13 @@ test('unilatéral et chronométré : valeur du programme des deux côtés / en s
   const t = a.mkEx('Plank', 3, 45, { Plank: [{ date: D1, sets: [{ w: 0, r: 30 }, { w: 0, r: 30 }, { w: 0, r: 25 }] }] });
   assert.deepEqual(t.sets.map(x => x.r), [45, 45, 45]); assert.equal(t.up, false);
 });
+
+test('en livres : augmentation de 2,5 lb ; les boutons −/+ du poids gardent 5 lb', () => {
+  const a = app(last(x5(55 / 2.20462)), { unit: 'lb', routines: [{ id: 'r1', name: 'Push', ex: [{ name: 'Incline DB Press', sets: 5, reps: 5 }] }] });
+  a.start('r1', true);
+  assert.equal(String(a.dispW(a.state.workout.ex[0].sets[0].w)), '57.5');
+  const v = a.renderVals().wEx[0];
+  assert.equal(v.upVal, '+2.5 lb');
+  v.sets[0].wPlus();
+  assert.equal(String(a.dispW(a.state.workout.ex[0].sets[0].w)), '62.5');
+});

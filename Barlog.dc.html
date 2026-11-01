@@ -1475,7 +1475,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle', nDelSet: 'Remove set' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance', 'Remove set': 'Retirer la série' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.40.0';
+const APP_VERSION = '0.40.1';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
@@ -2504,7 +2504,7 @@ class Component extends DCLogic {
     const k = last ? n - last.sets.slice(0, n).filter(x => x.wu).length : 0;
     const top = last ? work(last.sets).slice(0, k) : [];
     const up = !isT(ty) && !!(target && k > 0 && top.length === k && top[0].w > 0 && top.every(x => Math.abs(x.w - top[0].w) < 0.01 && x.r >= target));
-    const inc = this.inc(); const sets = [];
+    const inc = this.state.unit === 'kg' ? 2.5 : 2.5 / KG_LB; const sets = [];
     for (let i = 0; i < n; i++) {
       const p = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null;
       const wu = !!(p && p.wu);
@@ -3387,7 +3387,7 @@ class Component extends DCLogic {
       const cols = uni || car ? '30px 44px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 48px' : '36px 52px minmax(0,1fr) minmax(0,1fr) 52px';
       return {
         name: ex.name, progress: d + '/' + ex.sets.length, progColor: d === ex.sets.length && d ? ACC : '#9C9CA8',
-        up: !!ex.up, upVal: '+' + (kg ? '2.5 kg' : '5 lb'), upBlur: this.isPro() ? 'none' : 'blur(4px)', onUp: () => { if (!this.isPro()) this.need('coach'); },
+        up: !!ex.up, upVal: '+' + (kg ? '2.5 kg' : '2.5 lb'), upBlur: this.isPro() ? 'none' : 'blur(4px)', onUp: () => { if (!this.isPro()) this.need('coach'); },
         upText: this.isPro() ? L(' · you hit every rep last time') : (LANG === 'fr' ? ' · progression proposée ✦ Pro' : ' · suggested progression ✦ Pro'),
         hasSS: !!tagsW[ei], ssTag: tagsW[ei] ? L('SUPERSET') + ' ' + tagsW[ei] : '', hasNote: !!m.note, note: m.note,
         onMenu: go({ exSheet: ei }), cols, isUni: uni || car, h0: uni || car ? '#' : L('SET'), h1: car ? 'MIN' : s.unit.toUpperCase(), h3: car ? 'KCAL' : tim ? 'R s' : 'R', h2: car ? (kg ? 'KM' : 'MI') : uni ? (tim ? 'L s' : 'L') : tim ? L('SEC') : 'REPS',
