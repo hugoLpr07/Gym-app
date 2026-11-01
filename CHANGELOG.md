@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.40.2 — 2026-11-01
+- En livres, les boutons −/+ du poids pendant la séance avancent aussi de 2,5 lb (avant : 5 lb).
+
 ## 0.40.1 — 2026-11-01
 - En livres, l’augmentation proposée passe de +5 lb à +2,5 lb (comme +2,5 kg en kilos) : à toi d’arrondir selon les poids de ta salle. Les boutons −/+ du poids pendant la séance gardent un pas de 5 lb.
 

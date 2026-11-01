@@ -1475,7 +1475,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle', nDelSet: 'Remove set' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance', 'Remove set': 'Retirer la série' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.40.1';
+const APP_VERSION = '0.40.2';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
@@ -2419,7 +2419,7 @@ class Component extends DCLogic {
     const key = [s.workout ? sec(now - s.workout.start) : '', s.restEnd ? sec(s.restEnd - now) : '', s.hold && !s.hold.wait ? sec(s.hold.end - now) : '', run ? sec(now - run) : ''].join();
     if (key !== this._tKey || now - s.now > 20000) { this._tKey = key; this.setState({ now }); }
   }
-  inc() { return this.state.unit === 'kg' ? 2.5 : 5 / KG_LB; }
+  inc() { return this.state.unit === 'kg' ? 2.5 : 2.5 / KG_LB; }
   checkUpdate() {
     // App native : la page fait partie de l'app (mise à jour = nouvelle version de l'app), rien à relire.
     if (this.nat() || location.protocol !== 'https:' || window.self !== window.top || !navigator.onLine) return;
@@ -2504,7 +2504,7 @@ class Component extends DCLogic {
     const k = last ? n - last.sets.slice(0, n).filter(x => x.wu).length : 0;
     const top = last ? work(last.sets).slice(0, k) : [];
     const up = !isT(ty) && !!(target && k > 0 && top.length === k && top[0].w > 0 && top.every(x => Math.abs(x.w - top[0].w) < 0.01 && x.r >= target));
-    const inc = this.state.unit === 'kg' ? 2.5 : 2.5 / KG_LB; const sets = [];
+    const inc = this.inc(); const sets = [];
     for (let i = 0; i < n; i++) {
       const p = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null;
       const wu = !!(p && p.wu);
@@ -3398,7 +3398,7 @@ class Component extends DCLogic {
           const pc = m.bar && active && x.w > 0 ? plateCalc(parseFloat(this.dispW(x.w)), kg, s.barLight) : null;
           const big = kg ? 20 : 45;
           const o = {
-            wmL: '−' + (kg ? '2.5' : '5'), wpL: '+' + (kg ? '2.5' : '5'), rIm: 'numeric', ...this.effVals(ei, si, x, active),
+            wmL: '−2.5', wpL: '+2.5', rIm: 'numeric', ...this.effVals(ei, si, x, active),
             num: x.warm ? 'W' : String(si + 1), numBg: x.warm ? '#24242B' : 'transparent',
             prev: x.pw != null ? (tim ? (x.pw ? this.dispW(x.pw) + '·' : '') + x.pr + 's' : this.dispW(x.pw) + '×' + x.pr) : '—',
             wDisp: x.wStr != null ? x.wStr : (x.w ? this.dispW(x.w) : ''), rDisp: x.rStr != null ? x.rStr : String(x.r),
@@ -3790,7 +3790,7 @@ class Component extends DCLogic {
       resume: go({ screen: 'workout' }),
       wName: w ? w.name : '', elapsed: w ? clock(now - w.start) : '', setsDoneLabel: doneCount + '/' + total + L(' sets'),
       minimize: go({ screen: 'tabs', tab: 'today' }), finish: () => this.finish(),
-      wEx, unitUpper: s.unit.toUpperCase(), wStep: kg ? '2.5' : '5',
+      wEx, unitUpper: s.unit.toUpperCase(), wStep: '2.5',
       openLibW: go({ screen: 'library', libCtx: 'workout', libQuery: '', libGroup: 'All' }),
       discard: () => this.discard(), discardLabel: s.discardArm ? L('Tap again to discard') : L('Discard workout'),
       restOn, restOff: !restOn,
