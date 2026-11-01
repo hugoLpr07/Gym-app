@@ -1475,7 +1475,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle', nDelSet: 'Remove set' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance', 'Remove set': 'Retirer la série' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.40.2';
+const APP_VERSION = '0.40.3';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
@@ -3058,7 +3058,7 @@ class Component extends DCLogic {
       obTitle: cur ? cur[1] : '', obSub: cur ? (ob.imported && st === 1 ? (fr ? 'Historique importé ✓ · ' : 'History imported ✓ · ') : '') + cur[2] : '',
       obOpts: cur ? cur[3].map(([k, label, sub]) => { const v = ob[cur[0]] != null ? ob[cur[0]] : cur[0] === 'unit' ? s.unit : null; return { label, sub, ...selStyle(v === k), onClick: () => { const p = { [cur[0]]: k, step: st + 1 }; if (cur[0] !== 'unit') p.pick = undefined; else this.setState({ unit: k }); obSet(p); } }; }) : [],
       obFTitle: fr ? 'Ton programme' : 'Your program',
-      obFSub: ob ? [lab(GO, ob.goal), lab(LV, ob.level), (ob.days || 3) + (fr ? ' j / sem.' : ' d / wk')].filter(Boolean).join(' · ') + (fr ? '. Choisis celui que tu veux.' : '. Pick the one you want.') : '',
+      obFSub: ob ? [lab(GO, ob.goal), lab(LV, ob.level), (ob.days || 3) + (fr ? ' j / sem.' : ' d / wk')].filter(Boolean).join(' · ') + (fr ? ' Choisis celui que tu veux.' : '. Pick the one you want.') : '',
       obProgs: TEMPLATES.map(t => ({ name: fr ? t.fr : t.name, meta: (fr ? t.metaFr : t.meta) + (PRO_TPL.includes(t.id) && !this.isPro() ? ' · PRO ✦' : ''), days: t.r.map(r => r[0]).join(' · ') + ' — ' + (fr ? t.descFr : t.desc), rec: t.id === rec, recLabel: fr ? 'RECOMMANDÉ' : 'RECOMMENDED', ...selStyle(pick === t.id), onClick: () => obSet({ pick: t.id }) })),
       obNoneLabel: fr ? 'Partir de zéro (je crée mes routines)' : 'Start from scratch (I’ll build my own)', obNoneBorder: pick === null ? ACC : '#24242B', obNoneBg: pick === null ? accA(0.08) : 'transparent', obNone: () => obSet({ pick: null }),
       obFinishLabel: pickT ? (fr ? 'Commencer avec ' + pickT.fr : 'Start with ' + pickT.name) : (fr ? 'Commencer' : 'Start'), obFinish: this.gate(PRO_TPL.includes(pick) ? 'program' : null, () => this.finishOb(pick)),

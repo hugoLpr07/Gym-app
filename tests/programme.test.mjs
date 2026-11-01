@@ -63,3 +63,10 @@ test('en livres : augmentation de 2,5 lb, boutons −/+ du poids aussi de 2,5 lb
   v.sets[0].wMinus(); v.sets[0].wMinus();
   assert.equal(String(a.dispW(a.state.workout.ex[0].sets[0].w)), '55');
 });
+
+test('accueil, écran « Ton programme » : pas de double point après « sem. »', () => {
+  const ob = { step: 4, goal: 'muscle', level: 'beg', days: 3 };
+  const sub = lang => makeApp(B, { ...emptyData(), lang, onboarded: false, ob }).renderVals().obFSub;
+  assert.equal(sub('fr'), 'Prise de muscle · Débutant · 3 j / sem. Choisis celui que tu veux.');
+  assert.equal(sub('en'), 'Build muscle · Beginner · 3 d / wk. Pick the one you want.');
+});

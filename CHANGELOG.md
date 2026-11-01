@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.40.3 — 2026-11-01
+- Accueil, écran « Ton programme » : le résumé affichait deux points de suite (« 3 j / sem.. Choisis… »).
+
 ## 0.40.2 — 2026-11-01
 - En livres, les boutons −/+ du poids pendant la séance avancent aussi de 2,5 lb (avant : 5 lb).
 
