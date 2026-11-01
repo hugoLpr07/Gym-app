@@ -5,6 +5,10 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.40.0 — 2026-11-01
+- Lancer une séance d’un programme : chaque série est préremplie avec les reps prévues dans le programme (par exemple 3 × 10 → 10, 10, 10), et plus avec celles faites la dernière fois. Le poids reste celui de la dernière fois, et la colonne « PRÉC. » montre toujours ce que tu as fait. Pareil pour les deux côtés d’un exercice unilatéral et pour la durée d’un exercice chronométré ; les échauffements (W) gardent leurs valeurs de la dernière fois.
+- Augmenter la charge n’est proposé que si, la dernière fois, toutes les séries prévues ont été faites au même poids avec au moins les reps du programme (par exemple 5 × 5 à 55 lb → la fois suivante, on propose d’augmenter). Une série manquée, une série sous les reps prévues ou des poids différents : pas de proposition.
+
 ## 0.39.0 — 2026-10-28
 - Séance passée → « Modifier » : on peut maintenant ajouter une série oubliée (par exemple pas cochée avant « Finir ») avec « + Ajouter une série » sous chaque exercice, ajouter un exercice avec « + Ajouter un exercice » en bas, et retirer une série avec ✕. La nouvelle série reprend la dernière série de l’exercice ; un exercice ajouté reprend ce que tu as fait la fois d’avant. Si la séance est publiée, la publication (séries, volume, records) se met à jour avec « Terminé » ou en revenant avec ‹.
 - Un exercice fait deux fois dans la même séance : corriger une charge ne change plus les deux.

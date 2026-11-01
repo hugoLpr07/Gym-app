@@ -1475,7 +1475,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle', nDelSet: 'Remove set' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance', 'Remove set': 'Retirer la série' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.39.0';
+const APP_VERSION = '0.40.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
@@ -2498,19 +2498,22 @@ class Component extends DCLogic {
     const hist = history[name] || [];
     const last = hist.slice(-1)[0];
     const lastW = [...hist].reverse().find(se => se.sets.some(x => x.w > 0));
-    const ws = last ? work(last.sets).filter(x => x.w > 0) : [];
     const ty = this.meta(name).type;
     if (ty === 'cardio') { const k = target == null && !last ? 1 : n; const cs = []; for (let i = 0; i < k; i++) { const q = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null; cs.push({ w: 0, r: q ? q.r : (target || 20), d: q ? q.d || 0 : 0, c: q ? q.c || 0 : 0, pw: q ? 0 : null, pr: q ? q.r : null, pd: q ? q.d || 0 : 0, warm: false, done: false }); } return { name, target: target || null, up: false, sets: cs, ss: !!ss }; }
-    const up = !isT(ty) && !!(target && ws.length && ws.every(x => x.r >= target));
+    // Progression : chaque série de travail demandée faite la dernière fois, toutes au même poids, avec au moins les reps du programme.
+    const k = last ? n - last.sets.slice(0, n).filter(x => x.wu).length : 0;
+    const top = last ? work(last.sets).slice(0, k) : [];
+    const up = !isT(ty) && !!(target && k > 0 && top.length === k && top[0].w > 0 && top.every(x => Math.abs(x.w - top[0].w) < 0.01 && x.r >= target));
     const inc = this.inc(); const sets = [];
     for (let i = 0; i < n; i++) {
       const p = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null;
-      const bump = up && p && !p.wu && this.isPro();
+      const wu = !!(p && p.wu);
+      const bump = up && !wu && this.isPro();
       const q = lastW ? (lastW.sets[i] || lastW.sets[lastW.sets.length - 1]) : null;
       const bw = p && p.w > 0 ? p.w : q ? q.w : 0;
-      sets.push({ w: bw ? bw + (bump ? inc : 0) : 0, r: p ? (bump ? target : p.r) : (target || 8), pw: p ? p.w : null, pr: p ? p.r : null, warm: !!(p && p.wu), done: false });
+      sets.push({ w: bw ? bw + (bump ? inc : 0) : 0, r: target && !wu ? target : p ? p.r : 8, pw: p ? p.w : null, pr: p ? p.r : null, warm: wu, done: false });
     }
-    if (isU(ty)) sets.forEach((x, i) => { const p = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null; x.r2 = up || !p || p.rr == null ? x.r : p.rr; });
+    if (isU(ty)) sets.forEach((x, i) => { const p = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null; x.r2 = (target && !x.warm) || !p || p.rr == null ? x.r : p.rr; });
     return { name, target: target || null, up, sets, ss: !!ss };
   }
   start(rid, force) {
