@@ -5,6 +5,10 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.40.6 — 2026-11-02
+- Séance en cours : après un échauffement (W), les séries sont numérotées 1, 2, 3 (avant : 2, 3, 4), comme dans une séance passée. Même numéro dans la notification de fin de repos et sur l’écran verrouillé (« échauffement » pendant un échauffement).
+- En français, les volumes s’écrivent « 14 480 kg » (avant : « 14,480 kg », qui se lisait 14,48 kg) : séances, détail d’une séance, résumé de fin de séance, records, graphique du volume, Fil et image de partage.
+
 ## 0.40.5 — 2026-11-02
 - Grande carte du corps : toucher un muscle sur le dessin fait défiler les boutons du bas jusqu’à celui de ce muscle, surligné (avant, il pouvait être caché hors de l’écran). Pareil en ouvrant la grande carte avec un muscle déjà choisi.
 

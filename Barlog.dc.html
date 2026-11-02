@@ -1476,7 +1476,7 @@ Object.assign(FR, { 'Info': 'Fiche', 'Exercise library': 'Bibliothèque d’exer
 Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for details', nScale: '15+ sets', nExpand: 'Enlarge map', nWorked: 'Muscles worked', nShare: 'Share', nExFor: 'Exercises for this muscle', nDelSet: 'Remove set' });
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance', 'Remove set': 'Retirer la série' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.40.5';
+const APP_VERSION = '0.40.6';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
@@ -1678,6 +1678,9 @@ function mergeLifts(s, res, fresh) {
 // Séance sans nom ni routine enregistrés (anciennes séances, imports) : la routine qui partage le plus d'exercices.
 const guessR = (routines, names) => { let r = null, best = 0; routines.forEach(x => { const o = x.ex.filter(e => names.includes(e.name)).length; if (o > best) { best = o; r = x; } }); return r; };
 const LOC = () => LANG === 'fr' ? 'fr-CA' : 'en-US';
+// Numéro d'une série pendant la séance : les échauffements ne comptent pas (W, 1, 2…, comme une séance passée).
+const setNo = (sets, si) => sets[si] && sets[si].warm ? 'W' : String(sets.slice(0, si).filter(x => !x.warm).length + 1);
+const setTx = (sets, si) => { const n = setNo(sets, si); return n === 'W' ? (LANG === 'fr' ? 'échauffement' : 'warm-up') : (LANG === 'fr' ? 'série ' : 'set ') + n; };
 const WD_FR = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
 const WD = { dimanche: 0, lundi: 1, mardi: 2, mercredi: 3, jeudi: 4, vendredi: 5, samedi: 6, sunday: 0, monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6 };
 const WD_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -2541,7 +2544,7 @@ class Component extends DCLogic {
     const mu = x.muscles && typeof x.muscles === 'object' ? x.muscles : {}; const ord = Object.keys(mu).filter(k => mu[k] > 0 && MUS.some(q => q[0] === k)).sort((q, r) => mu[r] - mu[q]);
     const musName = k => { const q = MUS.find(y => y[0] === k); return q ? (fr ? q[2] : q[1]) : k; };
     this.shareCard({ name: x.title || L('Workout'), by: x.username ? '@' + x.username : '', date: new Date(x.started_at || x.created_at),
-      stats: [{ label: fr ? 'Durée' : 'Time', value: x.duration_s > 0 ? Math.floor(m / 60) + ':' + pad(m % 60) : '—' }, { label: 'Volume', value: Math.round(kg ? vol : vol * KG_LB).toLocaleString() + ' ' + s.unit }, { label: L('Sets'), value: String(x.sets || 0) }],
+      stats: [{ label: fr ? 'Durée' : 'Time', value: x.duration_s > 0 ? Math.floor(m / 60) + ':' + pad(m % 60) : '—' }, { label: 'Volume', value: Math.round(kg ? vol : vol * KG_LB).toLocaleString(LOC()) + ' ' + s.unit }, { label: L('Sets'), value: String(x.sets || 0) }],
       mus: ord.map(musName) }, document.querySelectorAll('[data-cf="' + id + '"] svg'));
   }
   // Image 1080×1350 de la séance (résumé de fin de séance ou publication du Fil), puis feuille de partage du téléphone.
@@ -2881,7 +2884,7 @@ class Component extends DCLogic {
     const s = this.state; const at = s.restNotif && s.workout && s.restEnd && !s.restAlert && s.restEnd > Date.now() + 1500 ? s.restEnd : null;
     if (this._rnAt === at) return; this._rnAt = at;
     const fr = LANG === 'fr'; const f = s.focus && s.workout && s.workout.ex[s.focus.ei];
-    const title = fr ? 'Repos terminé' : 'Rest over'; const body = f ? (fr ? 'À toi : ' : 'Up next: ') + f.name + (fr ? ', série ' : ', set ') + (s.focus.si + 1) : (fr ? 'Prochaine série' : 'Next set');
+    const title = fr ? 'Repos terminé' : 'Rest over'; const body = f ? (fr ? 'À toi : ' : 'Up next: ') + f.name + ', ' + setTx(f.sets, s.focus.si) : (fr ? 'Prochaine série' : 'Next set');
     const P = this.nat(); const LN = P && P.LocalNotifications;
     if (LN) { const tok = this._rnTok = (this._rnTok || 0) + 1; LN.cancel({ notifications: [{ id: 1001 }] }).catch(() => {}).then(() => { if (at && tok === this._rnTok) this.exactOk().then(ex => { if (tok === this._rnTok) LN.schedule({ notifications: [{ id: 1001, title, body, schedule: { at: new Date(at), allowWhileIdle: true }, ...(ex ? {} : { isExactNotification: false }) }] }).catch(() => {}); }); }); return; }
     this.swMsg(at && document.visibilityState === 'hidden' ? { type: 'rest', at, title, body } : { type: 'rest-cancel' });
@@ -2893,11 +2896,11 @@ class Component extends DCLogic {
     let run = null; if (w) w.ex.forEach(ex => ex.sets.forEach(x => { if (x.run && !run) run = { ex, x }; }));
     let p = null; const hd = s.hold; const hx = hd && w && w.ex[hd.ei];
     if (s.liveRest !== false && hx && !hd.wait && hd.end > now + 500) { const sd = hd.side ? (hd.side === 'l' ? (fr ? ' · gauche' : ' · left') : (fr ? ' · droite' : ' · right')) : '';
-      p = { mode: 'down', start: hd.start || now, end: hd.end, title: fr ? 'Maintien' : 'Hold', done: fr ? 'Terminé' : 'Done', next: hx.name + sd + (fr ? ' · série ' : ' · set ') + (hd.si + 1) }; }
+      p = { mode: 'down', start: hd.start || now, end: hd.end, title: fr ? 'Maintien' : 'Hold', done: fr ? 'Terminé' : 'Done', next: hx.name + sd + ' · ' + setTx(hx.sets, hd.si) }; }
     else if (s.liveRest !== false && run) { const st = run.x.run - (run.x.r || 0) * 60000; const g = run.ex.target ? st + run.ex.target * 60000 : 0;
       p = { mode: 'up', start: st, end: g || st + 3600000, title: 'Cardio', done: '', next: run.ex.name + (run.ex.target ? (fr ? ' · objectif ' : ' · goal ') + run.ex.target + ' min' : '') }; }
     else if (s.liveRest !== false && w && s.restEnd && !s.restAlert && s.restEnd > now + 1000) { const f = s.focus && w.ex[s.focus.ei];
-      p = { mode: 'down', start: s.restEnd - s.restTotal * 1000, end: s.restEnd, title: fr ? 'Repos' : 'Rest', done: fr ? 'Repos terminé · à toi' : 'Rest over · lift', next: f ? f.name + (fr ? ' · série ' : ' · set ') + (s.focus.si + 1) : '' }; }
+      p = { mode: 'down', start: s.restEnd - s.restTotal * 1000, end: s.restEnd, title: fr ? 'Repos' : 'Rest', done: fr ? 'Repos terminé · à toi' : 'Rest over · lift', next: f ? f.name + ' · ' + setTx(f.sets, s.focus.si) : '' }; }
     const key = p ? p.mode + p.start + '|' + p.end : null; if (this._laKey === key) return; this._laKey = key;
     if (!p) { try { LA.stop().catch(() => {}); } catch (e) {} return; }
     const warn = m => { if (!this._laWarned) { this._laWarned = true; this.flash((plat() === 'ios' ? 'Live Activity : ' : (LANG === 'fr' ? 'Minuteur : ' : 'Timer: ')) + m); } };
@@ -3244,7 +3247,7 @@ class Component extends DCLogic {
       return { key: x.id, ini: x.avatar ? '' : iniOf(x.display_name || x.username), avImg: avImg(x.avatar), avBg: mine ? ACC : '#24242B', avColor: mine ? '#0A0A0C' : '#FFFFFF', name: x.display_name || x.username || '—', handle: '@' + (x.username || ''), when: relT(x.created_at || x.started_at, fr),
         onUser: () => this.userOpen(x.user_id, { username: x.username, display_name: x.display_name, avatar: x.avatar }),
         visOn: mine, vis: VN[x.visibility] || x.visibility || '', title: x.title || L('Workout'),
-        stats: [[fr ? 'Durée' : 'Time', hm(x.duration_s)], ['Volume', Math.round(kg ? vol : vol * KG_LB).toLocaleString() + ' ' + s.unit], [L('Sets'), String(x.sets || 0)]].map(([label, value]) => ({ label, value })),
+        stats: [[fr ? 'Durée' : 'Time', hm(x.duration_s)], ['Volume', Math.round(kg ? vol : vol * KG_LB).toLocaleString(LOC()) + ' ' + s.unit], [L('Sets'), String(x.sets || 0)]].map(([label, value]) => ({ label, value })),
         prOn: prs.length > 0, prTitle: '🏆 ' + prs.length + (fr ? ' record' : ' PR') + (prs.length > 1 ? 's' : ''), prList: (prMore ? prs.slice(0, 3) : prs).map(q => ({ text: L(String(q.ex || '')) + ' ' + this.dispW(Number(q.w) || 0) + ' ' + s.unit + ' × ' + (Number(q.r) || 0) })), prMore, prOpen: prMore ? open : nop, prMoreText: '+' + (prs.length - 3) + (fr ? ' autre' + (prs.length > 4 ? 's' : '') : ' more'),
         musOn: ord.length > 0, fFront: ord.length ? bodyFig(FIG_FRONT, sty, nop, false, { uid: pfx + i + 'f' }) : null, fBack: ord.length ? bodyFig(FIG_BACK, sty, nop, false, { uid: pfx + i + 'b' }) : null,
         mus: ord.slice(0, 3).map(q => ({ label: musName(q), bg: lv(mu[q]) === 3 ? ACC : '#24242B', color: lv(mu[q]) === 3 ? '#0A0A0C' : '#FFFFFF' })),
@@ -3402,7 +3405,7 @@ class Component extends DCLogic {
           const big = kg ? 20 : 45;
           const o = {
             wmL: '−2.5', wpL: '+2.5', rIm: 'numeric', ...this.effVals(ei, si, x, active),
-            num: x.warm ? 'W' : String(si + 1), numBg: x.warm ? '#24242B' : 'transparent',
+            num: setNo(ex.sets, si), numBg: x.warm ? '#24242B' : 'transparent',
             prev: x.pw != null ? (tim ? (x.pw ? this.dispW(x.pw) + '·' : '') + x.pr + 's' : this.dispW(x.pw) + '×' + x.pr) : '—',
             wDisp: x.wStr != null ? x.wStr : (x.w ? this.dispW(x.w) : ''), rDisp: x.rStr != null ? x.rStr : String(x.r),
             r2Disp: x.r2Str != null ? x.r2Str : String(x.r2 != null ? x.r2 : x.r), cols, isUni: uni, isTime: tim,
@@ -3463,7 +3466,7 @@ class Component extends DCLogic {
     const T = Date.now();
     // Formats créés une fois par rendu : toLocaleDateString / toLocaleString en recréent un à chaque appel (coûteux sur un long historique).
     const dfmt = o => { const f = new Intl.DateTimeFormat(LOC(), o); return t => { const d = new Date(t); return isNaN(d) ? String(d) : f.format(d); }; };
-    const fmtD = dfmt({ month: 'short', day: 'numeric' }), fmtMon = dfmt({ month: 'short' }), nfmt = new Intl.NumberFormat();
+    const fmtD = dfmt({ month: 'short', day: 'numeric' }), fmtMon = dfmt({ month: 'short' }), nfmt = new Intl.NumberFormat(LOC());
     const setTxt = x => this.dispW(x.w) + '×' + x.r;
     const sessAll = (s.history[progEx] || []).map(se => ({ date: se.date, ws: work(se.sets).filter(x => x.w > 0) })).filter(se => se.ws.length);
     const RANGES = [['4w', LANG === 'fr' ? '30 j' : '30 d', 30], ['3m', L('3 mo'), 91], ['all', L('All'), 0]];
@@ -3473,7 +3476,7 @@ class Component extends DCLogic {
     const val = (se) => s.metric === 'e1rm' ? Math.max(...se.ws.map(x => e1(x.w, x.r))) : s.metric === 'vol' ? se.ws.reduce((a, x) => a + x.w * x.r, 0) : Math.max(...se.ws.map(x => x.w));
     const series = sess.map(val);
     const prior = sessAll.filter(se => se.date < cut).map(val);
-    const toU = (v) => s.metric === 'vol' ? Math.round(kg ? v : v * KG_LB).toLocaleString() : this.dispW(v);
+    const toU = (v) => s.metric === 'vol' ? Math.round(kg ? v : v * KG_LB).toLocaleString(LOC()) : this.dispW(v);
     const mn0 = series.length ? Math.min(...series) : 0, mx0 = series.length ? Math.max(...series) : 1;
     const padV = mx0 > mn0 ? (mx0 - mn0) * 0.1 : Math.max(1, mx0 * 0.05);
     const mn = mn0 - padV, mx = mx0 + padV;
