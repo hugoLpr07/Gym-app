@@ -28,6 +28,22 @@ test('grande carte : toucher un bouton choisit le muscle (carte tournée du bon 
   assert.equal(app.state.bmSel, null);
 });
 
+test('grande carte : muscle touché sur le corps → son bouton est surligné et la rangée défile jusqu’à lui (0.40.5)', t => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const had = 'document' in globalThis, prev = globalThis.document; const asked = [], scrolled = [];
+  globalThis.document = { querySelector: sel => { asked.push(sel); return { scrollIntoView: o => scrolled.push(o) }; } };
+  t.after(() => { if (had) globalThis.document = prev; else delete globalThis.document; });
+  const app = open({ bmSide: 'back' });
+  const walk = n => !n || typeof n !== 'object' ? null : n.props && n.props.onClick ? n : n.children && n.children.flat(Infinity).map(walk).find(Boolean) || null;
+  walk(app.renderVals().bmBigFig).props.onClick();
+  const k = app.state.bmSel; assert.ok(k, 'muscle choisi');
+  const chip = app.renderVals().bmMapChips.find(c => c.key === k);
+  assert.equal(chip.color, '#0A0A0C', 'bouton surligné'); assert.notEqual(chip.bg, '#16161A');
+  t.mock.timers.tick(50);
+  assert.deepEqual(asked, ['[data-bmc="' + k + '"]']); assert.deepEqual(scrolled, [{ inline: 'center', block: 'nearest', behavior: 'smooth' }]);
+  const html = readFileSync(HTML_PATH, 'utf8'); assert.match(html, /<button data-bmc="\{\{ c\.key \}\}"/);
+});
+
 test('grande carte : ses boutons ne sont plus ceux du graphique Corps (Poids, Masse grasse…), qui gardent les leurs', () => {
   const html = readFileSync(HTML_PATH, 'utf8'); const big = html.slice(html.indexOf('<sc-if value="{{ bmBig }}"'), html.indexOf('<sc-if value="{{ cmOn }}"'));
   assert.match(big, /list="\{\{ bmMapChips \}\}"/); assert.match(big, /list="\{\{ bmLegend \}\}"/, 'légende des couleurs');

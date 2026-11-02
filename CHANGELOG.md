@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.40.5 — 2026-11-02
+- Grande carte du corps : toucher un muscle sur le dessin fait défiler les boutons du bas jusqu’à celui de ce muscle, surligné (avant, il pouvait être caché hors de l’écran). Pareil en ouvrant la grande carte avec un muscle déjà choisi.
+
 ## 0.40.4 — 2026-11-02
 - Progrès → « Agrandir la carte » : les boutons sous la carte du corps affichaient Poids, Masse grasse, Masse maigre, IMC et ne faisaient rien. Ce sont maintenant les muscles avec leur nombre de séries, du plus travaillé au moins travaillé (les muscles pas travaillés à la fin, en gris). Toucher un bouton affiche le détail du muscle et ses exercices, et tourne la carte face ou dos si besoin.
 - La grande carte affiche aussi la légende des couleurs (0 → 15+ séries), comme la petite.
