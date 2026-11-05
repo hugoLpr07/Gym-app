@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.41.0 — 2026-11-04
+- Pro, iPhone : nouvel interrupteur « Icône de la même couleur » dans Profil, sous la couleur d’accent. L’icône de Barlog sur l’écran d’accueil prend ta couleur (orange, rose, violet, cyan, or ou rouge ; lime = icône d’origine), avec ses versions sombre et teintée. iOS affiche un petit message à chaque changement d’icône. Sans Pro, l’icône redevient lime, comme les couleurs.
+
 ## 0.40.7 — 2026-11-04
 - iPhone : l’icône de Barlog a maintenant une version sombre et une version teintée. Elle suit le style choisi pour l’écran d’accueil (appui long sur l’écran d’accueil → Modifier → Personnaliser : sombre ou teinté). Rien ne change dans l’app.
 
