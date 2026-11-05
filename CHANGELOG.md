@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.41.1 — 2026-11-04
+- Au démarrage, l’app pouvait rester sur un écran noir après une séance : quand iOS fermait l’app juste après la fin d’une séance, elle croyait la séance encore en cours alors qu’elle n’existait plus. Elle s’ouvre maintenant sur l’accueil (rien n’était perdu). Et si jamais l’écran de séance s’affiche sans séance, l’app revient d’elle-même à l’accueil.
+
 ## 0.41.0 — 2026-11-04
 - Pro, iPhone : nouvel interrupteur « Icône de la même couleur » dans Profil, sous la couleur d’accent. L’icône de Barlog sur l’écran d’accueil prend ta couleur (orange, rose, violet, cyan, or ou rouge ; lime = icône d’origine), avec ses versions sombre et teintée. iOS affiche un petit message à chaque changement d’icône. Sans Pro, l’icône redevient lime, comme les couleurs.
 
