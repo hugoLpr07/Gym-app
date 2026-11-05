@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.40.7 — 2026-11-04
+- iPhone : l’icône de Barlog a maintenant une version sombre et une version teintée. Elle suit le style choisi pour l’écran d’accueil (appui long sur l’écran d’accueil → Modifier → Personnaliser : sombre ou teinté). Rien ne change dans l’app.
+
 ## 0.40.6 — 2026-11-02
 - Séance en cours : après un échauffement (W), les séries sont numérotées 1, 2, 3 (avant : 2, 3, 4), comme dans une séance passée. Même numéro dans la notification de fin de repos et sur l’écran verrouillé (« échauffement » pendant un échauffement).
 - En français, les volumes s’écrivent « 14 480 kg » (avant : « 14,480 kg », qui se lisait 14,48 kg) : séances, détail d’une séance, résumé de fin de séance, records, graphique du volume, Fil et image de partage.
