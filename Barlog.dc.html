@@ -1483,7 +1483,7 @@ Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for detai
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance', 'Remove set': 'Retirer la série' });
 Object.assign(FR, { 'Matching app icon': 'Icône de la même couleur', 'Barlog’s Home Screen icon takes your accent color. iOS shows a message each time it changes.': 'L’icône de Barlog sur l’écran d’accueil prend ta couleur. iOS affiche un message à chaque changement.' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.41.1';
+const APP_VERSION = '0.42.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
@@ -1947,10 +1947,10 @@ class Component extends DCLogic {
     drop.then(() => { try { return PN && PN.unregister ? PN.unregister().catch(() => {}) : null; } catch (e) { return null; } })
       .then(() => this.sb()).then(c => c.auth.signOut({ scope: 'local' })).catch(() => {}).then(() => { try { localStorage.removeItem(SB_STORE); } catch (e) {} });
   }
-  // ───── Notifications push (Android, Firebase Cloud Messaging) ─────
+  // ───── Notifications push (Android : Firebase Cloud Messaging ; iPhone : Apple, APNs, depuis 0.42.0) ─────
   // Le téléphone enregistre son jeton dans push_tokens ; la base appelle la fonction Edge « push » à chaque nouvelle notification.
-  // iPhone : plus tard (compte Apple Developer requis). Types coupés sur ce téléphone : push.prefs, ex. { kudo: false }.
-  pushPl() { const P = this.nat(); return P && plat() === 'android' ? P.PushNotifications || null : null; }
+  // Types coupés sur ce téléphone : push.prefs, ex. { kudo: false }.
+  pushPl() { const P = this.nat(); const pf = plat(); return P && (pf === 'android' || pf === 'ios') ? P.PushNotifications || null : null; }
   pushListen() {
     const PN = this.pushPl(); if (!PN || this._pnL) return; this._pnL = true;
     try {
@@ -1963,7 +1963,7 @@ class Component extends DCLogic {
   pushInit() {
     const PN = this.pushPl(); const s = this.state; const a = s.acct; if (!PN || !a || !a.profile) return;
     this.pushListen(); this.pushOpen(); if ((s.push || {}).off) return; const fr = LANG === 'fr';
-    try { PN.createChannel({ id: 'social', name: fr ? 'Activité sociale' : 'Social activity', description: fr ? 'Demandes, abonnés, bravos et commentaires' : 'Requests, followers, kudos and comments', importance: 4, visibility: 1 }).catch(() => {}); } catch (e) {}
+    if (plat() === 'android') try { PN.createChannel({ id: 'social', name: fr ? 'Activité sociale' : 'Social activity', description: fr ? 'Demandes, abonnés, bravos et commentaires' : 'Requests, followers, kudos and comments', importance: 4, visibility: 1 }).catch(() => {}); } catch (e) {}
     Promise.resolve(PN.checkPermissions()).then(p => p && p.receive === 'granted' ? p : PN.requestPermissions())
       .then(p => { const ok = !!(p && p.receive === 'granted'); this.setState(st => ({ push: { ...(st.push || {}), denied: !ok } })); if (ok) return PN.register(); })
       .catch(e => { try { console.log('BARLOG push: ' + ((e && e.message) || e)); } catch (x) {} });
@@ -1971,7 +1971,7 @@ class Component extends DCLogic {
   pushSave(tok) {
     const s = this.state; const a = s.acct; const ps = s.push || {}; if (!tok || !a || !a.profile || ps.off) return;
     this._tokNew = true; this.setState(st => ({ push: { ...(st.push || {}), tok, uid: a.uid } }));
-    this.sb().then(c => c.from('push_tokens').upsert({ user_id: a.uid, token: tok, platform: 'android', lang: LANG === 'fr' ? 'fr' : 'en', prefs: ps.prefs || {}, updated_at: new Date().toISOString() }, { onConflict: 'user_id,token' }))
+    this.sb().then(c => c.from('push_tokens').upsert({ user_id: a.uid, token: tok, platform: plat() === 'ios' ? 'ios' : 'android', lang: LANG === 'fr' ? 'fr' : 'en', prefs: ps.prefs || {}, updated_at: new Date().toISOString() }, { onConflict: 'user_id,token' }))
       .then(({ error }) => { if (error) throw error; }).catch(e => { try { console.log('BARLOG push save: ' + ((e && e.message) || e)); } catch (x) {} });
   }
   // Retire ce téléphone du compte (déconnexion, push coupées) : à faire tant que la session est ouverte.
@@ -3175,7 +3175,7 @@ class Component extends DCLogic {
       ...(() => { const ps = s.push || {}; const on = !ps.off && !ps.denied;
         const T = [['request', 'Demandes', 'Requests'], ['follow', 'Nouveaux abonnés', 'New followers'], ['accepted', 'Demandes acceptées', 'Accepted requests'], ['kudo', 'Bravos', 'Kudos'], ['comment', 'Commentaires', 'Comments']];
         return { pnOn: !!(a && p && this.pushPl()), pnLabel: fr ? 'Notifications push' : 'Push notifications', pnTg: tg(on), pnClick: () => this.pushToggle(), pnTypesOn: on, pnSubColor: ps.denied && !ps.off ? '#FF8A65' : '#9C9CA8',
-          pnSub: ps.off ? (fr ? 'Désactivées sur ce téléphone. Tu les retrouves sous la cloche du Fil.' : 'Off on this phone. You’ll still find them under the bell in Feed.') : ps.denied ? (fr ? 'Bloquées par Android : autorise les notifications de Barlog dans les réglages du téléphone, puis touche ici.' : 'Blocked by Android: allow Barlog notifications in your phone settings, then tap here.') : (fr ? 'Même app fermée. Touche un type pour le couper sur ce téléphone.' : 'Even when the app is closed. Tap a type to mute it on this phone.'),
+          pnSub: ps.off ? (fr ? 'Désactivées sur ce téléphone. Tu les retrouves sous la cloche du Fil.' : 'Off on this phone. You’ll still find them under the bell in Feed.') : ps.denied ? (fr ? 'Bloquées par ' + (plat() === 'ios' ? 'l’iPhone' : 'Android') + ' : autorise les notifications de Barlog dans les réglages du téléphone, puis touche ici.' : 'Blocked by ' + (plat() === 'ios' ? 'your iPhone' : 'Android') + ': allow Barlog notifications in your phone settings, then tap here.') : (fr ? 'Même app fermée. Touche un type pour le couper sur ce téléphone.' : 'Even when the app is closed. Tap a type to mute it on this phone.'),
           pnTypes: T.map(([k, f, e]) => { const y = (ps.prefs || {})[k] !== false; return { label: (y ? '✓ ' : '') + (fr ? f : e), bg: y ? accA(0.12) : 'transparent', border: y ? ACC : '#33333C', color: y ? '#FFFFFF' : '#9C9CA8', onClick: () => this.pushPref(k, !y) }; }) }; })(),
       acAutoLabel: fr ? 'Publier automatiquement mes séances' : 'Auto-post my workouts', acAutoSub: fr ? 'Avec ta visibilité par défaut. Tu peux retirer une séance à tout moment.' : 'With your default visibility. You can remove a workout at any time.', acAutoTg: tg(!!s.autoPub), acAutoClick: () => this.setState({ autoPub: !s.autoPub }),
       acTitle: fr ? 'Compte' : 'Account', acOff: !a, acAsk: !a && !s.acSent, acCodeOn: !a && !!s.acSent, acNoProf: !!a && p === null, acHasProf: !!p, acPending: !!a && p === undefined, acOp: busy ? 0.5 : 1,

@@ -5,6 +5,10 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.42.0 — 2026-11-06
+- iPhone : notifications push. Quand quelqu’un te demande de t’abonner, s’abonne à toi, accepte ta demande, donne un bravo ou commente ta séance, l’iPhone te prévient même app fermée, comme sur Android. Elles s’activent avec un compte, après l’accord de l’iPhone ; Profil → Compte → « Notifications push » pour les couper, en tout ou par type.
+- Confidentialité : les notifications push de l’iPhone passent par Apple (Apple Push Notification service), comme celles d’Android passent par Google.
+
 ## 0.41.1 — 2026-11-04
 - Au démarrage, l’app pouvait rester sur un écran noir après une séance : quand iOS fermait l’app juste après la fin d’une séance, elle croyait la séance encore en cours alors qu’elle n’existait plus. Elle s’ouvre maintenant sur l’accueil (rien n’était perdu). Et si jamais l’écran de séance s’affiche sans séance, l’app revient d’elle-même à l’accueil.
 
