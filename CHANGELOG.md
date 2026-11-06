@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.43.0 — 2026-11-06
+- Modération (administrateurs) : toucher la notification « signalements à traiter » ouvre directement l’écran Modération. Le nombre de signalements à traiter se met à jour quand la notification arrive pendant que l’app est ouverte, et quand on revient dans l’app. Pour les autres comptes, rien ne change.
+
 ## 0.42.0 — 2026-11-06
 - iPhone : notifications push. Quand quelqu’un te demande de t’abonner, s’abonne à toi, accepte ta demande, donne un bravo ou commente ta séance, l’iPhone te prévient même app fermée, comme sur Android. Elles s’activent avec un compte, après l’accord de l’iPhone ; Profil → Compte → « Notifications push » pour les couper, en tout ou par type.
 - Confidentialité : les notifications push de l’iPhone passent par Apple (Apple Push Notification service), comme celles d’Android passent par Google.

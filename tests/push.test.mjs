@@ -72,3 +72,59 @@ test('version web (pas d’app native) : pas de notifications push', t => {
   assert.equal(app.pushPl(), null);
   assert.equal(app.renderVals().pnOn, false);
 });
+
+// ── Notification de modération (0.43.0) : toucher → écran « Modération » ; compteur à jour ──
+// Supabase simulé : mod_count renvoie `count` (null = compte ordinaire), mod_reports la liste ; le reste répond vide.
+function fakeModSb(app, count) {
+  const rpc = [];
+  const chain = () => { const p = new Proxy(function () {}, { get: (_, k) => k === 'then' ? (ok, ko) => Promise.resolve({ data: [], error: null, count: 0 }).then(ok, ko) : () => p, apply: () => p }); return p; };
+  app.sb = () => Promise.resolve({
+    rpc: name => { rpc.push(name);
+      if (name === 'mod_count') return Promise.resolve({ data: count, error: null });
+      if (name === 'mod_reports') return Promise.resolve(count == null ? { data: null, error: { message: 'not_admin' } } : { data: Array.from({ length: count }, (_, i) => ({ id: 'r' + i })), error: null });
+      return Promise.resolve({ data: 0, error: null }); },
+    from: () => chain(),
+  });
+  return rpc;
+}
+const settle = () => new Promise(r => setTimeout(r, 10));   // promesses + setTimeout(0) de l'app
+
+test('modération : notification touchée par l’administrateur → onglet Profil, écran « Modération » ouvert, compteur à jour', async () => {
+  const app = makeApp(loadBarlog(), { ...emptyData(), lang: 'fr', acct, tab: 'today', screen: 'tabs', sv: [] });
+  const rpc = fakeModSb(app, 2); app.renderVals();
+  app._pnOpen = { kind: 'report' }; app.pushOpen(); await settle();
+  assert.equal(app.state.tab, 'profile');
+  assert.deepEqual(app.state.sv.map(v => v.v), ['mq']);
+  assert.equal(app.state.mqN, 2);
+  assert.ok(rpc.includes('mod_reports'), 'la liste des signalements est chargée');
+  assert.equal(app.toasts.length, 0, 'pas de message « N signalements à traiter » en plus');
+});
+
+test('modération : compte ordinaire (le serveur ne confirme pas) → le Fil et les notifications, jamais l’écran « Modération »', async () => {
+  const app = makeApp(loadBarlog(), { ...emptyData(), lang: 'fr', acct, tab: 'today', screen: 'tabs', sv: [] });
+  const rpc = fakeModSb(app, null); app.renderVals();
+  app._pnOpen = { kind: 'report' }; app.pushOpen(); await settle();
+  assert.equal(app.state.tab, 'feed');
+  assert.deepEqual(app.state.sv.map(v => v.v), ['ntf']);
+  assert.ok(!rpc.includes('mod_reports'));
+});
+
+test('modération : notification reçue app ouverte → compteur mis à jour ; écran ouvert → liste rechargée ; retour dans l’app → compteur', async t => {
+  const { PN, calls } = fakePN('ios'); nativeWindow(t, 'ios', { PushNotifications: PN });
+  const app = makeApp(loadBarlog(), { ...emptyData(), lang: 'fr', acct, mqN: 1 });
+  let rpc = fakeModSb(app, 3); app.renderVals();
+  app.pushListen();
+  calls.on.pushNotificationReceived({ data: { kind: 'report' } }); await settle();
+  assert.equal(app.state.mqN, 3);
+  rpc = fakeModSb(app, 4); app.setState({ sv: [{ v: 'mq' }] });
+  calls.on.pushNotificationReceived({ data: { kind: 'report' } }); await settle();
+  assert.ok(rpc.includes('mod_reports')); assert.equal(app.state.mqN, 4); assert.equal(app.state.mq.items.length, 4);
+  // Une notification sociale ne touche pas au compteur de modération.
+  rpc = fakeModSb(app, 9); calls.on.pushNotificationReceived({ data: { kind: 'kudo' } }); await settle();
+  assert.ok(!rpc.includes('mod_count') && !rpc.includes('mod_reports'));
+  // Retour dans l'app : seulement pour un compte déjà connu comme administrateur.
+  rpc = fakeModSb(app, 5); app.setState({ sv: [] }); app.mqRefresh(); await settle();
+  assert.equal(app.state.mqN, 5);
+  app.setState({ mqN: null }); rpc = fakeModSb(app, 6); app.mqRefresh(); await settle();
+  assert.equal(rpc.length, 0, 'compte ordinaire : aucun appel au retour dans l’app');
+});
