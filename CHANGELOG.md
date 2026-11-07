@@ -5,6 +5,13 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.44.0 — 2026-11-06
+- Barlog Pro : les vrais achats sont prêts dans l’app (App Store et Google Play, par RevenueCat), mais pas encore ouverts : tant que les produits n’existent pas dans les boutiques, la page des prix affiche « Bientôt disponible ». Pendant la bêta, le Pro reste offert aux testeurs.
+- Page des prix : prix de la boutique dans la devise du pays, essai gratuit annoncé seulement si on y a encore droit, renouvellement automatique et annulation expliqués, liens vers les conditions d’utilisation et la confidentialité, « Restaurer mes achats ».
+- Profil : avec un abonnement, « Gérer » ouvre la page des abonnements d’Apple ou de Google Play. Supprimer son compte rappelle que l’abonnement, lui, se gère chez Apple ou Google.
+- Site : on n’y achète pas (« Disponible dans l’app ») ; le Pro acheté dans l’app y est reconnu quand on se connecte au même compte. Les achats simulés restent seulement sur le site de test.
+- Aperçus Pro : « Découvrir Barlog Pro » au lieu de « Essayer 7 jours gratuitement » (l’essai dépend de la formule).
+
 ## 0.43.0 — 2026-11-06
 - Modération (administrateurs) : toucher la notification « signalements à traiter » ouvre directement l’écran Modération. Le nombre de signalements à traiter se met à jour quand la notification arrive pendant que l’app est ouverte, et quand on revient dans l’app. Pour les autres comptes, rien ne change.
 

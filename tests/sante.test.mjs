@@ -76,15 +76,16 @@ test('bêta : Pro offert dans l’app (sans écran d’achat), le Pro « test »
   assert.equal(app.state.pro.beta, true); assert.equal(app.isPro(), true);
   const v = app.renderVals(); assert.equal(v.proTitle, 'Offert pendant la bêta'); assert.equal(v.proBtn, 'Bêta');
   v.proCardClick(); assert.equal(app.state.pro.beta, true, 'pas de « désactiver » ni d’écran d’achat');
-  const web = makeApp(loadBarlog(), { ...emptyData() }); delete globalThis.window; web.betaPro(); assert.equal(web.state.pro, undefined);
+  const web = makeApp(loadBarlog(), { ...emptyData() }); delete globalThis.window; web.proEval(); assert.equal(web.state.pro, undefined);
 });
 
-test('fin de la bêta (BETA = false) : le Pro offert est retiré, un vrai achat reste', async t => {
+test('fin de la bêta (BETA = false) : le Pro offert est retiré, un vrai achat (boutique) reste tant que la boutique n’a pas répondu', async t => {
   nativeEnv(t);
   const html = (await import('node:fs')).readFileSync((await import('./harness.mjs')).HTML_PATH, 'utf8').replace('const BETA = true;', 'const BETA = false;');
   const B = loadBarlog(html);
-  const a = makeApp(B, { ...emptyData(), pro: { plan: 'beta', beta: true } }); a.betaPro(); assert.equal(a.state.pro, null);
-  const b = makeApp(B, { ...emptyData(), pro: { plan: 'life' } }); b.betaPro(); assert.deepEqual(b.state.pro, { plan: 'life' });
+  const a = makeApp(B, { ...emptyData(), pro: { plan: 'beta', beta: true } }); a.proEval(); assert.equal(a.state.pro, null);
+  const life = { plan: 'life', src: 'store', until: null };
+  const b = makeApp(B, { ...emptyData(), pro: life }); b.proEval(); assert.deepEqual(b.state.pro, life);
 });
 
 test('fichier Santé abîmé (écriture interrompue) : sa copie de secours est utilisée, rien n’est perdu', async t => {
