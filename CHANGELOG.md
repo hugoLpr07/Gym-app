@@ -5,6 +5,11 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.44.1 — 2026-11-06
+- Confidentialité : RevenueCat (qui vérifie les achats Barlog Pro) n’est contacté que si tu ouvres la page Barlog Pro, touches « Restaurer mes achats » ou as déjà Barlog Pro. Sans compte et sans achat, rien ne quitte ton téléphone, comme avant.
+- Politique de confidentialité : RevenueCat, le droit Barlog Pro gardé avec ton compte, et ce qui reste chez Apple, Google et RevenueCat après la suppression du compte.
+- Conditions d’utilisation : section « Barlog Pro et achats » détaillée (formules, essai gratuit, renouvellement, annulation, changements de prix, remboursements, achat à vie, bêta).
+
 ## 0.44.0 — 2026-11-06
 - Barlog Pro : les vrais achats sont prêts dans l’app (App Store et Google Play, par RevenueCat), mais pas encore ouverts : tant que les produits n’existent pas dans les boutiques, la page des prix affiche « Bientôt disponible ». Pendant la bêta, le Pro reste offert aux testeurs.
 - Page des prix : prix de la boutique dans la devise du pays, essai gratuit annoncé seulement si on y a encore droit, renouvellement automatique et annulation expliqués, liens vers les conditions d’utilisation et la confidentialité, « Restaurer mes achats ».

@@ -38,13 +38,14 @@
 
   <section id="fr" lang="fr">
     <h1>Politique de confidentialité</h1>
-    <p class="muted">En vigueur le 23 octobre 2026 · s’applique à l’app Barlog sur iPhone, sur Android et à sa version web.</p>
+    <p class="muted">En vigueur le 6 novembre 2026 · s’applique à l’app Barlog sur iPhone, sur Android et à sa version web.</p>
 
     <div class="summary">
       <ul>
-        <li><strong>Sans compte</strong>, Barlog fonctionne entièrement sur ton téléphone : aucune de tes données n’est envoyée au développeur.</li>
+        <li><strong>Sans compte et sans achat</strong>, Barlog fonctionne entièrement sur ton téléphone : aucune de tes données n’est envoyée au développeur.</li>
         <li><strong>Le compte Barlog est optionnel.</strong> Il sert au partage (fil, abonnements, bravos, commentaires) et, avec Barlog Pro, à la sauvegarde en ligne privée de tes données. Seul ce que tu choisis de publier est partagé.</li>
         <li><strong>Aucune publicité, aucun traceur, aucune statistique d’utilisation</strong>, aucune vente de données.</li>
+        <li><strong>Barlog Pro</strong> s’achète dans l’app, par l’App Store ou Google Play ; RevenueCat vérifie tes achats. Barlog ne reçoit jamais tes informations de paiement.</li>
         <li><strong>Données de santé</strong> utilisées uniquement avec ton accord, jamais publiées et jamais partagées.</li>
         <li>Tu peux <strong>supprimer ton compte et toutes ses données</strong> à tout moment, depuis l’app.</li>
       </ul>
@@ -71,9 +72,10 @@
       <tr><td>Bravos et commentaires</td><td>Échanger sur les séances</td><td>Les personnes qui peuvent voir la séance</td></tr>
       <tr><td>Comptes bloqués</td><td>Ta tranquillité</td><td>Toi seul·e (la personne bloquée n’est pas prévenue)</td></tr>
       <tr><td>Signalements</td><td>Modération</td><td>Le développeur uniquement</td></tr>
+      <tr><td>Droit Barlog Pro, si tu as acheté Barlog Pro dans l’app : date de fin (ou « à vie »), boutique (App Store ou Google Play), achat de test ou non</td><td>Reconnaître ton Pro sur tes autres appareils et sur le site ; réserver la sauvegarde en ligne aux membres Pro</td><td>Toi seul·e (tenu à jour par notre serveur d’après RevenueCat)</td></tr>
     </table>
     <p><strong>Sauvegarde en ligne (Barlog Pro, <strong>seulement si tu l’acceptes</strong> : l’app te pose la question une fois ; désactivable dans Profil → Compte).</strong> Pour que tu retrouves tout en changeant de téléphone, une copie de tes données Barlog est gardée dans un espace <strong>privé, visible par toi seul·e</strong> : séances (détail série par série), routines, exercices perso, pesées et mensurations saisies dans Barlog ou importées par CSV, et réglages. Elle est mise à jour automatiquement après chaque changement ; la version de la veille est aussi gardée comme filet de sécurité. Un identifiant aléatoire de l’appareil (sans nom ni modèle) sert à fusionner deux téléphones. Personne d’autre ne peut la lire, elle n’est jamais publiée ni utilisée à d’autres fins. Désactiver la sauvegarde, ou ne plus être Pro, arrête les envois ; la dernière sauvegarde est conservée jusqu’à ce que tu la supprimes (<strong>Profil → Compte → Sauvegarde en ligne → Supprimer ma sauvegarde en ligne</strong>, sans supprimer ton compte) ou que tu supprimes ton compte, et tu peux toujours la restaurer sur ton téléphone, même sans Pro. Supprimer ton compte l’efface.</p>
-    <p><strong>Ce qui n’est jamais envoyé :</strong> les données lues dans Apple Santé ou Health Connect (elles sont relues directement depuis Santé sur ton nouveau téléphone), et, sans compte, rien du tout.</p>
+    <p><strong>Ce qui n’est jamais envoyé :</strong> les données lues dans Apple Santé ou Health Connect (elles sont relues directement depuis Santé sur ton nouveau téléphone), et, sans compte ni achat, rien du tout.</p>
     <p><strong>Consentement.</strong> Rien n’est publié sans action de ta part : tu publies chaque séance toi-même, ou tu actives la publication automatique. Le profil est <strong>privé par défaut</strong> et les séances sont visibles par tes <strong>abonnés</strong> par défaut. Tu peux changer ces réglages, retirer une séance publiée ou désactiver la publication automatique à tout moment.</p>
     <p><strong>Âge.</strong> Le compte Barlog est réservé aux personnes de <strong>14 ans et plus</strong>. L’app reste utilisable sans compte à tout âge.</p>
 
@@ -84,11 +86,12 @@
       <li><strong>Firebase Cloud Messaging (Google)</strong> livre les notifications push sur Android. Le jeton de ton téléphone et le texte de la notification (par exemple « @alex a donné un bravo à ta séance Push A ») transitent donc par Google, qui peut les traiter hors du Québec.</li>
       <li><strong>Apple Push Notification service (Apple)</strong> livre les notifications push sur iPhone. Le jeton de ton téléphone et le texte de la notification transitent donc par Apple, qui peut les traiter hors du Québec.</li>
       <li><strong>Cloudflare (Turnstile)</strong> vérifie qu’une demande de code de connexion vient d’une personne et non d’un robot, seulement au moment où tu demandes un code. Cloudflare reçoit pour cela ton adresse IP et des informations techniques sur ton appareil et ton navigateur, qu’il peut traiter hors du Québec ; aucun traceur publicitaire n’est utilisé.</li>
+      <li><strong>RevenueCat</strong> gère les achats Barlog Pro (abonnements et achat à vie) : il vérifie auprès de l’App Store ou de Google Play ce que tu as acheté et indique à l’app si Barlog Pro est actif. Il reçoit pour cela un identifiant (aléatoire, ou celui de ton compte Barlog si tu es connecté·e), l’historique de tes achats Barlog (produit, date, prix, devise, renouvellement, remboursement) et des informations techniques (système et version de l’app, langue, pays de la boutique, adresse IP). Il n’est contacté que si tu ouvres la page Barlog Pro, touches « Restaurer mes achats » ou as déjà Barlog Pro. Il ne reçoit jamais tes informations de paiement (gérées par Apple ou Google) ni tes séances. RevenueCat est une entreprise établie aux États-Unis, qui peut traiter ces données hors du Québec.</li>
       <li>Ces fournisseurs n’utilisent pas tes données pour leur propre compte ; ils ne servent qu’à faire fonctionner Barlog.</li>
     </ul>
 
     <h2 id="conservation">5. Conservation et suppression</h2>
-    <p>Les données de ton compte sont conservées tant que ton compte existe, sauf : les <strong>notifications</strong>, effacées après 90 jours ; un <strong>compte jamais confirmé</strong> (code jamais saisi), effacé après 7 jours ; la <strong>sauvegarde en ligne</strong>, qui ne garde que sa dernière version et celle de la veille.</p>
+    <p>Les données de ton compte sont conservées tant que ton compte existe, sauf : les <strong>notifications</strong>, effacées après 90 jours ; un <strong>compte jamais confirmé</strong> (code jamais saisi), effacé après 7 jours ; la <strong>sauvegarde en ligne</strong>, qui ne garde que sa dernière version et celle de la veille. Le <strong>droit Barlog Pro</strong> est effacé avec ton compte. Tes achats, eux, restent enregistrés chez Apple ou Google et chez RevenueCat (preuve d’achat, restauration sur un nouveau téléphone) ; pour les faire effacer chez RevenueCat, écris-nous.</p>
     <p><strong>Profil → Compte → Supprimer mon compte</strong> efface immédiatement ton compte, ton adresse e-mail, ton profil, ta photo de profil, ta sauvegarde en ligne, tes séances publiées, tes abonnements, tes bravos, tes commentaires, tes notifications et tes blocages. Tu peux aussi le demander sans l’app (<a href="support.html#suppression">page d’aide</a>). Un fichier envoyé au même moment par un autre de tes téléphones est effacé automatiquement dans les 2 jours. Des copies de sécurité et des journaux techniques chez l’hébergeur peuvent subsister quelques jours avant d’être effacés automatiquement. Les signalements que tu as envoyés sont conservés sans lien avec ton compte, le temps de les traiter et 1 an au plus. Tes séances locales ne sont pas touchées : elles restent sur ton téléphone.</p>
 
     <h2>6. Données de santé</h2>
@@ -109,7 +112,7 @@
     <ul>
       <li><strong>GitHub Pages.</strong> La version web de Barlog est hébergée par GitHub, qui peut conserver des journaux techniques (adresse IP, date) comme tout hébergeur. Tout le code de l’app (polices et bibliothèques comprises) est fourni avec l’app : aucun autre site n’est contacté.</li>
       <li><strong>YouTube.</strong> Le bouton « Voir une démo » d’un exercice ouvre YouTube uniquement si tu le touches.</li>
-      <li><strong>Achats.</strong> Si des achats sont proposés dans l’app, ils sont traités par l’App Store ou Google Play. Barlog ne reçoit jamais tes informations de paiement.</li>
+      <li><strong>Achats.</strong> Les achats Barlog Pro se font dans l’app et sont traités par l’App Store ou Google Play (RevenueCat les vérifie, voir la section 4). Barlog ne reçoit jamais tes informations de paiement. Le site web ne vend rien.</li>
     </ul>
 
     <h2>10. Tes droits</h2>
@@ -124,13 +127,14 @@
 
   <section id="en" lang="en">
     <h1>Privacy policy</h1>
-    <p class="muted">Effective October 23, 2026 · applies to the Barlog app on iPhone, on Android and to its web version.</p>
+    <p class="muted">Effective November 6, 2026 · applies to the Barlog app on iPhone, on Android and to its web version.</p>
 
     <div class="summary">
       <ul>
-        <li><strong>Without an account</strong>, Barlog runs entirely on your phone: none of your data is sent to the developer.</li>
+        <li><strong>Without an account or a purchase</strong>, Barlog runs entirely on your phone: none of your data is sent to the developer.</li>
         <li><strong>The Barlog account is optional.</strong> It is used for sharing (feed, follows, kudos, comments) and, with Barlog Pro, for the private online backup of your data. Only what you choose to publish is shared.</li>
         <li><strong>No ads, no trackers, no usage analytics</strong>, no data sales.</li>
+        <li><strong>Barlog Pro</strong> is bought in the app, through the App Store or Google Play; RevenueCat verifies your purchases. Barlog never receives your payment details.</li>
         <li><strong>Health data</strong> is used only with your permission, never published and never shared.</li>
         <li>You can <strong>delete your account and all its data</strong> at any time from the app.</li>
       </ul>
@@ -157,9 +161,10 @@
       <tr><td>Kudos and comments</td><td>Talking about workouts</td><td>People who can see the workout</td></tr>
       <tr><td>Blocked accounts</td><td>Your peace of mind</td><td>Only you (the blocked person is not notified)</td></tr>
       <tr><td>Reports</td><td>Moderation</td><td>The developer only</td></tr>
+      <tr><td>Barlog Pro entitlement, if you bought Barlog Pro in the app: end date (or “lifetime”), store (App Store or Google Play), test purchase or not</td><td>Recognize your Pro on your other devices and on the website; keep online backup for Pro members</td><td>Only you (kept up to date by our server from RevenueCat)</td></tr>
     </table>
     <p><strong>Online backup (Barlog Pro, <strong>only if you agree</strong>: the app asks you once; can be turned off in Profile → Account).</strong> So you get everything back when you change phones, a copy of your Barlog data is kept in a <strong>private space only you can see</strong>: workouts (set-by-set detail), routines, custom exercises, weigh-ins and measurements entered in Barlog or imported by CSV, and settings. It is updated automatically after every change; the previous day’s version is also kept as a safety net. A random device identifier (no name or model) is used to merge two phones. No one else can read it, and it is never published or used for anything else. Turning the backup off, or no longer being Pro, stops uploads; the last backup is kept until you delete it (<strong>Profile → Account → Online backup → Delete my online backup</strong>, without deleting your account) or delete your account, and you can always restore it to your phone, even without Pro. Deleting your account erases it.</p>
-    <p><strong>Never sent:</strong> data read from Apple Health or Health Connect (your new phone reads it again directly from Health), and, without an account, nothing at all.</p>
+    <p><strong>Never sent:</strong> data read from Apple Health or Health Connect (your new phone reads it again directly from Health), and, without an account or a purchase, nothing at all.</p>
     <p><strong>Consent.</strong> Nothing is published without an action from you: you publish each workout yourself, or turn on automatic publishing. Profiles are <strong>private by default</strong> and workouts are visible to your <strong>followers</strong> by default. You can change these settings, remove a published workout or turn off automatic publishing at any time.</p>
     <p><strong>Age.</strong> The Barlog account is for people <strong>14 and older</strong>. The app can be used without an account at any age.</p>
 
@@ -170,11 +175,12 @@
       <li><strong>Firebase Cloud Messaging (Google)</strong> delivers push notifications on Android. Your phone’s token and the notification text (for example “@alex gave kudos to your workout Push A”) therefore go through Google, which may process them outside Québec.</li>
       <li><strong>Apple Push Notification service (Apple)</strong> delivers push notifications on iPhone. Your phone’s token and the notification text therefore go through Apple, which may process them outside Québec.</li>
       <li><strong>Cloudflare (Turnstile)</strong> checks that a sign-in code request comes from a person and not a bot, only when you request a code. For this, Cloudflare receives your IP address and technical information about your device and browser, which it may process outside Québec; no advertising tracker is used.</li>
+      <li><strong>RevenueCat</strong> manages Barlog Pro purchases (subscriptions and lifetime purchase): it checks with the App Store or Google Play what you bought and tells the app whether Barlog Pro is active. To do so it receives an identifier (random, or your Barlog account’s if you are signed in), your Barlog purchase history (product, date, price, currency, renewal, refund) and technical information (operating system and app version, language, store country, IP address). It is contacted only if you open the Barlog Pro page, tap “Restore purchases” or already have Barlog Pro. It never receives your payment details (handled by Apple or Google) or your workouts. RevenueCat is a company based in the United States and may process this data outside Quebec.</li>
       <li>These providers do not use your data for their own purposes; they only help run Barlog.</li>
     </ul>
 
     <h2 id="retention">5. Retention and deletion</h2>
-    <p>Account data is kept as long as your account exists, except: <strong>notifications</strong>, erased after 90 days; an <strong>account never confirmed</strong> (code never entered), erased after 7 days; the <strong>online backup</strong>, which only keeps its latest version and the previous day’s.</p>
+    <p>Account data is kept as long as your account exists, except: <strong>notifications</strong>, erased after 90 days; an <strong>account never confirmed</strong> (code never entered), erased after 7 days; the <strong>online backup</strong>, which only keeps its latest version and the previous day’s. The <strong>Barlog Pro entitlement</strong> is erased with your account. Your purchases themselves remain recorded with Apple or Google and with RevenueCat (proof of purchase, restoring on a new phone); to have them erased at RevenueCat, email us.</p>
     <p><strong>Profile → Account → Delete my account</strong> immediately erases your account, email address, profile, profile photo, online backup, published workouts, follows, kudos, comments, notifications and blocks. You can also request it without the app (<a href="support.html#delete">help page</a>). A file sent at the same moment by another of your phones is erased automatically within 2 days. Backups and technical logs at our host may remain for a few days before being erased automatically. Reports you sent are kept, no longer linked to your account, while they are handled and for 1 year at most. Your local workouts are not affected: they stay on your phone.</p>
 
     <h2>6. Health data</h2>
@@ -195,7 +201,7 @@
     <ul>
       <li><strong>GitHub Pages.</strong> Barlog’s web version is hosted by GitHub, which may keep technical logs (IP address, date) like any host. All of the app’s code (fonts and libraries included) ships with the app: no other website is contacted.</li>
       <li><strong>YouTube.</strong> An exercise’s “Watch a demo” button opens YouTube only if you tap it.</li>
-      <li><strong>Purchases.</strong> If in-app purchases are offered, they are processed by the App Store or Google Play. Barlog never receives your payment details.</li>
+      <li><strong>Purchases.</strong> Barlog Pro purchases are made in the app and processed by the App Store or Google Play (RevenueCat verifies them, see section 4). Barlog never receives your payment details. The website sells nothing.</li>
     </ul>
 
     <h2>10. Your rights</h2>

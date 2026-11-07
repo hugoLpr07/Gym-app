@@ -1487,7 +1487,7 @@ Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for detai
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance', 'Remove set': 'Retirer la série' });
 Object.assign(FR, { 'Matching app icon': 'Icône de la même couleur', 'Barlog’s Home Screen icon takes your accent color. iOS shows a message each time it changes.': 'L’icône de Barlog sur l’écran d’accueil prend ta couleur. iOS affiche un message à chaque changement.' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.44.0';
+const APP_VERSION = '0.44.1';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
@@ -2894,9 +2894,19 @@ class Component extends DCLogic {
     if (JSON.stringify(p) !== JSON.stringify(cur)) this.setState({ pro: p });
   }
   rcP() { const P = this.nat(); return P && P.Purchases && RC_KEYS[plat()] ? P.Purchases : null; }
-  // Plugin RevenueCat configuré une seule fois (promesse ; null = achats indisponibles : site, clé absente ; échec → nouvel essai).
+  // RevenueCat n'est démarré que si la personne en a besoin (confidentialité, privacy.html) : page des prix ouverte, « Restaurer
+  // mes achats », Pro de la boutique déjà connu sur ce téléphone (rcBoot), compte qui a le Pro (rcLogin). Sans achat, rien ne
+  // lui est envoyé. Promesse du plugin configuré (null = achats indisponibles : site, clé absente ; échec → nouvel essai).
+  // Sans compte, jamais le client RevenueCat d'un ancien compte du téléphone ; avec un compte, configuré directement à son nom.
   rc() {
-    if (!this._rc) { const R = this.rcP(); this._rc = !R ? Promise.resolve(null) : Promise.resolve().then(() => R.configure({ apiKey: RC_KEYS[plat()] })).then(() => R, () => { this._rc = null; return null; }); }
+    if (!this._rc) { const R = this.rcP(), uid = (this.state.acct && this.state.acct.uid) || null;
+      this._rc = !R ? Promise.resolve(null) : Promise.resolve().then(() => R.configure({ apiKey: RC_KEYS[plat()], ...(uid ? { appUserID: uid } : {}) }))
+        .then(() => uid ? null : Promise.resolve().then(() => R.isAnonymous()).then(a => a && a.isAnonymous === false ? R.logOut() : null).catch(() => null))
+        .then(() => { this._rcUid = uid;
+          try { Promise.resolve(R.addCustomerInfoUpdateListener(ci => this.rcApply(ci))).catch(() => {}); } catch (e) {}
+          R.getCustomerInfo().then(r => r && this.rcApply(r.customerInfo)).catch(() => {});
+          return R; }, () => { this._rc = null; return null; });
+    }
     return this._rc;
   }
   rcApply(ci) {
@@ -2905,19 +2915,22 @@ class Component extends DCLogic {
     this._rcPro = e && e.isActive !== false ? { plan: proPlan(e.productIdentifier), src: 'store', until: e.expirationDateMillis || null, renew: e.willRenew !== false, ...(e.isSandbox ? { sandbox: true } : {}) } : null;
     this.proEval();
   }
-  rcBoot() {
-    this.rc().then(R => { if (!R) return null; try { Promise.resolve(R.addCustomerInfoUpdateListener(ci => this.rcApply(ci))).catch(() => {}); } catch (e) {} return R.getCustomerInfo(); })
-      .then(r => r && this.rcApply(r.customerInfo)).catch(() => {});
-  }
+  rcBoot() { const p = this.state.pro; if (p && p.src === 'store') this.rc(); }   // Pro de la boutique connu : on le revérifie
   // Compte connecté = même client RevenueCat (un achat fait avant la connexion y est rattaché) ; Pro actif → le serveur le relit.
+  // RevenueCat pas encore utilisé sur ce téléphone : démarré seulement si le compte a le Pro (acheté sur un autre appareil).
   rcLogin(uid) {
-    if (!uid || this._rcUid === uid || !this.rcP()) return; this._rcUid = uid;
-    this.rc().then(R => R && R.logIn({ appUserID: uid })).then(r => { if (!r) return; this.setState({ pwRc: null }); this.rcApply(r.customerInfo); if (this._rcPro) this.proSrvSync(); }).catch(() => { this._rcUid = null; });
+    if (!uid || this._rcUid === uid || !this.rcP()) return;
+    const go = () => this.rc().then(R => R && this._rcUid !== uid ? R.logIn({ appUserID: uid }).then(r => { this._rcUid = uid; return r; }) : null)
+      .then(r => { if (!r) return; this.setState({ pwRc: null }); this.rcApply(r.customerInfo); if (this._rcPro) this.proSrvSync(); }).catch(() => {});
+    const p = this.state.pro;
+    if (this._rc || (p && p.src === 'store')) return go();
+    this.sb().then(c => c.from('pro_entitlements').select('pro_until').maybeSingle()).then(({ data, error }) => {
+      if (!error && data && (data.pro_until == null || Date.parse(data.pro_until) > Date.now())) go(); }).catch(() => {});
   }
   // Déconnexion ou compte supprimé : client RevenueCat anonyme, plus de droit du serveur.
   proOut() {
     this._srvPro = null; const was = this._rcUid; this._rcUid = null;
-    if (was) this.rc().then(R => R && R.logOut()).then(r => { if (r) { this.setState({ pwRc: null }); this.rcApply(r.customerInfo); } }).catch(() => {});
+    if (was && this._rc) this.rc().then(R => R && R.logOut()).then(r => { if (r) { this.setState({ pwRc: null }); this.rcApply(r.customerInfo); } }).catch(() => {});
     this.proEval();
   }
   // Site : Pro acheté dans l'app, reconnu par le serveur (pro_entitlements, lisible seulement par son propriétaire).

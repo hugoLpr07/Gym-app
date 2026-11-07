@@ -33,11 +33,12 @@ function fakeRC(o = {}) {
   const intro = (unit, n) => ({ price: 0, priceString: '0,00 $', cycles: 1, period: 'P' + n + unit[0], periodUnit: unit, periodNumberOfUnits: n });
   const pk = (type, id, price, priceString, i) => ({ identifier: '$rc_' + type.toLowerCase(), packageType: type, product: { identifier: id, price, priceString, currencyCode: 'CAD', introPrice: i || null } });
   const R = {
-    configure: a => { calls.push(['configure', a.apiKey]); return Promise.resolve(); },
+    configure: a => { calls.push(['configure', a.apiKey, a.appUserID || null]); o.user = a.appUserID || o.user || null; return Promise.resolve(); },
+    isAnonymous: () => Promise.resolve({ isAnonymous: !o.user }),
     addCustomerInfoUpdateListener: cb => { R.listener = cb; return Promise.resolve('l1'); },
     getCustomerInfo: () => { calls.push(['info']); return Promise.resolve({ customerInfo: ci(o.ent) }); },
-    logIn: a => { calls.push(['logIn', a.appUserID]); return Promise.resolve({ customerInfo: ci(o.ent), created: false }); },
-    logOut: () => { calls.push(['logOut']); return Promise.resolve({ customerInfo: ci(null) }); },
+    logIn: a => { calls.push(['logIn', a.appUserID]); o.user = a.appUserID; return Promise.resolve({ customerInfo: ci(o.ent), created: false }); },
+    logOut: () => { calls.push(['logOut']); o.user = null; return Promise.resolve({ customerInfo: ci(null) }); },
     getOfferings: () => { calls.push(['offres']); return o.offErr ? Promise.reject(new Error('panne')) : Promise.resolve({ current: { identifier: 'default', availablePackages: [
       pk('MONTHLY', 'barlog_pro_monthly', 4.99, '4,99 $', intro('WEEK', 1)), pk('ANNUAL', 'barlog_pro_yearly', 29.99, '29,99 $', intro('MONTH', 1)), pk('LIFETIME', 'barlog_pro_lifetime', 79.99, '79,99 $')] } }); },
     checkTrialOrIntroductoryPriceEligibility: a => { calls.push(['essai', a.productIdentifiers.join(',')]); return Promise.resolve({ barlog_pro_monthly: { status: 1 }, barlog_pro_yearly: { status: 2 } }); },
@@ -86,9 +87,10 @@ test('page des prix (iPhone) : prix de la boutique, essai seulement si on y a dr
   const { R, calls } = fakeRC(); nativeWindow(t, 'ios', { Purchases: R });
   const app = makeApp(loadBarlog(withKeys()), { ...emptyData(), lang: 'fr', acct, mqN: 0 });
   app.renderVals(); app.proEval(); app.rcBoot(); await settle();
-  assert.deepEqual(calls[0], ['configure', 'appl_essai']);
+  assert.equal(calls.length, 0, 'RevenueCat pas démarré tant que la page des prix n’est pas ouverte');
   app.need('backup'); assert.equal(app.renderVals().pwCta, 'Chargement des offres…');
   await settle();
+  assert.deepEqual(calls[0], ['configure', 'appl_essai', acct.uid], 'connecté : configuré directement au nom du compte');
   assert.ok(calls.some(c => c[0] === 'essai' && c[1] === 'barlog_pro_monthly,barlog_pro_yearly'));
   let v = app.renderVals();
   assert.deepEqual(v.pwPlans.map(p => [p.name, p.price, p.per.replace(/[\u00a0\u202f]/g, ' '), p.badge]), [['Mensuel', '4,99 $', 'par mois', ''], ['Annuel', '29,99 $', '2,50 $ / mois', '−50 %'], ['À vie', '79,99 $', 'une fois', '']]);
@@ -147,17 +149,37 @@ test('« À vie » restauré → Pro pour toujours (✓, pas de « Gérer ») ; 
   app.setState({ sure: 'del' }); assert.doesNotMatch(app.renderVals().sureText, /Barlog Pro/, 'achat à vie : rien à annuler');
 });
 
-test('compte : connexion → même client RevenueCat (logIn) et serveur prévenu si Pro ; déconnexion → logOut, Pro retiré', async t => {
+test('compte : connexion d’un compte Pro (acheté ailleurs) → RevenueCat démarré à son nom ; déconnexion → logOut, Pro retiré', async t => {
   const f = fakeRC({ ent: { identifier: 'pro', isActive: true, productIdentifier: 'barlog_pro_monthly', expirationDateMillis: Date.now() + 5 * DAY, willRenew: true } });
   nativeWindow(t, 'android', { Purchases: f.R });
   const B = loadBarlog(withKeys().replace('const BETA = true;', 'const BETA = false;'));
-  const app = makeApp(B, { ...emptyData(), lang: 'fr' }); const invoked = fakeSb(app);
+  const app = makeApp(B, { ...emptyData(), lang: 'fr' }); fakeSb(app, { pro_until: null });
   app.renderVals(); app.rcLogin(acct.uid); app.setState({ acct }); await settle();
-  assert.deepEqual(f.calls.slice(0, 2), [['configure', 'goog_essai'], ['logIn', acct.uid]]);
-  assert.equal(app.state.pro.plan, 'month'); assert.deepEqual(invoked, ['pro-sync POST']);
-  app.rcLogin(acct.uid); await settle(); assert.equal(f.calls.filter(c => c[0] === 'logIn').length, 1, 'une seule fois par compte');
+  assert.deepEqual(f.calls.slice(0, 2), [['configure', 'goog_essai', acct.uid], ['info']]);
+  assert.equal(app.state.pro.plan, 'month');
+  app.rcLogin(acct.uid); await settle(); assert.equal(f.calls.filter(c => c[0] === 'configure' || c[0] === 'logIn').length, 1, 'une seule fois par compte');
   app.acOut(); await settle();
   assert.ok(f.calls.some(c => c[0] === 'logOut')); assert.equal(app.state.pro, null);
+});
+
+test('page des prix ouverte avant la connexion : à la connexion, même client RevenueCat (logIn) et serveur prévenu si Pro', async t => {
+  const f = fakeRC(); nativeWindow(t, 'ios', { Purchases: f.R });
+  const app = makeApp(loadBarlog(withKeys().replace('const BETA = true;', 'const BETA = false;')), { ...emptyData(), lang: 'fr' }); const invoked = fakeSb(app, null);
+  app.renderVals(); app.need(null); await settle();
+  assert.deepEqual(f.calls[0], ['configure', 'appl_essai', null]);
+  app.renderVals().pwBuy(); await settle();   // achat sans compte (identifiant anonyme)
+  assert.equal(app.state.pro.src, 'store'); assert.deepEqual(invoked, [], 'sans compte : rien au serveur');
+  app.setState({ acct }); app.rcLogin(acct.uid); await settle();
+  assert.ok(f.calls.some(c => c[0] === 'logIn' && c[1] === acct.uid)); assert.deepEqual(invoked, ['pro-sync POST'], 'achat rattaché au compte → serveur prévenu');
+});
+
+test('confidentialité : sans achat, RevenueCat n’est jamais contacté (démarrage, connexion d’un compte sans Pro)', async t => {
+  const f = fakeRC(); nativeWindow(t, 'ios', { Purchases: f.R });
+  const app = makeApp(loadBarlog(withKeys()), { ...emptyData(), lang: 'fr' }); fakeSb(app, null);
+  app.renderVals(); app.proEval(); app.rcBoot(); app.setState({ acct, mqN: null }); app.rcLogin(acct.uid); await settle();
+  assert.deepEqual(f.calls, []); assert.equal(app.state.pro.beta, true);
+  const g = makeApp(loadBarlog(withKeys()), { ...emptyData(), lang: 'fr', acct }); fakeSb(g, null, true);
+  g.rcLogin(acct.uid); await settle(); assert.deepEqual(f.calls, [], 'serveur injoignable : RevenueCat pas démarré pour autant');
 });
 
 test('Android : essai proposé par Google sans vérification à part ; annulation expliquée pour Google Play', async t => {
