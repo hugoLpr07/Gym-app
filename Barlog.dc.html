@@ -3051,7 +3051,7 @@ class Component extends DCLogic {
   // changent : renderVals tourne chaque seconde pendant une séance.
   wgMore(now) {
     const s = this.state; const t0 = new Date(now); t0.setHours(0, 0, 0, 0); const day = t0.getTime();
-    const key = [s.history, s.body, s.exMeta, s.unit, s.bodyU, LANG, day];
+    const key = [s.history, s.body, s.exMeta, s.routines, s.unit, s.bodyU, LANG, day];
     if (this._wgK && key.every((v, i) => v === this._wgK[i])) return this._wgV;
     const fr = LANG === 'fr'; const kgU = s.unit === 'kg', bU = s.bodyU || s.unit;
     const monOf = t => { const d = new Date(t); return new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7)).getTime(); };
@@ -3062,7 +3062,8 @@ class Component extends DCLogic {
     // Régularité : débuts de séance des 20 dernières semaines (celle-ci comprise).
     const from20 = monAgo(19), seen = new Set(); Object.values(s.history).forEach(a => a.forEach(x => { if (x.date >= from20) seen.add(x.date); }));
     // Records (même règle que pendant la séance : meilleure série d'une séance au-dessus de toutes les précédentes)
-    // et 1RM estimé (Epley) par semaine sur 12 semaines, pour les exercices les plus faits.
+    // et 1RM estimé (Epley) par semaine sur 12 semaines : exercices faits ces 12 semaines (le plus fait en premier = choix
+    // par défaut du widget), puis ceux des programmes jamais faits ces 12 semaines (sans données), pour pouvoir tous les choisir.
     const recs = [], ex = [];
     Object.entries(s.history).forEach(([name, arr]) => {
       const ty = this.meta(name).type; if (isT(ty) || ty === 'cardio') return;
@@ -3078,6 +3079,8 @@ class Component extends DCLogic {
       if (n) ex.push({ name, n, lastT, wk, top });
     });
     recs.sort((a, b) => b.t - a.t || b.e - a.e); ex.sort((a, b) => b.n - a.n || b.lastT - a.lastT);
+    const exIn = new Set(ex.map(x => x.name)), prog = [];
+    (s.routines || []).forEach(r => (r.ex || []).forEach(e => { const n = e && e.name, ty = n ? this.meta(n).type : ''; if (n && !exIn.has(n) && !isT(ty) && ty !== 'cardio') { exIn.add(n); prog.push(n); } }));
     // Muscles de la semaine : séries de travail depuis lundi, comme la carte du corps (muscle secondaire = ½ série),
     // regroupées en 8 groupes ; une série compte une seule fois par groupe.
     const G = [['chest', 'Pectoraux', 'Chest'], ['lats traps lowerback', 'Dos', 'Back'], ['shoulders reardelts', 'Épaules', 'Shoulders'], ['biceps', 'Biceps', 'Biceps'],
@@ -3094,7 +3097,7 @@ class Component extends DCLogic {
     const v = { u: kgU ? 'kg' : 'lb', bu: bU === 'kg' ? 'kg' : 'lb',
       hist: [...seen].sort((a, b) => a - b),
       rec: recs.slice(0, 3).map(r => [r.name, r.t, liftW(r.w), r.r]),
-      e1Week: iso(mon), e1: ex.slice(0, 12).map(x => [x.name, x.wk.map(e => e == null ? null : liftE(e)), [liftW(x.top.w), x.top.r]]),
+      e1Week: iso(mon), e1: [...ex.map(x => [x.name, x.wk.map(e => e == null ? null : liftE(e)), [liftW(x.top.w), x.top.r]]), ...prog.map(n => [n, []])].slice(0, 150),
       musWeek: iso(mon), mus: G.map((g, i) => [fr ? g[1] : g[2], mus[i]]).sort((a, b) => b[1] - a[1]),
       bw: bws.filter(b => b.date >= from30).map(b => [b.date, bwV(b.w)]), bwLast: bl ? [bl.date, bwV(bl.w)] : null,
       tx: fr ? { unlock: 'Touche pour débloquer', dec: ',', wk1: '{n} semaine', wkN: '{n} semaines', wkS: '{n} sem.', stS: '{n} sem. d’affilée', myWeek: 'Ma semaine', streak: 'Série',

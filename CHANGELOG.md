@@ -6,10 +6,10 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
 ## 0.45.0 — en cours (widgets)
-- Widgets : l’app prépare les données des nouveaux widgets (régularité sur 20 semaines, derniers records, 1RM estimé sur 12 semaines des exercices les plus faits, séries par muscle de la semaine, pesées des 30 derniers jours), dans ton unité et ta langue. Tout reste sur le téléphone : rien n’est envoyé sur Internet.
+- Widgets : l’app prépare les données des nouveaux widgets (régularité sur 20 semaines, derniers records, 1RM estimé sur 12 semaines des exercices faits récemment et de tous ceux de tes programmes, séries par muscle de la semaine, pesées des 30 derniers jours), dans ton unité et ta langue. Tout reste sur le téléphone : rien n’est envoyé sur Internet.
 - Page Barlog Pro : « Widgets écran d’accueil et verrouillé » (iPhone) et « Widgets écran d’accueil » (Android) remplacent « Bientôt : widget ».
 - iPhone : toucher un widget Pro sans Barlog Pro ouvre la page Pro, comme sur Android.
-- iPhone : 7 widgets pour l’écran d’accueil (Prochaine séance — gratuit —, Ma semaine, Régularité, Progression d’un exercice au choix, Derniers records, Muscles de la semaine, Poids corporel) et 4 pour l’écran verrouillé (prochaine séance, semaine, série, ligne au-dessus de l’heure). Ils se mettent à jour seuls à minuit. Sans Barlog Pro : tes données floutées avec un cadenas.
+- iPhone : 7 widgets pour l’écran d’accueil (Prochaine séance — gratuit —, Ma semaine, Régularité, Progression d’un exercice au choix parmi tous ceux de tes programmes, Derniers records, Muscles de la semaine, Poids corporel) et 4 pour l’écran verrouillé (prochaine séance, semaine, série, ligne au-dessus de l’heure). Ils se mettent à jour seuls à minuit. Sans Barlog Pro : tes données floutées avec un cadenas.
 
 ## 0.44.1 — 2026-11-06
 - Confidentialité : RevenueCat (qui vérifie les achats Barlog Pro) n’est contacté que si tu ouvres la page Barlog Pro, touches « Restaurer mes achats » ou as déjà Barlog Pro. Sans compte et sans achat, rien ne quitte ton téléphone, comme avant.

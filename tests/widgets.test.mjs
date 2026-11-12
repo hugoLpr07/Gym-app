@@ -67,7 +67,31 @@ test('Widgets v3 : régularité (20 semaines), records, 1RM estimé, muscles de 
   assert.equal(w.tx.unlock, 'Touche pour débloquer');
   assert.equal(w.tx.lastDone, 'Dernière fois', 'textes v2 toujours là');
   assert.equal(w.tx.mon.length, 12);
-  assert.ok(JSON.stringify(w).length < 16384, 'sous la limite du plugin Android (16 Ko)');
+  assert.ok(JSON.stringify(w).length < 65536, 'sous la limite des plugins iPhone et Android (64 Ko)');
+});
+
+test('Widgets v3 : tous les exercices des programmes au choix (sauf chronométrés et cardio), après ceux faits ces 12 semaines', t => {
+  const routines = [
+    { id: 'r1', name: 'Push', ex: [{ name: 'Bench Press', sets: 3 }, { name: 'Overhead Press', sets: 3 }, { name: 'Plank', sets: 3 }] },
+    { id: 'r2', name: 'Jambes', ex: [{ name: 'Leg Press', sets: 3 }, { name: 'Overhead Press', sets: 2 }, { name: 'Running', sets: 1 }, { name: 'Squat', sets: 5 }] },
+  ];
+  const { app, w } = setup(t, { routines });
+  assert.deepEqual(w.e1.map(e => e[0]), ['Bench Press', 'Squat', 'Overhead Press', 'Leg Press'],
+    'faits d’abord (le plus fait = défaut), puis ceux des programmes, une seule fois, sans gainage ni course');
+  assert.deepEqual(w.e1[2], ['Overhead Press', []], 'jamais fait ces 12 semaines : pas de données');
+  const a = app.wgMore(T0);
+  app.state = { ...app.state, routines: [...routines, { id: 'r3', name: 'Dos', ex: [{ name: 'Barbell Row', sets: 3 }] }] };
+  assert.equal(app.wgMore(T0).e1.at(-1)[0], 'Barbell Row', 'programme modifié → liste refaite');
+  assert.notEqual(app.wgMore(T0), a);
+});
+
+test('Widgets v3 : beaucoup d’exercices dans les programmes → toujours sous 64 Ko', t => {
+  const ex = Array.from({ length: 200 }, (_, i) => ({ name: 'Exercice personnalisé numéro ' + i, sets: 3 }));
+  const history = {};
+  ex.slice(0, 120).forEach((e, i) => { history[e.name] = Array.from({ length: 12 }, (_, k) => ({ date: d(9, 14, 9) - k * 7 * 864e5, sets: [{ w: 100 + i, r: 5 }] })); });
+  const { w } = setup(t, { routines: [{ id: 'r1', name: 'Tout', ex }], history });
+  assert.equal(w.e1.length, 150, 'au plus 150 exercices');
+  assert.ok(JSON.stringify(w).length < 65536, 'taille : ' + JSON.stringify(w).length);
 });
 
 test('Widgets v3 : livres pour les charges, kilos pour le corps, anglais', t => {
@@ -82,7 +106,8 @@ test('Widgets v3 : livres pour les charges, kilos pour le corps, anglais', t => 
 
 test('Widgets v3 : rien à montrer → listes vides, pas de plantage', t => {
   const { w } = setup(t, { history: {}, body: [] });
-  assert.deepEqual([w.hist, w.rec, w.e1, w.bw, w.bwLast], [[], [], [], [], null]);
+  assert.deepEqual([w.hist, w.rec, w.bw, w.bwLast], [[], [], [], null]);
+  assert.deepEqual(w.e1, [['Bench Press', []]], 'exercice du programme proposé, sans données');
   assert.ok(w.mus.every(m => m[1] === 0));
 });
 
