@@ -10,6 +10,7 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - Page Barlog Pro : « Widgets écran d’accueil et verrouillé » (iPhone) et « Widgets écran d’accueil » (Android) remplacent « Bientôt : widget ».
 - iPhone : toucher un widget Pro sans Barlog Pro ouvre la page Pro, comme sur Android.
 - iPhone : 7 widgets pour l’écran d’accueil (Prochaine séance — gratuit —, Ma semaine, Régularité, Progression d’un exercice au choix parmi tous ceux de tes programmes, Derniers records, Muscles de la semaine, Poids corporel) et 4 pour l’écran verrouillé (prochaine séance, semaine, série, ligne au-dessus de l’heure). Ils se mettent à jour seuls à minuit. Sans Barlog Pro : tes données floutées avec un cadenas.
+- Android : les mêmes 7 widgets pour l’écran d’accueil, aux couleurs et polices de l’app. Agrandis Régularité, Progression ou Derniers records pour en voir plus ; l’exercice de Progression se choisit en posant le widget (et dans ses réglages à partir d’Android 12). Ils se mettent à jour seuls à minuit. Sans Barlog Pro : tes données floutées avec un cadenas. Les deux widgets déjà posés deviennent « Prochaine séance », désormais gratuit, et « Ma semaine ».
 
 ## 0.44.1 — 2026-11-06
 - Confidentialité : RevenueCat (qui vérifie les achats Barlog Pro) n’est contacté que si tu ouvres la page Barlog Pro, touches « Restaurer mes achats » ou as déjà Barlog Pro. Sans compte et sans achat, rien ne quitte ton téléphone, comme avant.
