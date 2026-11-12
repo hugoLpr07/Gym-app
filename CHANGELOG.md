@@ -5,6 +5,11 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.45.0 — en cours (widgets)
+- Widgets : l’app prépare les données des nouveaux widgets (régularité sur 20 semaines, derniers records, 1RM estimé sur 12 semaines des exercices les plus faits, séries par muscle de la semaine, pesées des 30 derniers jours), dans ton unité et ta langue. Tout reste sur le téléphone : rien n’est envoyé sur Internet.
+- Page Barlog Pro : « Widgets écran d’accueil et verrouillé » (iPhone) et « Widgets écran d’accueil » (Android) remplacent « Bientôt : widget ».
+- iPhone : toucher un widget Pro sans Barlog Pro ouvre la page Pro, comme sur Android.
+
 ## 0.44.1 — 2026-11-06
 - Confidentialité : RevenueCat (qui vérifie les achats Barlog Pro) n’est contacté que si tu ouvres la page Barlog Pro, touches « Restaurer mes achats » ou as déjà Barlog Pro. Sans compte et sans achat, rien ne quitte ton téléphone, comme avant.
 - Politique de confidentialité : RevenueCat, le droit Barlog Pro gardé avec ton compte, et ce qui reste chez Apple, Google et RevenueCat après la suppression du compte.

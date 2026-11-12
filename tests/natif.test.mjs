@@ -27,7 +27,7 @@ test('Widget : dates brutes et textes à compléter (v2), plus de textes déjà 
   t.mock.timers.tick(900);
   const w = sent.at(-1);
   assert.ok(w, 'widget mis à jour');
-  assert.equal(w.v, 2);
+  assert.equal(w.v, 3, 'v3 (0.45.0) : champs v2 gardés tels quels, champs des widgets Pro en plus');
   assert.equal(w.last, d(9, 14, 18), 'date de la dernière séance de la routine (le widget calcule « il y a N jours »)');
   assert.equal(w.sub, '', 'pas de « il y a N jours » figé');
   assert.deepEqual(w.starts, [d(9, 12, 9), d(9, 14, 18)], 'séances de la semaine en cours');
