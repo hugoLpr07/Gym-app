@@ -52,6 +52,7 @@ test('Widgets v3 : régularité (20 semaines), records, 1RM estimé, muscles de 
     'débuts de séance depuis le lundi 1ᵉʳ juin (20 semaines), sans doublon, sans le 20 mai');
   assert.deepEqual(w.rec, [['Bench Press', d(9, 14, 18), 90, 4], ['Squat', d(9, 13), 100, 5], ['Bench Press', d(9, 8), 85, 5]],
     '3 derniers records, le plus récent en premier ; ni échauffement ni exercice chronométré');
+  assert.equal(w.goal, 1, 'objectif : une routine → 1 séance par semaine');
   assert.equal(w.e1Week, '2026-10-12');
   assert.deepEqual(w.e1, [
     ['Bench Press', [null, null, null, null, null, null, null, null, null, 93.3, 99.2, 102], [90, 4]],
@@ -76,6 +77,7 @@ test('Widgets v3 : tous les exercices des programmes au choix (sauf chronométr�
     { id: 'r2', name: 'Jambes', ex: [{ name: 'Leg Press', sets: 3 }, { name: 'Overhead Press', sets: 2 }, { name: 'Running', sets: 1 }, { name: 'Squat', sets: 5 }] },
   ];
   const { app, w } = setup(t, { routines });
+  assert.equal(w.goal, 2, 'objectif = une séance par routine, comme dans Stats');
   assert.deepEqual(w.e1.map(e => e[0]), ['Bench Press', 'Squat', 'Overhead Press', 'Leg Press'],
     'faits d’abord (le plus fait = défaut), puis ceux des programmes, une seule fois, sans gainage ni course');
   assert.deepEqual(w.e1[2], ['Overhead Press', []], 'jamais fait ces 12 semaines : pas de données');
@@ -109,6 +111,13 @@ test('Widgets v3 : rien à montrer → listes vides, pas de plantage', t => {
   assert.deepEqual([w.hist, w.rec, w.bw, w.bwLast], [[], [], [], null]);
   assert.deepEqual(w.e1, [['Bench Press', []]], 'exercice du programme proposé, sans données');
   assert.ok(w.mus.every(m => m[1] === 0));
+});
+
+test('Widgets v3 : objectif de la semaine (Régularité) = une séance par routine, au moins 1 ; textes de la grille', t => {
+  const { w } = setup(t, { routines: [] });
+  assert.equal(w.goal, 1, 'aucune routine → 1, comme dans Stats');
+  assert.deepEqual([w.tx.goalS, w.tx.thisWk, w.tx.last8, w.tx.dm, w.tx.pct], ['Objectif {n} / sem.', 'cette semaine', '8 dernières semaines', '{d} {m}', '{n}\u202F%']);
+  assert.deepEqual(w.tx.days, ['L', 'M', 'M', 'J', 'V', 'S', 'D'], 'lettres des jours pour les lignes de la grille');
 });
 
 test('Widgets v3 : calcul gardé en mémoire, refait quand l’historique ou le jour change ; rien sur le site', t => {

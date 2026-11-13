@@ -3096,19 +3096,21 @@ class Component extends DCLogic {
     const from30 = new Date(t0.getFullYear(), t0.getMonth(), t0.getDate() - 29).getTime(), bl = bws[bws.length - 1];
     const v = { u: kgU ? 'kg' : 'lb', bu: bU === 'kg' ? 'kg' : 'lb',
       hist: [...seen].sort((a, b) => a - b),
+      // Objectif de la semaine, comme dans Stats : une séance par routine (au moins 1).
+      goal: Math.max(1, (s.routines || []).length),
       rec: recs.slice(0, 3).map(r => [r.name, r.t, liftW(r.w), r.r]),
       e1Week: iso(mon), e1: [...ex.map(x => [x.name, x.wk.map(e => e == null ? null : liftE(e)), [liftW(x.top.w), x.top.r]]), ...prog.map(n => [n, []])].slice(0, 150),
       musWeek: iso(mon), mus: G.map((g, i) => [fr ? g[1] : g[2], mus[i]]).sort((a, b) => b[1] - a[1]),
       bw: bws.filter(b => b.date >= from30).map(b => [b.date, bwV(b.w)]), bwLast: bl ? [bl.date, bwV(bl.w)] : null,
       tx: fr ? { unlock: 'Touche pour débloquer', dec: ',', wk1: '{n} semaine', wkN: '{n} semaines', wkS: '{n} sem.', stS: '{n} sem. d’affilée', myWeek: 'Ma semaine', streak: 'Série',
-        reg: 'Régularité', reg20: '20 dernières semaines', sess: 'séances', perWk: 'par semaine', stL: 'semaines d’affilée', perWkT: 'Séances par semaine',
+        reg: 'Régularité', goalS: 'Objectif {n} / sem.', thisWk: 'cette semaine', perWk: 'par semaine', stL: 'semaines d’affilée', last8: '8 dernières semaines', dm: '{d} {m}', pct: '{n}\u202F%',
         mon: ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'],
         e1: '1RM est.', e1In: '{d} en 12 sem.', best: 'Meilleure série', ago12: 'il y a 12 sem.', now: 'auj.',
         rec: 'Record', recs: 'Derniers records', reps1: '× {n} répétition', repsN: '× {n} répétitions', agoS: 'il y a {n} j',
         musT: 'Séries cette semaine', bw: 'Poids', bwIn: '{d} en 30 jours',
         e10: 'Fais une séance avec charges', rec0: 'Bats un record pour le voir ici', bw0: 'Note ta première pesée', none: 'Pas encore de données' }
         : { unlock: 'Tap to unlock', dec: '.', wk1: '{n} week', wkN: '{n} weeks', wkS: '{n} wk', stS: '{n}-wk streak', myWeek: 'My week', streak: 'Streak',
-        reg: 'Consistency', reg20: 'Last 20 weeks', sess: 'workouts', perWk: 'per week', stL: 'week streak', perWkT: 'Workouts per week',
+        reg: 'Consistency', goalS: 'Goal {n}/wk', thisWk: 'this week', perWk: 'per week', stL: 'week streak', last8: 'Last 8 weeks', dm: '{m} {d}', pct: '{n}%',
         mon: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         e1: 'Est. 1RM', e1In: '{d} in 12 wk', best: 'Best set', ago12: '12 wk ago', now: 'now',
         rec: 'PR', recs: 'Latest PRs', reps1: '× {n} rep', repsN: '× {n} reps', agoS: '{n}d ago',
