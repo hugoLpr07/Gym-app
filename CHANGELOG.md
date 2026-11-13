@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.46.0 — 2026-11-13
+- Apple Watch : le minuteur de repos (et le chrono du cardio) s’affiche en grand dans la Smart Stack de la montre, avec l’exercice et la série à suivre (watchOS 11 et plus, iPhone sous iOS 18 et plus). Rien à installer sur la montre. Sur l’iPhone, l’écran verrouillé et la Dynamic Island ne changent pas.
+
 ## 0.45.0 — 2026-11-12
 - Nouvelle icône (« Bandeau ») sur iPhone, Android et le site, et les 6 icônes de couleur de Barlog Pro sur iPhone.
 - Widgets : l’app prépare les données des nouveaux widgets (régularité sur 20 semaines, derniers records, 1RM estimé sur 12 semaines des exercices faits récemment et de tous ceux de tes programmes, séries par muscle de la semaine, pesées des 30 derniers jours), dans ton unité et ta langue. Tout reste sur le téléphone : rien n’est envoyé sur Internet.
