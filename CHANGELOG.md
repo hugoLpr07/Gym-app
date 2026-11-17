@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.46.1 — 2026-11-17
+- Records : un poids jamais soulevé compte comme record, même avec moins de reps (ex. 125 lb × 2 après 115 lb × 5). Avant, seul le 1RM estimé comptait. La célébration affiche alors « Charge max · +10 lb ». Même règle dans le résumé de fin de séance, la publication sur le fil et le widget Derniers records.
+
 ## 0.46.0 — 2026-11-13
 - Apple Watch : le minuteur de repos (et le chrono du cardio) s’affiche en grand dans la Smart Stack de la montre, avec l’exercice et la série à suivre (watchOS 11 et plus, iPhone sous iOS 18 et plus). Rien à installer sur la montre. Sur l’iPhone, l’écran verrouillé et la Dynamic Island ne changent pas.
 
