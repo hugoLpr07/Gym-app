@@ -1472,7 +1472,12 @@ input::placeholder{color:#9C9CA8}
 const DAY = 864e5;
 const KG_LB = 2.20462;
 const LIB = [['Bench Press','Chest'],['Incline DB Press','Chest'],['Dumbbell Fly','Chest'],['Push-up','Chest'],['Deadlift','Back'],['Barbell Row','Back'],['Pull-up','Back'],['Lat Pulldown','Back'],['Seated Cable Row','Back'],['Squat','Legs'],['Romanian Deadlift','Legs'],['Leg Press','Legs'],['Leg Curl','Legs'],['Leg Extension','Legs'],['Calf Raise','Legs'],['Bulgarian Split Squat','Legs'],['Overhead Press','Shoulders'],['Lateral Raise','Shoulders'],['Face Pull','Shoulders'],['Barbell Curl','Arms'],['Hammer Curl','Arms'],['Triceps Pushdown','Arms'],['Skull Crusher','Arms'],['Plank','Core'],['Hanging Leg Raise','Core'],['Cable Crunch','Core'],['Running','Cardio'],['Cycling','Cardio'],['Rowing machine','Cardio'],['Elliptical','Cardio'],['Stair climber','Cardio'],['Walking','Cardio'],['Jump rope','Cardio']].map(([name, group]) => ({ name, group }));
-const GROUPS = ['All','Chest','Back','Legs','Shoulders','Arms','Core','Cardio','Custom'];
+// Cardio juste après « Tous » : en 8ᵉ position, il sortait de l'écran (retour d'un testeur, 0.47.0).
+const GROUPS = ['All','Cardio','Chest','Back','Legs','Shoulders','Arms','Core','Custom'];
+// Autres noms cherchés, en anglais et en français : « treadmill », « vélo »… ne trouvaient aucun cardio (0.47.0).
+const ALIAS = { 'Running': ['treadmill', 'run', 'jog', 'jogging', 'course', 'course à pied', 'courir', 'tapis de course', 'tapis roulant', 'footing'], 'Cycling': ['bike', 'biking', 'stationary bike', 'exercise bike', 'spin', 'spinning', 'vélo', 'vélo stationnaire', 'bicyclette'], 'Rowing machine': ['rower', 'erg', 'ergometer', 'rameur', 'aviron'], 'Elliptical': ['elliptical machine', 'elliptical trainer', 'cross trainer', 'elliptique', 'vélo elliptique'], 'Stair climber': ['stairmaster', 'stairs', 'stepper', 'escalier', 'escaliers'], 'Walking': ['walk', 'incline walk', 'hike', 'hiking', 'marche', 'marcher', 'randonnée'], 'Jump rope': ['skipping', 'skip rope', 'corde à sauter', 'corde'] };
+const noAcc = t => String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const libHit = (l, q) => !q || [l.name, ...(ALIAS[l.name] || []), ...(l.group === 'Cardio' ? ['cardio'] : [])].some(n => noAcc(n).includes(q));
 const BASE = {'Bench Press':80,'Overhead Press':50,'Incline DB Press':30,'Lateral Raise':12,'Triceps Pushdown':30,'Deadlift':160,'Barbell Row':70,'Pull-up':10,'Face Pull':25,'Barbell Curl':35,'Squat':120,'Romanian Deadlift':100,'Leg Press':180,'Leg Curl':45,'Calf Raise':70};
 const PK = ['bodyRange','bodyU','lenU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight','accent','onboarded','restNotif','remind','goal','level','liveRest','pro','effort','healthOn','hkWSync','hkCSync','bodyMetric','autoPub','cloud','hkTag','push','cbSnooze','gone','pubQ','acctSeen','iconMatch'];
 const e1 = (w, r) => w * (1 + r / 30);
@@ -1491,7 +1496,7 @@ Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for detai
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance', 'Remove set': 'Retirer la série' });
 Object.assign(FR, { 'Matching app icon': 'Icône de la même couleur', 'Barlog’s Home Screen icon takes your accent color. iOS shows a message each time it changes.': 'L’icône de Barlog sur l’écran d’accueil prend ta couleur. iOS affiche un message à chaque changement.' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.46.1';
+const APP_VERSION = '0.47.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
@@ -1790,7 +1795,7 @@ class Component extends DCLogic {
     if (st.cloud && st.cloud.link && ['history', 'sessMeta', 'routines', 'body', 'custom', 'exMeta'].some(k => prev[k] !== st[k])) this.cbSoon(15000);
     if (prev.workout !== st.workout || prev.wake !== st.wake) this.syncWake();
     if (prev.iconMatch !== st.iconMatch || prev.accent !== st.accent || prev.pro !== st.pro) this.syncIcon();
-    if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.workout !== st.workout || prev.restNotif !== st.restNotif) this.syncRestNotif();
+    if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.workout !== st.workout || prev.restNotif !== st.restNotif) { this.syncRestNotif(); this.syncCardioNotif(); }
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.restTotal !== st.restTotal || prev.workout !== st.workout || prev.hold !== st.hold || prev.liveRest !== st.liveRest) this.syncLive();
     if (prev.remind !== st.remind || prev.lang !== st.lang) this.syncReminders();
     if ((prev.acct && prev.acct.uid) !== (st.acct && st.acct.uid) && (st.feed || st.cmt || st.sv || st.up || st.reqs || st.pl || st.srch || st.blk || st.mod)) { this._rqT = 0; this.setState({ ntf: null, feed: null, cmt: null, cmtDelArm: null, sv: null, up: null, pl: null, reqs: null, srch: null, socArm: null, blk: null, mod: null }); }
@@ -2463,6 +2468,13 @@ class Component extends DCLogic {
       if (h.side === 'l' && x) { this.setState({ hold: { ...h, side: 'r', wait: true }, now }); this.buzz([60]); this.tone([[880, 0, 0.18]]); return; }
       this.setState({ hold: null, now }); this.buzz([80, 60, 80]); this.tone([[880, 0, 0.18], [1320, 0.25, 0.3]]); if (x && !x.done) { this.lastCheck = 0; this.check(h.ei, h.si); } return;
     }
+    // Minuteur cardio à zéro : minutes prévues enregistrées, série cochée (comme le maintien) ; pas de son si l'app revient longtemps après.
+    let ce = null; if (s.workout) s.workout.ex.forEach((e, a) => e.sets.forEach((y, b) => { const end = y.run && y.goal ? y.run + (y.goal - (y.r || 0)) * 60000 : 0; if (!ce && end && now >= end) ce = { ei: a, si: b, late: now - end > 5000 }; }));
+    if (ce) {
+      this.updW(w => { const y = w.ex[ce.ei].sets[ce.si]; y.r = y.goal; y.rStr = null; y.run = null; return { now }; });
+      if (!ce.late) { this.buzz([80, 60, 80]); this.tone([[880, 0, 0.18], [1320, 0.25, 0.3]]); }
+      if (!this.state.workout.ex[ce.ei].sets[ce.si].done) { this.lastCheck = 0; this.check(ce.ei, ce.si); } return;
+    }
     if (s.restEnd && !s.restAlert && now >= s.restEnd) {
       const late = now - s.restEnd > 5000;
       this.setState({ now, restAlert: true });
@@ -2734,9 +2746,12 @@ class Component extends DCLogic {
   createCustom() {
     const s = this.state; const name = s.libQuery.trim(); if (!name) return;
     if (!this.isPro() && (s.custom || []).length >= FREE_CUST) return this.need('custom', () => this.createCustom());
-    const group = s.libGroup === 'All' ? 'Custom' : s.libGroup;
+    const group = this.libNewGroup();
+    // Créé dans le filtre Cardio avec un nom non reconnu (ex. « Ski erg ») : enregistré comme cardio quand même.
+    if (group === 'Cardio' && autoType(name) !== 'cardio') this.setMeta(name, { type: 'cardio' });
     this.setState({ custom: [...s.custom, { name, group, custom: true }] }, () => this.pick(name));
   }
+  libNewGroup() { const s = this.state; return s.libGroup !== 'All' ? s.libGroup : autoType(s.libQuery.trim()) === 'cardio' ? 'Cardio' : 'Custom'; }
   updR(fn) { const s = this.state; this.setState({ routines: s.routines.map(r => { if (r.id !== s.editId) return r; const c = JSON.parse(JSON.stringify(r)); fn(c); return c; }) }); }
   // Gratuit : 4 routines créées par soi (celles d'un programme ne comptent pas) et 10 exercices perso. Ce qui existe déjà est gardé.
   newRoutine() { if (!this.isPro() && this.state.routines.filter(r => !r.tpl).length >= FREE_ROUT) return this.need('routines', () => this.newRoutine()); const id = 'r' + Date.now(); this.setState(s => ({ routines: [...s.routines, { id, name: L('New routine'), ex: [] }], editId: id, screen: 'routine', deleteArm: false })); }
@@ -3049,6 +3064,14 @@ class Component extends DCLogic {
     if (LN) { const tok = this._rnTok = (this._rnTok || 0) + 1; LN.cancel({ notifications: [{ id: 1001 }] }).catch(() => {}).then(() => { if (at && tok === this._rnTok) this.exactOk().then(ex => { if (tok === this._rnTok) LN.schedule({ notifications: [{ id: 1001, title, body, schedule: { at: new Date(at), allowWhileIdle: true }, ...(ex ? {} : { isExactNotification: false }) }] }).catch(() => {}); }); }); return; }
     this.swMsg(at && document.visibilityState === 'hidden' ? { type: 'rest', at, title, body } : { type: 'rest-cancel' });
   }
+  // Fin du minuteur cardio (0.47.0) : même réglage que la fin de repos (restNotif), notification 1002, app native seulement.
+  syncCardioNotif() {
+    const P = this.nat(); const LN = P && P.LocalNotifications; if (!LN) return; const s = this.state; const now = Date.now(); let c = null;
+    if (s.restNotif && s.workout) s.workout.ex.forEach(ex => ex.sets.forEach(x => { const end = x.run && x.goal ? x.run + (x.goal - (x.r || 0)) * 60000 : 0; if (!c && end > now + 1500) c = { at: end, ex, x }; }));
+    const at = c ? c.at : null; if (this._cnAt === at) return; this._cnAt = at; const fr = LANG === 'fr'; const tok = this._cnTok = (this._cnTok || 0) + 1;
+    const n = c && { id: 1002, title: fr ? 'Cardio terminé' : 'Cardio done', body: c.ex.name + ' · ' + trim(c.x.goal) + ' min', schedule: { at: new Date(at), allowWhileIdle: true } };
+    LN.cancel({ notifications: [{ id: 1002 }] }).catch(() => {}).then(() => { if (n && tok === this._cnTok) this.exactOk().then(xa => { if (tok === this._cnTok) LN.schedule({ notifications: [{ ...n, ...(xa ? {} : { isExactNotification: false }) }] }).catch(() => {}); }); });
+  }
   syncWidget(d) { const P = this.nat(); const W = P && P.BarlogWidget; if (!W) return; const j = JSON.stringify(d); if (j === this._wj) return; this._wj = j; clearTimeout(this._wt); this._wt = setTimeout(() => { try { W.update({ data: j }).catch(() => {}); } catch (e) {} }, 800); }
   // Widgets v3 (0.45.0) : données des widgets Pro, toujours brutes (dates en ms, lundis AAAA-MM-JJ) pour que le widget
   // se recalcule seul à minuit. Calculées seulement quand l'historique, les pesées, les unités, la langue ou le jour
@@ -3135,12 +3158,13 @@ class Component extends DCLogic {
   }
   syncLive() {
     const LA = this.liveAct(); if (!LA) return; const s = this.state; const fr = LANG === 'fr'; const w = s.workout; const now = Date.now();
-    let run = null; if (w) w.ex.forEach(ex => ex.sets.forEach(x => { if (x.run && !run) run = { ex, x }; }));
+    let run = null; if (w) w.ex.forEach(ex => ex.sets.forEach((x, i) => { if (x.run && !run) run = { ex, x, i }; }));
     let p = null; const hd = s.hold; const hx = hd && w && w.ex[hd.ei];
     if (s.liveRest !== false && hx && !hd.wait && hd.end > now + 500) { const sd = hd.side ? (hd.side === 'l' ? (fr ? ' · gauche' : ' · left') : (fr ? ' · droite' : ' · right')) : '';
       p = { mode: 'down', start: hd.start || now, end: hd.end, title: fr ? 'Maintien' : 'Hold', done: fr ? 'Terminé' : 'Done', next: hx.name + sd + ' · ' + setTx(hx.sets, hd.si) }; }
-    else if (s.liveRest !== false && run) { const st = run.x.run - (run.x.r || 0) * 60000; const g = run.ex.target ? st + run.ex.target * 60000 : 0;
-      p = { mode: 'up', start: st, end: g || st + 3600000, title: 'Cardio', done: '', next: run.ex.name + (run.ex.target ? (fr ? ' · objectif ' : ' · goal ') + run.ex.target + ' min' : '') }; }
+    else if (s.liveRest !== false && run) { const st = run.x.run - (run.x.r || 0) * 60000; const g = run.ex.target ? st + run.ex.target * 60000 : 0; const ce = run.x.goal ? st + run.x.goal * 60000 : 0;
+      p = ce ? (ce > now + 500 ? { mode: 'down', start: st, end: ce, title: 'Cardio', done: fr ? 'Cardio terminé' : 'Cardio done', next: run.ex.name + ' · ' + setTx(run.ex.sets, run.i) } : null)
+        : { mode: 'up', start: st, end: g || st + 3600000, title: 'Cardio', done: '', next: run.ex.name + (run.ex.target ? (fr ? ' · objectif ' : ' · goal ') + run.ex.target + ' min' : '') }; }
     else if (s.liveRest !== false && w && s.restEnd && !s.restAlert && s.restEnd > now + 1000) { const f = s.focus && w.ex[s.focus.ei];
       p = { mode: 'down', start: s.restEnd - s.restTotal * 1000, end: s.restEnd, title: fr ? 'Repos' : 'Rest', done: fr ? 'Repos terminé · à toi' : 'Rest over · lift', next: f ? f.name + ' · ' + setTx(f.sets, s.focus.si) : '' }; }
     const key = p ? p.mode + p.start + '|' + p.end : null; if (this._laKey === key) return; this._laKey = key;
@@ -3151,7 +3175,9 @@ class Component extends DCLogic {
   cardioRun(ei, si) {
     const now = Date.now(); const stop = y => { y.r = Math.round(((y.r || 0) + (now - y.run) / 60000) * 10) / 10; y.rStr = null; y.run = null; };
     this.updW(w => { w.ex.forEach((ex, a) => ex.sets.forEach((y, b) => { if (y.run && !(a === ei && b === si)) stop(y); }));
-      const x = w.ex[ei].sets[si]; if (x.run) stop(x); else { if (!x.runUsed) { x.r = 0; x.rStr = null; } x.runUsed = true; x.run = now; }
+      // Minutes prévues (objectif, dernière fois, saisies) : décomptées, comme un maintien ; sans minutes, chrono qui monte (0.47.0).
+      // Reprendre après l'objectif atteint = chrono.
+      const x = w.ex[ei].sets[si]; if (x.run) stop(x); else { if (!x.runUsed) { x.goal = x.r > 0 ? x.r : null; x.r = 0; x.rStr = null; } else if (x.goal && (x.r || 0) >= x.goal) x.goal = null; x.runUsed = true; x.run = now; }
       return { focus: { ei, si } }; });
   }
   effVals(ei, si, x, active) {
@@ -3249,12 +3275,14 @@ class Component extends DCLogic {
   }
   cardioTxt(y) { const kg = this.state.unit === 'kg'; return [y.r ? trim(y.r) + ' min' : null, y.d ? trim(Math.round((kg ? y.d : y.d / 1.60934) * 100) / 100) + (kg ? ' km' : ' mi') : null, y.c ? y.c + ' kcal' : null].filter(Boolean).join(' · ') || '—'; }
   typeC(ei, si, f, val) { this.updW((w, s) => { const x = w.ex[ei].sets[si]; x[f + 'Str'] = val; let v = parseFloat(String(val).replace(',', '.')); if (val === '') v = 0; if (isNaN(v)) return; if (f === 'd' && s.unit !== 'kg') v *= 1.60934; x[f] = f === 'c' ? Math.round(v) : v; }); }
-  adjC(ei, si, f, d) { this.updW(w => { const x = w.ex[ei].sets[si]; x[f] = Math.max(0, Math.round(((x[f] || 0) + d) * 1000) / 1000); x[f + 'Str'] = null; }); }
+  // Pendant le décompte, ±1′ change la durée prévue (avant : le temps fait, le minuteur raccourcissait avec +1′).
+  adjC(ei, si, f, d) { this.updW(w => { const x = w.ex[ei].sets[si]; if (f === 'r' && x.run && x.goal) { x.goal = Math.max(1, x.goal + d); return; } x[f] = Math.max(0, Math.round(((x[f] || 0) + d) * 1000) / 1000); x[f + 'Str'] = null; }); }
   cardioSet(ei, si, x, kg) {
     const mi = !kg; const dd = v => trim(Math.round((mi ? v / 1.60934 : v) * 100) / 100); const step = mi ? 0.25 * 1.60934 : 0.5; const sl = mi ? '0.25 mi' : '0.5 km';
-    const fr = LANG === 'fr'; const run = x.run; const el = run ? (x.r || 0) * 60000 + (Date.now() - run) : 0;
+    const fr = LANG === 'fr'; const run = x.run; const el = (x.r || 0) * 60000 + (run ? Date.now() - run : 0); const left = x.goal ? x.goal * 60000 - el : 0;
     return { isUni: true, isTime: true, hasPlates: false, isPR: false, rIm: 'decimal', hasEff: false, hasEffTag: false,
-      holdLabel: run ? (fr ? '■ Arrêter · ' : '■ Stop · ') + clock(el) : x.runUsed && x.r ? (fr ? '▶ Reprendre · ' : '▶ Resume · ') + clock(x.r * 60000) : (fr ? '▶ Lancer le chrono' : '▶ Start stopwatch'),
+      holdLabel: run ? (fr ? '■ Arrêter · ' : '■ Stop · ') + clock(left > 0 ? left : el) : x.runUsed && (x.r || left > 0) ? (fr ? '▶ Reprendre · ' : '▶ Resume · ') + clock(left > 0 ? left : el)
+        : x.r > 0 ? (fr ? '▶ Lancer · ' : '▶ Start · ') + clock(x.r * 60000) : (fr ? '▶ Lancer le chrono' : '▶ Start stopwatch'),
       holdBg: run ? ACC : '#24242B', holdColor: run ? '#0A0A0C' : '#FFFFFF', onHold: (e) => { e.stopPropagation(); this.cardioRun(ei, si); },
       onCheck: (e) => { e.stopPropagation(); if (x.run) { this.cardioRun(ei, si); setTimeout(() => this.check(ei, si), 40); } else this.check(ei, si); },
       wDisp: run ? trim(Math.floor(el / 6000) / 10) : x.rStr != null ? x.rStr : (x.r ? trim(x.r) : ''), rDisp: x.dStr != null ? x.dStr : (x.d ? dd(x.d) : ''), r2Disp: x.cStr != null ? x.cStr : (x.c ? String(x.c) : ''),
@@ -3383,7 +3411,7 @@ class Component extends DCLogic {
       nfTitle: hkOk ? (fr ? 'Notifications et Santé' : 'Notifications & Health') : 'Notifications',
       effLabel: fr ? 'Effort par série' : 'Effort per set', effSub: fr ? 'Option avancée : note l’effort de chaque série.' : 'Advanced: rate the effort of each set.',
       effModes: [['off', fr ? 'Non' : 'Off'], ['rpe', 'RPE'], ['rir', 'RIR']].map(([k, label]) => { const on = (s.effort || 'off') === k; return { label, bg: on ? '#24242B' : 'transparent', color: on ? '#FFFFFF' : '#9C9CA8', onClick: () => this.setState({ effort: k === 'off' ? null : k }) }; }),
-      nfToggles: [tgl(fr ? 'Fin de repos' : 'Rest finished', fr ? 'Une notification quand le repos est fini, même écran verrouillé.' : 'A notification when rest is over, even with the screen locked.', !!s.restNotif, () => this.toggleRestNotif()),
+      nfToggles: [tgl(fr ? 'Fin de repos' : 'Rest finished', fr ? 'Une notification quand le repos ou le minuteur du cardio est fini, même écran verrouillé.' : 'A notification when rest or the cardio timer is over, even with the screen locked.', !!s.restNotif, () => this.toggleRestNotif()),
         ...(native ? [tgl(fr ? 'Minuteur sur l’écran verrouillé' : 'Lock screen timer', ios ? (fr ? 'Le repos défile en direct sur l’écran verrouillé (Live Activity).' : 'Rest counts down live on the lock screen (Live Activity).') : (fr ? 'Le repos défile en direct sur l’écran verrouillé et dans les notifications.' : 'Rest counts down live on the lock screen and in your notifications.'), s.liveRest !== false, () => this.setState({ liveRest: s.liveRest === false }))] : []),
         ...(hkOk ? [tgl(hkName() + (this.isPro() ? '' : ' ✦'), (ios ? (fr ? 'Envoie tes séances dans Santé et récupère ton poids, ta masse grasse, ta masse maigre et ton IMC.' : 'Sends workouts to Health and pulls in your weight, body fat, lean mass and BMI.') : (fr ? 'Envoie tes séances dans Health Connect (Samsung Health) et récupère ton poids, ta masse grasse, ta masse maigre et ton IMC.' : 'Sends workouts to Health Connect (Samsung Health) and pulls in your weight, body fat, lean mass and BMI.'))
           + (this.isPro() ? '' : s.healthOn ? (fr ? ' En pause sans Barlog Pro : tes données déjà importées restent.' : ' Paused without Barlog Pro: data already imported stays.') : (fr ? ' Inclus dans Barlog Pro.' : ' Included in Barlog Pro.')), this.hkOn(), () => this.toggleHealth())] : []),
@@ -3707,9 +3735,9 @@ class Component extends DCLogic {
     const remain = s.restEnd ? s.restEnd - now : 0;
 
     const all = [...LIB, ...s.custom];
-    const q = s.libQuery.trim().toLowerCase();
-    const libList = all.filter(l => (s.libGroup === 'All' || (s.libGroup === 'Custom' ? l.custom : l.group === s.libGroup)) && (!q || l.name.toLowerCase().includes(q)))
-      .map(l => { const h = s.history[l.name]; const last = h && h.length ? h[h.length - 1] : null; const mp = this.meta(l.name).mus.p.map(k => { const m = MUS.find(x => x[0] === k); return m ? (LANG === 'fr' ? m[2] : m[1]) : k; }); return { canAdd: s.libCtx !== 'browse', onInfo: () => this.openInfo(l.name), name: l.name, meta: (mp.length ? mp.join(', ') : L(l.group)) + ((s.media || {})[l.name] ? L(' · media') : '') + (l.custom ? L(' · custom') : '') + (last ? L(' · last ') + this.dispW(last.sets[0].w) + ' ' + s.unit + ' × ' + last.sets[0].r : ''), onPick: () => this.pick(l.name) }; });
+    const q = s.libQuery.trim().toLowerCase(); const qa = noAcc(q);
+    const libList = all.filter(l => (s.libGroup === 'All' || (s.libGroup === 'Custom' ? l.custom : l.group === s.libGroup)) && libHit(l, qa))
+      .map(l => { const h = s.history[l.name]; const last = h && h.length ? h[h.length - 1] : null; const mt = this.meta(l.name); const y = last && last.sets[0]; const mp = mt.mus.p.map(k => { const m = MUS.find(x => x[0] === k); return m ? (LANG === 'fr' ? m[2] : m[1]) : k; }); return { canAdd: s.libCtx !== 'browse', onInfo: () => this.openInfo(l.name), name: l.name, meta: (mp.length ? mp.join(', ') : L(l.group)) + ((s.media || {})[l.name] ? L(' · media') : '') + (l.custom ? L(' · custom') : '') + (y ? L(' · last ') + (mt.type === 'cardio' ? this.cardioTxt(y) : (y.w ? this.dispW(y.w) + ' ' + s.unit + (isT(mt.type) ? ' · ' : ' × ') : '') + y.r + (isT(mt.type) ? ' s' : y.w ? '' : L(' reps'))) : ''), onPick: () => this.pick(l.name) }; });
     const canCreate = !!q && !all.some(l => l.name.toLowerCase() === q);
 
     const er = routines.find(r => r.id === s.editId);
@@ -4079,7 +4107,7 @@ class Component extends DCLogic {
       libBack: go(s.libCtx === 'browse' ? { screen: 'tabs', tab: 'programs' } : { screen: ['workout', 'session'].includes(s.libCtx) ? s.libCtx : 'routine' }), libCtxLabel: s.libCtx === 'browse' ? L('Browse, add photos or videos, set muscles') : s.libCtx === 'workout' ? L('to ') + (w ? w.name : 'workout') : s.libCtx === 'session' ? L('to ') + (sd ? sd.name + ' · ' + fmtD(sd.date) : 'workout') : L('to ') + (er ? er.name : 'routine'),
       libQuery: s.libQuery, onLibQuery: (e) => this.setState({ libQuery: e.target.value }),
       groups: GROUPS.map(g => ({ name: L(g), bg: s.libGroup === g ? '#FFFFFF' : 'transparent', color: s.libGroup === g ? '#0A0A0C' : '#FFFFFF', border: s.libGroup === g ? '#FFFFFF' : '#33333C', onClick: go({ libGroup: g }) })),
-      libList, canCreate, createGroup: L(s.libGroup === 'All' ? 'Custom' : s.libGroup), createCustom: () => this.createCustom(),
+      libList, canCreate, createGroup: L(this.libNewGroup()), createCustom: () => this.createCustom(),
       rName: er ? er.name : '', onRName: (e) => { const v = e.target.value; this.updR(c => { c.name = v; }); },
       rEx, rEmpty: !!er && !er.ex.length, routineBack: go({ screen: 'tabs', tab: 'programs' }),
       deleteRoutine: () => this.deleteRoutine(), deleteLabel: s.deleteArm ? L('Tap again') : L('Delete'),

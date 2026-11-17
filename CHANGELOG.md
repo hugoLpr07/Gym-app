@@ -5,6 +5,11 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.47.0 — 2026-11-17
+- Cardio plus facile à trouver : le filtre Cardio est juste après « Tous » dans la liste des exercices, et la recherche comprend d’autres noms en anglais et en français (treadmill, tapis, bike, vélo, elliptical machine, rameur, stairmaster, corde à sauter…, avec ou sans accents ; « cardio » affiche tous les exercices cardio). Un exercice créé avec un nom de cardio (ex. « Treadmill ») est rangé dans Cardio, et un exercice créé depuis le filtre Cardio s’enregistre comme cardio.
+- Minuteur du cardio : les minutes prévues (objectif de la routine, dernière fois ou minutes saisies) sont décomptées, comme pour un maintien ; à zéro, bip et série cochée. Pendant le décompte, −1′ / +1′ change la durée prévue. Sans minutes, c’est un chrono qui monte, comme avant. L’écran verrouillé, la Dynamic Island, l’Apple Watch et la notification Android affichent le compte à rebours ; avec « Fin de repos » activé, une notification arrive aussi à la fin du cardio.
+- Liste des exercices : la dernière séance d’un cardio affiche ses minutes et sa distance (avant : « 0 lb × 20 »), celle d’un maintien ses secondes, celle d’un exercice au poids du corps ses reps.
+
 ## 0.46.1 — 2026-11-17
 - Records : un poids jamais soulevé compte comme record, même avec moins de reps (ex. 125 lb × 2 après 115 lb × 5). Avant, seul le 1RM estimé comptait. La célébration affiche alors « Charge max · +10 lb ». Même règle dans le résumé de fin de séance, la publication sur le fil et le widget Derniers records.
 
