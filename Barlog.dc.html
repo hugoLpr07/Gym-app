@@ -229,6 +229,7 @@ input::placeholder{color:#9C9CA8}
 <textarea value="{{ sheetNote }}" onChange="{{ onSheetNote }}" placeholder="{{ tx.nNotePh }}" rows="3" style="width:100%;border-radius:12px;border:1px solid #24242B;background:#0A0A0C;color:#fff;font-size:16px;line-height:22px;padding:12px;font-family:inherit;resize:none;"></textarea>
 <span style="font-size:12px;color:#9C9CA8;">{{ tx.nNoteSub }}</span>
 </div>
+<sc-if value="{{ sheetCanRm }}" hint-placeholder-val="{{ false }}"><button onClick="{{ sheetRm }}" style="min-height:52px;border-radius:16px;border:1px solid #33333C;background:transparent;color:#FF6B6B;font-size:15px;font-weight:600;">{{ sheetRmLabel }}</button></sc-if>
 <button onClick="{{ sheetInfo }}" style="min-height:52px;border-radius:16px;border:1px solid #33333C;background:transparent;color:#fff;font-size:15px;font-weight:600;">{{ tx.nSheetInfo }}</button>
 <button onClick="{{ closeSheet }}" style="min-height:56px;border-radius:16px;border:none;background:var(--acc);color:#0A0A0C;font-size:16px;font-weight:700;">{{ tx.nDone }}</button>
 </div>
@@ -912,6 +913,13 @@ input::placeholder{color:#9C9CA8}
 </div>
 </div>
 <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #24242B;min-height:64px;gap:8px;">
+<span style="font-size:16px;font-weight:500;">Distance</span>
+<div style="display:flex;gap:4px;background:#0A0A0C;border-radius:10px;padding:3px;">
+<button onClick="{{ setKm }}" style="width:56px;height:40px;border:none;border-radius:8px;background:{{ kmBg }};color:{{ kmColor }};font-size:15px;font-weight:600;">km</button>
+<button onClick="{{ setMi }}" style="width:56px;height:40px;border:none;border-radius:8px;background:{{ miBg }};color:{{ miColor }};font-size:15px;font-weight:600;">mi</button>
+</div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #24242B;min-height:64px;gap:8px;">
 <span style="font-size:16px;font-weight:500;">{{ accLabel }}</span>
 <div style="display:flex;gap:2px;"><sc-for list="{{ accOpts }}" as="a" hint-placeholder-count="7"><button onClick="{{ a.onClick }}" aria-label="{{ a.label }}" style="width:32px;height:44px;border:none;background:transparent;padding:0;display:flex;align-items:center;justify-content:center;"><span style="width:28px;height:28px;border-radius:999px;background:{{ a.c }};box-shadow:{{ a.ring }};"></span></button></sc-for></div>
 </div>
@@ -1133,7 +1141,7 @@ input::placeholder{color:#9C9CA8}
 <button onClick="{{ s.rPlus }}" style="height:56px;border-radius:12px;border:none;background:#24242B;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;" style-active="background:#3A3A44">{{ s.rpL }}</button>
 </div>
 <sc-if value="{{ s.isTime }}" hint-placeholder-val="{{ false }}">
-<div style="padding:0 12px 12px;"><button onClick="{{ s.onHold }}" style="width:100%;height:56px;border-radius:12px;border:none;background:{{ s.holdBg }};color:{{ s.holdColor }};font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;">{{ s.holdLabel }}</button></div>
+<div style="padding:0 12px 12px;display:flex;gap:8px;"><button onClick="{{ s.onHold }}" style="flex:1;min-width:0;height:56px;border-radius:12px;border:none;background:{{ s.holdBg }};color:{{ s.holdColor }};font-family:'JetBrains Mono',monospace;font-size:{{ s.holdFs }};font-weight:700;">{{ s.holdLabel }}</button><sc-if value="{{ s.hasHold2 }}" hint-placeholder-val="{{ false }}"><button onClick="{{ s.onHold2 }}" style="flex:1;min-width:0;height:56px;border-radius:12px;border:none;background:#24242B;color:#FFFFFF;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;">{{ s.hold2Label }}</button></sc-if></div>
 </sc-if>
 <sc-if value="{{ s.hasPlates }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;flex-direction:column;gap:6px;padding:0 12px 12px;">
@@ -1479,7 +1487,7 @@ const ALIAS = { 'Running': ['treadmill', 'run', 'jog', 'jogging', 'course', 'cou
 const noAcc = t => String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 const libHit = (l, q) => !q || [l.name, ...(ALIAS[l.name] || []), ...(l.group === 'Cardio' ? ['cardio'] : [])].some(n => noAcc(n).includes(q));
 const BASE = {'Bench Press':80,'Overhead Press':50,'Incline DB Press':30,'Lateral Raise':12,'Triceps Pushdown':30,'Deadlift':160,'Barbell Row':70,'Pull-up':10,'Face Pull':25,'Barbell Curl':35,'Squat':120,'Romanian Deadlift':100,'Leg Press':180,'Leg Curl':45,'Calf Raise':70};
-const PK = ['bodyRange','bodyU','lenU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight','accent','onboarded','restNotif','remind','goal','level','liveRest','pro','effort','healthOn','hkWSync','hkCSync','bodyMetric','autoPub','cloud','hkTag','push','cbSnooze','gone','pubQ','acctSeen','iconMatch'];
+const PK = ['bodyRange','bodyU','lenU','distU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight','accent','onboarded','restNotif','remind','goal','level','liveRest','pro','effort','healthOn','hkWSync','hkCSync','bodyMetric','autoPub','cloud','hkTag','push','cbSnooze','gone','pubQ','acctSeen','iconMatch'];
 const e1 = (w, r) => w * (1 + r / 30);
 // Record (PR) : 1RM estimé jamais atteint OU poids jamais soulevé (au moins 1 rep), peu importe les reps (ex. 125 × 2 après 115 × 5).
 // pe / pw : meilleurs précédents (1RM estimé / poids). prSet : la série record au meilleur 1RM estimé parmi ws, ou null.
@@ -1526,7 +1534,7 @@ const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive c
 const CB_SKIP = ['workout', 'focus', 'restEnd', 'restTotal', 'cloud', 'installSeen', 'lastExport', 'backupSnooze', 'healthOn', 'hkWSync', 'hkCSync', 'hkTag', 'push', 'cbSnooze', 'pubQ', 'acctSeen'];
 // Sans Pro, « Pas maintenant » sur une sauvegarde trouvée : on ne la repropose pas avant 7 jours (sauf nouvelle sauvegarde).
 const CB_SNOOZE = 7 * DAY;
-const CB_SET = ['bodyRange', 'bodyU', 'lenU', 'unit', 'haptics', 'sound', 'wake', 'autoRest', 'restDefault', 'dayWarn', 'lang', 'barLight', 'accent', 'iconMatch', 'restNotif', 'remind', 'goal', 'level', 'liveRest', 'effort', 'bodyMetric', 'autoPub', 'lastRoutineId'];
+const CB_SET = ['bodyRange', 'bodyU', 'lenU', 'distU', 'unit', 'haptics', 'sound', 'wake', 'autoRest', 'restDefault', 'dayWarn', 'lang', 'barLight', 'accent', 'iconMatch', 'restNotif', 'remind', 'goal', 'level', 'liveRest', 'effort', 'bodyMetric', 'autoPub', 'lastRoutineId'];
 const nSess = h => { const d = new Set(); Object.values(h || {}).forEach(a => (a || []).forEach(x => d.add(x.date))); return d.size; };
 // Pesées : on retire les valeurs lues dans Santé / Health Connect (marquées hk) — le nouveau téléphone les relit à la source.
 const bodyOut = b => (b || []).map(x => { if (!x.hk) return x; const y = { ...x }; Object.keys(x.hk).forEach(k => delete y[k]); delete y.hk; return y; }).filter(x => Object.keys(x).some(k => k !== 'date'));
@@ -2695,6 +2703,24 @@ class Component extends DCLogic {
   // Retirer une série de la séance en cours (ex. ajoutée par erreur). Si c'était la série en cours, le focus passe à la
   // suivante à faire du même exercice, sinon à la précédente, sinon à un autre exercice. Le focus et le maintien qui
   // visent une série plus bas dans le même exercice reculent d'un rang ; le maintien de la série retirée s'arrête.
+  // Retirer un exercice de la séance en cours (0.47.0) ; s'il a des séries cochées, une deuxième touche est demandée.
+  rmEx(ei) {
+    const cur = this.state.workout; if (!cur || !cur.ex[ei]) return;
+    if (cur.ex[ei].sets.some(x => x.done) && this.state.rmExArm !== ei) {
+      this.setState({ rmExArm: ei }); clearTimeout(this._rmT); this._rmT = setTimeout(() => this.setState(st => st.rmExArm === ei ? { rmExArm: null } : null), 3000); return; }
+    this.updW((w, s) => {
+      // Superset : l'exercice d'avant ne reste lié au suivant que si celui retiré l'était aussi.
+      if (ei > 0 && w.ex[ei - 1].ss && !w.ex[ei].ss) w.ex[ei - 1].ss = false;
+      w.ex.splice(ei, 1);
+      const f = s.focus, h = s.hold; const o = { exSheet: null, rmExArm: null };
+      if (f && f.ei > ei) o.focus = { ...f, ei: f.ei - 1 };
+      else if (f && f.ei === ei) { const todo = i => w.ex[i].sets.some(y => !y.done); let k = w.ex.findIndex((x, i) => i >= ei && todo(i)); if (k < 0) k = w.ex.findIndex((x, i) => todo(i));
+        o.focus = k >= 0 ? { ei: k, si: w.ex[k].sets.findIndex(y => !y.done) } : null; }
+      if (h && h.ei === ei) o.hold = null; else if (h && h.ei > ei) o.hold = { ...h, ei: h.ei - 1 };
+      return o;
+    });
+    this.flash(LANG === 'fr' ? 'Exercice retiré' : 'Exercise removed');
+  }
   delSet(ei, si) {
     this.updW((w, s) => {
       const ex = w.ex[ei]; if (!ex || !ex.sets[si]) return;
@@ -3172,12 +3198,12 @@ class Component extends DCLogic {
     const warn = m => { if (!this._laWarned) { this._laWarned = true; this.flash((plat() === 'ios' ? 'Live Activity : ' : (LANG === 'fr' ? 'Minuteur : ' : 'Timer: ')) + m); } };
     try { LA.start(p).then(r => { if (r && r.ok === false) warn(r.why || 'indisponible'); }).catch(e => warn((e && e.message) || 'plugin introuvable')); } catch (e) { warn(e.message); }
   }
-  cardioRun(ei, si) {
+  cardioRun(ei, si, up) {
     const now = Date.now(); const stop = y => { y.r = Math.round(((y.r || 0) + (now - y.run) / 60000) * 10) / 10; y.rStr = null; y.run = null; };
     this.updW(w => { w.ex.forEach((ex, a) => ex.sets.forEach((y, b) => { if (y.run && !(a === ei && b === si)) stop(y); }));
-      // Minutes prévues (objectif, dernière fois, saisies) : décomptées, comme un maintien ; sans minutes, chrono qui monte (0.47.0).
-      // Reprendre après l'objectif atteint = chrono.
-      const x = w.ex[ei].sets[si]; if (x.run) stop(x); else { if (!x.runUsed) { x.goal = x.r > 0 ? x.r : null; x.r = 0; x.rStr = null; } else if (x.goal && (x.r || 0) >= x.goal) x.goal = null; x.runUsed = true; x.run = now; }
+      // Bouton « Minuteur » : minutes prévues (objectif, dernière fois, saisies) décomptées, comme un maintien ;
+      // bouton « Chrono » (up) ou sans minutes : chrono qui monte (0.47.0). Reprendre après l'objectif atteint = chrono.
+      const x = w.ex[ei].sets[si]; if (x.run) stop(x); else { if (!x.runUsed) { x.goal = !up && x.r > 0 ? x.r : null; x.r = 0; x.rStr = null; } else if (x.goal && (x.r || 0) >= x.goal) x.goal = null; x.runUsed = true; x.run = now; }
       return { focus: { ei, si } }; });
   }
   effVals(ei, si, x, active) {
@@ -3273,16 +3299,20 @@ class Component extends DCLogic {
       remind: { ...(s.remind || {}), on: false, days: DAYS[ob.days] || [1, 3, 5], t: (s.remind && s.remind.t) || '18:00' }, screen: 'tabs', tab: 'today' });
     this.flash(t ? L('Program added') : (LANG === 'fr' ? 'C’est parti' : 'Let’s go'));
   }
-  cardioTxt(y) { const kg = this.state.unit === 'kg'; return [y.r ? trim(y.r) + ' min' : null, y.d ? trim(Math.round((kg ? y.d : y.d / 1.60934) * 100) / 100) + (kg ? ' km' : ' mi') : null, y.c ? y.c + ' kcal' : null].filter(Boolean).join(' · ') || '—'; }
-  typeC(ei, si, f, val) { this.updW((w, s) => { const x = w.ex[ei].sets[si]; x[f + 'Str'] = val; let v = parseFloat(String(val).replace(',', '.')); if (val === '') v = 0; if (isNaN(v)) return; if (f === 'd' && s.unit !== 'kg') v *= 1.60934; x[f] = f === 'c' ? Math.round(v) : v; }); }
+  // Distance du cardio en km ou en miles (Profil → Distance, 0.47.0) ; sans choix, suit kg / lb. Toujours enregistrée en km.
+  distKm(s = this.state) { return s.distU === 'km' || (s.distU !== 'mi' && s.unit === 'kg'); }
+  cardioTxt(y) { const km = this.distKm(); return [y.r ? trim(y.r) + ' min' : null, y.d ? trim(Math.round((km ? y.d : y.d / 1.60934) * 100) / 100) + (km ? ' km' : ' mi') : null, y.c ? y.c + ' kcal' : null].filter(Boolean).join(' · ') || '—'; }
+  typeC(ei, si, f, val) { this.updW((w, s) => { const x = w.ex[ei].sets[si]; x[f + 'Str'] = val; let v = parseFloat(String(val).replace(',', '.')); if (val === '') v = 0; if (isNaN(v)) return; if (f === 'd' && !this.distKm(s)) v *= 1.60934; x[f] = f === 'c' ? Math.round(v) : v; }); }
   // Pendant le décompte, ±1′ change la durée prévue (avant : le temps fait, le minuteur raccourcissait avec +1′).
   adjC(ei, si, f, d) { this.updW(w => { const x = w.ex[ei].sets[si]; if (f === 'r' && x.run && x.goal) { x.goal = Math.max(1, x.goal + d); return; } x[f] = Math.max(0, Math.round(((x[f] || 0) + d) * 1000) / 1000); x[f + 'Str'] = null; }); }
   cardioSet(ei, si, x, kg) {
-    const mi = !kg; const dd = v => trim(Math.round((mi ? v / 1.60934 : v) * 100) / 100); const step = mi ? 0.25 * 1.60934 : 0.5; const sl = mi ? '0.25 mi' : '0.5 km';
+    const mi = !this.distKm(); const dd = v => trim(Math.round((mi ? v / 1.60934 : v) * 100) / 100); const step = mi ? 0.25 * 1.60934 : 0.5; const sl = mi ? '0.25 mi' : '0.5 km';
     const fr = LANG === 'fr'; const run = x.run; const el = (x.r || 0) * 60000 + (run ? Date.now() - run : 0); const left = x.goal ? x.goal * 60000 - el : 0;
+    const two = !run && !x.runUsed && x.r > 0; // pas encore lancé, minutes prévues : « Minuteur » ou « Chrono »
     return { isUni: true, isTime: true, hasPlates: false, isPR: false, rIm: 'decimal', hasEff: false, hasEffTag: false,
       holdLabel: run ? (fr ? '■ Arrêter · ' : '■ Stop · ') + clock(left > 0 ? left : el) : x.runUsed && (x.r || left > 0) ? (fr ? '▶ Reprendre · ' : '▶ Resume · ') + clock(left > 0 ? left : el)
-        : x.r > 0 ? (fr ? '▶ Lancer · ' : '▶ Start · ') + clock(x.r * 60000) : (fr ? '▶ Lancer le chrono' : '▶ Start stopwatch'),
+        : x.r > 0 ? (fr ? '▶ Minuteur ' : '▶ Timer ') + clock(x.r * 60000) : (fr ? '▶ Lancer le chrono' : '▶ Start stopwatch'),
+      holdFs: two ? '16px' : '18px', hasHold2: two, hold2Label: fr ? '▶ Chrono' : '▶ Stopwatch', onHold2: (e) => { e.stopPropagation(); this.cardioRun(ei, si, true); },
       holdBg: run ? ACC : '#24242B', holdColor: run ? '#0A0A0C' : '#FFFFFF', onHold: (e) => { e.stopPropagation(); this.cardioRun(ei, si); },
       onCheck: (e) => { e.stopPropagation(); if (x.run) { this.cardioRun(ei, si); setTimeout(() => this.check(ei, si), 40); } else this.check(ei, si); },
       wDisp: run ? trim(Math.floor(el / 6000) / 10) : x.rStr != null ? x.rStr : (x.r ? trim(x.r) : ''), rDisp: x.dStr != null ? x.dStr : (x.d ? dd(x.d) : ''), r2Disp: x.cStr != null ? x.cStr : (x.c ? String(x.c) : ''),
@@ -3693,7 +3723,7 @@ class Component extends DCLogic {
         up: !!ex.up, upVal: '+' + (kg ? '2.5 kg' : '2.5 lb'), upBlur: this.isPro() ? 'none' : 'blur(4px)', onUp: () => { if (!this.isPro()) this.need('coach'); },
         upText: this.isPro() ? L(' · you hit every rep last time') : (LANG === 'fr' ? ' · progression proposée ✦ Pro' : ' · suggested progression ✦ Pro'),
         hasSS: !!tagsW[ei], ssTag: tagsW[ei] ? L('SUPERSET') + ' ' + tagsW[ei] : '', hasNote: !!m.note, note: m.note,
-        onMenu: go({ exSheet: ei }), cols, isUni: uni || car, h0: uni || car ? '#' : L('SET'), h1: car ? 'MIN' : s.unit.toUpperCase(), h3: car ? 'KCAL' : tim ? 'R s' : 'R', h2: car ? (kg ? 'KM' : 'MI') : uni ? (tim ? 'L s' : 'L') : tim ? L('SEC') : 'REPS',
+        onMenu: go({ exSheet: ei, rmExArm: null }), cols, isUni: uni || car, h0: uni || car ? '#' : L('SET'), h1: car ? 'MIN' : s.unit.toUpperCase(), h3: car ? 'KCAL' : tim ? 'R s' : 'R', h2: car ? (this.distKm() ? 'KM' : 'MI') : uni ? (tim ? 'L s' : 'L') : tim ? L('SEC') : 'REPS',
         onAddSet: () => this.addSet(ei),
         sets: ex.sets.map((x, si) => {
           const active = !!(s.focus && s.focus.ei === ei && s.focus.si === si && !x.done);
@@ -3721,7 +3751,7 @@ class Component extends DCLogic {
             rPlus: tim && uni ? () => this.adjBoth(ei, si, 5) : tim ? () => this.adj(ei, si, 'r', 5) : uni ? () => this.adjBoth(ei, si, 1) : () => this.adj(ei, si, 'r', 1),
             rmL: tim ? '−5s' : L('−1 rep'), rpL: tim ? '+5s' : L('+1 rep'),
             holdLabel: hWait ? '▶ ' + L('Right') + ' ' + clock((x.r2 != null ? x.r2 : x.r) * 1000) : hOn ? (s.hold.side ? L(s.hold.side === 'l' ? 'Left' : 'Right') + ' · ' : L('Stop') + ' · ') + clock(s.hold.end - now) : L('▶ Start ') + clock((x.r || 0) * 1000) + (uni ? ' + ' + clock((x.r2 != null ? x.r2 : x.r) * 1000) : ''),
-            holdBg: hOn ? ACC : '#24242B', holdColor: hOn ? '#0A0A0C' : '#FFFFFF',
+            holdBg: hOn ? ACC : '#24242B', holdColor: hOn ? '#0A0A0C' : '#FFFFFF', holdFs: '18px', hasHold2: false,
             onHold: (e) => { e.stopPropagation(); this.holdToggle(ei, si); },
             hasPlates: !!pc, plateHead: pc ? L('Per side') + ' · ' + L('bar') + ' ' + pc.bar + ' ' + s.unit : '',
             plates: !pc ? [] : pc.below ? [{ label: L('Below bar weight'), bg: 'transparent', color: '#9C9CA8' }] : !pc.list.length ? [{ label: L('Empty bar'), bg: 'transparent', color: '#9C9CA8' }]
@@ -3993,6 +4023,8 @@ class Component extends DCLogic {
       sheetTypes: [['reps', L('Reps')], ['time', L('Time')], ['cardio', 'Cardio']].map(([k, label]) => { const c = shM && shM.type === 'cardio'; const on = shM && (k === 'cardio' ? c : !c && (k === 'time') === isT(shM.type)); return { label, bg: on ? '#24242B' : 'transparent', color: on ? '#FFFFFF' : '#9C9CA8', onClick: () => shEx && this.setMeta(shEx.name, { type: k === 'cardio' ? 'cardio' : k === 'time' ? (isU(shM.type) ? 'timeuni' : 'time') : (isU(shM.type) ? 'uni' : 'reps') }) }; }),
       sheetToggles: shEx ? (shM.type === 'cardio' ? [] : [tg(L('Per side'), L('Left and right logged separately.'), isU(shM.type), () => this.setMeta(shEx.name, { type: isT(shM.type) ? (isU(shM.type) ? 'time' : 'timeuni') : (isU(shM.type) ? 'reps' : 'uni') })), tg(L('Plate calculator'), L('Shows the plates to load on each side of the bar.'), shM.bar, () => this.setMeta(shEx.name, { bar: !shM.bar }))]).concat(shCtx.i < shCtx.list.length - 1 ? [tg(L('Superset with next'), L('No rest between linked exercises — rest starts after the last one.'), !!shEx.ss, () => shCtx.r ? this.updR(c => { c.ex[shCtx.i].ss = !c.ex[shCtx.i].ss; }) : this.toggleSS(shCtx.i))] : []) : [],
       sheetNote: shM ? shM.note : '', onSheetNote: (e) => shEx && this.setMeta(shEx.name, { note: e.target.value }), closeSheet: go({ exSheet: null, rSheet: null }), sheetInfo: () => shEx && this.openInfo(shEx.name),
+      sheetCanRm: !!shCtx && !shCtx.r, sheetRm: () => shCtx && !shCtx.r && this.rmEx(shCtx.i),
+      sheetRmLabel: shCtx && s.rmExArm === shCtx.i ? (LANG === 'fr' ? 'Toucher encore pour retirer' : 'Tap again to remove') : (LANG === 'fr' ? 'Retirer l’exercice' : 'Remove exercise'),
       wNote: w ? (w.note || '') : '', onWNote: (e) => { const v = e.target.value; this.updW(x => { x.note = v; }); },
       isTemplates: s.screen === 'templates', templBack: go({ screen: 'tabs', tab: 'programs' }), openTemplates: go({ screen: 'templates' }),
       templates: TEMPLATES.map(t => ({ name: fr ? t.fr : t.name, meta: fr ? t.metaFr : t.meta, desc: fr ? t.descFr : t.desc,
@@ -4079,7 +4111,8 @@ class Component extends DCLogic {
       histList,
       storageLine: sessCount + L(' sessions stored offline.') + (this.fs() ? (plat() === 'ios' ? (LANG === 'fr' ? ' Stockage natif sécurisé, inclus dans la sauvegarde iCloud de l’iPhone.' : ' Secure native storage, included in your iPhone’s iCloud backup.') : (LANG === 'fr' ? ' Stockage natif sécurisé sur le téléphone.' : ' Secure native storage on your phone.')) : ''),
       kgBg: kg ? '#24242B' : 'transparent', kgColor: kg ? '#fff' : '#9C9CA8', lbBg: kg ? 'transparent' : '#24242B', lbColor: kg ? '#9C9CA8' : '#fff',
-      setKg: go({ unit: 'kg' }), setLb: go({ unit: 'lb' }),
+      setKg: go({ unit: 'kg' }), setLb: go({ unit: 'lb' }), setKm: go({ distU: 'km' }), setMi: go({ distU: 'mi' }),
+      ...(km => ({ kmBg: km ? '#24242B' : 'transparent', kmColor: km ? '#fff' : '#9C9CA8', miBg: km ? 'transparent' : '#24242B', miColor: km ? '#9C9CA8' : '#fff' }))(this.distKm()),
       restDefaultLabel: clock(s.restDefault * 1000), restDown: go({ restDefault: Math.max(15, s.restDefault - 15) }), restUp: go({ restDefault: Math.min(600, s.restDefault + 15) }),
       toggles: [
         toggleRow(L('Auto-start rest'), L('Starts when you log a set'), s.autoRest, 'autoRest'),

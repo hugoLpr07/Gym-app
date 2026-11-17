@@ -63,7 +63,7 @@ const label = app => app.renderVals().wEx[0].sets[0].holdLabel;
 
 test('minutes prévues : le minuteur descend, puis enregistre les minutes et coche la série', t => {
   const app = run(t, 5);
-  assert.equal(label(app), '▶ Start · 5:00');
+  assert.equal(label(app), '▶ Timer 5:00');
   app.cardioRun(0, 0);
   assert.equal(set(app).goal, 5);
   wait(t, app, 60000);
@@ -99,6 +99,21 @@ test('sans minutes prévues : chrono qui monte, comme avant', t => {
   assert.equal(label(app), '■ Stop · 6:00'); assert.equal(set(app).done, false);
 });
 
+test('deux boutons : « Minuteur » décompte, « Chrono » monte même avec des minutes prévues', t => {
+  const app = run(t, 5);
+  const row = () => app.renderVals().wEx[0].sets[0];
+  assert.equal(row().hasHold2, true); assert.equal(row().hold2Label, '▶ Stopwatch');
+  row().onHold2({ stopPropagation() {} });
+  assert.equal(set(app).goal, null);
+  assert.equal(row().hasHold2, false, 'un seul bouton pendant la course');
+  wait(t, app, 360000);
+  assert.equal(label(app), '■ Stop · 6:00'); assert.equal(set(app).done, false, 'pas d’arrêt à 5 min');
+  app.cardioRun(0, 0);
+  assert.equal(set(app).r, 6); assert.equal(row().hasHold2, false, 'reprendre : un seul bouton');
+  app.setState({ workout: { ...app.state.workout, ex: [{ name: 'Running', target: null, sets: [{ w: 0, r: 0, d: 0, c: 0, done: false }] }] } });
+  assert.equal(row().hasHold2, false, 'sans minutes : seulement le chrono'); assert.equal(label(app), '▶ Start stopwatch');
+});
+
 test('écran verrouillé : compte à rebours jusqu’à la fin prévue', t => {
   const app = run(t, 5);
   const calls = []; app.liveAct = () => ({ start: p => { calls.push(p); return Promise.resolve({ ok: true }); }, stop: () => { calls.push('stop'); return Promise.resolve(); } });
@@ -116,4 +131,68 @@ test('notification de fin (réglage Fin de repos) : prévue à la fin, annulée 
   assert.ok(n, 'notification prévue'); assert.equal(n.schedule.at.getTime(), T0 + 5 * 60000); assert.equal(n.body, 'Running · 5 min');
   out.length = 0; app.cardioRun(0, 0); app.syncCardioNotif(); await flush();
   assert.deepEqual(out, ['cancel'], 'arrêtée : rien de prévu');
+});
+
+// ── Unité de distance (Profil → Distance) ──
+test('distance : km ou mi choisi à part, sinon suit kg / lb ; toujours enregistrée en km', () => {
+  const B = loadBarlog(); const PK = B.PK, CB_SET = B.CB_SET;
+  assert.ok(PK.includes('distU'), 'réglage gardé sur le téléphone'); assert.ok(CB_SET.includes('distU'), 'et dans la sauvegarde en ligne');
+  const mk = st => makeApp(B, { ...emptyData(), screen: 'workout', ...st,
+    workout: { rid: null, name: 'C', start: T0, ex: [{ name: 'Running', target: null, sets: [{ w: 0, r: 30, d: 5, c: 0, done: false }] }] } });
+  const lb = mk({ unit: 'lb' }); assert.equal(lb.renderVals().wEx[0].h2, 'MI', 'lb sans choix → miles');
+  const kg = mk({ unit: 'kg' }); assert.equal(kg.renderVals().wEx[0].h2, 'KM', 'kg sans choix → km');
+  const a = mk({ unit: 'lb', distU: 'km' });
+  assert.equal(a.renderVals().wEx[0].h2, 'KM'); assert.equal(a.cardioTxt({ r: 30, d: 5 }), '30 min · 5 km');
+  a.typeC(0, 0, 'd', '10'); assert.equal(a.state.workout.ex[0].sets[0].d, 10, 'km saisis tels quels');
+  const m = mk({ unit: 'kg', distU: 'mi' });
+  assert.equal(m.renderVals().wEx[0].h2, 'MI'); assert.equal(m.cardioTxt({ r: 30, d: 1.60934 }), '30 min · 1 mi');
+  m.typeC(0, 0, 'd', '2'); assert.ok(Math.abs(m.state.workout.ex[0].sets[0].d - 3.21868) < 1e-9, 'miles convertis en km');
+  const v = m.renderVals(); assert.equal(v.miBg, '#24242B'); v.setKm(); assert.equal(m.state.distU, 'km');
+});
+
+// ── Retirer un exercice de la séance ──
+const three = (extra = {}) => { const B = loadBarlog(); return makeApp(B, { ...emptyData(), screen: 'workout', exSheet: 1, ...extra,
+  workout: { rid: null, name: 'S', start: T0, ex: [
+    { name: 'Bench Press', ss: true, sets: [{ w: 100, r: 5, done: true }, { w: 100, r: 5, done: false }] },
+    { name: 'Barbell Row', ss: false, sets: [{ w: 80, r: 8, done: false }] },
+    { name: 'Cycling', sets: [{ w: 0, r: 10, d: 0, c: 0, done: false }] }], ...(extra.w || {}) } }); };
+const names = app => app.state.workout.ex.map(e => e.name);
+
+test('retirer un exercice sans série cochée : tout de suite, menu fermé, superset défait', () => {
+  const app = three({ focus: { ei: 2, si: 0 } });
+  const v = app.renderVals(); assert.equal(v.sheetCanRm, true); assert.equal(v.sheetRmLabel, 'Remove exercise');
+  v.sheetRm();
+  assert.deepEqual(names(app), ['Bench Press', 'Cycling']);
+  assert.equal(app.state.workout.ex[0].ss, false, 'Bench n’est plus lié à Cycling'); assert.equal(app.state.exSheet, null);
+  assert.deepEqual(app.state.focus, { ei: 1, si: 0 }, 'le focus suit Cycling');
+  assert.deepEqual(app.toasts, ['Exercise removed']);
+});
+
+test('retirer un exercice avec des séries cochées : deuxième touche demandée', () => {
+  const app = three({ exSheet: 0, focus: { ei: 0, si: 1 } });
+  app.rmEx(0);
+  assert.equal(names(app).length, 3, 'première touche : rien de retiré'); assert.equal(app.renderVals().sheetRmLabel, 'Tap again to remove');
+  app.rmEx(0);
+  assert.deepEqual(names(app), ['Barbell Row', 'Cycling']); assert.deepEqual(app.state.focus, { ei: 0, si: 0 });
+});
+
+test('retirer le milieu d’un superset de trois garde le lien entre les deux autres', () => {
+  const app = three();
+  app.setState({ workout: { ...app.state.workout, ex: app.state.workout.ex.map((e, i) => ({ ...e, ss: i < 2 })) } });
+  app.rmEx(1);
+  assert.deepEqual(names(app), ['Bench Press', 'Cycling']); assert.equal(app.state.workout.ex[0].ss, true);
+});
+
+test('retirer un cardio en cours arrête son chrono (écran verrouillé)', () => {
+  const app = three();
+  app.cardioRun(2, 0); assert.ok(app.state.workout.ex[2].sets[0].run);
+  const calls = []; app.liveAct = () => ({ start: p => { calls.push(p); return Promise.resolve({ ok: true }); }, stop: () => { calls.push('stop'); return Promise.resolve(); } });
+  app.rmEx(2); app._laKey = 'x'; app.syncLive();
+  assert.deepEqual(calls, ['stop']);
+});
+
+test('menu « ••• » d’une routine : pas de bouton Retirer (la routine a déjà sa croix)', () => {
+  const B = loadBarlog();
+  const app = makeApp(B, { ...emptyData(), screen: 'routine', editId: 'r1', rSheet: 0, routines: [{ id: 'r1', name: 'A', ex: [{ name: 'Squat', sets: 3, reps: 5 }] }] });
+  const v = app.renderVals(); assert.equal(v.sheetOn, true, "menu ouvert"); assert.equal(v.sheetCanRm, false);
 });

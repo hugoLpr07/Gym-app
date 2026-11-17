@@ -7,7 +7,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 
 ## 0.47.0 — 2026-11-17
 - Cardio plus facile à trouver : le filtre Cardio est juste après « Tous » dans la liste des exercices, et la recherche comprend d’autres noms en anglais et en français (treadmill, tapis, bike, vélo, elliptical machine, rameur, stairmaster, corde à sauter…, avec ou sans accents ; « cardio » affiche tous les exercices cardio). Un exercice créé avec un nom de cardio (ex. « Treadmill ») est rangé dans Cardio, et un exercice créé depuis le filtre Cardio s’enregistre comme cardio.
-- Minuteur du cardio : les minutes prévues (objectif de la routine, dernière fois ou minutes saisies) sont décomptées, comme pour un maintien ; à zéro, bip et série cochée. Pendant le décompte, −1′ / +1′ change la durée prévue. Sans minutes, c’est un chrono qui monte, comme avant. L’écran verrouillé, la Dynamic Island, l’Apple Watch et la notification Android affichent le compte à rebours ; avec « Fin de repos » activé, une notification arrive aussi à la fin du cardio.
+- Cardio : deux boutons sur la série, « Minuteur » et « Chrono ». Le minuteur décompte les minutes prévues (objectif de la routine, dernière fois ou minutes saisies), comme pour un maintien ; à zéro, bip et série cochée ; pendant le décompte, −1′ / +1′ change la durée prévue. Le chrono monte sans limite, pour courir sans temps prévu (seul bouton si la case des minutes est vide). L’écran verrouillé, la Dynamic Island, l’Apple Watch et la notification Android affichent le compte à rebours ; avec « Fin de repos » activé, une notification arrive aussi à la fin du cardio.
+- Profil : nouveau réglage Distance (km ou mi) pour le cardio, à côté des unités de charge. Sans choix, la distance suit kg / lb comme avant.
+- Séance en cours : « Retirer l’exercice » dans le menu « ••• » d’un exercice ajouté en trop. S’il a déjà des séries cochées, une deuxième touche est demandée.
 - Liste des exercices : la dernière séance d’un cardio affiche ses minutes et sa distance (avant : « 0 lb × 20 »), celle d’un maintien ses secondes, celle d’un exercice au poids du corps ses reps.
 
 ## 0.46.1 — 2026-11-17
