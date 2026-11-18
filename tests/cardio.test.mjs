@@ -197,7 +197,7 @@ test('menu « ••• » d’une routine : pas de bouton Retirer (la routine a
   const v = app.renderVals(); assert.equal(v.sheetOn, true, "menu ouvert"); assert.equal(v.sheetCanRm, false);
 });
 
-// ── Progrès → Séances : carte « Cardio de la semaine » (0.48.0, gratuite) ──
+// ── Progrès → Séances : carte « Cardio de la semaine » (0.48.0, Pro) ──
 const DAY = 86400000; // T0 = mardi 17 nov. 2026 ; la semaine commence le lundi 16
 const PRO = { plan: 'beta', since: 1, beta: true };
 const prog = (t, extra = {}) => {
@@ -224,6 +224,7 @@ test('carte cardio : minutes, km et séances de la semaine (lundi → dimanche),
   assert.deepEqual(v.cardioBars.map(b => b.count), ['0', '0', '0', '0', '0', '0', '40', '63'], 'semaine passée : 25 + 15 min');
   assert.equal(v.cardioBars[7].h, '72px'); assert.equal(v.cardioBars[7].labelColor, '#FFFFFF');
   assert.equal(v.cardioBars[0].bg, '#33333C');
+  assert.equal(v.lkCardio.on, false, 'Pro : pas de flou');
 });
 
 test('carte cardio en milles quand la distance est réglée en mi (ou en lb sans réglage)', (t) => {
@@ -234,9 +235,8 @@ test('carte cardio en milles quand la distance est réglée en mi (ou en lb sans
   assert.equal(b.cardioTiles[1].value, '17.4');
 });
 
-test('carte cardio gratuite : visible et chiffrée sans Pro (Régularité reste floutée)', (t) => {
-  const v = prog(t, { history: HIST, pro: null }).renderVals();
-  assert.equal(v.cardioOn, true); assert.equal(v.lkCardio, undefined, 'pas de cadenas');
-  assert.equal(v.cardioTiles[0].value, '63');
-  assert.equal(v.lkReg.on, true);
+test('carte cardio sans Pro : floutée avec le cadenas, comme Régularité', (t) => {
+  const app = prog(t, { history: HIST, pro: null });
+  const v = app.renderVals();
+  assert.equal(v.cardioOn, true); assert.equal(v.lkCardio.on, true); assert.equal(v.lkCardio.title, 'Your cardio');
 });
