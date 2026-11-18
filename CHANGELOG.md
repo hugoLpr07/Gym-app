@@ -6,7 +6,7 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
 ## 0.48.0 — 2026-11-18 (en cours)
-- Progrès → Séances : nouvelle carte « Cardio de la semaine » (Pro), sous Régularité. Minutes, distance (km ou mi selon le réglage Distance) et nombre de séances avec du cardio, du lundi au dimanche, et les minutes de cardio des 8 dernières semaines en barres. La carte n’apparaît qu’après un premier cardio ; sans Pro, elle est floutée avec le cadenas, comme Régularité.
+- Progrès → Séances : nouvelle carte « Cardio de la semaine », sous Régularité, gratuite. Minutes, distance (km ou mi selon le réglage Distance) et nombre de séances avec du cardio, du lundi au dimanche, et les minutes de cardio des 8 dernières semaines en barres. La carte n’apparaît qu’après un premier cardio.
 
 ## 0.47.0 — 2026-11-17
 - Cardio plus facile à trouver : le filtre Cardio est juste après « Tous » dans la liste des exercices, et la recherche comprend d’autres noms en anglais et en français (treadmill, tapis, bike, vélo, elliptical machine, rameur, stairmaster, corde à sauter…, avec ou sans accents ; « cardio » affiche tous les exercices cardio). Un exercice créé avec un nom de cardio (ex. « Treadmill ») est rangé dans Cardio, et un exercice créé depuis le filtre Cardio s’enregistre comme cardio.
