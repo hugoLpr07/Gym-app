@@ -904,7 +904,7 @@ input::placeholder{color:#9C9CA8}
 </sc-for>
 <sc-if value="{{ hrtOn }}" hint-placeholder-val="{{ false }}">
 <button onClick="{{ hrtToggle }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:{{ hrtRowBorder }};background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
-<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">Essai capteur cardiaque</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">Administrateur seulement · étape C0, provisoire</span></div><span style="color:#9C9CA8;font-size:20px;">{{ hrtArrow }}</span></button>
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">Essai capteur cardiaque</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">Administrateur seulement · essai provisoire (C0-C1)</span></div><span style="color:#9C9CA8;font-size:20px;">{{ hrtArrow }}</span></button>
 <sc-if value="{{ hrtOpen }}" hint-placeholder-val="{{ false }}"><div style="padding:0 16px 16px;border-bottom:1px solid #24242B;display:flex;flex-direction:column;gap:10px;">
 <div style="display:flex;align-items:baseline;gap:10px;"><span style="font-size:44px;font-weight:800;color:#FF5A6E;font-variant-numeric:tabular-nums;">♥ {{ hrtBpm }}</span><span style="font-size:13px;color:#9C9CA8;">{{ hrtLive }}</span></div>
 <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -919,6 +919,14 @@ input::placeholder{color:#9C9CA8}
 <sc-for list="{{ hrtLines }}" as="l" hint-placeholder-count="0">
 <div style="display:flex;justify-content:space-between;gap:12px;font-size:13px;line-height:18px;"><span style="color:#9C9CA8;flex:none;">{{ l.k }}</span><span style="text-align:right;color:{{ l.c }};font-variant-numeric:tabular-nums;">{{ l.v }}</span></div>
 </sc-for>
+<sc-if value="{{ hrtRawOn }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;font-weight:600;color:#9C9CA8;margin-top:6px;">Journal par tranches de 10 s (essai C1)</span>
+<sc-for list="{{ hrtRows }}" as="l" hint-placeholder-count="0">
+<div style="display:flex;justify-content:space-between;gap:10px;font-size:12px;line-height:17px;"><span style="color:#9C9CA8;flex:none;font-variant-numeric:tabular-nums;">{{ l.k }}</span><span style="text-align:right;color:{{ l.c }};font-variant-numeric:tabular-nums;">{{ l.v }}</span></div>
+</sc-for>
+<span style="font-size:13px;font-weight:600;color:#9C9CA8;margin-top:6px;">Derniers messages</span>
+<sc-for list="{{ hrtMsgs }}" as="l" hint-placeholder-count="0">
+<div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;line-height:15px;color:#C8C8D0;word-break:break-all;">{{ l.k }} {{ l.v }}</div>
+</sc-for></sc-if>
 <sc-if value="{{ hrtErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ hrtErr }}</span></sc-if>
 </div></sc-if>
 </sc-if>
@@ -3329,7 +3337,44 @@ class Component extends DCLogic {
   }
   hrPull() {
     const H = this.hr(); if (!H) return Promise.resolve(); this._hrP = Date.now();
-    return Promise.all([H.status(), H.samples({ since: 0 })]).then(([st, sm]) => this.hrtSet({ st: st || {}, stats: this.hrStats((sm && sm.t) || [], (sm && sm.b) || []) })).catch(() => {});
+    const raw = typeof H.raw === 'function' ? H.raw().catch(() => null) : Promise.resolve(null);
+    return Promise.all([H.status(), H.samples({ since: 0 }), raw]).then(([st, sm, rw]) => this.hrtSet({ st: st || {}, stats: this.hrStats((sm && sm.t) || [], (sm && sm.b) || []), rawS: rw ? this.hrRawStats(rw.t || [], rw.x || [], Date.now()) : null })).catch(() => {});
+  }
+  // Essai C1 (provisoire) : message brut en hexadécimal (journal du natif) → drapeaux, BPM, intervalles RR en ms,
+  // contact peau (null = la ceinture ne sait pas le dire). Même lecture que HRMeasure.parse (HeartRate.swift).
+  hrDecode(x) {
+    const s = String(x || ''), b = [];
+    for (let i = 0; i + 1 < s.length; i += 2) b.push(parseInt(s.slice(i, i + 2), 16));
+    if (b.length < 2 || b.some(v => isNaN(v))) return null;
+    const f = b[0]; let i = 2, bpm = b[1];
+    if (f & 1) { if (b.length < 3) return null; bpm = b[1] | (b[2] << 8); i = 3; }
+    if (f & 8) i += 2;
+    const rr = [];
+    if (f & 16) for (; i + 1 < b.length; i += 2) rr.push(Math.round((b[i] | (b[i + 1] << 8)) * 1000 / 1024));
+    return { f, bpm, rr, contact: f & 4 ? !!(f & 2) : null };
+  }
+  // Essai C1 : tranches de 10 s (calées sur l'horloge) des 3 dernières minutes — messages, messages avec RR, battements
+  // (nombre d'intervalles RR), BPM min–max, doublons (moins de 150 ms après le précédent) ; sur la dernière minute reçue :
+  // messages par seconde, écarts entre messages, messages avec RR ; drapeaux vus ; 6 derniers messages.
+  hrRawStats(t, x, now) {
+    const n = t.length; if (!n) return null;
+    const D = x.map(v => this.hrDecode(v)), end = Math.max(Math.floor(now / 10000), Math.floor(t[n - 1] / 10000)) * 10000;
+    const from = Math.max(Math.floor(t[0] / 10000) * 10000, end - 170000), rows = [];
+    for (let a = from; a <= end; a += 10000) rows.push({ at: a, n: 0, rrMsg: 0, beats: 0, lo: 0, hi: 0, dup: 0 });
+    for (let i = 0; i < n; i++) {
+      const r = t[i] >= from ? rows[Math.floor((t[i] - from) / 10000)] : null, d = D[i]; if (!r) continue;
+      r.n++; if (i && t[i] - t[i - 1] < 150) r.dup++;
+      if (d && d.rr.length) { r.rrMsg++; r.beats += d.rr.length; }
+      if (d && d.bpm) { r.lo = r.lo ? Math.min(r.lo, d.bpm) : d.bpm; r.hi = Math.max(r.hi, d.bpm); }
+    }
+    const w0 = t[n - 1] - 60000, gaps = [0, 0, 0, 0]; let wn = 0, wrr = 0;
+    for (let i = 0; i < n; i++) {
+      if (t[i] <= w0) continue; wn++; if (D[i] && D[i].rr.length) wrr++;
+      if (i) { const g = t[i] - t[i - 1]; gaps[g < 150 ? 0 : g < 750 ? 1 : g < 1500 ? 2 : 3]++; }
+    }
+    const span = Math.min(60, (t[n - 1] - t[0]) / 1000), flags = [...new Set(D.filter(Boolean).map(d => d.f))].sort((p, q) => p - q);
+    const last = []; for (let i = n - 1; i >= Math.max(0, n - 6); i--) last.push({ t: t[i], gap: i ? Math.round(t[i] - t[i - 1]) : null, x: x[i], d: D[i] });
+    return { rows, gaps, wn, wrr, rate: span >= 1 ? Math.round(wn / span * 10) / 10 : wn, flags, last };
   }
   // Régularité des BPM reçus (un par seconde attendu) : trou = plus de 2,5 s entre deux points, secondes manquantes =
   // durée du trou − 1, couverture = 1 − manquantes / durée. C0 réussi si ≥ 95 %.
@@ -3355,7 +3400,7 @@ class Component extends DCLogic {
   hrtClear() { const H = this.hr(); if (H) H.clear().then(() => this.hrPull()).catch(() => {}); }
   // Page d'essai en français seulement : provisoire, retirée à l'étape C2.
   hrtVals(s) {
-    if (s.mqN == null || !this.hr()) return { hrtOn: false, hrtOpen: false };
+    if (s.mqN == null || !this.hr()) return { hrtOn: false, hrtOpen: false, hrtRawOn: false, hrtRows: [], hrtMsgs: [] };
     const T = s.hrt || {}, st = T.st || {}, S = T.stats, lv = T.live || {}, fresh = !!lv.t && Date.now() - lv.t < 5000;
     const hm = x => x ? new Date(x).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
     const dur = x => Math.floor(x / 60) + ' min ' + String(x % 60).padStart(2, '0') + ' s';
@@ -3367,7 +3412,13 @@ class Component extends DCLogic {
       ['Trous de plus de 2 s', S.gapN ? S.gapN + ' · ' + S.gapS + ' s manquantes' : 'aucun'], ...S.top.map(g => ['↳ ' + hm(g.at), g.s + ' s sans BPM']), ['Moyenne · max', S.avg + ' · ' + S.max + ' BPM']);
     else lines.push(['Points reçus', '0']);
     lines.push(['Reconnexions', String(st.reconnects || 0)], ['Plugin démarré à', hm(st.since)]);
-    return { hrtOn: true, hrtOpen: !!s.hrtOpen, hrtToggle: () => this.hrtToggle(), hrtArrow: s.hrtOpen ? '⌄' : '›', hrtRowBorder: s.hrtOpen ? 'none' : '1px solid #24242B',
+    // Essai C1 : journal brut (absent si le natif n'a pas encore la méthode raw).
+    const R = T.rawS, fr = v => String(v).replace('.', ','), ms = x => hm(x) + ',' + String(Math.round(x) % 1000).padStart(3, '0');
+    if (R) lines.push(['Messages par seconde (1 min)', fr(R.rate)], ['Écarts (1 min)', '< 0,15 s : ' + R.gaps[0] + ' · ≈ 0,5 s : ' + R.gaps[1] + ' · ≈ 1 s : ' + R.gaps[2] + ' · plus : ' + R.gaps[3]],
+      ['Messages avec RR (1 min)', R.wrr + ' / ' + R.wn], ['Abonnements', String(st.subs == null ? '—' : st.subs)], ['Drapeaux vus', R.flags.map(f => '0x' + f.toString(16).padStart(2, '0')).join(' ') || '—']);
+    const rows = R ? R.rows.map(r => ({ k: hm(r.at), v: r.n ? r.n + ' msg · ' + r.rrMsg + ' avec RR · ' + r.beats + ' batt. · ' + (r.lo ? r.lo + '–' + r.hi : '—') + (r.dup ? ' · ' + r.dup + ' doubl.' : '') : 'aucun message', c: r.n && !r.beats ? '#FF6B6B' : '#FFFFFF' })) : [];
+    const msgs = R ? R.last.map(m => ({ k: ms(m.t), v: (m.gap == null ? '' : '+' + m.gap + ' ms · ') + (m.d ? m.d.bpm + ' · RR ' + (m.d.rr.join(' ') || '—') : 'illisible') + ' · ' + m.x })) : [];
+    return { hrtRawOn: !!R, hrtRows: rows, hrtMsgs: msgs, hrtOn: true, hrtOpen: !!s.hrtOpen, hrtToggle: () => this.hrtToggle(), hrtArrow: s.hrtOpen ? '⌄' : '›', hrtRowBorder: s.hrtOpen ? 'none' : '1px solid #24242B',
       hrtBpm: fresh && lv.bpm ? String(lv.bpm) : '—', hrtLive: fresh ? (lv.bpm ? 'en direct' : 'pas de contact') : (st.state === 'on' ? 'en attente…' : ''),
       hrtScan: () => this.hrtScan(false), hrtScanAll: () => this.hrtScan(true), hrtScanLabel: T.scanning ? 'Recherche…' : 'Chercher', hrtDisc: () => this.hrtDisc(), hrtClear: () => this.hrtClear(),
       hrtFound: (T.found || []).map(d => ({ name: d.name, sig: d.rssi ? d.rssi + ' dBm' : 'déjà relié', onClick: () => this.hrtConnect(d.id) })),

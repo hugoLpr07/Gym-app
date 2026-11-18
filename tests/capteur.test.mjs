@@ -104,3 +104,60 @@ test('C0 : ouvrir l’essai relit les points, chercher puis se connecter, chiffr
   t.mock.timers.tick(15000);
   assert.equal(H.calls.filter(c => c[0] === 'samples').length, n + 1, 'fermé : plus relu');
 });
+
+test('C1 : décodage d’un message brut (même lecture que HeartRate.swift)', () => {
+  const app = makeApp(loadBarlog(), emptyData());
+  assert.deepEqual(app.hrDecode('0048'), { f: 0, bpm: 72, rr: [], contact: null }, '8 bits, rien d’autre');
+  assert.deepEqual(app.hrDecode('163c00040002'), { f: 0x16, bpm: 60, rr: [1000, 500], contact: true }, 'contact + deux RR (1/1024 s → ms)');
+  assert.equal(app.hrDecode('012c01').bpm, 300, '16 bits');
+  assert.deepEqual(app.hrDecode('185a10000004').rr, [1000], 'énergie sautée avant les RR');
+  assert.deepEqual(app.hrDecode('1046000400').rr, [1000], 'RR coupé : morceau ignoré');
+  assert.equal(app.hrDecode('00'), null, 'drapeaux seuls');
+  assert.equal(app.hrDecode('0148'), null, '16 bits annoncés, un octet');
+  assert.equal(app.hrDecode('zz48'), null, 'pas de l’hexadécimal');
+});
+
+test('C1 : journal brut — tranches de 10 s, battements, doublons, écarts, messages par seconde', () => {
+  const app = makeApp(loadBarlog(), emptyData());
+  assert.equal(app.hrRawStats([], [], 0), null, 'rien reçu');
+  // 30 s portée à 2 messages / s (un RR sur deux), puis 20 s retirée (BPM sans RR), puis un doublon.
+  const t0 = 1_700_000_000_000, t = [], x = [];
+  for (let i = 0; i < 60; i++) { t.push(t0 + i * 500); x.push(i % 2 ? '1050' : '10500004'); }
+  for (let i = 0; i < 40; i++) { t.push(t0 + 30000 + i * 500); x.push('1050'); }
+  t.push(t0 + 49_520); x.push('1050');
+  const R = app.hrRawStats(t, x, t0 + 50_000);
+  assert.deepEqual(R.rows.map(r => r.at - t0), [0, 10000, 20000, 30000, 40000, 50000], 'calées sur l’horloge, jusqu’à maintenant');
+  assert.deepEqual(R.rows.slice(0, 3).map(r => [r.n, r.rrMsg, r.beats, r.lo, r.hi, r.dup]), Array(3).fill([20, 10, 10, 80, 80, 0]), 'portée : un message sur deux avec un battement');
+  assert.deepEqual(R.rows.slice(3, 5).map(r => [r.n, r.beats, r.dup]), [[20, 0, 0], [21, 0, 1]], 'retirée : aucun battement ; doublon à 20 ms');
+  assert.equal(R.rows[5].n, 0, 'tranche en cours, vide');
+  assert.deepEqual(R.gaps, [1, 99, 0, 0], 'écarts de la dernière minute : 99 à 0,5 s, 1 doublon');
+  assert.deepEqual([R.wn, R.wrr, R.rate], [101, 30, 2.0], '101 messages en 49,5 s, 30 avec RR');
+  assert.deepEqual(R.flags, [0x10], 'drapeaux vus');
+  assert.deepEqual(R.last.map(m => m.gap), [20, 500, 500, 500, 500, 500], 'les 6 derniers, du plus récent');
+  // Plus de 3 min : seules les 18 dernières tranches.
+  const long = Array.from({ length: 400 }, (_, i) => t0 + i * 1000);
+  assert.equal(app.hrRawStats(long, long.map(() => '0050'), t0 + 400_000).rows.length, 18);
+});
+
+test('C1 : page d’essai — journal brut affiché quand le natif a la méthode raw', async t => {
+  const t1 = sec(30), H = fakeHR(t1, t1.map(() => 90));
+  H.status = () => Promise.resolve({ ok: true, bt: 'on', state: 'on', name: 'HRM 200', contact: -1, n: 30, bg: 0, reconnects: 0, since: 1, subs: 1 });
+  nativeWindow(t, { BarlogHR: H });
+  const app = makeApp(loadBarlog(), { ...emptyData(), mqN: 0 });
+  await app.hrPull();
+  let v = app.renderVals();
+  assert.deepEqual([v.hrtRawOn, v.hrtRows, v.hrtMsgs], [false, [], []], 'ancien natif sans raw : rien de plus');
+  const n0 = Math.floor(Date.now() / 10000) * 10000 - 5000;   // trois messages dans la même tranche de 10 s
+  H.raw = () => Promise.resolve({ t: [n0, n0 + 500, n0 + 510], x: ['1050', '10500004', '1050'] });
+  await app.hrPull();
+  v = app.renderVals();
+  const line = k => (v.hrtLines.find(l => l.k === k) || {}).v;
+  assert.equal(v.hrtRawOn, true);
+  assert.equal(line('Abonnements'), '1');
+  assert.equal(line('Drapeaux vus'), '0x10');
+  assert.equal(line('Messages avec RR (1 min)'), '1 / 3');
+  assert.deepEqual(v.hrtRows.filter(r => r.v !== 'aucun message').map(r => r.v), ['3 msg · 1 avec RR · 1 batt. · 80–80 · 1 doubl.']);
+  assert.match(v.hrtMsgs[0].k, /,510$/, 'heure à la milliseconde');
+  assert.equal(v.hrtMsgs[0].v, '+10 ms · 80 · RR — · 1050');
+  assert.equal(v.hrtMsgs[1].v, '+500 ms · 80 · RR 1000 · 10500004');
+});
