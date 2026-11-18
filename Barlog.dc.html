@@ -1558,7 +1558,7 @@ Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for detai
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance', 'Remove set': 'Retirer la série' });
 Object.assign(FR, { 'Matching app icon': 'Icône de la même couleur', 'Barlog’s Home Screen icon takes your accent color. iOS shows a message each time it changes.': 'L’icône de Barlog sur l’écran d’accueil prend ta couleur. iOS affiche un message à chaque changement.' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.48.0';
+const APP_VERSION = '0.49.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
@@ -3160,7 +3160,7 @@ class Component extends DCLogic {
   // changent : renderVals tourne chaque seconde pendant une séance.
   wgMore(now) {
     const s = this.state; const t0 = new Date(now); t0.setHours(0, 0, 0, 0); const day = t0.getTime();
-    const key = [s.history, s.body, s.exMeta, s.routines, s.unit, s.bodyU, LANG, day];
+    const key = [s.history, s.body, s.exMeta, s.routines, s.unit, s.bodyU, s.distU, LANG, day];
     if (this._wgK && key.every((v, i) => v === this._wgK[i])) return this._wgV;
     const fr = LANG === 'fr'; const kgU = s.unit === 'kg', bU = s.bodyU || s.unit;
     const monOf = t => { const d = new Date(t); return new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7)).getTime(); };
@@ -3200,6 +3200,24 @@ class Component extends DCLogic {
       if (!g.some(Boolean)) return;
       arr.forEach(se => { if (se.date < mon) return; const n = work(se.sets || []).length; g.forEach((v, i) => { mus[i] += v * n; }); });
     });
+    // Cardio (0.49.0) : séances de cardio depuis le lundi d'il y a 7 semaines (8 semaines, celle-ci comprise), une entrée par début
+    // de séance, tous les exercices cardio additionnés, échauffements compris (comme la carte de Progrès) ; distance dans l'unité `du`.
+    // Records cardio : total de la séance au-dessus de toutes les séances précédentes de l'exercice (1ʳᵉ fois comprise, comme `rec`) ;
+    // 1 = plus loin, 2 = plus longue, 3 = les deux. Champ à part de `rec` : un widget d'avant 0.49.0 l'ignore.
+    const kmU = this.distKm(s), dU = km => kmU ? km : km / 1.60934, r2 = n => Math.round(n * 100) / 100;
+    const from8 = monAgo(7), cdM = new Map(), recC = [];
+    Object.entries(s.history).forEach(([name, arr]) => {
+      if (this.meta(name).type !== 'cardio') return;
+      let bM = 0, bD = 0;
+      arr.slice().sort((a, b) => a.date - b.date).forEach(se => {
+        let m = 0, km = 0; (se.sets || []).forEach(y => { m += y.r || 0; km += y.d || 0; });
+        if (se.date >= from8) { const o = cdM.get(se.date) || [se.date, 0, 0]; o[1] += m; o[2] += km; cdM.set(se.date, o); }
+        const f = (km > bD + 1e-6 ? 1 : 0) | (m > bM + 1e-6 ? 2 : 0);
+        if (f) recC.push([name, se.date, r1(m), r1(dU(km)), f]);
+        bM = Math.max(bM, m); bD = Math.max(bD, km);
+      });
+    });
+    recC.sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1));
     // Poids corporel : pesées des 30 derniers jours (de l'app ou de Santé / Health Connect, une par jour) et la dernière.
     const bws = (s.body || []).filter(b => b.w > 0).sort((a, b) => a.date - b.date), bwV = kg => r1(bU === 'kg' ? kg : kg * KG_LB);
     const from30 = new Date(t0.getFullYear(), t0.getMonth(), t0.getDate() - 29).getTime(), bl = bws[bws.length - 1];
@@ -3211,20 +3229,23 @@ class Component extends DCLogic {
       e1Week: iso(mon), e1: [...ex.map(x => [x.name, x.wk.map(e => e == null ? null : liftE(e)), [liftW(x.top.w), x.top.r]]), ...prog.map(n => [n, []])].slice(0, 150),
       musWeek: iso(mon), mus: G.map((g, i) => [fr ? g[1] : g[2], mus[i]]).sort((a, b) => b[1] - a[1]),
       bw: bws.filter(b => b.date >= from30).map(b => [b.date, bwV(b.w)]), bwLast: bl ? [bl.date, bwV(bl.w)] : null,
+      du: kmU ? 'km' : 'mi', card: [...cdM.values()].sort((a, b) => a[0] - b[0]).map(o => [o[0], r2(o[1]), r2(dU(o[2]))]), recC: recC.slice(0, 3),
       tx: fr ? { unlock: 'Touche pour débloquer', dec: ',', wk1: '{n} semaine', wkN: '{n} semaines', wkS: '{n} sem.', stS: '{n} sem. d’affilée', myWeek: 'Ma semaine', streak: 'Série',
         reg: 'Régularité', goalS: 'Objectif {n} / sem.', thisWk: 'cette semaine', perWk: 'par semaine', stL: 'semaines d’affilée', last8: '8 dernières semaines', dm: '{d} {m}', pct: '{n}\u202F%',
         mon: ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'],
         e1: '1RM est.', e1In: '{d} en 12 sem.', best: 'Meilleure série', ago12: 'il y a 12 sem.', now: 'auj.',
         rec: 'Record', recs: 'Derniers records', reps1: '× {n} répétition', repsN: '× {n} répétitions', agoS: 'il y a {n} j',
         musT: 'Séries cette semaine', bw: 'Poids', bwIn: '{d} en 30 jours',
-        e10: 'Fais une séance avec charges', rec0: 'Bats un record pour le voir ici', bw0: 'Note ta première pesée', none: 'Pas encore de données' }
+        e10: 'Fais une séance avec charges', rec0: 'Bats un record pour le voir ici', bw0: 'Note ta première pesée', none: 'Pas encore de données',
+        card: 'Cardio de la semaine', cardS: 'Cardio · semaine', far: 'Plus loin', long: 'Plus longue', c0: 'Ajoute du cardio à une séance' }
         : { unlock: 'Tap to unlock', dec: '.', wk1: '{n} week', wkN: '{n} weeks', wkS: '{n} wk', stS: '{n}-wk streak', myWeek: 'My week', streak: 'Streak',
         reg: 'Consistency', goalS: 'Goal {n}/wk', thisWk: 'this week', perWk: 'per week', stL: 'week streak', last8: 'Last 8 weeks', dm: '{m} {d}', pct: '{n}%',
         mon: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         e1: 'Est. 1RM', e1In: '{d} in 12 wk', best: 'Best set', ago12: '12 wk ago', now: 'now',
         rec: 'PR', recs: 'Latest PRs', reps1: '× {n} rep', repsN: '× {n} reps', agoS: '{n}d ago',
         musT: 'Sets this week', bw: 'Weight', bwIn: '{d} in 30 days',
-        e10: 'Log a weighted workout', rec0: 'Beat a PR to see it here', bw0: 'Log your first weigh-in', none: 'No data yet' } };
+        e10: 'Log a weighted workout', rec0: 'Beat a PR to see it here', bw0: 'Log your first weigh-in', none: 'No data yet',
+        card: 'Cardio this week', cardS: 'Cardio · week', far: 'Farthest', long: 'Longest', c0: 'Add cardio to a workout' } };
     this._wgK = key; this._wgV = v; return v;
   }
   liveAct() { if (!this.nat()) return null; if (!this._la) { try { const C = window.Capacitor; this._la = (C.Plugins || {}).RestActivity || (plat() === 'ios' && C.registerPlugin ? C.registerPlugin('RestActivity') : null); } catch (e) {} } return this._la || null; }
@@ -3434,7 +3455,7 @@ class Component extends DCLogic {
           backup: fr ? ['Ta sauvegarde en ligne', 'Séances, routines, pesées et réglages sauvegardés automatiquement, et retrouvés sur n’importe quel téléphone.'] : ['Your online backup', 'Workouts, routines, weigh-ins and settings backed up automatically, and restored on any phone.'],
           chart: fr ? ['Toute ta progression', 'Le graphique de chaque exercice sur 3 mois ou tout ton historique, pas seulement 30 jours.'] : ['Your whole progress', 'Every lift’s chart over 3 months or your full history, not just 30 days.'],
           body: fr ? ['Tout ton historique corporel', 'Poids et mensurations sur 3 mois, 1 an ou depuis le début.'] : ['Your whole body history', 'Weight and measurements over 3 months, 1 year or since day one.'],
-          widget: fr ? ['Les widgets Barlog', 'Ta semaine, ta régularité, tes records et ton poids, directement sur l’écran d’accueil.'] : ['Barlog widgets', 'Your week, consistency, PRs and weight, right on your Home Screen.'], stats: fr ? ['Toutes tes stats', 'Ta régularité, ton cardio de la semaine, tes séries par muscle et la tendance de chaque exercice.'] : ['All your stats', 'Your consistency, weekly cardio, sets per muscle and every lift’s trend.'],
+          widget: fr ? ['Les widgets Barlog', 'Ta semaine, ta régularité, ton cardio, tes records et ton poids, directement sur l’écran d’accueil.'] : ['Barlog widgets', 'Your week, consistency, cardio, PRs and weight, right on your Home Screen.'], stats: fr ? ['Toutes tes stats', 'Ta régularité, ton cardio de la semaine, tes séries par muscle et la tendance de chaque exercice.'] : ['All your stats', 'Your consistency, weekly cardio, sets per muscle and every lift’s trend.'],
           '4w': fr ? ['Ta moyenne sur 4 semaines', 'Vois quels muscles tu négliges sur la durée, pas seulement cette semaine.'] : ['Your 4-week average', 'See which muscles you neglect over time, not just this week.'],
           muscle: fr ? ['Trouve le bon exercice', 'Touche un muscle et ajoute un exercice qui le cible, en un geste.'] : ['Find the right exercise', 'Tap a muscle and add an exercise that targets it, in one tap.'],
           program: fr ? ['Tous les programmes', 'Force 5×5, Haut / Bas et tous les programmes à venir.'] : ['Every program', 'Strength 5×5, Upper / Lower and every program to come.'],

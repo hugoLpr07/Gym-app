@@ -159,3 +159,44 @@ test('Lien d’un widget touché sans Pro : iPhone et Android → page Pro ; tou
     on.appUrlOpen({ url }); assert.deepEqual(asked, ['widget'], 'déjà Pro → rien');
   }
 });
+
+// ── Cardio (0.49.0) : widget « Cardio de la semaine » et records cardio du widget « Derniers records » ──
+// Course : 10 août (hors des 8 semaines, 1ʳᵉ fois = record), 7 sept. (plus loin + plus longue), 13 oct. (échauffement 5 min + 18 min × 6 km :
+// plus loin seulement, 23 min < 25). Vélo : 13 oct. (même séance que la course, 1ʳᵉ fois), 14 oct. (45 min sans distance : plus longue).
+const cardio = () => ({ ...history(),
+  Running: [{ date: d(7, 10), sets: [{ w: 0, r: 20, d: 4, c: 0 }] }, { date: d(8, 7), sets: [{ w: 0, r: 25, d: 5, c: 0 }] },
+    { date: d(9, 13), sets: [{ w: 0, r: 5, d: 0, c: 0, wu: true }, { w: 0, r: 18, d: 6, c: 0 }] }],
+  Cycling: [{ date: d(9, 13), sets: [{ w: 0, r: 30, d: 10, c: 0 }] }, { date: d(9, 14, 18), sets: [{ w: 0, r: 45, d: 0, c: 0 }] }],
+});
+
+test('Widgets v3 + cardio : séances des 8 semaines [ms, minutes, distance], une entrée par séance ; 3 derniers records cardio à part', t => {
+  const { w } = setup(t, { history: cardio() });
+  assert.equal(w.du, 'km');
+  assert.deepEqual(w.card, [[d(8, 7), 25, 5], [d(9, 13), 53, 16], [d(9, 14, 18), 45, 0]],
+    'depuis le lundi 24 août (8 semaines) ; 13 oct. : course 5 + 18 min et vélo 30 min dans la même séance');
+  assert.deepEqual(w.recC, [['Cycling', d(9, 14, 18), 45, 0, 2], ['Cycling', d(9, 13), 30, 10, 3], ['Running', d(9, 13), 23, 6, 1]],
+    'le plus récent en premier ; 1 = plus loin, 2 = plus longue, 3 = les deux');
+  assert.deepEqual(w.rec, [['Bench Press', d(9, 14, 18), 90, 4], ['Squat', d(9, 13), 100, 5], ['Bench Press', d(9, 8), 85, 5]], 'records de charge inchangés');
+  assert.deepEqual([w.tx.card, w.tx.cardS, w.tx.far, w.tx.long, w.tx.c0], ['Cardio de la semaine', 'Cardio · semaine', 'Plus loin', 'Plus longue', 'Ajoute du cardio à une séance']);
+  assert.deepEqual([w.tx.n1, w.tx.nN], ['{n} séance', '{n} séances'], 'nombre de séances : textes v2 réutilisés');
+});
+
+test('Widgets cardio : distance en milles (réglage Distance, sinon suit kg / lb), anglais ; rien sans cardio', t => {
+  const a = setup(t, { history: cardio(), unit: 'lb', lang: 'en' }).w;
+  assert.equal(a.du, 'mi');
+  assert.deepEqual(a.card.map(x => x[2]), [3.11, 9.94, 0], '5 km, 16 km');
+  assert.deepEqual(a.recC.map(x => x[3]), [0, 6.2, 3.7]);
+  assert.deepEqual([a.tx.card, a.tx.far, a.tx.long], ['Cardio this week', 'Farthest', 'Longest']);
+  t.mock.timers.reset();
+  const b = setup(t, { history: cardio(), unit: 'lb', distU: 'km' }).w;
+  assert.equal(b.du, 'km'); assert.equal(b.card[1][2], 16);
+  t.mock.timers.reset();
+  const c = setup(t).w;
+  assert.deepEqual([c.card, c.recC], [[], []]);
+});
+
+test('Widgets cardio : changer km / mi refait le calcul', t => {
+  const { app } = setup(t, { history: cardio() });
+  const a = app.wgMore(T0); app.state = { ...app.state, distU: 'mi' };
+  const b = app.wgMore(T0); assert.notEqual(b, a); assert.equal(b.du, 'mi');
+});
