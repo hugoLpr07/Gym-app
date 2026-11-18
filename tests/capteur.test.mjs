@@ -264,11 +264,11 @@ test('C2a : carte « Fréquence cardiaque » au résumé et dans le détail d’
   const base = { ...emptyData(), lang: 'fr', history: hist, sessMeta: { [S]: { name: 'Push', dur: 1800_000, hr } } };
   const app = makeApp(loadBarlog(), { ...base, ...PRO, screen: 'session', openSess: S });
   let v = app.hrcVals(app.state);
-  assert.deepEqual([v.hrcOn, v.hrcAvg, v.hrcMax, v.lkHr.on, v.hrcEnd], [true, '128', '165', false, '1 min']);
+  assert.deepEqual([v.hrcOn, v.hrcAvg, v.hrcMax, v.lkHr.on, v.hrcCurOn], [true, '128', '165', false, false]);
   assert.equal(v.hrcSegs.length, 3, 'trous gardés : 3 morceaux');
   assert.equal(v.hrcSegs[1].pts.split(' ').length, 2, 'point seul : petit trait');
   const ys = v.hrcSegs.flatMap(g => g.pts.split(' ').map(p => +p.split(',')[1]));
-  assert.ok(Math.min(...ys) >= 0 && Math.max(...ys) <= 80, 'dans la hauteur du graphique');
+  assert.ok(Math.min(...ys) >= 0 && Math.max(...ys) <= 120, 'dans la hauteur du graphique');
   assert.equal(app.renderVals().hrcOn, true, 'dans le rendu');
   // Résumé juste après « Finir ».
   const sum = makeApp(loadBarlog(), { ...base, ...PRO, screen: 'summary', summary: { start: S, name: 'Push', dur: 1800_000, vol: 0, sets: 1, prevVol: 0, hasPrev: false, prs: [], ex: [] } });
@@ -279,8 +279,6 @@ test('C2a : carte « Fréquence cardiaque » au résumé et dans le détail d’
   // Séance sans fréquence cardiaque, ou mal formée : pas de carte.
   assert.equal(makeApp(loadBarlog(), { ...base, sessMeta: { [S]: { name: 'Push' } }, screen: 'session', openSess: S }).hrcVals({ ...base, sessMeta: { [S]: { name: 'Push' } }, screen: 'session', openSess: S }).hrcOn, false);
   assert.equal(app.hrcVals({ ...app.state, sessMeta: { [S]: { hr: { ...hr, c: 'x' } } } }).hrcOn, false);
-  // Durée affichée en heures au-delà de 60 min.
-  assert.equal(app.hrcVals({ ...app.state, sessMeta: { [S]: { hr: { ...hr, step: 20, c: Array(300).fill(120) } } } }).hrcEnd, '1 h 40');
 });
 
 test('C2a : fréquence cardiaque jamais dans les sauvegardes du téléphone (iCloud) ; remise au démarrage', async t => {
@@ -486,4 +484,97 @@ test('C2b : natif qui ne répond pas → la publication automatique part quand m
   t.mock.timers.tick(3000); await flush();
   assert.equal(sent.length, 1, 'partie après 3 s');
   assert.equal(sent[0].hr_avg, null, 'sans fréquence cardiaque');
+});
+
+// Graphique plus clair (18 nov., demande de Hugo, comme Strava) : zones, repères, moyenne, curseur au doigt.
+const hrcEv = (f, type = 'touch') => ({ currentTarget: { getBoundingClientRect: () => ({ left: 10, width: 280 }), setPointerCapture() {} }, clientX: 10 + 280 * f, pointerId: 1, pointerType: type });
+
+test('Graphique FC : zones en % de la plus haute FC vue sur toutes les séances ; dégradé à paliers', t => {
+  nativeWindow(t, { BarlogHR: fakeHR() });
+  const S = 1_700_000_000_000, S2 = S - 7 * 86_400_000, hr = { avg: 128, max: 165, n: 1700, step: 5, c: [100, 110, 0, 0, 120, 0, 150, 160] };
+  const st = { ...emptyData(), ...PRO, lang: 'fr', sessMeta: { [S]: { name: 'Push', hr }, [S2]: { name: 'Pull', hr: { ...hr, max: 190 } } }, screen: 'session', openSess: S };
+  const app = makeApp(loadBarlog(), st);
+  // FC max de référence 190 (l'autre séance) → seuils 114 / 133 / 152 / 171.
+  const zone = f => { app.hrcPtr(hrcEv(f), 'down'); app.hrcPtr(null, 'up'); return app.hrcVals(app.state); };
+  assert.deepEqual([zone(0).hrcCurSub, zone(1 / 7).hrcCurSub, zone(4 / 7).hrcCurSub, zone(6 / 7).hrcCurSub, zone(1).hrcCurSub],
+    ['Zone 1 · 0:00', 'Zone 1 · 0:05', 'Zone 2 · 0:20', 'Zone 3 · 0:30', 'Zone 4 · 0:35']);
+  let v = zone(6 / 7);
+  assert.deepEqual([v.hrcCurBpm, v.hrcCurU, v.hrcCurCol, v.hrcDotOn], ['150', 'BPM', '#3DDC84', true]);
+  // Seulement cette séance : FC max 165 → 150 est en zone 5 (≥ 148,5).
+  const solo = makeApp(loadBarlog(), { ...st, sessMeta: { [S]: { name: 'Push', hr } } });
+  solo.hrcPtr(hrcEv(6 / 7), 'down');
+  assert.equal(solo.hrcVals(solo.state).hrcCurSub, 'Zone 5 · 0:30');
+  // Dégradé : 5 couleurs, 2 paliers chacune, de bas (0) en haut (1), jamais en arrière.
+  const offs = v.hrcStops.map(z => +z.off);
+  assert.equal(v.hrcStops.length, 10);
+  assert.deepEqual([offs[0], offs[9]], [0, 1]);
+  assert.ok(offs.every((o, i) => !i || o >= offs[i - 1]), 'paliers dans l’ordre');
+  assert.deepEqual([...new Set(v.hrcStops.map(z => z.col))], ['#8E8E9A', '#4DA3FF', '#3DDC84', '#FFB020', '#FF5A6E']);
+  // FC max recalculée quand les séances changent.
+  const more = { ...app.state.sessMeta, [S2 - 1]: { hr: { ...hr, max: 230 } } };
+  app.setState({ sessMeta: more });
+  assert.equal(app.hrcRef(app.state), 230);
+});
+
+test('Graphique FC : repères de BPM (3 au plus, valeurs rondes) et de temps, moyenne, fond sous la courbe', t => {
+  nativeWindow(t, { BarlogHR: fakeHR() });
+  const S = 1_700_000_000_000, hr = { avg: 128, max: 165, n: 1700, step: 5, c: [100, 110, 0, 0, 120, 0, 150, 160] };
+  const st = c => ({ ...emptyData(), ...PRO, lang: 'fr', sessMeta: { [S]: { name: 'Push', hr: { ...hr, ...c } } }, screen: 'session', openSess: S });
+  const app = makeApp(loadBarlog(), st({}));
+  let v = app.hrcVals(app.state);
+  // Échelle 94-166 BPM : dizaines, 3 lignes au plus → 120 / 150.
+  assert.deepEqual(v.hrcGrid.map(g => [g.label, g.line]), [['120', '1'], ['150', '1']]);
+  assert.ok(v.hrcGrid.every(g => parseFloat(g.top) >= 0), 'étiquettes dans le graphique');
+  // Tout en haut : étiquette sous la ligne ; ligne sur la moyenne : cachée, étiquette gardée.
+  v = app.hrcVals(st({ avg: 150, c: [100, 110, 0, 0, 120, 0, 150, 176] }));
+  assert.deepEqual(v.hrcGrid.map(g => [g.label, g.line, g.top]), [['120', '1', '68.7px'], ['150', '0', '29.2px'], ['180', '1', '6.7px']]);
+  v = app.hrcVals(app.state);
+  assert.equal(v.hrcAvgY, '63.3', 'moyenne 128 en pointillé');
+  assert.ok(v.hrcSegs.every(g => g.area.startsWith(g.pts.split(',')[0] + ',120 ') && g.area.endsWith(',120')), 'fond fermé en bas');
+  assert.deepEqual(v.hrcTicks.map(x => x.label), ['0'], 'moins d’une minute');
+  // 1 h 40 : toutes les 20 min.
+  v = app.hrcVals(st({ step: 20, c: Array(300).fill(0).map((_, i) => 110 + (i % 40)) }));
+  assert.deepEqual(v.hrcTicks.map(x => x.label), ['0', '20 min', '40 min', '1 h', '1 h 20']);
+  assert.deepEqual([v.hrcTicks[0].tx, v.hrcTicks[4].tx], ['translateX(0)', 'translateX(-50%)']);
+  // 47 min : toutes les 10 min, « 40 min » (85 %) centré ; 42 min 30 : « 40 min » à 94 % → collé au bord droit.
+  v = app.hrcVals(st({ step: 10, c: Array(256).fill(130) }));
+  assert.equal(v.hrcTicks[4].tx, 'translateX(-100%)');
+  v = app.hrcVals(st({ step: 10, c: Array(283).fill(130) }));
+  assert.deepEqual(v.hrcTicks.map(x => x.label), ['0', '10 min', '20 min', '30 min', '40 min']);
+  assert.equal(v.hrcTicks[4].tx, 'translateX(-50%)');
+  // Plat (130 partout) : une seule ligne, quand même dans le graphique.
+  assert.deepEqual(v.hrcGrid.map(g => g.label), ['130']);
+  // Plus d'une heure : moment du curseur en h:mm:ss.
+  app.setState(st({ step: 20, c: Array(300).fill(140) })); app.hrcPtr(hrcEv(1), 'down');
+  assert.equal(app.hrcVals(app.state).hrcCurSub, 'Zone 4 · 1:39:40', '140 sur 165 = 85 %');
+});
+
+test('Graphique FC : curseur — toucher ou glisser, reste quand on lâche, retiré si la page défile ; trou = « Pas de signal »', t => {
+  nativeWindow(t, { BarlogHR: fakeHR() });
+  const S = 1_700_000_000_000, hr = { avg: 128, max: 165, n: 1700, step: 5, c: [100, 110, 0, 0, 120, 0, 150, 160] };
+  const app = makeApp(loadBarlog(), { ...emptyData(), ...PRO, lang: 'fr', sessMeta: { [S]: { name: 'Push', hr } }, screen: 'session', openSess: S });
+  const P = app.renderVals().hrcPtr;                   // renderVals : langue (LANG) = fr
+  P.down(hrcEv(0.5));                                   // toucher au milieu → point 4 (sur 0-7)
+  let v = app.hrcVals(app.state);
+  assert.deepEqual([v.hrcCurOn, v.hrcCurBpm, v.hrcCurL, v.hrcCurT], [true, '120', '57.14%', '76.7px']);
+  P.move(hrcEv(2 / 7));                                 // glisser sur un trou
+  v = app.hrcVals(app.state);
+  assert.deepEqual([v.hrcCurOn, v.hrcDotOn, v.hrcCurBpm, v.hrcCurU, v.hrcCurSub], [true, false, '—', '', 'Pas de signal · 0:10']);
+  P.move(hrcEv(-0.3)); assert.equal(app.state.hrcAt.i, 0, 'doigt sorti à gauche → premier point');
+  P.move(hrcEv(1.4)); assert.equal(app.state.hrcAt.i, 7, 'sorti à droite → dernier point');
+  P.up();
+  assert.equal(app.hrcVals(app.state).hrcCurBpm, '160', 'reste quand on lâche');
+  P.move(hrcEv(0)); assert.equal(app.state.hrcAt.i, 7, 'doigt levé : un glissement ne bouge plus rien');
+  P.move(hrcEv(0, 'mouse')); assert.equal(app.state.hrcAt.i, 0, 'souris (site) : suit sans clic');
+  P.cancel(); assert.equal(app.state.hrcAt, null, 'la page défile → curseur retiré');
+  assert.equal(app.hrcVals(app.state).hrcCurOn, false);
+  // Curseur d'une autre séance ou d'un autre écran : ignoré.
+  P.down(hrcEv(0.5));
+  assert.equal(app.hrcVals({ ...app.state, screen: 'summary', summary: { start: S } }).hrcCurOn, false);
+  // Sans fréquence cardiaque : rien ne bouge.
+  const none = makeApp(loadBarlog(), { ...emptyData(), ...PRO, screen: 'session', openSess: S, sessMeta: { [S]: { name: 'Push' } } });
+  none.hrcPtr(hrcEv(0.5), 'down'); assert.equal(none.state.hrcAt, undefined);
+  // Anglais.
+  app.setState({ lang: 'en' }); app.renderVals(); P.down(hrcEv(2 / 7));
+  assert.equal(app.hrcVals(app.state).hrcCurSub, 'No signal · 0:10');
 });
