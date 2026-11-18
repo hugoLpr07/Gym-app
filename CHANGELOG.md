@@ -6,9 +6,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
 ## 0.50.0 — 2026-11-18 (en cours)
-- iPhone, Barlog Pro : capteur cardiaque Bluetooth (ceinture Garmin, Polar, Wahoo… qui utilise le service standard de fréquence cardiaque, comme Strava). Profil → Capteur cardiaque : chercher sa ceinture, la choisir (gardée sur ce téléphone), voir ses BPM, l’oublier. Ensuite, la ceinture se connecte toute seule au début de chaque séance et se déconnecte à « Finir ». Pendant la séance, ♥ et les BPM à côté du chrono, dès que la ceinture envoie des données ; ils continuent d’être reçus écran verrouillé.
-- Après « Finir » et dans l’historique : carte « Fréquence cardiaque » avec la courbe de la séance, la moyenne et le max. Elle est gardée avec la séance, dans la sauvegarde en ligne et dans l’export, mais jamais dans la sauvegarde iCloud du téléphone (règle d’Apple pour les données de santé). Sans Pro, la ligne du Profil ouvre la page Pro et la carte est floutée avec le cadenas.
-- Comme Strava, l’app garde ce que la ceinture envoie entre le début de la séance et « Finir » : une ceinture retirée peut encore envoyer des valeurs quelques minutes avant de s’éteindre.
+- iPhone, Barlog Pro : capteur cardiaque Bluetooth (ceinture Garmin, Polar, Wahoo… qui utilise le service standard de fréquence cardiaque, comme Strava). Profil → Capteur cardiaque : chercher sa ceinture, la choisir (gardée sur ce téléphone), voir ses BPM, l’oublier. Ensuite, la ceinture se connecte toute seule au début de chaque séance et se déconnecte à « Terminer ». Pendant la séance, ♥ et les BPM à côté du chrono, dès que la ceinture envoie des données ; ils continuent d’être reçus écran verrouillé.
+- Après « Terminer » et dans l’historique : carte « Fréquence cardiaque » avec la courbe de la séance, la moyenne et le max. Elle est gardée avec la séance, dans la sauvegarde en ligne et dans l’export, mais jamais dans la sauvegarde iCloud du téléphone (règle d’Apple pour les données de santé). Sans Pro, la ligne du Profil ouvre la page Pro et la carte est floutée avec le cadenas.
+- Comme Strava, l’app garde ce que la ceinture envoie entre le début de la séance et « Terminer » : une ceinture retirée peut encore envoyer des valeurs quelques minutes avant de s’éteindre.
 - Page Pro : nouvelle ligne « Capteur cardiaque ».
 
 ## 0.49.0 — 2026-11-18
