@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.50.0 — 2026-11-18 (en cours)
+- iPhone : premier essai d’une ceinture cardiaque Bluetooth (service standard de fréquence cardiaque, comme Strava). Page d’essai provisoire réservée au compte administrateur (Profil → Compte) : chercher la ceinture, s’y connecter, voir les BPM en direct et vérifier qu’ils arrivent aussi écran verrouillé (points reçus, trous, reconnexions). Rien ne change pour les autres comptes ; la vraie fonction (Pro) viendra ensuite.
+
 ## 0.49.0 — 2026-11-18
 - Nouveau widget « Cardio de la semaine » (Pro), sur iPhone et Android : minutes, distance (km ou mi selon le réglage Distance) et séances de cardio depuis lundi, avec les minutes des 8 dernières semaines en barres. En petit, ou en moyen avec les dates des lundis ; sur iPhone, aussi en rectangle sur l’écran verrouillé. Sans Pro, il est flouté avec le cadenas, comme les autres widgets Pro.
 - Widget « Derniers records » : les records cardio (plus loin ou plus longue séance d’un exercice) apparaissent avec les records de charge, le plus récent en premier.

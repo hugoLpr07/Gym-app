@@ -902,6 +902,26 @@ input::placeholder{color:#9C9CA8}
 <div style="flex:0 0 auto;width:52px;height:32px;border-radius:999px;background:{{ t.track }};padding:3px;display:flex;justify-content:{{ t.justify }};"><div style="width:26px;height:26px;border-radius:50%;background:{{ t.knob }};"></div></div>
 </button>
 </sc-for>
+<sc-if value="{{ hrtOn }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ hrtToggle }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:{{ hrtRowBorder }};background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">Essai capteur cardiaque</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">Administrateur seulement · étape C0, provisoire</span></div><span style="color:#9C9CA8;font-size:20px;">{{ hrtArrow }}</span></button>
+<sc-if value="{{ hrtOpen }}" hint-placeholder-val="{{ false }}"><div style="padding:0 16px 16px;border-bottom:1px solid #24242B;display:flex;flex-direction:column;gap:10px;">
+<div style="display:flex;align-items:baseline;gap:10px;"><span style="font-size:44px;font-weight:800;color:#FF5A6E;font-variant-numeric:tabular-nums;">♥ {{ hrtBpm }}</span><span style="font-size:13px;color:#9C9CA8;">{{ hrtLive }}</span></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;">
+<button onClick="{{ hrtScan }}" style="min-height:40px;padding:4px 14px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:14px;font-weight:700;">{{ hrtScanLabel }}</button>
+<button onClick="{{ hrtScanAll }}" style="min-height:40px;padding:4px 14px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#fff;font-size:14px;font-weight:600;">Chercher partout</button>
+<button onClick="{{ hrtDisc }}" style="min-height:40px;padding:4px 14px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#fff;font-size:14px;font-weight:600;">Déconnecter</button>
+<button onClick="{{ hrtClear }}" style="min-height:40px;padding:4px 14px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#fff;font-size:14px;font-weight:600;">Remettre à zéro</button>
+</div>
+<sc-for list="{{ hrtFound }}" as="d" hint-placeholder-count="0">
+<button onClick="{{ d.onClick }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;min-height:48px;padding:6px 12px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:15px;text-align:left;gap:8px;"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;">{{ d.name }}</span><span style="flex:none;font-size:12px;color:#9C9CA8;">{{ d.sig }}</span></button>
+</sc-for>
+<sc-for list="{{ hrtLines }}" as="l" hint-placeholder-count="0">
+<div style="display:flex;justify-content:space-between;gap:12px;font-size:13px;line-height:18px;"><span style="color:#9C9CA8;flex:none;">{{ l.k }}</span><span style="text-align:right;color:{{ l.c }};font-variant-numeric:tabular-nums;">{{ l.v }}</span></div>
+</sc-for>
+<sc-if value="{{ hrtErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ hrtErr }}</span></sc-if>
+</div></sc-if>
+</sc-if>
 <button onClick="{{ mdpOpen }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:{{ mdpRowBorder }};background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
 <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">{{ mdpLabel }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ mdpSub }}</span></div><span style="color:#9C9CA8;font-size:20px;">{{ mdpArrow }}</span></button>
 <sc-if value="{{ mdpOn }}" hint-placeholder-val="{{ false }}"><div style="padding:0 16px 16px;border-bottom:1px solid #24242B;display:flex;flex-direction:column;gap:10px;">
@@ -1558,7 +1578,7 @@ Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for detai
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance', 'Remove set': 'Retirer la série' });
 Object.assign(FR, { 'Matching app icon': 'Icône de la même couleur', 'Barlog’s Home Screen icon takes your accent color. iOS shows a message each time it changes.': 'L’icône de Barlog sur l’écran d’accueil prend ta couleur. iOS affiche un message à chaque changement.' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.49.0';
+const APP_VERSION = '0.50.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
@@ -1827,7 +1847,7 @@ class Component extends DCLogic {
     this.nativeBoot(d);
     if (!this.nat()) this.proEval();   // site : Pro simulé seulement sur le site de test, sinon droit du serveur (relu à la connexion)
     this.iv = setInterval(() => this.tick(), 250);
-    this.onVis = () => { if (document.visibilityState === 'hidden' && this._cbT) { clearTimeout(this._cbT); this._cbT = null; this.cbUp(); } this.save(document.visibilityState === 'hidden'); this.syncWake(); this.tick(); this._rnAt = undefined; this.syncRestNotif(); if (document.visibilityState === 'visible') { this.pullWeights(); if ((this.state.cloud || {}).err) this.cbSoon(3000); } if (document.visibilityState === 'visible') this.checkUpdate(); if (document.visibilityState === 'visible') this.pubFlush(); if (document.visibilityState === 'visible') this.reqCount(); if (document.visibilityState === 'visible') this.mqRefresh(); };
+    this.onVis = () => { if (document.visibilityState === 'hidden' && this._cbT) { clearTimeout(this._cbT); this._cbT = null; this.cbUp(); } this.save(document.visibilityState === 'hidden'); this.syncWake(); this.tick(); this._rnAt = undefined; this.syncRestNotif(); if (document.visibilityState === 'visible') { this.pullWeights(); if ((this.state.cloud || {}).err) this.cbSoon(3000); } if (document.visibilityState === 'visible') this.checkUpdate(); if (document.visibilityState === 'visible') this.pubFlush(); if (document.visibilityState === 'visible') this.reqCount(); if (document.visibilityState === 'visible') this.mqRefresh(); if (document.visibilityState === 'visible' && this.state.hrtOpen) this.hrPull(); };
     // Retour du réseau : publications en attente, et sauvegarde dont le dernier envoi a échoué.
     this.onOnline = () => { if (this._acStale && !this.state.acct) this.acBoot(); this.pubFlush(true); if ((this.state.cloud || {}).err) this.cbSoon(3000); }; window.addEventListener('online', this.onOnline);
     this.checkUpdate();
@@ -3292,6 +3312,67 @@ class Component extends DCLogic {
   hk() { const pf = plat(); if (!this.nat() || (pf !== 'ios' && pf !== 'android')) return null; if (!this._hk) { try { const C = window.Capacitor; this._hk = (C.Plugins || {}).BarlogHealth || (pf === 'ios' && C.registerPlugin ? C.registerPlugin('BarlogHealth') : null); } catch (e) {} } return this._hk || null; }
   // Liaison Santé / Health Connect = Barlog Pro. Sans Pro, healthOn est gardé mais rien n'est lu ni envoyé ; elle reprend dès que le Pro revient.
   hkOn() { return !!this.state.healthOn && this.isPro(); }
+  // Ceinture cardiaque Bluetooth (étape C du plan, Pro ; plugin BarlogHR, iPhone d'abord) : absent sur le site et sur
+  // Android tant que le plugin n'y existe pas → rien ne s'affiche.
+  hr() { const pf = plat(); if (!this.nat() || (pf !== 'ios' && pf !== 'android')) return null; if (!this._hr) { try { const C = window.Capacitor; this._hr = (C.Plugins || {}).BarlogHR || (pf === 'ios' && C.registerPlugin ? C.registerPlugin('BarlogHR') : null); } catch (e) {} } return this._hr || null; }
+  // Essai C0 (provisoire, administrateur, Profil → Compte) : la ceinture reste-t-elle reçue écran verrouillé ?
+  // État dans hrt (non sauvegardé) ; les points sont gardés par le natif, relus toutes les 5 s et au retour dans l'app.
+  hrtSet(o) { this.setState({ hrt: { ...(this.state.hrt || {}), ...o } }); }
+  hrListen() {
+    const H = this.hr(); if (!H || this._hrL) return; this._hrL = true;
+    try {
+      H.addListener('hr', e => { this.hrtSet({ live: { bpm: +e.bpm || 0, t: +e.t || Date.now() } }); if (Date.now() - (this._hrP || 0) > 5000) this.hrPull(); });
+      H.addListener('hrState', e => { this.hrtSet({ err: (e && e.why) || '' }); this.hrPull(); });
+      H.addListener('hrFound', e => { const f = (this.state.hrt || {}).found || [], d = { id: e.id, name: e.name || '?', rssi: +e.rssi || 0 }; this.hrtSet({ found: f.some(x => x.id === d.id) ? f.map(x => x.id === d.id ? d : x) : [...f, d] }); });
+      H.addListener('hrScanEnd', () => this.hrtSet({ scanning: false }));
+    } catch (e) {}
+  }
+  hrPull() {
+    const H = this.hr(); if (!H) return Promise.resolve(); this._hrP = Date.now();
+    return Promise.all([H.status(), H.samples({ since: 0 })]).then(([st, sm]) => this.hrtSet({ st: st || {}, stats: this.hrStats((sm && sm.t) || [], (sm && sm.b) || []) })).catch(() => {});
+  }
+  // Régularité des BPM reçus (un par seconde attendu) : trou = plus de 2,5 s entre deux points, secondes manquantes =
+  // durée du trou − 1, couverture = 1 − manquantes / durée. C0 réussi si ≥ 95 %.
+  hrStats(t, b) {
+    const n = t.length; if (!n) return null;
+    const span = (t[n - 1] - t[0]) / 1000, gaps = []; let miss = 0, sum = 0, max = 0;
+    for (let i = 0; i < n; i++) { sum += b[i]; if (b[i] > max) max = b[i]; if (i) { const g = (t[i] - t[i - 1]) / 1000; if (g > 2.5) { gaps.push({ at: t[i - 1], s: Math.round(g) }); miss += g - 1; } } }
+    return { n, t0: t[0], span: Math.round(span), cover: span > 0 ? Math.max(0, Math.round((1 - miss / span) * 1000) / 10) : 100, gapN: gaps.length, gapS: Math.round(miss), top: gaps.sort((x, y) => y.s - x.s).slice(0, 3), avg: Math.round(sum / n), max };
+  }
+  hrtToggle() {
+    const open = !this.state.hrtOpen; this.setState({ hrtOpen: open }); clearInterval(this._hrI); this._hrI = null;
+    if (open) { this.hrListen(); this.hrPull(); this._hrI = setInterval(() => { if (typeof document === 'undefined' || document.visibilityState !== 'hidden') this.hrPull(); }, 5000); }
+  }
+  hrtScan(all) {
+    const H = this.hr(); if (!H) return; this.hrListen(); this.hrtSet({ found: [], scanning: true, err: '' });
+    H.scan({ all: !!all }).then(r => { if (r && r.ok === false) this.hrtSet({ scanning: false, err: r.why || 'erreur' }); this.hrPull(); }).catch(e => this.hrtSet({ scanning: false, err: String((e && e.message) || e) }));
+  }
+  hrtConnect(id) {
+    const H = this.hr(); if (!H) return; this.hrtSet({ found: [], scanning: false, err: '' }); H.stopScan().catch(() => {});
+    H.connect({ id }).then(r => { if (r && r.ok === false) this.hrtSet({ err: r.why || 'erreur' }); this.hrPull(); }).catch(e => this.hrtSet({ err: String((e && e.message) || e) }));
+  }
+  hrtDisc() { const H = this.hr(); if (H) H.disconnect().then(() => this.hrPull()).catch(() => {}); }
+  hrtClear() { const H = this.hr(); if (H) H.clear().then(() => this.hrPull()).catch(() => {}); }
+  // Page d'essai en français seulement : provisoire, retirée à l'étape C2.
+  hrtVals(s) {
+    if (s.mqN == null || !this.hr()) return { hrtOn: false, hrtOpen: false };
+    const T = s.hrt || {}, st = T.st || {}, S = T.stats, lv = T.live || {}, fresh = !!lv.t && Date.now() - lv.t < 5000;
+    const hm = x => x ? new Date(x).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
+    const dur = x => Math.floor(x / 60) + ' min ' + String(x % 60).padStart(2, '0') + ' s';
+    const BT = { on: 'allumé', off: 'éteint', denied: 'refusé (Réglages → Barlog → Bluetooth)', ask: 'pas encore demandé', unsupported: 'indisponible', unknown: '…' };
+    const LK = { idle: 'aucun', connecting: 'connexion… (mets la ceinture)', on: 'connecté', lost: 'perdu, reconnexion…' };
+    const lines = [['Bluetooth', BT[st.bt] || '…'], ['Capteur', (LK[st.state] || '…') + (st.name ? ' · ' + st.name : '')], ['Contact peau', st.contact === 1 ? 'oui' : st.contact === 0 ? 'non' : 'inconnu']];
+    if (S) lines.push(['Points reçus', S.n + ' (dont ' + (st.bg || 0) + ' en arrière-plan)'], ['Durée', dur(S.span) + ' · depuis ' + hm(S.t0)],
+      ['Secondes reçues', S.cover + ' %' + (S.cover >= 95 ? ' ✓' : ' ✗'), S.cover >= 95 ? ACC : '#FF6B6B'],
+      ['Trous de plus de 2 s', S.gapN ? S.gapN + ' · ' + S.gapS + ' s manquantes' : 'aucun'], ...S.top.map(g => ['↳ ' + hm(g.at), g.s + ' s sans BPM']), ['Moyenne · max', S.avg + ' · ' + S.max + ' BPM']);
+    else lines.push(['Points reçus', '0']);
+    lines.push(['Reconnexions', String(st.reconnects || 0)], ['Plugin démarré à', hm(st.since)]);
+    return { hrtOn: true, hrtOpen: !!s.hrtOpen, hrtToggle: () => this.hrtToggle(), hrtArrow: s.hrtOpen ? '⌄' : '›', hrtRowBorder: s.hrtOpen ? 'none' : '1px solid #24242B',
+      hrtBpm: fresh && lv.bpm ? String(lv.bpm) : '—', hrtLive: fresh ? (lv.bpm ? 'en direct' : 'pas de contact') : (st.state === 'on' ? 'en attente…' : ''),
+      hrtScan: () => this.hrtScan(false), hrtScanAll: () => this.hrtScan(true), hrtScanLabel: T.scanning ? 'Recherche…' : 'Chercher', hrtDisc: () => this.hrtDisc(), hrtClear: () => this.hrtClear(),
+      hrtFound: (T.found || []).map(d => ({ name: d.name, sig: d.rssi ? d.rssi + ' dBm' : 'déjà relié', onClick: () => this.hrtConnect(d.id) })),
+      hrtLines: lines.map(([k, v, c]) => ({ k, v, c: c || '#FFFFFF' })), hrtErr: T.err || '' };
+  }
   toggleHealth() {
     const fr = LANG === 'fr'; if (this.hkOn()) { this.setState({ healthOn: false }); return; }
     if (!this.isPro()) return this.need('health', () => { if (!this.state.healthOn) this.toggleHealth(); });
@@ -4053,6 +4134,7 @@ class Component extends DCLogic {
       accOpts: ACCENTS.map(([c, label]) => ({ c, label, ring: c.toLowerCase() === ACC.toLowerCase() ? '0 0 0 2px #0A0A0C, 0 0 0 4px #FFFFFF' : 'none', onClick: () => this.isPro() || c === '#CCFF00' ? this.setState({ accent: c, accPrev: null }) : (this.setState({ accPrev: c }), this.need('accent', () => this.setState({ accent: c, accPrev: null }))) })),
       accLabel: L(TX.nAccent) + (this.isPro() ? '' : ' ✦'),
       acProTgl: s.mqN != null ? [toggleRow(LANG === 'fr' ? 'Voir l’app sans Pro' : 'Preview without Pro', LANG === 'fr' ? 'Administrateur seulement. Affiche l’app comme un compte gratuit, sur ce téléphone. Ton Pro et tes données ne changent pas ; revient au Pro au prochain lancement.' : 'Admin only. Shows the app as a free account, on this phone. Your Pro and your data don’t change; back to Pro on next launch.', !!s.proOff, 'proOff')] : [],
+      ...this.hrtVals(s),
       iconTgl: this.appIcon() ? [{ ...toggleRow(L('Matching app icon') + (this.isPro() ? '' : ' ✦'), L('Barlog’s Home Screen icon takes your accent color. iOS shows a message each time it changes.'), !!(s.iconMatch && this.isPro()), 'iconMatch'),
         onClick: () => this.isPro() ? this.setState({ iconMatch: !s.iconMatch }) : this.need('icon', () => this.setState({ iconMatch: true })) }] : [],
       ...(() => { const z = MUS.filter(m => mVal(m[0]) <= 0).map(m => LANG === 'fr' ? m[2] : m[1]); return { bmHasZero: z.length > 0, bmZero: (LANG === 'fr' ? 'Pas travaillé : ' : 'Not trained: ') + z.join(', ') }; })(),
