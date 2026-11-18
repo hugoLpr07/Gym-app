@@ -310,3 +310,134 @@ test('C2a : données remises par la sauvegarde d’un autre téléphone → cein
   await same.instCheck(); await flush();
   assert.deepEqual(same.state.hrDev, DEV, 'même téléphone : gardée');
 });
+
+// ——— C2b : « Montrer ma fréquence cardiaque » (Fil, page profil, image de partage) ———
+
+const ACCT = { uid: 'u1', email: 'a@b.c', profile: { username: 'alex', terms_v: 1, default_visibility: 'followers' } };
+const HR1 = { avg: 130, max: 181, n: 2400, step: 15, c: [120, 140] };
+// Faux client Supabase : update(…).eq(…).eq(…) / .not(…) ; erreur réseau au choix ; journal des appels.
+function sbLog(fail) {
+  const log = [];
+  const q = (t, op, p) => { const e = { t, op, p, f: [] }; log.push(e); const r = { eq: (k, v) => { e.f.push(['eq', k, v]); return r; }, not: (k, o, v) => { e.f.push(['not', k, o, v]); return r; },
+    then: (ok, ko) => (fail && fail() ? Promise.reject(new TypeError('Failed to fetch')) : Promise.resolve({ error: null })).then(ok, ko) }; return r; };
+  return { log, c: { from: t => ({ update: p => q(t, 'update', p) }) } };
+}
+function shareApp(t, state = {}, fail) {
+  nativeWindow(t, { BarlogHR: fakeHR() });
+  const S1 = Date.UTC(2026, 10, 17, 15), S2 = Date.UTC(2026, 10, 18, 14), S3 = Date.UTC(2026, 10, 18, 18);
+  const history = { Squat: [S1, S2, S3].map(date => ({ date, sets: [{ w: 100, r: 5 }] })) };
+  const app = makeApp(loadBarlog(), { ...emptyData(), lang: 'fr', acct: ACCT, history, ...PRO,
+    sessMeta: { [S1]: { name: 'Sans FC', pub: { vis: 'followers', at: 1 } }, [S2]: { name: 'Bas du corps', hr: HR1, pub: { vis: 'followers', at: 2 } }, [S3]: { name: 'Pas publiée', hr: HR1 } }, ...state });
+  const k = sbLog(fail); app.sb = () => Promise.resolve(k.c); app.renderVals();
+  return { app, log: k.log, S1, S2, S3 };
+}
+
+test('C2b : désactivé par défaut → rien de cardiaque dans la publication (colonnes envoyées vides, pour effacer)', t => {
+  const { app, S2 } = shareApp(t);
+  const row = app.pubRow(S2, 'followers', '');
+  assert.ok('hr_avg' in row && 'hr_max' in row, 'toujours envoyées');
+  assert.deepEqual([row.hr_avg, row.hr_max], [null, null]);
+  assert.equal(app.state.hrShare, undefined, 'jamais activé tout seul');
+});
+
+test('C2b : activé → moyenne et max dans la publication ; valeurs hors des bornes du serveur → rien', t => {
+  const { app, S1, S2 } = shareApp(t, { hrShare: true });
+  assert.deepEqual([app.pubRow(S2, 'followers', '').hr_avg, app.pubRow(S2, 'followers', '').hr_max], [130, 181]);
+  assert.deepEqual([app.pubRow(S1, 'followers', '').hr_avg, app.pubRow(S1, 'followers', '').hr_max], [null, null], 'séance sans fréquence cardiaque');
+  for (const hr of [{ ...HR1, avg: 20 }, { ...HR1, max: 260 }, { ...HR1, avg: 150, max: 140 }, { ...HR1, c: 'x' }]) {
+    app.state.sessMeta = { ...app.state.sessMeta, [S2]: { name: 'X', hr } };
+    assert.equal(app.pubRow(S2, 'followers', '').hr_avg, null, JSON.stringify(hr));
+  }
+  app.state.sessMeta = { ...app.state.sessMeta, [S2]: { name: 'X', hr: { ...HR1, avg: 129.6, max: 180.4 } } };
+  assert.deepEqual([app.pubRow(S2, 'followers', '').hr_avg, app.pubRow(S2, 'followers', '').hr_max], [130, 180], 'entiers');
+});
+
+test('C2b : réglage dans Profil → Compte, seulement dans l’app iPhone (ou déjà activé) ; l’activer = Pro', t => {
+  const { app } = shareApp(t, { pro: null });
+  app.pwLoad = () => {};
+  let v = app.renderVals();
+  assert.deepEqual([v.acHrOn, v.acHrLabel, v.acHrTg.justify], [true, 'Montrer ma fréquence cardiaque ✦', 'flex-start']);
+  v.acHrClick();
+  assert.equal(app.state.pw.f, 'hr', 'sans Pro : page Pro');
+  assert.equal(app.state.hrShare, undefined);
+  // Site / Android sans le plugin : caché… sauf s'il est déjà activé (pour pouvoir le désactiver).
+  nativeWindow(t, {}, 'android');
+  assert.equal(makeApp(loadBarlog(), { ...emptyData(), acct: ACCT }).renderVals().acHrOn, false);
+  assert.equal(makeApp(loadBarlog(), { ...emptyData(), acct: ACCT, hrShare: true }).renderVals().acHrOn, true);
+});
+
+test('C2b : activer → ajoutée aux séances déjà publiées qui en ont une ; désactiver → retirée de toutes en une demande', async t => {
+  const { app, log, S2, S1 } = shareApp(t);
+  app.setState(st => ({ sessMeta: { ...st.sessMeta, [S2]: { ...st.sessMeta[S2], pub: { ...st.sessMeta[S2].pub, id: 'p2' } }, [S1]: { ...st.sessMeta[S1], pub: { ...st.sessMeta[S1].pub, id: 'p1' } } },
+    feed: { items: [{ id: 'p2', user_id: 'u1' }, { id: 'p1', user_id: 'u1' }, { id: 'x9', user_id: 'u2', hr_avg: 140, hr_max: 170 }], at: Date.now() } }));
+  app.renderVals().acHrClick(); for (let i = 0; i < 4; i++) await flush();
+  assert.equal(app.state.hrShare, true);
+  assert.deepEqual(log.map(e => [e.t, e.op, e.p, e.f]), [['activities', 'update', { hr_avg: 130, hr_max: 181 }, [['eq', 'user_id', 'u1'], ['eq', 'local_start', S2]]]],
+    'seulement la séance publiée avec fréquence cardiaque (ni celle sans, ni la non publiée)');
+  assert.equal(app.renderVals().acHrTg.justify, 'flex-end');
+  // Cartes déjà affichées : mises à jour sans attendre le rechargement du Fil.
+  assert.deepEqual([app.state.feed.items[0].hr_avg, app.state.feed.items[1].hr_avg], [130, undefined]);
+  log.length = 0;
+  app.renderVals().acHrClick(); for (let i = 0; i < 4; i++) await flush();
+  assert.equal(app.state.hrShare, false);
+  assert.deepEqual(log.map(e => [e.t, e.op, e.p, e.f]), [['activities', 'update', { hr_avg: null, hr_max: null }, [['eq', 'user_id', 'u1'], ['not', 'hr_avg', 'is', null]]]]);
+  assert.equal(app.state.hrHideQ, null, 'fait : plus en attente');
+  assert.deepEqual(app.state.feed.items.map(x => x.hr_avg), [null, undefined, 140], 'retirée de mes cartes affichées, pas de celles des autres');
+});
+
+test('C2b : désactivé hors ligne → la demande attend et repart au retour du réseau, sous le même compte seulement', async t => {
+  let off = true;
+  const { app, log } = shareApp(t, { hrShare: true }, () => off);
+  app.renderVals().acHrClick(); for (let i = 0; i < 4; i++) await flush();
+  assert.deepEqual([app.state.hrShare, app.state.hrHideQ], [false, 'u1'], 'gardée en attente');
+  const B = loadBarlog();
+  assert.ok(B.PK.includes('hrHideQ') && B.CB_SKIP.includes('hrHideQ'), 'survit à la fermeture de l’app, reste sur ce téléphone');
+  assert.ok(B.PK.includes('hrShare') && B.CB_SET.includes('hrShare'), 'le réglage suit la restauration, comme « Publier automatiquement »');
+  // Autre compte connecté : rien ne part.
+  app.setState({ acct: { ...ACCT, uid: 'u2' } }); log.length = 0; app.pubFlush(true); await flush();
+  assert.equal(log.length, 0);
+  off = false; app.setState({ acct: ACCT }); app.pubFlush(true); for (let i = 0; i < 4; i++) await flush();
+  assert.equal(log.length, 1); assert.deepEqual(log[0].p, { hr_avg: null, hr_max: null });
+  assert.equal(app.state.hrHideQ, null);
+  // Réactivé avant le retour du réseau : la demande en attente est abandonnée.
+  off = true; app.renderVals(); app.hrHideAll(); await flush(); assert.equal(app.state.hrHideQ, 'u1');
+  app.renderVals().acHrClick(); assert.equal(app.state.hrHideQ, null);
+});
+
+test('C2b : suppression du compte → réglage remis à « désactivé »', async () => {
+  const app = makeApp(loadBarlog(), { ...emptyData(), lang: 'fr', acct: ACCT, hrShare: true, hrHideQ: 'u1', cloud: { on: false } });
+  app.sb = () => Promise.resolve({ functions: { invoke: async () => ({ data: { ok: true }, error: null }) }, auth: { signOut: async () => ({}) } });
+  app.renderVals(); app.acDelete(); app.sureGo(); for (let i = 0; i < 6; i++) await flush();
+  assert.equal(app.state.acct, null);
+  assert.deepEqual([app.state.hrShare, app.state.hrHideQ], [false, null]);
+});
+
+test('C2b : Fil et page profil — « FC moy. » (rouge) et « FC max » seulement quand l’auteur les a publiées', () => {
+  const app = makeApp(loadBarlog(), { ...emptyData(), lang: 'fr', unit: 'kg', acct: ACCT });
+  app.renderVals();
+  const row = { id: 'a1', user_id: 'u2', username: 'bo', title: 'Legs', duration_s: 5060, volume_kg: 2819.5, sets: 31 };
+  const st = x => app.cardVals(app.state, [{ ...row, ...x }], 'fd')[0].stats;
+  assert.deepEqual(st({}).map(s => s.label), ['Durée', 'Volume', 'Séries']);
+  assert.deepEqual(st({ hr_avg: null, hr_max: null }).length, 3, 'colonnes vides');
+  const s5 = st({ hr_avg: 130, hr_max: 181 });
+  assert.deepEqual(s5.slice(3), [{ label: 'FC moy.', value: '130 BPM', color: '#FF5A6E' }, { label: 'FC max', value: '181 BPM', color: '#FFFFFF' }]);
+  assert.equal(s5[0].color, '#FFFFFF');
+  // Données d'un autre compte : jamais fiables.
+  for (const bad of [{ hr_avg: '130', hr_max: 181 }, { hr_avg: 130 }, { hr_avg: 150, hr_max: 140 }, { hr_avg: 10, hr_max: 300 }, { hr_avg: 130.5, hr_max: 181 }])
+    assert.equal(st(bad).length, 3, JSON.stringify(bad));
+});
+
+test('C2b : image de partage — celle du Fil reprend ce que l’auteur a publié ; celle du résumé suit le réglage', t => {
+  const { app, S2 } = shareApp(t, { unit: 'kg', fdFull: {} });
+  const got = []; app.shareCard = d => got.push(d);
+  app.state.feed = { items: [{ id: 'a1', user_id: 'u2', username: 'bo', title: 'Legs', duration_s: 3600, volume_kg: 1000, sets: 10, hr_avg: 130, hr_max: 181 }, { id: 'a2', user_id: 'u2', username: 'bo', title: 'Push', duration_s: 3600, volume_kg: 1000, sets: 10 }] };
+  globalThis.document = { querySelectorAll: () => [] }; t.after(() => { delete globalThis.document; });
+  app.shareAct('a1'); app.shareAct('a2');
+  assert.deepEqual(got.map(d => d.hr), [{ avg: 130, max: 181 }, null]);
+  // Résumé de fin de séance.
+  const sum = { start: S2, name: 'Bas du corps', dur: 5060_000, vol: 2819.5, sets: 31, prevVol: 0, hasPrev: false, prs: [], ex: [{ name: 'Squat', sets: [{ w: 100, r: 5 }] }] };
+  app.setState({ screen: 'summary', summary: sum }); app.renderVals(); app.shareSummary();
+  assert.equal(got.at(-1).hr, null, 'réglage désactivé : pas sur l’image');
+  app.setState({ hrShare: true }); app.renderVals(); app.shareSummary();
+  assert.deepEqual(got.at(-1).hr, { avg: 130, max: 181 });
+});

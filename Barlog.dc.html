@@ -805,7 +805,7 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ c.moreOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.onMore }}" aria-label="⋯" style="flex:none;width:36px;height:36px;margin-right:-8px;border-radius:18px;border:none;background:transparent;color:#9C9CA8;font-size:20px;font-weight:700;line-height:1;">⋯</button></sc-if>
 </div>
 <span style="font-size:18px;font-weight:800;line-height:23px;overflow-wrap:anywhere;">{{ c.title }}</span>
-<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;"><sc-for list="{{ c.stats }}" as="st" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#9C9CA8;">{{ st.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ st.value }}</span></div></sc-for></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;"><sc-for list="{{ c.stats }}" as="st" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#9C9CA8;">{{ st.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:{{ st.color }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ st.value }}</span></div></sc-for></div>
 <sc-if value="{{ c.prOn }}" hint-placeholder-val="{{ false }}"><div onClick="{{ c.prOpen }}" style="display:flex;flex-direction:column;gap:3px;"><span style="font-size:14px;font-weight:700;color:var(--acc);">{{ c.prTitle }}</span><sc-for list="{{ c.prList }}" as="pr" hint-placeholder-count="2"><span style="font-size:13px;color:#FFFFFF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ pr.text }}</span></sc-for><sc-if value="{{ c.prMore }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#9C9CA8;">{{ c.prMoreText }}</span></sc-if></div></sc-if>
 <sc-if value="{{ c.musOn }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:12px;"><div data-cf="{{ c.key }}" style="flex:none;display:flex;gap:4px;"><div style="width:40px;">{{ c.fFront }}</div><div style="width:40px;">{{ c.fBack }}</div></div><div style="flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ c.mus }}" as="mm" hint-placeholder-count="3"><span style="height:28px;padding:0 10px;border-radius:14px;background:{{ mm.bg }};color:{{ mm.color }};font-size:12px;font-weight:600;display:flex;align-items:center;white-space:nowrap;">{{ mm.label }}</span></sc-for></div></div></sc-if>
 <sc-if value="{{ c.noteOn }}" hint-placeholder-val="{{ false }}"><span onClick="{{ c.noteOpen }}" style="font-size:14px;line-height:20px;color:#D8D8DE;white-space:pre-wrap;overflow-wrap:anywhere;">{{ c.note }}<sc-if value="{{ c.noteCut }}" hint-placeholder-val="{{ false }}"><span style="color:#9C9CA8;font-weight:700;">{{ c.noteCutText }}</span></sc-if></span></sc-if>
@@ -924,6 +924,10 @@ input::placeholder{color:#9C9CA8}
 <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">{{ acAutoLabel }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;">{{ acAutoSub }}</span></div>
 <div style="flex:0 0 auto;width:52px;height:32px;border-radius:999px;background:{{ acAutoTg.track }};padding:3px;display:flex;justify-content:{{ acAutoTg.justify }};"><div style="width:26px;height:26px;border-radius:50%;background:{{ acAutoTg.knob }};"></div></div>
 </button>
+<sc-if value="{{ acHrOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ acHrClick }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-top:1px solid #24242B;background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;border-radius:0 0 16px 16px;">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">{{ acHrLabel }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ acHrSub }}</span></div>
+<div style="flex:0 0 auto;width:52px;height:32px;border-radius:999px;background:{{ acHrTg.track }};padding:3px;display:flex;justify-content:{{ acHrTg.justify }};"><div style="width:26px;height:26px;border-radius:50%;background:{{ acHrTg.knob }};"></div></div>
+</button></sc-if>
 </div>
 <sc-if value="{{ pnOn }}" hint-placeholder-val="{{ false }}"><div style="background:#16161A;border:1px solid #24242B;border-radius:16px;">
 <button onClick="{{ pnClick }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
@@ -1114,7 +1118,7 @@ input::placeholder{color:#9C9CA8}
 <sc-if value="{{ c.moreOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.onMore }}" aria-label="⋯" style="flex:none;width:36px;height:36px;margin-right:-8px;border-radius:18px;border:none;background:transparent;color:#9C9CA8;font-size:20px;font-weight:700;line-height:1;">⋯</button></sc-if>
 </div>
 <span style="font-size:18px;font-weight:800;line-height:23px;overflow-wrap:anywhere;">{{ c.title }}</span>
-<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;"><sc-for list="{{ c.stats }}" as="st" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#9C9CA8;">{{ st.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ st.value }}</span></div></sc-for></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;"><sc-for list="{{ c.stats }}" as="st" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#9C9CA8;">{{ st.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:{{ st.color }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ st.value }}</span></div></sc-for></div>
 <sc-if value="{{ c.prOn }}" hint-placeholder-val="{{ false }}"><div onClick="{{ c.prOpen }}" style="display:flex;flex-direction:column;gap:3px;"><span style="font-size:14px;font-weight:700;color:var(--acc);">{{ c.prTitle }}</span><sc-for list="{{ c.prList }}" as="pr" hint-placeholder-count="2"><span style="font-size:13px;color:#FFFFFF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ pr.text }}</span></sc-for><sc-if value="{{ c.prMore }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#9C9CA8;">{{ c.prMoreText }}</span></sc-if></div></sc-if>
 <sc-if value="{{ c.musOn }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:12px;"><div data-cf="{{ c.key }}" style="flex:none;display:flex;gap:4px;"><div style="width:40px;">{{ c.fFront }}</div><div style="width:40px;">{{ c.fBack }}</div></div><div style="flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ c.mus }}" as="mm" hint-placeholder-count="3"><span style="height:28px;padding:0 10px;border-radius:14px;background:{{ mm.bg }};color:{{ mm.color }};font-size:12px;font-weight:600;display:flex;align-items:center;white-space:nowrap;">{{ mm.label }}</span></sc-for></div></div></sc-if>
 <sc-if value="{{ c.noteOn }}" hint-placeholder-val="{{ false }}"><span onClick="{{ c.noteOpen }}" style="font-size:14px;line-height:20px;color:#D8D8DE;white-space:pre-wrap;overflow-wrap:anywhere;">{{ c.note }}<sc-if value="{{ c.noteCut }}" hint-placeholder-val="{{ false }}"><span style="color:#9C9CA8;font-weight:700;">{{ c.noteCutText }}</span></sc-if></span></sc-if>
@@ -1589,7 +1593,7 @@ const ALIAS = { 'Running': ['treadmill', 'run', 'jog', 'jogging', 'course', 'cou
 const noAcc = t => String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 const libHit = (l, q) => !q || [l.name, ...(ALIAS[l.name] || []), ...(l.group === 'Cardio' ? ['cardio'] : [])].some(n => noAcc(n).includes(q));
 const BASE = {'Bench Press':80,'Overhead Press':50,'Incline DB Press':30,'Lateral Raise':12,'Triceps Pushdown':30,'Deadlift':160,'Barbell Row':70,'Pull-up':10,'Face Pull':25,'Barbell Curl':35,'Squat':120,'Romanian Deadlift':100,'Leg Press':180,'Leg Curl':45,'Calf Raise':70};
-const PK = ['bodyRange','bodyU','lenU','distU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight','accent','onboarded','restNotif','remind','goal','level','liveRest','pro','effort','healthOn','hkWSync','hkCSync','bodyMetric','autoPub','cloud','hkTag','push','cbSnooze','gone','pubQ','acctSeen','iconMatch','hrDev'];
+const PK = ['bodyRange','bodyU','lenU','distU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight','accent','onboarded','restNotif','remind','goal','level','liveRest','pro','effort','healthOn','hkWSync','hkCSync','bodyMetric','autoPub','cloud','hkTag','push','cbSnooze','gone','pubQ','acctSeen','iconMatch','hrDev','hrShare','hrHideQ'];
 const e1 = (w, r) => w * (1 + r / 30);
 // Record (PR) : 1RM estimé jamais atteint OU poids jamais soulevé (au moins 1 rep), peu importe les reps (ex. 125 × 2 après 115 × 5).
 // pe / pw : meilleurs précédents (1RM estimé / poids). prSet : la série record au meilleur 1RM estimé parmi ws, ou null.
@@ -1633,10 +1637,10 @@ const rcMsg = e => { const fr = LANG === 'fr', c = rcCode(e);
   return fr ? 'L’achat n’a pas abouti, réessaie dans un moment' : 'The purchase didn’t go through, try again in a moment'; };
 const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive content'], ['Harcèlement ou intimidation', 'Harassment or bullying'], ['Spam ou arnaque', 'Spam or scam'], ['Usurpation d’identité', 'Impersonation'], ['Autre', 'Other']];
 // Sauvegarde en ligne : ce qui n'est pas envoyé (propre à l'appareil, ou relu depuis Santé / Health Connect).
-const CB_SKIP = ['workout', 'focus', 'restEnd', 'restTotal', 'cloud', 'installSeen', 'lastExport', 'backupSnooze', 'healthOn', 'hkWSync', 'hkCSync', 'hkTag', 'push', 'cbSnooze', 'pubQ', 'acctSeen', 'hrDev'];
+const CB_SKIP = ['workout', 'focus', 'restEnd', 'restTotal', 'cloud', 'installSeen', 'lastExport', 'backupSnooze', 'healthOn', 'hkWSync', 'hkCSync', 'hkTag', 'push', 'cbSnooze', 'pubQ', 'acctSeen', 'hrDev', 'hrHideQ'];
 // Sans Pro, « Pas maintenant » sur une sauvegarde trouvée : on ne la repropose pas avant 7 jours (sauf nouvelle sauvegarde).
 const CB_SNOOZE = 7 * DAY;
-const CB_SET = ['bodyRange', 'bodyU', 'lenU', 'distU', 'unit', 'haptics', 'sound', 'wake', 'autoRest', 'restDefault', 'dayWarn', 'lang', 'barLight', 'accent', 'iconMatch', 'restNotif', 'remind', 'goal', 'level', 'liveRest', 'effort', 'bodyMetric', 'autoPub', 'lastRoutineId'];
+const CB_SET = ['bodyRange', 'bodyU', 'lenU', 'distU', 'unit', 'haptics', 'sound', 'wake', 'autoRest', 'restDefault', 'dayWarn', 'lang', 'barLight', 'accent', 'iconMatch', 'restNotif', 'remind', 'goal', 'level', 'liveRest', 'effort', 'bodyMetric', 'autoPub', 'hrShare', 'lastRoutineId'];
 const nSess = h => { const d = new Set(); Object.values(h || {}).forEach(a => (a || []).forEach(x => d.add(x.date))); return d.size; };
 // Pesées : on retire les valeurs lues dans Santé / Health Connect (marquées hk) — le nouveau téléphone les relit à la source.
 const bodyOut = b => (b || []).map(x => { if (!x.hk) return x; const y = { ...x }; Object.keys(x.hk).forEach(k => delete y[k]); delete y.hk; return y; }).filter(x => Object.keys(x).some(k => k !== 'date'));
@@ -1647,6 +1651,8 @@ const bodyHk = b => (b || []).filter(x => x.hk).map(x => { const y = { date: x.d
 // sauvegardes du téléphone (Apple 5.1.3 ii : pas de données de santé dans iCloud), comme les valeurs de Santé : retirée du
 // localStorage et de barlog-data.json (hrOut), rangée dans barlog-health.json (hrOnly), remise au démarrage (hrIn). La
 // sauvegarde en ligne et l'export la gardent (choix de l'utilisateur, hors iCloud).
+// Moyenne / max publiés (colonnes hr_avg, hr_max d'une séance du Fil, données d'un autre compte) : entiers 25-250, max ≥ moyenne.
+const hrOk = x => !!x && Number.isInteger(x.hr_avg) && Number.isInteger(x.hr_max) && x.hr_avg >= 25 && x.hr_max <= 250 && x.hr_max >= x.hr_avg;
 const hrOut = sm => { const o = {}; Object.entries(sm || {}).forEach(([k, m]) => { if (m && typeof m === 'object' && 'hr' in m) { const { hr, ...r } = m; o[k] = r; } else o[k] = m; }); return o; };
 const hrOnly = sm => { const o = {}; Object.entries(sm || {}).forEach(([k, m]) => { if (m && m.hr) o[k] = m.hr; }); return o; };
 const hrIn = (sm, h) => { if (!h || typeof h !== 'object' || Array.isArray(h)) return sm || {}; const o = { ...(sm || {}) };
@@ -2326,7 +2332,7 @@ class Component extends DCLogic {
   acDelete() {
     if (this.state.acBusy) return;
     this.sure('del', () => { const fr = LANG === 'fr'; this.setState({ acBusy: true }); const cl = this.state.cloud || {}; const was = { link: cl.link, uid: cl.uid, at: cl.at, n: cl.n };
-      this.sb().then(c => { this.cbSet({ link: false, uid: null, at: null, n: null }); return this.acWipe(c, this.state.acct && this.state.acct.uid).then(() => c.auth.signOut({ scope: 'local' }).catch(() => {})); }).then(() => { try { localStorage.removeItem(SB_STORE); } catch (e) {} this.setState(st => ({ acBusy: false, acct: null, acctSeen: false, acUser: '', acName: '', autoPub: false, sessMeta: Object.fromEntries(Object.entries(st.sessMeta || {}).map(([k, m]) => { if (!m || !m.pub) return [k, m]; const { pub, ...r } = m; return [k, r]; })) })); this.flash(fr ? 'Compte supprimé' : 'Account deleted'); this.proOut(); }).catch(e => { if (this.state.acct) this.cbSet(was); this.setState({ acBusy: false }); this.acErr(e); }); });
+      this.sb().then(c => { this.cbSet({ link: false, uid: null, at: null, n: null }); return this.acWipe(c, this.state.acct && this.state.acct.uid).then(() => c.auth.signOut({ scope: 'local' }).catch(() => {})); }).then(() => { try { localStorage.removeItem(SB_STORE); } catch (e) {} this.setState(st => ({ acBusy: false, acct: null, acctSeen: false, acUser: '', acName: '', autoPub: false, hrShare: false, hrHideQ: null, sessMeta: Object.fromEntries(Object.entries(st.sessMeta || {}).map(([k, m]) => { if (!m || !m.pub) return [k, m]; const { pub, ...r } = m; return [k, r]; })) })); this.flash(fr ? 'Compte supprimé' : 'Account deleted'); this.proOut(); }).catch(e => { if (this.state.acct) this.cbSet(was); this.setState({ acBusy: false }); this.acErr(e); }); });
   }
   hasSess(d) { return Object.values(this.state.history || {}).some(a => a.some(x => x.date === d)); }
   pubRow(d, vis, note) {
@@ -2339,8 +2345,11 @@ class Component extends DCLogic {
       if (b) prs.push({ ex: name.slice(0, 60), w: Math.round(b.w * 100) / 100, r: b.r });
     });
     Object.keys(mus).forEach(k => { mus[k] = Math.round(mus[k] * 2) / 2; if (!mus[k]) delete mus[k]; });
+    const hp = s.hrShare ? this.hrPub(m) : null;
     const r = m.rid ? (s.routines || []).find(x => x.id === m.rid) : !m.name && guessR(s.routines || [], Object.keys(s.history || {}).filter(n => s.history[n].some(x => x.date === d)));
-    return { user_id: s.acct && s.acct.uid, local_start: d, title: (String(m.name || (r && r.name) || L('Workout')).trim() || 'Workout').slice(0, 80), started_at: new Date(d).toISOString(), duration_s: Math.max(0, Math.min(86400, Math.round((m.dur || 0) / 1000))), volume_kg: Math.round(vol * 10) / 10, sets, prs: prs.slice(0, 40), muscles: mus, note: (note || '').trim().slice(0, 500) || null, visibility: vis };
+    return { user_id: s.acct && s.acct.uid, local_start: d, title: (String(m.name || (r && r.name) || L('Workout')).trim() || 'Workout').slice(0, 80), started_at: new Date(d).toISOString(), duration_s: Math.max(0, Math.min(86400, Math.round((m.dur || 0) / 1000))), volume_kg: Math.round(vol * 10) / 10, sets, prs: prs.slice(0, 40), muscles: mus, note: (note || '').trim().slice(0, 500) || null, visibility: vis,
+      // C2b : moyenne / max seulement si « Montrer ma fréquence cardiaque » est activé ; toujours envoyés (null = retirée du serveur).
+      hr_avg: hp ? hp.hr_avg : null, hr_max: hp ? hp.hr_max : null };
   }
   pubSet(d, p) { this.setState(st => { const mm = { ...(st.sessMeta || {}) }; const o = { ...(mm[d] || {}) }; if (p) o.pub = p; else delete o.pub; mm[d] = o; return { sessMeta: mm }; }); }
   pubBusy(d, on) { this.setState(st => { const b = { ...(st.pubBusy || {}) }; if (on) b[d] = 1; else delete b[d]; return { pubBusy: b }; }); }
@@ -2362,6 +2371,7 @@ class Component extends DCLogic {
     // Une publication en attente ne part que sous le compte qui l'a faite (téléphone partagé, changement de compte).
     Object.entries(s.sessMeta || {}).forEach(([k, m]) => { const p = m && m.pub; if (p && p.pending && (!p.uid || p.uid === s.acct.uid)) this.pubSend(Number(k), p.vis, p.note, true); });
     Object.entries(s.pubQ || {}).forEach(([k, uid]) => { if (uid === s.acct.uid) this.pubGone(Number(k), uid); });
+    if (s.hrHideQ && s.hrHideQ === s.acct.uid) this.hrHideAll();
   }
   // Séance supprimée alors qu'elle était publiée : on retire la publication du serveur. Hors ligne, la demande attend
   // dans pubQ et repart avec pubFlush (retour du réseau, connexion) : la séance ne reste pas visible des abonnés.
@@ -2730,7 +2740,7 @@ class Component extends DCLogic {
     const musName = k => { const q = MUS.find(y => y[0] === k); return q ? (fr ? q[2] : q[1]) : k; };
     this.shareCard({ name: x.title || L('Workout'), by: x.username ? '@' + x.username : '', date: new Date(x.started_at || x.created_at),
       stats: [{ label: fr ? 'Durée' : 'Time', value: x.duration_s > 0 ? Math.floor(m / 60) + ':' + pad(m % 60) : '—' }, { label: 'Volume', value: Math.round(kg ? vol : vol * KG_LB).toLocaleString(LOC()) + ' ' + s.unit }, { label: L('Sets'), value: String(x.sets || 0) }],
-      mus: ord.map(musName) }, document.querySelectorAll('[data-cf="' + id + '"] svg'));
+      mus: ord.map(musName), hr: hrOk(x) ? { avg: x.hr_avg, max: x.hr_max } : null }, document.querySelectorAll('[data-cf="' + id + '"] svg'));
   }
   // Image 1080×1350 de la séance (résumé de fin de séance ou publication du Fil), puis feuille de partage du téléphone.
   shareCard(d, svgs) {
@@ -2744,8 +2754,11 @@ class Component extends DCLogic {
     const st = d.stats.slice(0, 3), bw = (W - 144 - 2 * 20) / 3;
     st.forEach((s, i) => { const X = 72 + i * (bw + 20); x.fillStyle = '#16161A'; rr(X, top, bw, 140, 24); x.fill(); x.fillStyle = '#9C9CA8'; x.font = '600 24px ' + F; x.fillText(String(s.label).toUpperCase(), X + 26, top + 50); x.fillStyle = '#FFFFFF'; x.font = '700 48px ' + M; x.fillText(s.value, X + 26, top + 112); });
     const toImg = svg => new Promise(res => { const cl = svg.cloneNode(true); cl.setAttribute('xmlns', 'http://www.w3.org/2000/svg'); cl.setAttribute('width', '344'); cl.setAttribute('height', '900'); cl.removeAttribute('style'); const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(cl)); });
+    // C2b : « ♥ 130 BPM moyenne   181 BPM max » sous les cases (moyenne en rouge, comme la carte du résumé).
+    const hr = d.hr; if (hr) { let X = 72; const Y = top + 200; const seg = (t, f, col) => { x.font = f; x.fillStyle = col; x.fillText(t, X, Y); X += x.measureText(t).width; };
+      seg('♥ ' + hr.avg, '700 44px ' + M, '#FF5A6E'); seg(LANG === 'fr' ? ' BPM moyenne' : ' BPM average', '600 28px ' + F, '#9C9CA8'); X += 36; seg(String(hr.max), '700 44px ' + M, '#FFFFFF'); seg(' BPM max', '600 28px ' + F, '#9C9CA8'); }
     Promise.all(svgs.length >= 2 ? [toImg(svgs[0]), toImg(svgs[1])] : []).then(ims => {
-      const fh = 720, fw = fh * 172 / 450; ims.forEach((im, i) => { if (!im) return; const cx = W / 4 + i * W / 2; x.drawImage(im, cx - fw / 2, top + 188, fw, fh); });
+      const fy = hr ? 240 : 188, fh = 908 - fy, fw = fh * 172 / 450; ims.forEach((im, i) => { if (!im) return; const cx = W / 4 + i * W / 2; x.drawImage(im, cx - fw / 2, top + fy, fw, fh); });
       x.font = '600 30px ' + F; let X = 72, Y = 1236; d.mus.slice(0, 5).forEach((m, i) => { const tw = x.measureText(m).width + 44; if (X + tw > W - 72) return; x.fillStyle = i < 2 ? ACC : '#24242B'; rr(X, Y - 42, tw, 60, 30); x.fill(); x.fillStyle = i < 2 ? '#0A0A0C' : '#FFFFFF'; x.fillText(m, X + 22, Y - 2); X += tw + 12; });
       c.toBlob(b => { if (b) this.shareFile(b, 'barlog-seance.png'); }, 'image/png');
     });
@@ -3446,6 +3459,32 @@ class Component extends DCLogic {
       // Pastille en séance : seulement une fois que la ceinture a envoyé des BPM pendant cette séance.
       hrPillOn: !!(w && pro && lv.t && lv.start === w.start), hrPill: '♥ ' + (fresh ? lv.bpm : '—') };
   }
+  // C2b : moyenne / max publiables d'une séance (bornes du serveur : 25-250 BPM, max ≥ moyenne), sinon null.
+  hrPub(m) { const h = this.hrOf(m); if (!h) return null; const a = Math.round(h.avg), x = Math.round(h.max); return a >= 25 && x <= 250 && x >= a ? { hr_avg: a, hr_max: x } : null; }
+  // Profil → Compte → « Montrer ma fréquence cardiaque » (désactivé par défaut : donnée de santé, Loi 25 ; l'activer = Pro).
+  // Activé : ajoutée aux séances déjà publiées qui en ont une (50 plus récentes) et aux prochaines. Désactivé : retirée de
+  // toutes les publications du compte en une demande ; hors ligne, la demande attend dans hrHideQ (repart avec pubFlush).
+  hrShareTap() {
+    const on = !this.state.hrShare;
+    if (on && !this.isPro()) return this.need('hr', () => { if (!this.state.hrShare) this.hrShareTap(); });
+    this.setState({ hrShare: on, ...(on ? { hrHideQ: null } : {}) });
+    return on ? this.hrShowAll() : this.hrHideAll();
+  }
+  hrShowAll() {
+    const s = this.state, a = s.acct; if (!a || !a.profile) return Promise.resolve();
+    const ds = Object.entries(s.sessMeta || {}).filter(([, m]) => m && m.pub && !m.pub.pending && this.hrPub(m)).map(([k]) => Number(k)).sort((x, y) => y - x).slice(0, 50);
+    return ds.reduce((p, d) => p.then(() => { const hp = this.state.hrShare && this.hrPub((this.state.sessMeta || {})[d]); if (!hp) return;
+      return this.sb().then(c => c.from('activities').update(hp).eq('user_id', a.uid).eq('local_start', d)).then(({ error }) => { if (error) throw error;
+        const id = (((this.state.sessMeta || {})[d] || {}).pub || {}).id; if (id) this.feedPatch(id, () => hp); }).catch(() => {}); }), Promise.resolve());
+  }
+  hrHideAll() {
+    const a = this.state.acct; if (!a || !a.uid) return Promise.resolve(); const uid = a.uid; this.setState({ hrHideQ: uid });
+    // Cartes déjà affichées (Fil, pages profil) : retirées tout de suite.
+    const st = this.state, mine = new Set([...((st.feed || {}).items || []), ...Object.values(st.up || {}).flatMap(u => (u && u.items) || [])].filter(x => x.user_id === uid && x.hr_avg != null).map(x => x.id));
+    mine.forEach(id => this.feedPatch(id, () => ({ hr_avg: null, hr_max: null })));
+    return this.sb().then(c => c.from('activities').update({ hr_avg: null, hr_max: null }).eq('user_id', uid).not('hr_avg', 'is', null)).then(({ error }) => { if (error) throw error;
+      this.setState(st => st.hrHideQ === uid ? { hrHideQ: null } : {}); }).catch(() => {});
+  }
   // Carte « Fréquence cardiaque » du résumé et du détail d'une séance : courbe (trous gardés), moyenne, max ; floutée sans Pro.
   hrcVals(s) {
     const d = s.screen === 'summary' && s.summary ? s.summary.start : s.screen === 'session' ? s.openSess : null;
@@ -3725,6 +3764,9 @@ class Component extends DCLogic {
           pnSub: ps.off ? (fr ? 'Désactivées sur ce téléphone. Tu les retrouves sous la cloche du Fil.' : 'Off on this phone. You’ll still find them under the bell in Feed.') : ps.denied ? (fr ? 'Bloquées par ' + (plat() === 'ios' ? 'l’iPhone' : 'Android') + ' : autorise les notifications de Barlog dans les réglages du téléphone, puis touche ici.' : 'Blocked by ' + (plat() === 'ios' ? 'your iPhone' : 'Android') + ': allow Barlog notifications in your phone settings, then tap here.') : (fr ? 'Même app fermée. Touche un type pour le couper sur ce téléphone.' : 'Even when the app is closed. Tap a type to mute it on this phone.'),
           pnTypes: T.map(([k, f, e]) => { const y = (ps.prefs || {})[k] !== false; return { label: (y ? '✓ ' : '') + (fr ? f : e), bg: y ? accA(0.12) : 'transparent', border: y ? ACC : '#33333C', color: y ? '#FFFFFF' : '#9C9CA8', onClick: () => this.pushPref(k, !y) }; }) }; })(),
       acAutoLabel: fr ? 'Publier automatiquement mes séances' : 'Auto-post my workouts', acAutoSub: fr ? 'Avec ta visibilité par défaut. Tu peux retirer une séance à tout moment.' : 'With your default visibility. You can remove a workout at any time.', acAutoTg: tg(!!s.autoPub), acAutoClick: () => this.setState({ autoPub: !s.autoPub }),
+      // C2b : seulement là où une ceinture peut servir (app iPhone), ou s'il est déjà activé (pour pouvoir le désactiver).
+      acHrOn: !!(this.hr() || s.hrShare), acHrLabel: (fr ? 'Montrer ma fréquence cardiaque' : 'Show my heart rate') + (this.isPro() ? '' : ' ✦'), acHrTg: tg(!!s.hrShare), acHrClick: () => this.hrShareTap(),
+      acHrSub: fr ? 'Moyenne et max de tes séances avec ceinture, sur tes publications et l’image de partage. Désactivé, ils sont retirés de toutes tes publications.' : 'Average and max of your workouts with a strap, on your posts and share image. Turned off, they are removed from all your posts.',
       acTitle: fr ? 'Compte' : 'Account', acOff: !a, acAsk: !a && !s.acSent, acCodeOn: !a && !!s.acSent, acNoProf: !!a && p === null, acHasProf: !!p, acPending: !!a && p === undefined, acOp: busy ? 0.5 : 1,
       acSocTitle: fr ? 'Barlog social · bêta' : 'Barlog social · beta', acSocText: fr ? 'Crée un compte gratuit pour publier tes séances et suivre tes amis. Sans compte, Barlog fonctionne comme avant.' : 'Create a free account to post your workouts and follow your friends. Without an account, Barlog works just like before.',
       acEmail: s.acEmail || '', onAcEmail: e => this.setState({ acEmail: e.target.value }), acEmailPh: fr ? 'ton@email.com' : 'you@email.com',
@@ -3821,7 +3863,9 @@ class Component extends DCLogic {
       return { key: x.id, ini: x.avatar ? '' : iniOf(x.display_name || x.username), avImg: avImg(x.avatar), avBg: mine ? ACC : '#24242B', avColor: mine ? '#0A0A0C' : '#FFFFFF', name: x.display_name || x.username || '—', handle: '@' + (x.username || ''), when: relT(x.created_at || x.started_at, fr),
         onUser: () => this.userOpen(x.user_id, { username: x.username, display_name: x.display_name, avatar: x.avatar }),
         visOn: mine, vis: VN[x.visibility] || x.visibility || '', title: x.title || L('Workout'),
-        stats: [[fr ? 'Durée' : 'Time', hm(x.duration_s)], ['Volume', Math.round(kg ? vol : vol * KG_LB).toLocaleString(LOC()) + ' ' + s.unit], [L('Sets'), String(x.sets || 0)]].map(([label, value]) => ({ label, value })),
+        // C2b : FC moyenne / max, seulement si l'auteur a choisi de la montrer (colonnes vides sinon) ; bornes du serveur revérifiées.
+        stats: [[fr ? 'Durée' : 'Time', hm(x.duration_s)], ['Volume', Math.round(kg ? vol : vol * KG_LB).toLocaleString(LOC()) + ' ' + s.unit], [L('Sets'), String(x.sets || 0)],
+          ...(hrOk(x) ? [[fr ? 'FC moy.' : 'Avg HR', x.hr_avg + ' BPM', '#FF5A6E'], [fr ? 'FC max' : 'Max HR', x.hr_max + ' BPM']] : [])].map(([label, value, color]) => ({ label, value, color: color || '#FFFFFF' })),
         prOn: prs.length > 0, prTitle: '🏆 ' + prs.length + (fr ? ' record' : ' PR') + (prs.length > 1 ? 's' : ''), prList: (prMore ? prs.slice(0, 3) : prs).map(q => ({ text: L(String(q.ex || '')) + ' ' + this.dispW(Number(q.w) || 0) + ' ' + s.unit + ' × ' + (Number(q.r) || 0) })), prMore, prOpen: prMore ? open : nop, prMoreText: '+' + (prs.length - 3) + (fr ? ' autre' + (prs.length > 4 ? 's' : '') : ' more'),
         musOn: ord.length > 0, fFront: ord.length ? bodyFig(FIG_FRONT, sty, nop, false, { uid: pfx + i + 'f' }) : null, fBack: ord.length ? bodyFig(FIG_BACK, sty, nop, false, { uid: pfx + i + 'b' }) : null,
         mus: ord.slice(0, 3).map(q => ({ label: musName(q), bg: lv(mu[q]) === 3 ? ACC : '#24242B', color: lv(mu[q]) === 3 ? '#0A0A0C' : '#FFFFFF' })),
@@ -4214,7 +4258,8 @@ class Component extends DCLogic {
         const mx = Math.max(0, ...Object.values(acc)); const lv = v => !v ? 0 : v >= mx * 0.66 ? 3 : v >= mx * 0.33 ? 2 : 1; const SF = [FIG_BASE, mixC(FIG_BASE, ACC, 0.3), mixC(FIG_BASE, ACC, 0.62), ACC];
         const sty = k => { const l = lv(acc[k]); return { fill: SF[l], glow: l === 3, glowC: ACC, op: 1 }; }; const tap = k => this.flash(musName(k) + ' · ' + trim(Math.round((acc[k] || 0) * 10) / 10) + (LANG === 'fr' ? ' séries' : ' sets'));
         const ord = Object.keys(acc).filter(k => acc[k] > 0).sort((a, b) => acc[b] - acc[a]); const stl = [{ label: L('Time'), value: clock(sm.dur) }, { label: L('Sets'), value: String(sm.sets) }, { label: L('Volume ') + s.unit, value: volU(sm.vol) }];
-        this._share = { name: sm.name, stats: stl, mus: ord.map(k => musName(k)) };
+        const shp = s.hrShare ? this.hrPub((s.sessMeta || {})[sm.start]) : null;   // C2b : seulement si « Montrer ma fréquence cardiaque » est activé
+        this._share = { name: sm.name, stats: stl, mus: ord.map(k => musName(k)), hr: shp ? { avg: shp.hr_avg, max: shp.hr_max } : null };
         return { sumHasMus: ord.length > 0, sumFront: bodyFig(FIG_FRONT, sty, tap, false, { uid: 'sf' }), sumBack: bodyFig(FIG_BACK, sty, tap, false, { uid: 'sb' }), shareSum: () => this.shareSummary(),
           sumMus: ord.map(k => { const l = lv(acc[k]); return { label: musName(k), val: trim(Math.round(acc[k] * 10) / 10), bg: l === 3 ? ACC : '#24242B', color: l === 3 ? '#0A0A0C' : '#FFFFFF' }; }) }; })(),
       ...(() => { const ex = bmSel ? Object.keys(s.history || {}).filter(n => { const mu = this.meta(n).mus; return mu.p.includes(bmSel); }).slice(0, 4) : []; return { bmHasEx: ex.length > 0, bmSelEx: L('Your exercises: ') + ex.join(', ') }; })(),

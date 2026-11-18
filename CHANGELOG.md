@@ -10,6 +10,8 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - Après « Terminer » et dans l’historique : carte « Fréquence cardiaque » avec la courbe de la séance, la moyenne et le max. Elle est gardée avec la séance, dans la sauvegarde en ligne et dans l’export, mais jamais dans la sauvegarde iCloud du téléphone (règle d’Apple pour les données de santé). Sans Pro, la ligne du Profil ouvre la page Pro et la carte est floutée avec le cadenas.
 - Comme Strava, l’app garde ce que la ceinture envoie entre le début de la séance et « Terminer » : une ceinture retirée peut encore envoyer des valeurs quelques minutes avant de s’éteindre.
 - Page Pro : nouvelle ligne « Capteur cardiaque ».
+- Profil → Compte : nouveau réglage « Montrer ma fréquence cardiaque », désactivé au départ (c’est une donnée de santé). Activé (Pro), la moyenne et le max s’affichent sur tes publications du Fil, sur ta page profil et sur l’image de partage. Il les ajoute aussi à tes séances déjà publiées qui en ont une. Désactivé, ils sont retirés de toutes tes publications, même hors ligne (au retour du réseau).
+- Fil et pages profil : « FC moy. » et « FC max » sous la durée, le volume et les séries, quand l’auteur a choisi de les montrer.
 
 ## 0.49.0 — 2026-11-18
 - Nouveau widget « Cardio de la semaine » (Pro), sur iPhone et Android : minutes, distance (km ou mi selon le réglage Distance) et séances de cardio depuis lundi, avec les minutes des 8 dernières semaines en barres. En petit, ou en moyen avec les dates des lundis ; sur iPhone, aussi en rectangle sur l’écran verrouillé. Sans Pro, il est flouté avec le cadenas, comme les autres widgets Pro.
