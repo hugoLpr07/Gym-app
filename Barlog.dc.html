@@ -2165,6 +2165,8 @@ class Component extends DCLogic {
     const cn = new Set((st.custom || []).map(x => x.name)); const custom = [...(st.custom || []), ...(d.custom || []).filter(x => !cn.has(x.name))];
     const bm = {}; (d.body || []).forEach(x => bm[x.date] = x); (st.body || []).forEach(x => bm[x.date] = { ...(bm[x.date] || {}), ...x }); const body = Object.values(bm).sort((a, b) => a.date - b.date);
     const sessMeta = { ...(d.sessMeta || {}), ...(st.sessMeta || {}) }; Object.keys(gone.s).forEach(k => { delete sessMeta[k]; });
+    // Fréquence cardiaque (C1) : gardée de l'autre côté si ce téléphone n'en a pas pour la séance (hr: null = retirée exprès).
+    Object.keys(sessMeta).forEach(k => { const a = (st.sessMeta || {})[k], b = (d.sessMeta || {})[k]; if (a && b && typeof a === 'object' && !('hr' in a) && b.hr) sessMeta[k] = { ...a, hr: b.hr }; });
     const o = { history: h, routines, custom, body, sessMeta, exMeta: { ...(d.exMeta || {}), ...(st.exMeta || {}) }, gone, onboarded: true };
     if (!nSess(st.history)) CB_SET.forEach(k => { if (d[k] !== undefined) o[k] = d[k]; });
     if (!o.lastRoutineId && routines.length) o.lastRoutineId = routines[0].id;
@@ -2839,6 +2841,7 @@ class Component extends DCLogic {
     const dur = Date.now() - w.start;
     const m = { name: w.name, rid: w.rid, dur }; this.pushHealth(w.start, dur, exs, w.name); if (w.note && w.note.trim()) m.note = w.note.trim();
     this.setState({ sessMeta: { ...(s.sessMeta || {}), [w.start]: m }, history: h, workout: null, focus: null, restEnd: null, restAlert: false, hold: null, exSheet: null, lastRoutineId: w.rid || s.lastRoutineId, summary: { start: w.start, name: w.name, dur, vol, sets, prevVol, hasPrev, prs: Object.values(prs), ex: exs }, screen: 'summary' }, () => { if (s.autoPub && s.acct && s.acct.profile) this.pubSend(w.start, s.acct.profile.default_visibility, '', true); });
+    this.hrSave(w.start, w.start + dur);
   }
   discard() {
     if (!this.state.discardArm) { this.setState({ discardArm: true }); setTimeout(() => this.setState({ discardArm: false }), 3000); return; }
@@ -3339,6 +3342,35 @@ class Component extends DCLogic {
     const H = this.hr(); if (!H) return Promise.resolve(); this._hrP = Date.now();
     const raw = typeof H.raw === 'function' ? H.raw().catch(() => null) : Promise.resolve(null);
     return Promise.all([H.status(), H.samples({ since: 0 }), raw]).then(([st, sm, rw]) => this.hrtSet({ st: st || {}, stats: this.hrStats((sm && sm.t) || [], (sm && sm.b) || []), rawS: rw ? this.hrRawStats(rw.t || [], rw.x || [], Date.now()) : null })).catch(() => {});
+  }
+  // C1 : fréquence cardiaque d'une séance, gardée dans sessMeta[start].hr (suit la sauvegarde en ligne, l'export / import et
+  // la suppression de la séance avec sessMeta). Comme Strava : tout ce que la ceinture envoie entre le début et « Finir »
+  // (la Garmin HRM 200 ne dit pas si elle est portée). avg / max sur tous les points, n = secondes reçues, courbe c de
+  // 360 valeurs au plus : moyenne par tranche de step s (multiple de 5) depuis le début, 0 = aucun point (trou gardé).
+  // Rien sous 30 s de points (ceinture à peine connectée) ; BPM hors 25-250 ignorés, comme le natif.
+  hrSum(t, b, start, end) {
+    const dur = Math.max(1, Math.round((end - start) / 1000)), step = Math.max(5, Math.ceil(dur / 360 / 5) * 5), k = Math.ceil(dur / step);
+    const sum = Array(k).fill(0), cnt = Array(k).fill(0); let n = 0, pts = 0, tot = 0, max = 0, sec = null;
+    for (let i = 0; i < t.length; i++) {
+      const v = b[i]; if (!(t[i] >= start && t[i] <= end && v >= 25 && v <= 250)) continue;
+      const j = Math.min(k - 1, Math.floor((t[i] - start) / 1000 / step)), s = Math.floor(t[i] / 1000);
+      sum[j] += v; cnt[j]++; pts++; tot += v; if (v > max) max = v; if (s !== sec) { n++; sec = s; }
+    }
+    if (n < 30) return null;
+    return { avg: Math.round(tot / pts), max, n, step, c: sum.map((x, j) => cnt[j] ? Math.round(x / cnt[j]) : 0) };
+  }
+  // Lecture prudente (fichier importé, sauvegarde d'un autre téléphone) : null si absente, retirée (null) ou mal formée.
+  hrOf(m) {
+    const h = m && m.hr, num = x => Number.isFinite(x) && x >= 0 && x <= 300;
+    return h && typeof h === 'object' && num(h.avg) && num(h.max) && Number.isFinite(h.step) && h.step >= 1 && Array.isArray(h.c) && h.c.length <= 2000 && h.c.every(num) ? h : null;
+  }
+  // À « Finir » (Pro) : points gardés par le natif entre le début et la fin → sessMeta[start].hr, si la séance existe encore.
+  hrSave(start, end) {
+    const H = this.hr(); if (!H || !this.isPro()) return Promise.resolve();
+    return H.samples({ since: start - 1 }).then(r => {
+      const hr = this.hrSum((r && r.t) || [], (r && r.b) || [], start, end); if (!hr) return;
+      this.setState(st => { const mm = st.sessMeta || {}; return mm[start] ? { sessMeta: { ...mm, [start]: { ...mm[start], hr } } } : {}; });
+    }).catch(() => {});
   }
   // Essai C1 (provisoire) : message brut en hexadécimal (journal du natif) → drapeaux, BPM, intervalles RR en ms,
   // contact peau (null = la ceinture ne sait pas le dire). Même lecture que HRMeasure.parse (HeartRate.swift).
