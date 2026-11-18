@@ -2371,7 +2371,7 @@ class Component extends DCLogic {
     // Une publication en attente ne part que sous le compte qui l'a faite (téléphone partagé, changement de compte).
     Object.entries(s.sessMeta || {}).forEach(([k, m]) => { const p = m && m.pub; if (p && p.pending && (!p.uid || p.uid === s.acct.uid)) this.pubSend(Number(k), p.vis, p.note, true); });
     Object.entries(s.pubQ || {}).forEach(([k, uid]) => { if (uid === s.acct.uid) this.pubGone(Number(k), uid); });
-    if (s.hrHideQ && s.hrHideQ === s.acct.uid) this.hrHideAll();
+    if (s.hrHideQ && s.hrHideQ === s.acct.uid) this.hrSync();
   }
   // Séance supprimée alors qu'elle était publiée : on retire la publication du serveur. Hors ligne, la demande attend
   // dans pubQ et repart avec pubFlush (retour du réseau, connexion) : la séance ne reste pas visible des abonnés.
@@ -3465,11 +3465,15 @@ class Component extends DCLogic {
   // Activé : ajoutée aux séances déjà publiées qui en ont une (50 plus récentes) et aux prochaines. Désactivé : retirée de
   // toutes les publications du compte en une demande ; hors ligne, la demande attend dans hrHideQ (repart avec pubFlush).
   hrShareTap() {
-    const on = !this.state.hrShare;
+    const on = !this.state.hrShare, a = this.state.acct;
     if (on && !this.isPro()) return this.need('hr', () => { if (!this.state.hrShare) this.hrShareTap(); });
-    this.setState({ hrShare: on, ...(on ? { hrHideQ: null } : {}) });
-    return on ? this.hrShowAll() : this.hrHideAll();
+    this.setState({ hrShare: on, hrHideQ: on ? null : (a && a.uid) || null });
+    return this.hrSync();
   }
+  // Envois au serveur à la file, un seul à la fois ; chaque passage relit le réglage au moment de partir → le dernier passage
+  // suit le dernier choix. Avant (essai de Hugo, 18 nov.) : activé puis désactivé vite, l'ajout partait en même temps que
+  // l'effacement et pouvait arriver après lui → fréquence cardiaque restée sur le serveur, réglage désactivé.
+  hrSync() { const run = () => this.state.hrShare ? this.hrShowAll() : this.hrHideAll(); this._hrQ = (this._hrQ || Promise.resolve()).then(run, run); return this._hrQ; }
   hrShowAll() {
     const s = this.state, a = s.acct; if (!a || !a.profile) return Promise.resolve();
     const ds = Object.entries(s.sessMeta || {}).filter(([, m]) => m && m.pub && !m.pub.pending && this.hrPub(m)).map(([k]) => Number(k)).sort((x, y) => y - x).slice(0, 50);

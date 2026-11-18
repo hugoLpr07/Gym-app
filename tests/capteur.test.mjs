@@ -441,3 +441,24 @@ test('C2b : image de partage — celle du Fil reprend ce que l’auteur a publi�
   app.setState({ hrShare: true }); app.renderVals(); app.shareSummary();
   assert.deepEqual(got.at(-1).hr, { avg: 130, max: 181 });
 });
+
+test('C2b : activé puis désactivé vite (réseau lent) → les demandes partent l’une après l’autre ; le serveur finit sans fréquence cardiaque', async t => {
+  const { app, log } = shareApp(t);
+  // Réseau lent : chaque demande attend que le test la libère.
+  const held = []; app.sb = () => Promise.resolve({ from: tb => ({ update: p => { const e = { p, f: [] }; log.push(e); const r = { eq: (k, v) => { e.f.push([k, v]); return r; }, not: (k) => { e.f.push(['not', k]); return r; },
+    then: (ok, ko) => new Promise(res => held.push(res)).then(() => ({ error: null })).then(ok, ko) }; return r; } }) });
+  app.renderVals().acHrClick(); await flush();
+  assert.equal(log.length, 1, 'ajout parti'); assert.deepEqual(log[0].p, { hr_avg: 130, hr_max: 181 });
+  app.renderVals().acHrClick(); await flush(); await flush();
+  assert.equal(log.length, 1, 'effacement pas encore parti : il attend la réponse de l’ajout');
+  assert.deepEqual([app.state.hrShare, app.state.hrHideQ], [false, 'u1']);
+  held.shift()(); for (let i = 0; i < 4; i++) await flush();
+  assert.equal(log.length, 2); assert.deepEqual(log[1].p, { hr_avg: null, hr_max: null }, 'effacement envoyé après');
+  held.shift()(); for (let i = 0; i < 4; i++) await flush();
+  assert.equal(app.state.hrHideQ, null);
+  // Désactivé → réactivé vite : le dernier passage remet la fréquence cardiaque.
+  app.renderVals().acHrClick(); app.renderVals().acHrClick(); app.renderVals().acHrClick(); await flush(); await flush();
+  while (held.length) { held.shift()(); for (let i = 0; i < 4; i++) await flush(); }
+  assert.equal(app.state.hrShare, true);
+  assert.deepEqual(log.at(-1).p, { hr_avg: 130, hr_max: 181 }, 'dernier envoi = dernier choix (activé)');
+});
