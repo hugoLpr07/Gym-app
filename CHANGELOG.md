@@ -5,12 +5,12 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
-## 0.49.0 — 2026-11-18 (en cours)
+## 0.49.0 — 2026-11-18
 - Nouveau widget « Cardio de la semaine » (Pro), sur iPhone et Android : minutes, distance (km ou mi selon le réglage Distance) et séances de cardio depuis lundi, avec les minutes des 8 dernières semaines en barres. En petit, ou en moyen avec les dates des lundis ; sur iPhone, aussi en rectangle sur l’écran verrouillé. Sans Pro, il est flouté avec le cadenas, comme les autres widgets Pro.
 - Widget « Derniers records » : les records cardio (plus loin ou plus longue séance d’un exercice) apparaissent avec les records de charge, le plus récent en premier.
 - La page Pro cite le cardio parmi les widgets.
 
-## 0.48.0 — 2026-11-18 (en cours)
+## 0.48.0 — 2026-11-18
 - Progrès → Séances : nouvelle carte « Cardio de la semaine » (Pro), sous Régularité. Minutes, distance (km ou mi selon le réglage Distance) et nombre de séances avec du cardio, du lundi au dimanche, et les minutes de cardio des 8 dernières semaines en barres. La carte n’apparaît qu’après un premier cardio ; sans Pro, elle est floutée avec le cadenas, comme Régularité.
 - Progrès → Exercices : les exercices cardio faits (course, vélo, rameur…) apparaissent maintenant dans la liste, après les exercices avec charge, même s’ils ne sont dans aucun programme. En touchant un cardio : sa plus longue séance (minutes), sa plus grande distance et son nombre de séances, puis l’historique des 12 dernières séances avec les minutes, la distance et l’allure (minutes par km ou par mile, calculée sur les séries qui ont une distance). Gratuit.
 - Page Pro : « Stats avancées » dit maintenant ce qui est vraiment Pro (régularité, cardio, volume par muscle, tendances). Les records par reps restent gratuits ; la page les annonçait à tort.
