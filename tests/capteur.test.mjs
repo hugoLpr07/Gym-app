@@ -185,6 +185,10 @@ test('C2a : chercher, choisir la ceinture (gardée sur ce téléphone), la voir 
   v.hrFind(); await flush();
   assert.deepEqual(H.calls.find(c => c[0] === 'scan'), ['scan', { all: false }], 'seulement les capteurs cardiaques');
   assert.equal(app.renderVals().hrFindLabel, 'Recherche…');
+  // Bluetooth éteint / refusé / indisponible : le natif le dit par hrState (pas de hrScanEnd) → la recherche s'arrête.
+  H.L.hrState({ state: 'idle', why: 'Bluetooth éteint' });
+  assert.deepEqual([app.renderVals().hrFindLabel, app.renderVals().hrErr], ['Chercher', 'Bluetooth éteint']);
+  app.renderVals().hrFind(); await flush();
   H.L.hrFound({ id: 'A-1', name: 'HRM200:123041', rssi: -60 }); H.L.hrFound({ id: 'A-1', name: 'HRM200:123041', rssi: -50 });
   v = app.renderVals();
   assert.deepEqual(v.hrFound.map(d => d.name), ['HRM200:123041'], 'une ligne par ceinture');
