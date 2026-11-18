@@ -196,3 +196,47 @@ test('menu « ••• » d’une routine : pas de bouton Retirer (la routine a
   const app = makeApp(B, { ...emptyData(), screen: 'routine', editId: 'r1', rSheet: 0, routines: [{ id: 'r1', name: 'A', ex: [{ name: 'Squat', sets: 3, reps: 5 }] }] });
   const v = app.renderVals(); assert.equal(v.sheetOn, true, "menu ouvert"); assert.equal(v.sheetCanRm, false);
 });
+
+// ── Progrès → Séances : carte « Cardio de la semaine » (0.48.0, Pro) ──
+const DAY = 86400000; // T0 = mardi 17 nov. 2026 ; la semaine commence le lundi 16
+const PRO = { plan: 'beta', since: 1, beta: true };
+const prog = (t, extra = {}) => {
+  t.mock.timers.enable({ apis: ['Date'], now: T0 });
+  const B = loadBarlog();
+  return makeApp(B, { ...emptyData(), tab: 'progress', screen: 'tabs', progView: 'sessions', unit: 'kg', pro: PRO, ...extra });
+};
+const HIST = {
+  Running: [{ date: T0 - 7 * DAY, sets: [{ w: 0, r: 25, d: 4, c: 0 }] }, { date: T0 - DAY, sets: [{ w: 0, r: 20, d: 5, c: 0 }] }, { date: T0 - 3600000, sets: [{ w: 0, r: 12.5, d: 2.4, c: 0 }] }],
+  Cycling: [{ date: T0 - DAY, sets: [{ w: 0, r: 30, d: 10, c: 0 }] }],
+  'Rowing machine': [{ date: T0 - 8 * DAY, sets: [{ w: 0, r: 15, d: 0, c: 0 }] }],
+  'Bench Press': [{ date: T0 - DAY, sets: [{ w: 100, r: 5 }] }],
+};
+
+test('carte cardio cachée sans aucun cardio dans l’historique', (t) => {
+  const v = prog(t, { history: { 'Bench Press': HIST['Bench Press'] } }).renderVals();
+  assert.equal(v.cardioOn, false);
+});
+
+test('carte cardio : minutes, km et séances de la semaine (lundi → dimanche), barres de 8 semaines', (t) => {
+  const v = prog(t, { history: HIST }).renderVals();
+  assert.equal(v.cardioOn, true);
+  assert.deepEqual(v.cardioTiles.map(x => [x.label, x.value]), [['Minutes', '63'], ['Distance (km)', '17.4'], ['Sessions', '2']], '20 + 30 + 12,5 min ; 5 + 10 + 2,4 km ; 2 séances (Running + Cycling le même jour = 1), sans le développé couché');
+  assert.deepEqual(v.cardioBars.map(b => b.count), ['0', '0', '0', '0', '0', '0', '40', '63'], 'semaine passée : 25 + 15 min');
+  assert.equal(v.cardioBars[7].h, '72px'); assert.equal(v.cardioBars[7].labelColor, '#FFFFFF');
+  assert.equal(v.cardioBars[0].bg, '#33333C');
+  assert.equal(v.lkCardio.on, false, 'Pro : pas de flou');
+});
+
+test('carte cardio en milles quand la distance est réglée en mi (ou en lb sans réglage)', (t) => {
+  const a = prog(t, { history: HIST, unit: 'lb' }).renderVals();
+  assert.deepEqual(a.cardioTiles[1], { label: 'Distance (mi)', value: '10.8' });
+  t.mock.timers.reset();
+  const b = prog(t, { history: HIST, unit: 'lb', distU: 'km' }).renderVals();
+  assert.equal(b.cardioTiles[1].value, '17.4');
+});
+
+test('carte cardio sans Pro : floutée avec le cadenas, comme Régularité', (t) => {
+  const app = prog(t, { history: HIST, pro: null });
+  const v = app.renderVals();
+  assert.equal(v.cardioOn, true); assert.equal(v.lkCardio.on, true); assert.equal(v.lkCardio.title, 'Your cardio');
+});

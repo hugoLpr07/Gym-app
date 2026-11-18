@@ -417,6 +417,31 @@ input::placeholder{color:#9C9CA8}
 </div>
 </div>
 </div>
+<sc-if value="{{ cardioOn }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ cardioHead }}</div>
+<div style="position:relative;">
+<sc-if value="{{ lkCardio.on }}" hint-placeholder-val="{{ false }}"><div onClick="{{ lkCardio.go }}" style="position:absolute;inset:-6px;z-index:4;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);background:rgba(22,22,26,0.4);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px;text-align:center;cursor:pointer;"><span style="font-size:15px;font-weight:800;color:#FFFFFF;text-wrap:balance;">✦ {{ lkCardio.title }}</span><span style="font-size:13px;line-height:18px;color:#C8C8D0;text-wrap:pretty;">{{ lkCardio.sub }}</span><span style="min-height:36px;padding:0 16px;border-radius:18px;background:var(--acc);color:#0A0A0C;font-size:13px;font-weight:700;display:flex;align-items:center;">{{ lkCardio.cta }}</span></div></sc-if>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:16px;">
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
+<sc-for list="{{ cardioTiles }}" as="t" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;font-weight:600;color:#9C9CA8;">{{ t.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;">{{ t.value }}</span></div>
+</sc-for>
+</div>
+<div style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;align-items:end;height:112px;">
+<sc-for list="{{ cardioBars }}" as="b" hint-placeholder-count="8">
+<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%;">
+<span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#FFFFFF;">{{ b.count }}</span>
+<div style="width:100%;height:{{ b.h }};border-radius:6px;background:{{ b.bg }};"></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:{{ b.labelColor }};">{{ b.label }}</span>
+</div>
+</sc-for>
+</div>
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ cardioNote }}</span>
+</div>
+</div>
+</div>
+</sc-if>
 <div style="background:#16161A;border:1px solid #24242B;border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:10px;">
 <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
 <button onClick="{{ calPrev }}" style="width:44px;height:44px;border-radius:12px;border:none;background:#24242B;color:#fff;font-size:20px;">‹</button>
@@ -1504,7 +1529,7 @@ Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for detai
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance', 'Remove set': 'Retirer la série' });
 Object.assign(FR, { 'Matching app icon': 'Icône de la même couleur', 'Barlog’s Home Screen icon takes your accent color. iOS shows a message each time it changes.': 'L’icône de Barlog sur l’écran d’accueil prend ta couleur. iOS affiche un message à chaque changement.' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.47.0';
+const APP_VERSION = '0.48.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
@@ -3879,6 +3904,12 @@ class Component extends DCLogic {
     let last4 = 0; for (let i = 1; i <= 4; i++) last4 += wkCount[wkKey(i)] || 0;
     const barMax = Math.max(planned, ...Array.from({ length: 8 }, (_, i) => wkCount[wkKey(i)] || 0));
     const weekBars = Array.from({ length: 8 }, (_, j) => { const i = 7 - j; const k = wkKey(i); const c = wkCount[k] || 0; const d = new Date(k); return { count: String(c), h: Math.max(3, c / barMax * 72) + 'px', bg: c >= planned ? ACC : c ? '#FFFFFF' : '#33333C', label: d.getDate() + '/' + (d.getMonth() + 1), labelColor: i === 0 ? '#FFFFFF' : '#9C9CA8' }; });
+    // Cardio de la semaine (0.48.0, Pro) : minutes (r), distance (d, toujours en km) et séances, du lundi au dimanche ; carte cachée sans aucun cardio
+    const cdW = {}; let cardioOn = false;
+    Object.entries(s.history).forEach(([name, arr]) => { if (this.meta(name).type !== 'cardio') return; arr.forEach(se => { cardioOn = true; const k = wkStart(se.date); const o = cdW[k] || (cdW[k] = { m: 0, d: 0, n: new Set() }); se.sets.forEach(y => { o.m += y.r || 0; o.d += y.d || 0; }); o.n.add(se.date); }); });
+    const cdNow = cdW[w0] || { m: 0, d: 0, n: new Set() }; const cdKm = this.distKm(s);
+    const cdMax = Math.max(1, ...Array.from({ length: 8 }, (_, i) => Math.round((cdW[wkKey(i)] || {}).m || 0)));
+    const cardioBars = Array.from({ length: 8 }, (_, j) => { const i = 7 - j; const k = wkKey(i); const m = Math.round((cdW[k] || {}).m || 0); const d = new Date(k); return { count: String(m), h: Math.max(3, m / cdMax * 72) + 'px', bg: m ? ACC : '#33333C', label: d.getDate() + '/' + (d.getMonth() + 1), labelColor: i === 0 ? '#FFFFFF' : '#9C9CA8' }; });
     const GMAP = {}; [...LIB, ...s.custom].forEach(l => { GMAP[l.name] = l.group; });
     const mg = {}, mgNow = {};
     Object.entries(s.history).forEach(([name, arr]) => { const g = GMAP[name]; if (!g) return; arr.forEach(se => { const n = work(se.sets).length; const k = wkStart(se.date); if (k >= wkKey(3) && k <= w0) mg[g] = (mg[g] || 0) + n; if (k === w0) mgNow[g] = (mgNow[g] || 0) + n; }); });
@@ -4054,6 +4085,10 @@ class Component extends DCLogic {
       lfHead: LANG === 'fr' ? 'Progression par exercice' : 'Progress per lift',
       statTiles: [{ label: L('This week'), value: thisWk + '/' + planned }, { label: L('Last 4 wk'), value: Math.round(last4 / (4 * planned) * 100) + '%' }, { label: L('Streak'), value: streak + L(' wk') }],
       weekBars, plannedLabel: L('Target: ') + planned + L(' sessions per week (one per routine). Streak = weeks in a row at target.'),
+      cardioOn, cardioBars, cardioHead: LANG === 'fr' ? 'Cardio de la semaine' : 'Cardio this week',
+      cardioTiles: [{ label: 'Minutes', value: String(Math.round(cdNow.m)) }, { label: 'Distance (' + (cdKm ? 'km' : 'mi') + ')', value: trim(Math.round((cdKm ? cdNow.d : cdNow.d / 1.60934) * 10) / 10) }, { label: LANG === 'fr' ? 'Séances' : 'Sessions', value: String(cdNow.n.size) }],
+      cardioNote: LANG === 'fr' ? 'Du lundi au dimanche. Barres : minutes de cardio des 8 dernières semaines.' : 'Monday to Sunday. Bars: cardio minutes over the last 8 weeks.',
+      lkCardio: this.lockV(!this.isPro(), 'stats', LANG === 'fr' ? 'Ton cardio' : 'Your cardio', LANG === 'fr' ? 'Minutes, distance et séances de cardio par semaine, sur 8 semaines.' : 'Cardio minutes, distance and sessions per week, over 8 weeks.'),
       muscleRows, liftTrends: liftTrends.slice(0, !this.isPro() ? 4 : s.trAll ? liftTrends.length : 5),
       trMoreOn: this.isPro() && liftTrends.length > 5, trMore: () => this.setState({ trAll: !s.trAll }), trMoreLabel: s.trAll ? (LANG === 'fr' ? 'Réduire' : 'Show less') : (LANG === 'fr' ? 'Voir les ' + liftTrends.length + ' exercices' : 'See all ' + liftTrends.length + ' lifts'),
       stalledLine: !this.isPro() ? '' : (stalledN ? stalledN + L(' lift') + (stalledN > 1 ? 's' : '') + L(' without a PR for 3+ weeks.') : L('Every lift has set a PR in the last 3 weeks.')) + L(' Compared with the 4 weeks before, or with your first session of the period if there is no earlier data.'),

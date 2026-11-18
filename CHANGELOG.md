@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.48.0 — 2026-11-18 (en cours)
+- Progrès → Séances : nouvelle carte « Cardio de la semaine » (Pro), sous Régularité. Minutes, distance (km ou mi selon le réglage Distance) et nombre de séances avec du cardio, du lundi au dimanche, et les minutes de cardio des 8 dernières semaines en barres. La carte n’apparaît qu’après un premier cardio ; sans Pro, elle est floutée avec le cadenas, comme Régularité.
+
 ## 0.47.0 — 2026-11-17
 - Cardio plus facile à trouver : le filtre Cardio est juste après « Tous » dans la liste des exercices, et la recherche comprend d’autres noms en anglais et en français (treadmill, tapis, bike, vélo, elliptical machine, rameur, stairmaster, corde à sauter…, avec ou sans accents ; « cardio » affiche tous les exercices cardio). Un exercice créé avec un nom de cardio (ex. « Treadmill ») est rangé dans Cardio, et un exercice créé depuis le filtre Cardio s’enregistre comme cardio.
 - Cardio : deux boutons sur la série, « Minuteur » et « Chrono ». Le minuteur décompte les minutes prévues (objectif de la routine, dernière fois ou minutes saisies), comme pour un maintien ; à zéro, bip et série cochée ; pendant le décompte, −1′ / +1′ change la durée prévue. Le chrono monte sans limite, pour courir sans temps prévu (seul bouton si la case des minutes est vide). L’écran verrouillé, la Dynamic Island, l’Apple Watch et la notification Android affichent le compte à rebours ; avec « Fin de repos » activé, une notification arrive aussi à la fin du cardio.
