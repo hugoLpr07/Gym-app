@@ -462,3 +462,28 @@ test('C2b : activé puis désactivé vite (réseau lent) → les demandes parten
   assert.equal(app.state.hrShare, true);
   assert.deepEqual(log.at(-1).p, { hr_avg: 130, hr_max: 181 }, 'dernier envoi = dernier choix (activé)');
 });
+
+test('C2b : publication automatique à « Terminer » → elle attend la fréquence cardiaque (réglage activé)', async t => {
+  for (const share of [true, false]) {
+    const { app, start } = hrSession(t);
+    app.setState({ autoPub: true, hrShare: share, acct: ACCT });
+    const sent = []; app.pubSend = (d, vis, note, quiet) => sent.push({ d, vis, quiet, row: app.pubRow(d, vis, note) });
+    app.finish(); for (let i = 0; i < 4; i++) await flush();
+    assert.equal(sent.length, 1, 'publiée une fois');
+    assert.deepEqual([sent[0].d, sent[0].vis, sent[0].quiet], [start, 'followers', true]);
+    assert.deepEqual([sent[0].row.hr_avg, sent[0].row.hr_max], share ? [130, 130] : [null, null], share ? 'avec la fréquence cardiaque' : 'réglage désactivé : sans');
+  }
+});
+
+test('C2b : natif qui ne répond pas → la publication automatique part quand même après 3 s', async t => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const { app, H } = hrSession(t);
+  H.samples = () => new Promise(() => {});   // jamais de réponse
+  app.setState({ autoPub: true, hrShare: true, acct: ACCT });
+  const sent = []; app.pubSend = (d) => sent.push(app.pubRow(d, 'followers', ''));
+  app.finish(); await flush();
+  assert.equal(sent.length, 0, 'attend la fréquence cardiaque');
+  t.mock.timers.tick(3000); await flush();
+  assert.equal(sent.length, 1, 'partie après 3 s');
+  assert.equal(sent[0].hr_avg, null, 'sans fréquence cardiaque');
+});

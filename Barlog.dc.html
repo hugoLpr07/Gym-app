@@ -2882,8 +2882,11 @@ class Component extends DCLogic {
     if (!sets) { this.setState({ workout: null, focus: null, screen: 'tabs', tab: 'today', restEnd: null, restAlert: false, hold: null, exSheet: null }); return; }
     const dur = Date.now() - w.start;
     const m = { name: w.name, rid: w.rid, dur }; this.pushHealth(w.start, dur, exs, w.name); if (w.note && w.note.trim()) m.note = w.note.trim();
-    this.setState({ sessMeta: { ...(s.sessMeta || {}), [w.start]: m }, history: h, workout: null, focus: null, restEnd: null, restAlert: false, hold: null, exSheet: null, lastRoutineId: w.rid || s.lastRoutineId, summary: { start: w.start, name: w.name, dur, vol, sets, prevVol, hasPrev, prs: Object.values(prs), ex: exs }, screen: 'summary' }, () => { if (s.autoPub && s.acct && s.acct.profile) this.pubSend(w.start, s.acct.profile.default_visibility, '', true); });
-    this.hrSave(w.start, w.start + dur);
+    // Fréquence cardiaque lue dans le natif (une fraction de seconde) : la publication automatique l'attend (C2b), sinon
+    // elle partait sans, même avec « Montrer ma fréquence cardiaque » activé. hrSave relit sessMeta à la réponse du natif.
+    // Natif muet : elle part quand même après 3 s au plus (sans la fréquence cardiaque).
+    const hr0 = this.hrSave(w.start, w.start + dur), hs = new Promise(ok => { const tm = setTimeout(ok, 3000); hr0.then(() => { clearTimeout(tm); ok(); }); });
+    this.setState({ sessMeta: { ...(s.sessMeta || {}), [w.start]: m }, history: h, workout: null, focus: null, restEnd: null, restAlert: false, hold: null, exSheet: null, lastRoutineId: w.rid || s.lastRoutineId, summary: { start: w.start, name: w.name, dur, vol, sets, prevVol, hasPrev, prs: Object.values(prs), ex: exs }, screen: 'summary' }, () => { if (s.autoPub && s.acct && s.acct.profile) hs.then(() => this.pubSend(w.start, s.acct.profile.default_visibility, '', true)); });
   }
   discard() {
     if (!this.state.discardArm) { this.setState({ discardArm: true }); setTimeout(() => this.setState({ discardArm: false }), 3000); return; }
