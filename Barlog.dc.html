@@ -870,6 +870,12 @@ input::placeholder{color:#9C9CA8}
 <button onClick="{{ acPubOpen }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:56px;gap:8px;text-align:left;font-size:16px;font-weight:500;"><span>{{ acPubLabel }}</span><span style="color:#9C9CA8;font-size:20px;">›</span></button>
 <button onClick="{{ acBlkOpen }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:56px;gap:8px;text-align:left;font-size:16px;font-weight:500;"><span>{{ acBlkLabel }}</span><span style="color:#9C9CA8;font-size:20px;">›</span></button>
 <sc-if value="{{ acMqOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ acMqOpen }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:56px;gap:8px;text-align:left;font-size:16px;font-weight:500;"><span>{{ acMqLabel }}</span><span style="color:{{ acMqColor }};font-size:20px;">›</span></button></sc-if>
+<sc-for list="{{ acProTgl }}" as="t" hint-placeholder-count="0">
+<button onClick="{{ t.onClick }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:1px solid #24242B;background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">{{ t.label }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ t.sub }}</span></div>
+<div style="flex:0 0 auto;width:52px;height:32px;border-radius:999px;background:{{ t.track }};padding:3px;display:flex;justify-content:{{ t.justify }};"><div style="width:26px;height:26px;border-radius:50%;background:{{ t.knob }};"></div></div>
+</button>
+</sc-for>
 <button onClick="{{ mdpOpen }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:{{ mdpRowBorder }};background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
 <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">{{ mdpLabel }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ mdpSub }}</span></div><span style="color:#9C9CA8;font-size:20px;">{{ mdpArrow }}</span></button>
 <sc-if value="{{ mdpOn }}" hint-placeholder-val="{{ false }}"><div style="padding:0 16px 16px;border-bottom:1px solid #24242B;display:flex;flex-direction:column;gap:10px;">
@@ -2884,7 +2890,7 @@ class Component extends DCLogic {
     this.flash(L(kind === 'a' ? 'All data erased' : 'History cleared'));
     if (!online) return;
     // Pro : l'envoi fusionne d'abord la sauvegarde (séances d'autres téléphones comprises), puis marque tout supprimé (_cbWipe).
-    if (this.isPro() && (s.cloud || {}).on === true) { this._cbWipe = kind; this.cbSoon(1000); } else this.cbDelete(true);
+    if (s.pro && (s.cloud || {}).on === true) { this._cbWipe = kind; this.cbSoon(1000); } else this.cbDelete(true);
   }
   // Supprimer la sauvegarde en ligne (fichiers + infos) sans toucher aux séances de ce téléphone. La sauvegarde automatique
   // est désactivée, sinon elle serait recréée au prochain changement.
@@ -2941,7 +2947,9 @@ class Component extends DCLogic {
       this.setState({ history: h, sessMeta: m, gone: { ...g, s: { ...(g.s || {}), [date]: Date.now() } }, screen: 'tabs', tab: 'progress', openSess: null }); this.flash(L('Session deleted'));
     });
   }
-  isPro() { return !!this.state.pro; }
+  // proOff (0.48.0) : aperçu « sans Pro » réservé à l'administrateur (mqN n'existe que si le serveur le reconnaît), jamais
+  // enregistré (revient au lancement suivant). Il ne change que l'affichage : state.pro, la sauvegarde en ligne et l'icône suivent le vrai droit.
+  isPro() { return !!this.state.pro && !(this.state.proOff && this.state.mqN != null); }
   // Aperçu Pro : voile flou posé sur le vrai écran (avec les vraies données) + invitation. f = fonction, pour le titre de l'offre.
   lockV(on, f, title, sub, extra) { const fr = LANG === 'fr'; return { on: !!on, title, sub, cta: fr ? 'Découvrir Barlog Pro' : 'Discover Barlog Pro', more: fr ? 'Voir les offres' : 'See plans', go: () => this.need(f), ...(extra || {}) }; }
   gate(f, fn) { return f && !this.isPro() ? () => this.need(f, fn) : fn; }
@@ -3199,7 +3207,7 @@ class Component extends DCLogic {
   // une demande identique à l'icône actuelle). Échec → on réessaiera au prochain changement.
   syncIcon() {
     const P = this.appIcon(); if (!P || !this.nativeReady) return;
-    const st = this.state, want = st.iconMatch && this.isPro() ? iconFor(st.accent) : null;
+    const st = this.state, want = st.iconMatch && st.pro ? iconFor(st.accent) : null;
     if (want === this._icon) return; this._icon = want;
     const fail = r => { this._icon = undefined; if (r && r.why) this.flash((LANG === 'fr' ? 'Icône : ' : 'Icon: ') + r.why); };
     try { P.set({ name: want }).then(r => { if (r && r.ok === false) fail(r); }).catch(() => fail()); } catch (e) { fail(); }
@@ -3984,6 +3992,7 @@ class Component extends DCLogic {
       fiFront: fiM ? bodyFig(FIG_FRONT, exStyleOf(fiM.mus), k => this.cycleMus(fi, k), false, { uid: 'ff' }) : null, fiBack: fiM ? bodyFig(FIG_BACK, exStyleOf(fiM.mus), k => this.cycleMus(fi, k), false, { uid: 'fb' }) : null,
       accOpts: ACCENTS.map(([c, label]) => ({ c, label, ring: c.toLowerCase() === ACC.toLowerCase() ? '0 0 0 2px #0A0A0C, 0 0 0 4px #FFFFFF' : 'none', onClick: () => this.isPro() || c === '#CCFF00' ? this.setState({ accent: c, accPrev: null }) : (this.setState({ accPrev: c }), this.need('accent', () => this.setState({ accent: c, accPrev: null }))) })),
       accLabel: L(TX.nAccent) + (this.isPro() ? '' : ' ✦'),
+      acProTgl: s.mqN != null ? [toggleRow(LANG === 'fr' ? 'Voir l’app sans Pro' : 'Preview without Pro', LANG === 'fr' ? 'Administrateur seulement. Affiche l’app comme un compte gratuit, sur ce téléphone. Ton Pro et tes données ne changent pas ; revient au Pro au prochain lancement.' : 'Admin only. Shows the app as a free account, on this phone. Your Pro and your data don’t change; back to Pro on next launch.', !!s.proOff, 'proOff')] : [],
       iconTgl: this.appIcon() ? [{ ...toggleRow(L('Matching app icon') + (this.isPro() ? '' : ' ✦'), L('Barlog’s Home Screen icon takes your accent color. iOS shows a message each time it changes.'), !!(s.iconMatch && this.isPro()), 'iconMatch'),
         onClick: () => this.isPro() ? this.setState({ iconMatch: !s.iconMatch }) : this.need('icon', () => this.setState({ iconMatch: true })) }] : [],
       ...(() => { const z = MUS.filter(m => mVal(m[0]) <= 0).map(m => LANG === 'fr' ? m[2] : m[1]); return { bmHasZero: z.length > 0, bmZero: (LANG === 'fr' ? 'Pas travaillé : ' : 'Not trained: ') + z.join(', ') }; })(),

@@ -237,3 +237,28 @@ test('site de test (/dev/) : achats simulés toujours possibles', async t => {
   assert.equal(v.pwCta, 'S’abonner · 29,99 $ / an (test)'); assert.equal(v.pwRestoreOn, true);
   v.pwBuy(); assert.equal(app.state.pro.test, true); assert.equal(app.state.pro.plan, 'year');
 });
+
+// ── Aperçu « sans Pro » réservé à l'administrateur (0.48.0) ──
+const BETA_PRO = { plan: 'beta', since: 1, beta: true };
+test('aperçu sans Pro : interrupteur seulement pour l’administrateur, affichage gratuit, vrai Pro intact', () => {
+  const B = loadBarlog();
+  const user = makeApp(B, { ...emptyData(), lang: 'fr', acct, mqN: null, pro: BETA_PRO });
+  assert.deepEqual(user.renderVals().acProTgl, [], 'compte ordinaire : pas d’interrupteur');
+  user.setState({ proOff: true }); assert.equal(user.isPro(), true, 'proOff sans être administrateur : sans effet');
+
+  const admin = makeApp(B, { ...emptyData(), lang: 'fr', acct, mqN: 0, pro: BETA_PRO });
+  const v0 = admin.renderVals(); assert.equal(v0.acProTgl.length, 1); assert.equal(v0.acProTgl[0].label, 'Voir l’app sans Pro'); assert.equal(v0.lkReg.on, false);
+  v0.acProTgl[0].onClick();
+  assert.equal(admin.state.proOff, true); assert.equal(admin.isPro(), false);
+  assert.equal(admin.renderVals().lkReg.on, true, 'Régularité floutée comme pour un compte gratuit');
+  assert.deepEqual(admin.state.pro, BETA_PRO, 'le vrai droit ne change pas');
+  assert.ok(!/const PK = \[[^\]]*'proOff'/.test(HTML) && !/const CB_SET = \[[^\]]*'proOff'/.test(HTML), 'jamais enregistré ni sauvegardé en ligne');
+  admin.renderVals().acProTgl[0].onClick(); assert.equal(admin.isPro(), true, 'retour au Pro');
+});
+
+test('aperçu sans Pro : « Aussi en ligne » passe toujours par la sauvegarde (pas de suppression du compte gratuit)', () => {
+  const admin = makeApp(loadBarlog(), { ...emptyData(), lang: 'fr', acct, mqN: 0, pro: BETA_PRO, proOff: true, cloud: { on: true, link: true, uid: acct.uid } });
+  let deleted = 0, soon = 0; admin.cbDelete = () => { deleted++; }; admin.cbSoon = () => { soon++; };
+  admin.eraseDo('h', true);
+  assert.equal(deleted, 0); assert.equal(soon, 1); assert.equal(admin._cbWipe, 'h');
+});
