@@ -902,34 +902,6 @@ input::placeholder{color:#9C9CA8}
 <div style="flex:0 0 auto;width:52px;height:32px;border-radius:999px;background:{{ t.track }};padding:3px;display:flex;justify-content:{{ t.justify }};"><div style="width:26px;height:26px;border-radius:50%;background:{{ t.knob }};"></div></div>
 </button>
 </sc-for>
-<sc-if value="{{ hrtOn }}" hint-placeholder-val="{{ false }}">
-<button onClick="{{ hrtToggle }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:{{ hrtRowBorder }};background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
-<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">Essai capteur cardiaque</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">Administrateur seulement · essai provisoire (C0-C1)</span></div><span style="color:#9C9CA8;font-size:20px;">{{ hrtArrow }}</span></button>
-<sc-if value="{{ hrtOpen }}" hint-placeholder-val="{{ false }}"><div style="padding:0 16px 16px;border-bottom:1px solid #24242B;display:flex;flex-direction:column;gap:10px;">
-<div style="display:flex;align-items:baseline;gap:10px;"><span style="font-size:44px;font-weight:800;color:#FF5A6E;font-variant-numeric:tabular-nums;">♥ {{ hrtBpm }}</span><span style="font-size:13px;color:#9C9CA8;">{{ hrtLive }}</span></div>
-<div style="display:flex;gap:8px;flex-wrap:wrap;">
-<button onClick="{{ hrtScan }}" style="min-height:40px;padding:4px 14px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:14px;font-weight:700;">{{ hrtScanLabel }}</button>
-<button onClick="{{ hrtScanAll }}" style="min-height:40px;padding:4px 14px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#fff;font-size:14px;font-weight:600;">Chercher partout</button>
-<button onClick="{{ hrtDisc }}" style="min-height:40px;padding:4px 14px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#fff;font-size:14px;font-weight:600;">Déconnecter</button>
-<button onClick="{{ hrtClear }}" style="min-height:40px;padding:4px 14px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#fff;font-size:14px;font-weight:600;">Remettre à zéro</button>
-</div>
-<sc-for list="{{ hrtFound }}" as="d" hint-placeholder-count="0">
-<button onClick="{{ d.onClick }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;min-height:48px;padding:6px 12px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:15px;text-align:left;gap:8px;"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;">{{ d.name }}</span><span style="flex:none;font-size:12px;color:#9C9CA8;">{{ d.sig }}</span></button>
-</sc-for>
-<sc-for list="{{ hrtLines }}" as="l" hint-placeholder-count="0">
-<div style="display:flex;justify-content:space-between;gap:12px;font-size:13px;line-height:18px;"><span style="color:#9C9CA8;flex:none;">{{ l.k }}</span><span style="text-align:right;color:{{ l.c }};font-variant-numeric:tabular-nums;">{{ l.v }}</span></div>
-</sc-for>
-<sc-if value="{{ hrtRawOn }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;font-weight:600;color:#9C9CA8;margin-top:6px;">Journal par tranches de 10 s (essai C1)</span>
-<sc-for list="{{ hrtRows }}" as="l" hint-placeholder-count="0">
-<div style="display:flex;justify-content:space-between;gap:10px;font-size:12px;line-height:17px;"><span style="color:#9C9CA8;flex:none;font-variant-numeric:tabular-nums;">{{ l.k }}</span><span style="text-align:right;color:{{ l.c }};font-variant-numeric:tabular-nums;">{{ l.v }}</span></div>
-</sc-for>
-<span style="font-size:13px;font-weight:600;color:#9C9CA8;margin-top:6px;">Derniers messages</span>
-<sc-for list="{{ hrtMsgs }}" as="l" hint-placeholder-count="0">
-<div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;line-height:15px;color:#C8C8D0;word-break:break-all;">{{ l.k }} {{ l.v }}</div>
-</sc-for></sc-if>
-<sc-if value="{{ hrtErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ hrtErr }}</span></sc-if>
-</div></sc-if>
-</sc-if>
 <button onClick="{{ mdpOpen }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-bottom:{{ mdpRowBorder }};background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
 <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:16px;font-weight:500;">{{ mdpLabel }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ mdpSub }}</span></div><span style="color:#9C9CA8;font-size:20px;">{{ mdpArrow }}</span></button>
 <sc-if value="{{ mdpOn }}" hint-placeholder-val="{{ false }}"><div style="padding:0 16px 16px;border-bottom:1px solid #24242B;display:flex;flex-direction:column;gap:10px;">
@@ -1045,6 +1017,25 @@ input::placeholder{color:#9C9CA8}
 <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;"><sc-for list="{{ rmDays }}" as="d" hint-placeholder-count="7"><button onClick="{{ d.onClick }}" style="height:44px;border-radius:10px;border:1px solid {{ d.border }};background:{{ d.bg }};color:{{ d.color }};font-size:14px;font-weight:700;">{{ d.label }}</button></sc-for></div>
 <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span style="font-size:16px;font-weight:500;">{{ rmTimeLabel }}</span><input type="time" value="{{ rmTime }}" onChange="{{ onRmTime }}" style="height:44px;border-radius:10px;border:1px solid #33333C;background:#0A0A0C;color:#FFFFFF;font-family:'JetBrains Mono',monospace;font-size:16px;padding:0 10px;color-scheme:dark;"></div>
 </div>
+</sc-if>
+<sc-if value="{{ hrOn }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ hrRowTap }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border:none;border-top:{{ hrTopBorder }};background:transparent;color:#fff;min-height:64px;gap:8px;text-align:left;">
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><span style="font-size:16px;font-weight:500;">{{ hrLabel }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ hrSub }}</span></div><span style="flex:none;color:#9C9CA8;font-size:20px;">{{ hrArrow }}</span></button>
+<sc-if value="{{ hrOpen }}" hint-placeholder-val="{{ false }}"><div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:10px;">
+<sc-if value="{{ hrHasDev }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;"><span style="font-size:32px;font-weight:800;color:#FF5A6E;font-variant-numeric:tabular-nums;">♥ {{ hrBpm }}</span><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ hrLive }}</span></div>
+<button onClick="{{ hrForget }}" style="align-self:flex-start;min-height:40px;padding:4px 14px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#fff;font-size:14px;font-weight:600;">{{ hrForgetLabel }}</button>
+</sc-if>
+<sc-if value="{{ hrNoDev }}" hint-placeholder-val="{{ false }}">
+<span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ hrHint }}</span>
+<button onClick="{{ hrFind }}" style="align-self:flex-start;min-height:40px;padding:4px 16px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:14px;font-weight:700;">{{ hrFindLabel }}</button>
+<sc-for list="{{ hrFound }}" as="d" hint-placeholder-count="0">
+<button onClick="{{ d.onClick }}" style="width:100%;display:flex;align-items:center;min-height:48px;padding:6px 12px;border-radius:12px;border:1px solid #33333C;background:#0A0A0C;color:#fff;font-size:15px;text-align:left;"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;">♥ {{ d.name }}</span></button>
+</sc-for>
+<sc-if value="{{ hrNone }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ hrNoneText }}</span></sc-if>
+</sc-if>
+<sc-if value="{{ hrErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#FF6B6B;text-wrap:pretty;">{{ hrErr }}</span></sc-if>
+</div></sc-if>
 </sc-if>
 </div>
 <sc-if value="{{ nfHasHint }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;line-height:18px;color:#9C9CA8;text-wrap:pretty;">{{ nfHint }}</span></sc-if>
@@ -1178,6 +1169,7 @@ input::placeholder{color:#9C9CA8}
 <span style="font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ wName }}</span>
 <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9C9CA8;">{{ elapsed }} · {{ setsDoneLabel }}</span>
 </div>
+<sc-if value="{{ hrPillOn }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#FF5A6E;font-variant-numeric:tabular-nums;">{{ hrPill }}</span></sc-if>
 <button onClick="{{ finish }}" style="height:48px;padding:0 18px;border-radius:12px;border:none;background:var(--acc);color:#0A0A0C;font-size:15px;font-weight:700;">{{ tx.k50 }}</button>
 </div>
 <div style="flex:1;overflow-y:auto;padding:12px 12px 24px;display:flex;flex-direction:column;gap:12px;">
@@ -1425,6 +1417,20 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-for>
 </div>
+<sc-if value="{{ hrcOn }}" hint-placeholder-val="{{ false }}">
+<div style="flex:0 0 auto;position:relative;">
+<sc-if value="{{ lkHr.on }}" hint-placeholder-val="{{ false }}"><div onClick="{{ lkHr.go }}" style="position:absolute;inset:-6px;z-index:4;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);background:rgba(22,22,26,0.4);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px;text-align:center;cursor:pointer;"><span style="font-size:15px;font-weight:800;color:#FFFFFF;text-wrap:balance;">✦ {{ lkHr.title }}</span><span style="font-size:13px;line-height:18px;color:#C8C8D0;text-wrap:pretty;">{{ lkHr.sub }}</span><span style="min-height:36px;padding:0 16px;border-radius:18px;background:var(--acc);color:#0A0A0C;font-size:13px;font-weight:700;display:flex;align-items:center;">{{ lkHr.cta }}</span></div></sc-if>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
+<span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ hrcTitle }}</span>
+<div style="display:flex;gap:24px;">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;color:#9C9CA8;">{{ hrcAvgL }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#FF5A6E;">{{ hrcAvg }} <span style="font-size:12px;color:#9C9CA8;font-weight:600;">BPM</span></span></div>
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;color:#9C9CA8;">{{ hrcMaxL }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;">{{ hrcMax }} <span style="font-size:12px;color:#9C9CA8;font-weight:600;">BPM</span></span></div>
+</div>
+<svg viewBox="0 0 324 80" preserveAspectRatio="none" style="width:100%;height:80px;display:block;overflow:visible;"><sc-for list="{{ hrcSegs }}" as="g" hint-placeholder-count="0"><polyline points="{{ g.pts }}" fill="none" stroke="#FF5A6E" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"></polyline></sc-for></svg>
+<div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6B76;"><span>0:00</span><span>{{ hrcEnd }}</span></div>
+</div>
+</div>
+</sc-if>
 <sc-if value="{{ pbOn }}" hint-placeholder-val="{{ false }}">
 <div style="flex:0 0 auto;background:#16161A;border:1px solid #24242B;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;">
 <sc-if value="{{ pbNew }}" hint-placeholder-val="{{ true }}">
@@ -1502,6 +1508,20 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-for>
 </div>
+<sc-if value="{{ hrcOn }}" hint-placeholder-val="{{ false }}">
+<div style="flex:0 0 auto;position:relative;">
+<sc-if value="{{ lkHr.on }}" hint-placeholder-val="{{ false }}"><div onClick="{{ lkHr.go }}" style="position:absolute;inset:-6px;z-index:4;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);background:rgba(22,22,26,0.4);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px;text-align:center;cursor:pointer;"><span style="font-size:15px;font-weight:800;color:#FFFFFF;text-wrap:balance;">✦ {{ lkHr.title }}</span><span style="font-size:13px;line-height:18px;color:#C8C8D0;text-wrap:pretty;">{{ lkHr.sub }}</span><span style="min-height:36px;padding:0 16px;border-radius:18px;background:var(--acc);color:#0A0A0C;font-size:13px;font-weight:700;display:flex;align-items:center;">{{ lkHr.cta }}</span></div></sc-if>
+<div style="background:#16161A;border:1px solid #24242B;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
+<span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#9C9CA8;">{{ hrcTitle }}</span>
+<div style="display:flex;gap:24px;">
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;color:#9C9CA8;">{{ hrcAvgL }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#FF5A6E;">{{ hrcAvg }} <span style="font-size:12px;color:#9C9CA8;font-weight:600;">BPM</span></span></div>
+<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;color:#9C9CA8;">{{ hrcMaxL }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;">{{ hrcMax }} <span style="font-size:12px;color:#9C9CA8;font-weight:600;">BPM</span></span></div>
+</div>
+<svg viewBox="0 0 324 80" preserveAspectRatio="none" style="width:100%;height:80px;display:block;overflow:visible;"><sc-for list="{{ hrcSegs }}" as="g" hint-placeholder-count="0"><polyline points="{{ g.pts }}" fill="none" stroke="#FF5A6E" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"></polyline></sc-for></svg>
+<div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6B76;"><span>0:00</span><span>{{ hrcEnd }}</span></div>
+</div>
+</div>
+</sc-if>
 <sc-if value="{{ pbOn }}" hint-placeholder-val="{{ false }}">
 <div style="flex:0 0 auto;background:#16161A;border:1px solid #24242B;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;">
 <sc-if value="{{ pbNew }}" hint-placeholder-val="{{ true }}">
@@ -1569,7 +1589,7 @@ const ALIAS = { 'Running': ['treadmill', 'run', 'jog', 'jogging', 'course', 'cou
 const noAcc = t => String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 const libHit = (l, q) => !q || [l.name, ...(ALIAS[l.name] || []), ...(l.group === 'Cardio' ? ['cardio'] : [])].some(n => noAcc(n).includes(q));
 const BASE = {'Bench Press':80,'Overhead Press':50,'Incline DB Press':30,'Lateral Raise':12,'Triceps Pushdown':30,'Deadlift':160,'Barbell Row':70,'Pull-up':10,'Face Pull':25,'Barbell Curl':35,'Squat':120,'Romanian Deadlift':100,'Leg Press':180,'Leg Curl':45,'Calf Raise':70};
-const PK = ['bodyRange','bodyU','lenU','distU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight','accent','onboarded','restNotif','remind','goal','level','liveRest','pro','effort','healthOn','hkWSync','hkCSync','bodyMetric','autoPub','cloud','hkTag','push','cbSnooze','gone','pubQ','acctSeen','iconMatch'];
+const PK = ['bodyRange','bodyU','lenU','distU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight','accent','onboarded','restNotif','remind','goal','level','liveRest','pro','effort','healthOn','hkWSync','hkCSync','bodyMetric','autoPub','cloud','hkTag','push','cbSnooze','gone','pubQ','acctSeen','iconMatch','hrDev'];
 const e1 = (w, r) => w * (1 + r / 30);
 // Record (PR) : 1RM estimé jamais atteint OU poids jamais soulevé (au moins 1 rep), peu importe les reps (ex. 125 × 2 après 115 × 5).
 // pe / pw : meilleurs précédents (1RM estimé / poids). prSet : la série record au meilleur 1RM estimé parmi ws, ou null.
@@ -1613,7 +1633,7 @@ const rcMsg = e => { const fr = LANG === 'fr', c = rcCode(e);
   return fr ? 'L’achat n’a pas abouti, réessaie dans un moment' : 'The purchase didn’t go through, try again in a moment'; };
 const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive content'], ['Harcèlement ou intimidation', 'Harassment or bullying'], ['Spam ou arnaque', 'Spam or scam'], ['Usurpation d’identité', 'Impersonation'], ['Autre', 'Other']];
 // Sauvegarde en ligne : ce qui n'est pas envoyé (propre à l'appareil, ou relu depuis Santé / Health Connect).
-const CB_SKIP = ['workout', 'focus', 'restEnd', 'restTotal', 'cloud', 'installSeen', 'lastExport', 'backupSnooze', 'healthOn', 'hkWSync', 'hkCSync', 'hkTag', 'push', 'cbSnooze', 'pubQ', 'acctSeen'];
+const CB_SKIP = ['workout', 'focus', 'restEnd', 'restTotal', 'cloud', 'installSeen', 'lastExport', 'backupSnooze', 'healthOn', 'hkWSync', 'hkCSync', 'hkTag', 'push', 'cbSnooze', 'pubQ', 'acctSeen', 'hrDev'];
 // Sans Pro, « Pas maintenant » sur une sauvegarde trouvée : on ne la repropose pas avant 7 jours (sauf nouvelle sauvegarde).
 const CB_SNOOZE = 7 * DAY;
 const CB_SET = ['bodyRange', 'bodyU', 'lenU', 'distU', 'unit', 'haptics', 'sound', 'wake', 'autoRest', 'restDefault', 'dayWarn', 'lang', 'barLight', 'accent', 'iconMatch', 'restNotif', 'remind', 'goal', 'level', 'liveRest', 'effort', 'bodyMetric', 'autoPub', 'lastRoutineId'];
@@ -1623,6 +1643,14 @@ const bodyOut = b => (b || []).map(x => { if (!x.hk) return x; const y = { ...x 
 // Valeurs lues dans Santé / Health Connect (marquées hk) : seulement ces champs, par date ; rangées hors des sauvegardes
 // du téléphone (barlog-health.json, dossier LIBRARY_NO_CLOUD) et remises dans body au démarrage (bodyHkIn).
 const bodyHk = b => (b || []).filter(x => x.hk).map(x => { const y = { date: x.date, hk: x.hk }; Object.keys(x.hk).forEach(k => { if (x[k] != null) y[k] = x[k]; }); return y; });
+// Fréquence cardiaque des séances (sessMeta[start].hr, ceinture Bluetooth, 0.50.0) : donnée de santé → jamais dans les
+// sauvegardes du téléphone (Apple 5.1.3 ii : pas de données de santé dans iCloud), comme les valeurs de Santé : retirée du
+// localStorage et de barlog-data.json (hrOut), rangée dans barlog-health.json (hrOnly), remise au démarrage (hrIn). La
+// sauvegarde en ligne et l'export la gardent (choix de l'utilisateur, hors iCloud).
+const hrOut = sm => { const o = {}; Object.entries(sm || {}).forEach(([k, m]) => { if (m && typeof m === 'object' && 'hr' in m) { const { hr, ...r } = m; o[k] = r; } else o[k] = m; }); return o; };
+const hrOnly = sm => { const o = {}; Object.entries(sm || {}).forEach(([k, m]) => { if (m && m.hr) o[k] = m.hr; }); return o; };
+const hrIn = (sm, h) => { if (!h || typeof h !== 'object' || Array.isArray(h)) return sm || {}; const o = { ...(sm || {}) };
+  Object.entries(h).forEach(([k, v]) => { const m = o[k]; if (v && m && typeof m === 'object' && !('hr' in m)) o[k] = { ...m, hr: v }; }); return o; };
 const bodyHkIn = (b, hk) => { const out = (b || []).map(x => ({ ...x })); const at = new Map(); out.forEach((x, i) => { if (!at.has(x.date)) at.set(x.date, i); });
   (hk || []).forEach(h => { if (!h || !h.date || !h.hk) return; let i = at.get(h.date); if (i == null) { i = out.length; out.push({ date: h.date }); at.set(h.date, i); }
     const x = out[i]; const f = { ...(x.hk || {}) }; Object.keys(h.hk).forEach(k => { if (x[k] == null && h[k] != null) { x[k] = h[k]; f[k] = 1; } }); if (Object.keys(f).length) x.hk = f; });
@@ -1855,7 +1883,7 @@ class Component extends DCLogic {
     this.nativeBoot(d);
     if (!this.nat()) this.proEval();   // site : Pro simulé seulement sur le site de test, sinon droit du serveur (relu à la connexion)
     this.iv = setInterval(() => this.tick(), 250);
-    this.onVis = () => { if (document.visibilityState === 'hidden' && this._cbT) { clearTimeout(this._cbT); this._cbT = null; this.cbUp(); } this.save(document.visibilityState === 'hidden'); this.syncWake(); this.tick(); this._rnAt = undefined; this.syncRestNotif(); if (document.visibilityState === 'visible') { this.pullWeights(); if ((this.state.cloud || {}).err) this.cbSoon(3000); } if (document.visibilityState === 'visible') this.checkUpdate(); if (document.visibilityState === 'visible') this.pubFlush(); if (document.visibilityState === 'visible') this.reqCount(); if (document.visibilityState === 'visible') this.mqRefresh(); if (document.visibilityState === 'visible' && this.state.hrtOpen) this.hrPull(); };
+    this.onVis = () => { if (document.visibilityState === 'hidden' && this._cbT) { clearTimeout(this._cbT); this._cbT = null; this.cbUp(); } this.save(document.visibilityState === 'hidden'); this.syncWake(); this.tick(); this._rnAt = undefined; this.syncRestNotif(); if (document.visibilityState === 'visible') { this.pullWeights(); if ((this.state.cloud || {}).err) this.cbSoon(3000); } if (document.visibilityState === 'visible') this.checkUpdate(); if (document.visibilityState === 'visible') this.pubFlush(); if (document.visibilityState === 'visible') this.reqCount(); if (document.visibilityState === 'visible') this.mqRefresh(); };
     // Retour du réseau : publications en attente, et sauvegarde dont le dernier envoi a échoué.
     this.onOnline = () => { if (this._acStale && !this.state.acct) this.acBoot(); this.pubFlush(true); if ((this.state.cloud || {}).err) this.cbSoon(3000); }; window.addEventListener('online', this.onOnline);
     this.checkUpdate();
@@ -1884,6 +1912,7 @@ class Component extends DCLogic {
     if (st.pro && !prev.pro && st.healthOn) setTimeout(() => this.pullWeights(), 500);
     if (st.cloud && st.cloud.link && ['history', 'sessMeta', 'routines', 'body', 'custom', 'exMeta'].some(k => prev[k] !== st[k])) this.cbSoon(15000);
     if (prev.workout !== st.workout || prev.wake !== st.wake) this.syncWake();
+    if (prev.workout !== st.workout || prev.hrDev !== st.hrDev || prev.hrOpen !== st.hrOpen || prev.pro !== st.pro || prev.proOff !== st.proOff) this.hrAuto();   // ceinture cardiaque
     if (prev.iconMatch !== st.iconMatch || prev.accent !== st.accent || prev.pro !== st.pro) this.syncIcon();
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.workout !== st.workout || prev.restNotif !== st.restNotif) { this.syncRestNotif(); this.syncCardioNotif(); }
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.restTotal !== st.restTotal || prev.workout !== st.workout || prev.hold !== st.hold || prev.liveRest !== st.liveRest) this.syncLive();
@@ -1902,20 +1931,20 @@ class Component extends DCLogic {
         // Fichier plus récent sans séance en cours alors que le localStorage (en retard : WebKit peut perdre ses dernières écritures
         // quand iOS ferme l'app) en avait une → l'écran « séance » restait affiché sans séance : écran noir (0.41.1).
         this.setState(st => ({ ...ex, screen: ex.workout ? 'workout' : st.screen === 'workout' ? 'tabs' : st.screen })); }
-      const pv = fd && Array.isArray(fd.body) ? JSON.stringify({ ...fd, body: bodyOut(fd.body) }) : r.data;   // copie sauvegardée : sans valeurs de Santé
+      const pv = fd && Array.isArray(fd.body) ? JSON.stringify({ ...fd, body: bodyOut(fd.body), sessMeta: hrOut(fd.sessMeta) }) : r.data;   // copie sauvegardée : sans valeurs de Santé ni fréquence cardiaque
       F.writeFile({ path: 'barlog-data.prev.json', data: pv, directory: 'DATA', encoding: 'utf8' }).catch(() => {});
     }).catch(() => {}).then(() => {
       const rd = f => F.readFile({ path: f, directory: 'LIBRARY_NO_CLOUD', encoding: 'utf8' }).then(r => { const h = JSON.parse(r.data); if (!h || !Array.isArray(h.body)) throw new Error('health'); return { h, raw: r.data }; });
       // Fichier abîmé (écriture interrompue) : sa copie de secours ; aucun des deux : Santé relue entièrement.
-      return rd('barlog-health.json').catch(() => rd('barlog-health.prev.json')).then(({ h, raw }) => { this.setState(st => ({ body: bodyHkIn(st.body, h.body) }));
+      return rd('barlog-health.json').catch(() => rd('barlog-health.prev.json')).then(({ h, raw }) => { this.setState(st => ({ body: bodyHkIn(st.body, h.body), sessMeta: hrIn(st.sessMeta, h.hr) }));
         F.writeFile({ path: 'barlog-health.prev.json', data: raw, directory: 'LIBRARY_NO_CLOUD', encoding: 'utf8', recursive: true }).catch(() => {}); })
         .catch(() => this.setState({ hkWSync: null, hkCSync: null })); })
-      .then(() => { this.nativeReady = true; this.proEval(); this.rcBoot(); this.save(true); this.instCheck(); setTimeout(() => this.syncIcon(), 0); });
+      .then(() => { this.nativeReady = true; this.proEval(); this.rcBoot(); this.save(true); this.instCheck(); setTimeout(() => this.syncIcon(), 0); this.hrAuto(); });
   }
-  save(flush) { const o = {}; PK.forEach(k => o[k] = this.state[k]); if (this.fs()) o.body = bodyOut(o.body); o.savedAt = Date.now(); const j = JSON.stringify(o); try { localStorage.setItem('barlog-v1', j); } catch (e) {} this.saveNative(j, flush); this.saveHealth(); }
+  save(flush) { const o = {}; PK.forEach(k => o[k] = this.state[k]); if (this.fs()) { o.body = bodyOut(o.body); o.sessMeta = hrOut(o.sessMeta); } o.savedAt = Date.now(); const j = JSON.stringify(o); try { localStorage.setItem('barlog-v1', j); } catch (e) {} this.saveNative(j, flush); this.saveHealth(); }
   // Valeurs lues dans Santé : fichier à part, hors des sauvegardes du téléphone (Apple interdit les données de santé dans iCloud).
   saveHealth() {
-    const F = this.fs(); if (!F || !this.nativeReady) return; const j = JSON.stringify({ v: 1, body: bodyHk(this.state.body) }); if (j === this._hkJ) return; this._hkJ = j;
+    const F = this.fs(); if (!F || !this.nativeReady) return; const j = JSON.stringify({ v: 1, body: bodyHk(this.state.body), hr: hrOnly(this.state.sessMeta) }); if (j === this._hkJ) return; this._hkJ = j;
     F.writeFile({ path: 'barlog-health.json', data: j, directory: 'LIBRARY_NO_CLOUD', encoding: 'utf8', recursive: true }).catch(() => { this._hkJ = null; });
   }
   fs() { const P = this.nat(); return P && P.Filesystem; }
@@ -1952,7 +1981,7 @@ class Component extends DCLogic {
     return F.readFile(o).then(r => r && r.data, () => null)
       .then(id => id || F.writeFile({ ...o, data: 'i' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36), recursive: true }).then(() => F.readFile(o)).then(r => r && r.data))
       .then(id => { const s = this.state; const was = (s.cloud || {}).inst; if (!id || was === id) return;
-        this.setState(st => { const c = { ...(st.cloud || {}), inst: id }; delete c.dev; return { cloud: c, ...(this._tokNew ? {} : { push: { ...(st.push || {}), tok: null } }) }; });
+        this.setState(st => { const c = { ...(st.cloud || {}), inst: id }; delete c.dev; return { cloud: c, ...(this._tokNew ? {} : { push: { ...(st.push || {}), tok: null } }), ...(was ? { hrDev: null } : {}) }; });   // ceinture : identifiant Bluetooth propre à l'ancien téléphone
         // Données remises par la sauvegarde du téléphone (réinstallation, nouveau téléphone) sans la session, exclue exprès :
         // l'accueil « J'ai déjà un compte » ne s'affiche pas, on propose donc une fois de se reconnecter.
         let sess = false; try { sess = !!localStorage.getItem(SB_STORE); } catch (e) {}
@@ -3326,23 +3355,6 @@ class Component extends DCLogic {
   // Ceinture cardiaque Bluetooth (étape C du plan, Pro ; plugin BarlogHR, iPhone d'abord) : absent sur le site et sur
   // Android tant que le plugin n'y existe pas → rien ne s'affiche.
   hr() { const pf = plat(); if (!this.nat() || (pf !== 'ios' && pf !== 'android')) return null; if (!this._hr) { try { const C = window.Capacitor; this._hr = (C.Plugins || {}).BarlogHR || (pf === 'ios' && C.registerPlugin ? C.registerPlugin('BarlogHR') : null); } catch (e) {} } return this._hr || null; }
-  // Essai C0 (provisoire, administrateur, Profil → Compte) : la ceinture reste-t-elle reçue écran verrouillé ?
-  // État dans hrt (non sauvegardé) ; les points sont gardés par le natif, relus toutes les 5 s et au retour dans l'app.
-  hrtSet(o) { this.setState({ hrt: { ...(this.state.hrt || {}), ...o } }); }
-  hrListen() {
-    const H = this.hr(); if (!H || this._hrL) return; this._hrL = true;
-    try {
-      H.addListener('hr', e => { this.hrtSet({ live: { bpm: +e.bpm || 0, t: +e.t || Date.now() } }); if (Date.now() - (this._hrP || 0) > 5000) this.hrPull(); });
-      H.addListener('hrState', e => { this.hrtSet({ err: (e && e.why) || '' }); this.hrPull(); });
-      H.addListener('hrFound', e => { const f = (this.state.hrt || {}).found || [], d = { id: e.id, name: e.name || '?', rssi: +e.rssi || 0 }; this.hrtSet({ found: f.some(x => x.id === d.id) ? f.map(x => x.id === d.id ? d : x) : [...f, d] }); });
-      H.addListener('hrScanEnd', () => this.hrtSet({ scanning: false }));
-    } catch (e) {}
-  }
-  hrPull() {
-    const H = this.hr(); if (!H) return Promise.resolve(); this._hrP = Date.now();
-    const raw = typeof H.raw === 'function' ? H.raw().catch(() => null) : Promise.resolve(null);
-    return Promise.all([H.status(), H.samples({ since: 0 }), raw]).then(([st, sm, rw]) => this.hrtSet({ st: st || {}, stats: this.hrStats((sm && sm.t) || [], (sm && sm.b) || []), rawS: rw ? this.hrRawStats(rw.t || [], rw.x || [], Date.now()) : null })).catch(() => {});
-  }
   // C1 : fréquence cardiaque d'une séance, gardée dans sessMeta[start].hr (suit la sauvegarde en ligne, l'export / import et
   // la suppression de la séance avec sessMeta). Comme Strava : tout ce que la ceinture envoie entre le début et « Finir »
   // (la Garmin HRM 200 ne dit pas si elle est portée). avg / max sur tous les points, n = secondes reçues, courbe c de
@@ -3372,89 +3384,82 @@ class Component extends DCLogic {
       this.setState(st => { const mm = st.sessMeta || {}; return mm[start] ? { sessMeta: { ...mm, [start]: { ...mm[start], hr } } } : {}; });
     }).catch(() => {});
   }
-  // Essai C1 (provisoire) : message brut en hexadécimal (journal du natif) → drapeaux, BPM, intervalles RR en ms,
-  // contact peau (null = la ceinture ne sait pas le dire). Même lecture que HRMeasure.parse (HeartRate.swift).
-  hrDecode(x) {
-    const s = String(x || ''), b = [];
-    for (let i = 0; i + 1 < s.length; i += 2) b.push(parseInt(s.slice(i, i + 2), 16));
-    if (b.length < 2 || b.some(v => isNaN(v))) return null;
-    const f = b[0]; let i = 2, bpm = b[1];
-    if (f & 1) { if (b.length < 3) return null; bpm = b[1] | (b[2] << 8); i = 3; }
-    if (f & 8) i += 2;
-    const rr = [];
-    if (f & 16) for (; i + 1 < b.length; i += 2) rr.push(Math.round((b[i] | (b[i + 1] << 8)) * 1000 / 1024));
-    return { f, bpm, rr, contact: f & 4 ? !!(f & 2) : null };
+  // Ceinture choisie (hrDev, propre au téléphone, hors sauvegardes) : connectée pendant une séance (Pro) et quand la page
+  // du capteur est ouverte dans Profil (pour voir les BPM) ; déconnectée sinon (« Finir », abandon : ceinture et pile libérées).
+  // Ceinture pas portée : le natif attend, sans délai ni erreur (elle dort tant qu'on ne la porte pas : essai du 18 nov.).
+  hrListen() {
+    const H = this.hr(); if (!H || this._hrL) return; this._hrL = true;
+    try {
+      H.addListener('hr', e => this.hrOnBpm(e));
+      H.addListener('hrState', e => { const o = { hrLink: (e && e.state) || 'idle' }; if (e && e.why) o.hrErr = e.why; this.setState(o); });
+      H.addListener('hrFound', e => this.setState(st => { const f = st.hrFound || [], d = { id: e.id, name: e.name || '?', rssi: +e.rssi || 0 }; return { hrFound: f.some(x => x.id === d.id) ? f.map(x => x.id === d.id ? d : x) : [...f, d] }; }));
+      H.addListener('hrScanEnd', () => this.setState({ hrScan: false, hrScanned: true }));
+    } catch (e) {}
   }
-  // Essai C1 : tranches de 10 s (calées sur l'horloge) des 3 dernières minutes — messages, messages avec RR, battements
-  // (nombre d'intervalles RR), BPM min–max, doublons (moins de 150 ms après le précédent) ; sur la dernière minute reçue :
-  // messages par seconde, écarts entre messages, messages avec RR ; drapeaux vus ; 6 derniers messages.
-  hrRawStats(t, x, now) {
-    const n = t.length; if (!n) return null;
-    const D = x.map(v => this.hrDecode(v)), end = Math.max(Math.floor(now / 10000), Math.floor(t[n - 1] / 10000)) * 10000;
-    const from = Math.max(Math.floor(t[0] / 10000) * 10000, end - 170000), rows = [];
-    for (let a = from; a <= end; a += 10000) rows.push({ at: a, n: 0, rrMsg: 0, beats: 0, lo: 0, hi: 0, dup: 0 });
-    for (let i = 0; i < n; i++) {
-      const r = t[i] >= from ? rows[Math.floor((t[i] - from) / 10000)] : null, d = D[i]; if (!r) continue;
-      r.n++; if (i && t[i] - t[i - 1] < 150) r.dup++;
-      if (d && d.rr.length) { r.rrMsg++; r.beats += d.rr.length; }
-      if (d && d.bpm) { r.lo = r.lo ? Math.min(r.lo, d.bpm) : d.bpm; r.hi = Math.max(r.hi, d.bpm); }
-    }
-    const w0 = t[n - 1] - 60000, gaps = [0, 0, 0, 0]; let wn = 0, wrr = 0;
-    for (let i = 0; i < n; i++) {
-      if (t[i] <= w0) continue; wn++; if (D[i] && D[i].rr.length) wrr++;
-      if (i) { const g = t[i] - t[i - 1]; gaps[g < 150 ? 0 : g < 750 ? 1 : g < 1500 ? 2 : 3]++; }
-    }
-    const span = Math.min(60, (t[n - 1] - t[0]) / 1000), flags = [...new Set(D.filter(Boolean).map(d => d.f))].sort((p, q) => p - q);
-    const last = []; for (let i = n - 1; i >= Math.max(0, n - 6); i--) last.push({ t: t[i], gap: i ? Math.round(t[i] - t[i - 1]) : null, x: x[i], d: D[i] });
-    return { rows, gaps, wn, wrr, rate: span >= 1 ? Math.round(wn / span * 10) / 10 : wn, flags, last };
+  // BPM en direct (app au premier plan, 2 messages / s chez la HRM 200) : l'écran est redessiné une fois par seconde au plus.
+  hrOnBpm(e) {
+    const now = Date.now(); if (now - (this._hrT || 0) < 900) return; this._hrT = now;
+    const w = this.state.workout; this.setState({ hrLive: { bpm: +(e && e.bpm) || 0, t: now, start: w ? w.start : null } });
   }
-  // Régularité des BPM reçus (un par seconde attendu) : trou = plus de 2,5 s entre deux points, secondes manquantes =
-  // durée du trou − 1, couverture = 1 − manquantes / durée. C0 réussi si ≥ 95 %.
-  hrStats(t, b) {
-    const n = t.length; if (!n) return null;
-    const span = (t[n - 1] - t[0]) / 1000, gaps = []; let miss = 0, sum = 0, max = 0;
-    for (let i = 0; i < n; i++) { sum += b[i]; if (b[i] > max) max = b[i]; if (i) { const g = (t[i] - t[i - 1]) / 1000; if (g > 2.5) { gaps.push({ at: t[i - 1], s: Math.round(g) }); miss += g - 1; } } }
-    return { n, t0: t[0], span: Math.round(span), cover: span > 0 ? Math.max(0, Math.round((1 - miss / span) * 1000) / 10) : 100, gapN: gaps.length, gapS: Math.round(miss), top: gaps.sort((x, y) => y.s - x.s).slice(0, 3), avg: Math.round(sum / n), max };
+  // Appelé à chaque changement de séance, de ceinture, de page ouverte ou de Pro (componentDidUpdate) et au démarrage.
+  hrAuto() {
+    const H = this.hr(); if (!H) return; const s = this.state, d = s.hrDev;
+    const want = d && d.id && this.isPro() && (s.workout || s.hrOpen) ? d.id : null;
+    if (want === this._hrWant) return; this._hrWant = want;
+    if (want) { this.hrListen(); H.connect({ id: want }).then(r => { if (r && r.ok === false) this.setState({ hrErr: r.why || '' }); }).catch(() => {}); }
+    else H.disconnect().catch(() => {});
   }
-  hrtToggle() {
-    const open = !this.state.hrtOpen; this.setState({ hrtOpen: open }); clearInterval(this._hrI); this._hrI = null;
-    if (open) { this.hrListen(); this.hrPull(); this._hrI = setInterval(() => { if (typeof document === 'undefined' || document.visibilityState !== 'hidden') this.hrPull(); }, 5000); }
+  hrRowTap() {
+    if (!this.isPro()) return this.need('hr', () => this.setState({ hrOpen: true }));
+    const open = !this.state.hrOpen, H = this.hr();
+    if (!open && H && this.state.hrScan) H.stopScan().catch(() => {});
+    this.setState({ hrOpen: open, hrErr: '', ...(open ? {} : { hrFound: [], hrScan: false, hrScanned: false }) });
   }
-  hrtScan(all) {
-    const H = this.hr(); if (!H) return; this.hrListen(); this.hrtSet({ found: [], scanning: true, err: '' });
-    H.scan({ all: !!all }).then(r => { if (r && r.ok === false) this.hrtSet({ scanning: false, err: r.why || 'erreur' }); this.hrPull(); }).catch(e => this.hrtSet({ scanning: false, err: String((e && e.message) || e) }));
+  hrFind() {
+    const H = this.hr(); if (!H) return; this.hrListen(); this.setState({ hrFound: [], hrScan: true, hrScanned: false, hrErr: '' });
+    H.scan({ all: false }).then(r => { if (r && r.ok === false) this.setState({ hrScan: false, hrErr: r.why || '' }); }).catch(e => this.setState({ hrScan: false, hrErr: String((e && e.message) || e) }));
   }
-  hrtConnect(id) {
-    const H = this.hr(); if (!H) return; this.hrtSet({ found: [], scanning: false, err: '' }); H.stopScan().catch(() => {});
-    H.connect({ id }).then(r => { if (r && r.ok === false) this.hrtSet({ err: r.why || 'erreur' }); this.hrPull(); }).catch(e => this.hrtSet({ err: String((e && e.message) || e) }));
+  hrPick(d) {
+    const H = this.hr(); if (H) H.stopScan().catch(() => {});
+    this.setState({ hrDev: { id: d.id, name: String(d.name || '').slice(0, 60) }, hrFound: [], hrScan: false, hrScanned: false, hrErr: '', hrLive: null, hrLink: 'connecting' });
   }
-  hrtDisc() { const H = this.hr(); if (H) H.disconnect().then(() => this.hrPull()).catch(() => {}); }
-  hrtClear() { const H = this.hr(); if (H) H.clear().then(() => this.hrPull()).catch(() => {}); }
-  // Page d'essai en français seulement : provisoire, retirée à l'étape C2.
-  hrtVals(s) {
-    if (s.mqN == null || !this.hr()) return { hrtOn: false, hrtOpen: false, hrtRawOn: false, hrtRows: [], hrtMsgs: [] };
-    const T = s.hrt || {}, st = T.st || {}, S = T.stats, lv = T.live || {}, fresh = !!lv.t && Date.now() - lv.t < 5000;
-    const hm = x => x ? new Date(x).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
-    const dur = x => Math.floor(x / 60) + ' min ' + String(x % 60).padStart(2, '0') + ' s';
-    const BT = { on: 'allumé', off: 'éteint', denied: 'refusé (Réglages → Barlog → Bluetooth)', ask: 'pas encore demandé', unsupported: 'indisponible', unknown: '…' };
-    const LK = { idle: 'aucun', connecting: 'connexion… (mets la ceinture)', on: 'connecté', lost: 'perdu, reconnexion…' };
-    const lines = [['Bluetooth', BT[st.bt] || '…'], ['Capteur', (LK[st.state] || '…') + (st.name ? ' · ' + st.name : '')], ['Contact peau', st.contact === 1 ? 'oui' : st.contact === 0 ? 'non' : 'inconnu']];
-    if (S) lines.push(['Points reçus', S.n + ' (dont ' + (st.bg || 0) + ' en arrière-plan)'], ['Durée', dur(S.span) + ' · depuis ' + hm(S.t0)],
-      ['Secondes reçues', S.cover + ' %' + (S.cover >= 95 ? ' ✓' : ' ✗'), S.cover >= 95 ? ACC : '#FF6B6B'],
-      ['Trous de plus de 2 s', S.gapN ? S.gapN + ' · ' + S.gapS + ' s manquantes' : 'aucun'], ...S.top.map(g => ['↳ ' + hm(g.at), g.s + ' s sans BPM']), ['Moyenne · max', S.avg + ' · ' + S.max + ' BPM']);
-    else lines.push(['Points reçus', '0']);
-    lines.push(['Reconnexions', String(st.reconnects || 0)], ['Plugin démarré à', hm(st.since)]);
-    // Essai C1 : journal brut (absent si le natif n'a pas encore la méthode raw).
-    const R = T.rawS, fr = v => String(v).replace('.', ','), ms = x => hm(x) + ',' + String(Math.round(x) % 1000).padStart(3, '0');
-    if (R) lines.push(['Messages par seconde (1 min)', fr(R.rate)], ['Écarts (1 min)', '< 0,15 s : ' + R.gaps[0] + ' · ≈ 0,5 s : ' + R.gaps[1] + ' · ≈ 1 s : ' + R.gaps[2] + ' · plus : ' + R.gaps[3]],
-      ['Messages avec RR (1 min)', R.wrr + ' / ' + R.wn], ['Abonnements', String(st.subs == null ? '—' : st.subs)], ['Drapeaux vus', R.flags.map(f => '0x' + f.toString(16).padStart(2, '0')).join(' ') || '—']);
-    const rows = R ? R.rows.map(r => ({ k: hm(r.at), v: r.n ? r.n + ' msg · ' + r.rrMsg + ' avec RR · ' + r.beats + ' batt. · ' + (r.lo ? r.lo + '–' + r.hi : '—') + (r.dup ? ' · ' + r.dup + ' doubl.' : '') : 'aucun message', c: r.n && !r.beats ? '#FF6B6B' : '#FFFFFF' })) : [];
-    const msgs = R ? R.last.map(m => ({ k: ms(m.t), v: (m.gap == null ? '' : '+' + m.gap + ' ms · ') + (m.d ? m.d.bpm + ' · RR ' + (m.d.rr.join(' ') || '—') : 'illisible') + ' · ' + m.x })) : [];
-    return { hrtRawOn: !!R, hrtRows: rows, hrtMsgs: msgs, hrtOn: true, hrtOpen: !!s.hrtOpen, hrtToggle: () => this.hrtToggle(), hrtArrow: s.hrtOpen ? '⌄' : '›', hrtRowBorder: s.hrtOpen ? 'none' : '1px solid #24242B',
-      hrtBpm: fresh && lv.bpm ? String(lv.bpm) : '—', hrtLive: fresh ? (lv.bpm ? 'en direct' : 'pas de contact') : (st.state === 'on' ? 'en attente…' : ''),
-      hrtScan: () => this.hrtScan(false), hrtScanAll: () => this.hrtScan(true), hrtScanLabel: T.scanning ? 'Recherche…' : 'Chercher', hrtDisc: () => this.hrtDisc(), hrtClear: () => this.hrtClear(),
-      hrtFound: (T.found || []).map(d => ({ name: d.name, sig: d.rssi ? d.rssi + ' dBm' : 'déjà relié', onClick: () => this.hrtConnect(d.id) })),
-      hrtLines: lines.map(([k, v, c]) => ({ k, v, c: c || '#FFFFFF' })), hrtErr: T.err || '' };
+  hrForget() { this.setState({ hrDev: null, hrLive: null, hrErr: '', hrLink: 'idle' }); }
+  // Profil → Capteur cardiaque (iPhone avec le plugin ; rien sur le site ni sur Android pour l'instant) et pastille ♥ en séance.
+  hrVals(s) {
+    if (!this.hr()) return { hrOn: false, hrOpen: false, hrHasDev: false, hrNoDev: false, hrNone: false, hrFound: [], hrErr: '', hrPillOn: false };
+    const fr = LANG === 'fr', pro = this.isPro(), d = s.hrDev, lv = s.hrLive || {}, w = s.workout, open = !!s.hrOpen && pro;
+    const fresh = !!lv.t && Date.now() - lv.t < 5000 && lv.bpm > 0;
+    const blurb = fr ? 'Ceinture Bluetooth (Garmin, Polar, Wahoo…) : ta fréquence cardiaque pendant tes séances.' : 'Bluetooth chest strap (Garmin, Polar, Wahoo…): your heart rate during workouts.';
+    const LK = { connecting: fr ? 'Mets ta ceinture : elle s’allume au contact de la peau.' : 'Put your strap on: it turns on when it touches your skin.', on: fr ? 'Connectée, en attente…' : 'Connected, waiting…', lost: fr ? 'Ceinture perdue, reconnexion…' : 'Strap lost, reconnecting…' };
+    return { hrOn: true, hrLabel: (fr ? 'Capteur cardiaque' : 'Heart rate sensor') + (pro ? '' : ' ✦'),
+      hrSub: !pro ? blurb + (fr ? ' Inclus dans Barlog Pro.' : ' Included in Barlog Pro.') : d ? d.name + (fr ? ' · se connecte pendant tes séances' : ' · connects during your workouts') : blurb,
+      hrArrow: open ? '⌄' : '›', hrRowTap: () => this.hrRowTap(), hrTopBorder: (s.remind || {}).on ? '1px solid #24242B' : 'none',
+      hrOpen: open, hrHasDev: open && !!d, hrNoDev: open && !d,
+      hrBpm: fresh ? String(lv.bpm) : '—', hrLive: fresh ? (fr ? 'en direct' : 'live') : LK[s.hrLink] || '',
+      hrForget: () => this.hrForget(), hrForgetLabel: fr ? 'Oublier ce capteur' : 'Forget this sensor',
+      hrHint: fr ? 'Mets ta ceinture (elle s’allume au contact de la peau), puis cherche-la.' : 'Put your strap on (it turns on when it touches your skin), then search for it.',
+      hrFind: () => this.hrFind(), hrFindLabel: s.hrScan ? (fr ? 'Recherche…' : 'Searching…') : (fr ? 'Chercher' : 'Search'),
+      hrFound: open && !d ? (s.hrFound || []).map(x => ({ name: x.name, onClick: () => this.hrPick(x) })) : [],
+      hrNone: open && !d && !!s.hrScanned && !s.hrScan && !(s.hrFound || []).length,
+      hrNoneText: fr ? 'Aucune ceinture trouvée. Vérifie qu’elle est portée (électrodes humides) et que le Bluetooth est allumé, puis réessaie.' : 'No strap found. Make sure you’re wearing it (moist electrodes) and Bluetooth is on, then try again.',
+      hrErr: open ? s.hrErr || '' : '',
+      // Pastille en séance : seulement une fois que la ceinture a envoyé des BPM pendant cette séance.
+      hrPillOn: !!(w && pro && lv.t && lv.start === w.start), hrPill: '♥ ' + (fresh ? lv.bpm : '—') };
+  }
+  // Carte « Fréquence cardiaque » du résumé et du détail d'une séance : courbe (trous gardés), moyenne, max ; floutée sans Pro.
+  hrcVals(s) {
+    const d = s.screen === 'summary' && s.summary ? s.summary.start : s.screen === 'session' ? s.openSess : null;
+    const H = d != null ? this.hrOf((s.sessMeta || {})[d]) : null, v = H ? H.c.filter(x => x > 0) : [];
+    if (!v.length) return { hrcOn: false, hrcSegs: [], lkHr: { on: false } };
+    const fr = LANG === 'fr', W = 324, HH = 80, k = H.c.length, lo = Math.min(...v), hi = Math.max(...v), pad = Math.max(5, (hi - lo) * 0.1), y0 = lo - pad, y1 = hi + pad;
+    const X = i => k > 1 ? i / (k - 1) * W : W / 2, Y = x => HH - (x - y0) / (y1 - y0) * HH, segs = []; let cur = [];
+    H.c.forEach((x, i) => { if (x > 0) cur.push([X(i), Y(x)]); else if (cur.length) { segs.push(cur); cur = []; } }); if (cur.length) segs.push(cur);
+    const m = Math.round(k * H.step / 60);
+    return { hrcOn: true, hrcTitle: fr ? 'Fréquence cardiaque' : 'Heart rate', hrcAvgL: fr ? 'Moyenne' : 'Average', hrcAvg: String(H.avg), hrcMaxL: 'Max', hrcMax: String(H.max),
+      // Un point seul (entre deux trous) : petit trait pour qu'il se voie.
+      hrcSegs: segs.map(p => ({ pts: (p.length > 1 ? p : [p[0], [p[0][0] + 1.5, p[0][1]]]).map(([x, y]) => x.toFixed(1) + ',' + y.toFixed(1)).join(' ') })),
+      hrcEnd: m >= 60 ? Math.floor(m / 60) + ' h ' + String(m % 60).padStart(2, '0') : m + ' min',
+      lkHr: this.lockV(!this.isPro(), 'hr', fr ? 'Ta fréquence cardiaque' : 'Your heart rate', fr ? 'La courbe, la moyenne et le max de chaque séance, avec ta ceinture Bluetooth.' : 'The curve, average and max of every workout, with your Bluetooth chest strap.') };
   }
   toggleHealth() {
     const fr = LANG === 'fr'; if (this.hkOn()) { this.setState({ healthOn: false }); return; }
@@ -3625,6 +3630,7 @@ class Component extends DCLogic {
           program: fr ? ['Tous les programmes', 'Force 5×5, Haut / Bas et tous les programmes à venir.'] : ['Every program', 'Strength 5×5, Upper / Lower and every program to come.'],
           health: fr ? ['Barlog et ' + (plat() === 'android' ? 'Health Connect' : 'Apple Santé'), 'Tes séances envoyées dans ' + (plat() === 'android' ? 'Health Connect (Samsung Health)' : 'Santé') + ', ton poids, ta masse grasse, ta masse maigre et ton IMC récupérés automatiquement (balance connectée, Withings…).'] : ['Barlog and ' + hkName(), 'Your workouts sent to ' + (plat() === 'android' ? 'Health Connect (Samsung Health)' : 'Health') + ', and your weight, body fat, lean mass and BMI pulled in automatically (smart scale, Withings…).'],
           accent: fr ? ['Ta couleur', 'Choisis parmi 7 couleurs d’accent pour personnaliser Barlog.'] : ['Your color', 'Pick from 7 accent colors to make Barlog yours.'],
+          hr: fr ? ['Ton capteur cardiaque', 'Connecte ta ceinture Bluetooth (Garmin, Polar, Wahoo…) : tes BPM en direct pendant la séance, puis la courbe, la moyenne et le max.'] : ['Your heart rate sensor', 'Connect your Bluetooth chest strap (Garmin, Polar, Wahoo…): live BPM during your workout, then the curve, average and max.'],
           icon: fr ? ['Ton icône', 'L’icône de Barlog sur ton écran d’accueil prend ta couleur d’accent.'] : ['Your icon', 'Barlog’s Home Screen icon takes your accent color.'] };
         const hd = H[f] || (fr ? ['Passe à Barlog Pro', 'L’essentiel reste gratuit. Pro débloque tout le reste.'] : ['Go Barlog Pro', 'The essentials stay free. Pro unlocks everything else.']);
         const PK2 = [['backup', fr ? 'Sauvegarde en ligne' : 'Online backup', fr ? 'Automatique, sur tous tes téléphones' : 'Automatic, on all your phones', ['backup']],
@@ -3637,6 +3643,8 @@ class Component extends DCLogic {
           ['program', fr ? 'Tous les programmes' : 'Every program', fr ? 'Force 5×5, Haut / Bas, et les prochains' : 'Strength 5×5, Upper / Lower, and more to come', ['program']],
           ['accent', fr ? 'Couleurs d’accent' : 'Accent colors', fr ? '7 thèmes pour l’app' : '7 themes for the app', ['accent']],
           ['health', fr ? 'Liaison avec ' + hkStore() : hkStore() + ' sync', fr ? 'Séances envoyées, poids et composition récupérés' : 'Workouts sent, weight and composition pulled in', ['health']],
+          // Capteur cardiaque : seulement là où le plugin existe (iPhone ; Android à l'étape C4).
+          ...(this.hr() ? [['hr', fr ? 'Capteur cardiaque' : 'Heart rate sensor', fr ? 'Ceinture Bluetooth : BPM en séance, courbe, moyenne et max' : 'Bluetooth chest strap: live BPM, curve, average and max', ['hr']]] : []),
           // Android : les widgets des autres apps ne vont pas sur l'écran verrouillé de la plupart des téléphones.
           ['widget', plat() === 'android' ? (fr ? 'Widgets écran d’accueil' : 'Home screen widgets') : (fr ? 'Widgets écran d’accueil et verrouillé' : 'Home and Lock Screen widgets'), fr ? 'Ta semaine, ta régularité, tes records et ton poids en un coup d’œil' : 'Your week, consistency, PRs and weight at a glance', ['widget']]];
         // Prix : app native = offre de la boutique (devise du pays) ; site = prix canadiens, à titre indicatif (achat dans l'app).
@@ -4217,7 +4225,7 @@ class Component extends DCLogic {
       accOpts: ACCENTS.map(([c, label]) => ({ c, label, ring: c.toLowerCase() === ACC.toLowerCase() ? '0 0 0 2px #0A0A0C, 0 0 0 4px #FFFFFF' : 'none', onClick: () => this.isPro() || c === '#CCFF00' ? this.setState({ accent: c, accPrev: null }) : (this.setState({ accPrev: c }), this.need('accent', () => this.setState({ accent: c, accPrev: null }))) })),
       accLabel: L(TX.nAccent) + (this.isPro() ? '' : ' ✦'),
       acProTgl: s.mqN != null ? [toggleRow(LANG === 'fr' ? 'Voir l’app sans Pro' : 'Preview without Pro', LANG === 'fr' ? 'Administrateur seulement. Affiche l’app comme un compte gratuit, sur ce téléphone. Ton Pro et tes données ne changent pas ; revient au Pro au prochain lancement.' : 'Admin only. Shows the app as a free account, on this phone. Your Pro and your data don’t change; back to Pro on next launch.', !!s.proOff, 'proOff')] : [],
-      ...this.hrtVals(s),
+      ...this.hrVals(s), ...this.hrcVals(s),
       iconTgl: this.appIcon() ? [{ ...toggleRow(L('Matching app icon') + (this.isPro() ? '' : ' ✦'), L('Barlog’s Home Screen icon takes your accent color. iOS shows a message each time it changes.'), !!(s.iconMatch && this.isPro()), 'iconMatch'),
         onClick: () => this.isPro() ? this.setState({ iconMatch: !s.iconMatch }) : this.need('icon', () => this.setState({ iconMatch: true })) }] : [],
       ...(() => { const z = MUS.filter(m => mVal(m[0]) <= 0).map(m => LANG === 'fr' ? m[2] : m[1]); return { bmHasZero: z.length > 0, bmZero: (LANG === 'fr' ? 'Pas travaillé : ' : 'Not trained: ') + z.join(', ') }; })(),
