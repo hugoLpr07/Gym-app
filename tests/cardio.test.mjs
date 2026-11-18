@@ -240,3 +240,50 @@ test('carte cardio sans Pro : floutée avec le cadenas, comme Régularité', (t)
   const v = app.renderVals();
   assert.equal(v.cardioOn, true); assert.equal(v.lkCardio.on, true); assert.equal(v.lkCardio.title, 'Your cardio');
 });
+
+// ── Progrès → Exercices : historique par exercice cardio (0.48.0, gratuit) ──
+const EXH = {
+  'Bench Press': [{ date: T0 - 2 * DAY, sets: [{ w: 100, r: 5 }] }],
+  Running: [
+    { date: T0 - 10 * DAY, sets: [{ w: 0, r: 30, d: 5, c: 0 }] },
+    { date: T0 - 3 * DAY, sets: [{ w: 0, r: 5, d: 0, c: 0, wu: true }, { w: 0, r: 24, d: 6, c: 0 }] },
+  ],
+  'Rowing machine': [{ date: T0 - DAY, sets: [{ w: 0, r: 15, d: 0, c: 0 }] }],
+  Cycling: [{ date: T0 - 20 * DAY, sets: [{ w: 0, r: 0, d: 0, c: 0 }] }],
+};
+const lifts = (t, extra = {}) => prog(t, { history: EXH, progView: 'lifts', routines: [{ id: 'r1', name: 'Push', ex: [{ name: 'Bench Press', sets: 3, reps: 5 }] }], ...extra });
+
+test('cardio dans les puces de Progrès → Exercices, après les exercices avec charge, le plus récent en premier ; pas dans les tendances', (t) => {
+  const v = lifts(t).renderVals();
+  assert.deepEqual(v.progChips.map(c => c.name), ['Bench Press', 'Rowing machine', 'Running'], 'Cycling sans minutes ni distance : absent ; Running pas dans un programme : présent quand même');
+  assert.equal(v.progEx, 'Bench Press', 'par défaut : toujours un exercice avec charge');
+  assert.equal(v.hasLift, true); assert.equal(v.hasCarEx, false);
+  assert.deepEqual(v.liftTrends.map(x => x.name), ['Bench Press']);
+});
+
+test('toucher un cardio : records (plus longue, plus loin, séances) et historique avec l’allure, sans le graphique 1RM', (t) => {
+  const v = lifts(t, { progEx: 'Running' }).renderVals();
+  assert.equal(v.hasLift, false); assert.equal(v.hasCarEx, true); assert.equal(v.noLift, false);
+  assert.deepEqual(v.carTiles.map(x => [x.label, x.value]), [['Longest (min)', '30'], ['Farthest (km)', '6'], ['Sessions', '2']], '5 + 24 = 29 min < 30 ; 6 km');
+  assert.deepEqual(v.carHist.map(x => x.val), ['4:00 /km', '6:00 /km'], 'plus récent en premier ; l’échauffement sans distance ne fausse pas l’allure (24 ÷ 6)');
+  assert.equal(v.carHist[0].sets, '5 min + 24 min · 6 km');
+  assert.match(v.carNote, /pace/);
+});
+
+test('cardio en milles : distance et allure par mile', (t) => {
+  const v = lifts(t, { progEx: 'Running', unit: 'lb' }).renderVals();
+  assert.deepEqual(v.carTiles[1], { label: 'Farthest (mi)', value: '3.7' });
+  assert.equal(v.carHist[0].val, '6:26 /mi', '24 min ÷ 3,73 mi');
+});
+
+test('cardio sans distance (rameur) : « — », pas d’allure ni de note', (t) => {
+  const v = lifts(t, { progEx: 'Rowing machine' }).renderVals();
+  assert.deepEqual(v.carTiles.map(x => x.value), ['15', '—', '1']);
+  assert.equal(v.carHist[0].val, ''); assert.equal(v.carNote, '');
+});
+
+test('historique cardio gratuit ; un programme de cardio seul apparaît dans les filtres', (t) => {
+  const v = lifts(t, { progEx: 'Running', pro: null, routines: [{ id: 'r2', name: 'Course', ex: [{ name: 'Running', sets: 1, reps: 30 }] }] }).renderVals();
+  assert.equal(v.hasCarEx, true); assert.equal(v.carHist.length, 2);
+  assert.deepEqual(v.routineFilters.map(f => f.name), ['All', 'Course']);
+});
