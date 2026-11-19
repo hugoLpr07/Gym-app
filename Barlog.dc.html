@@ -1431,6 +1431,8 @@ input::placeholder{color:#9C9CA8}
 <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;color:#9C9CA8;">{{ hrcMaxL }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;">{{ hrcMax }} <span style="font-size:12px;color:#9C9CA8;font-weight:600;">BPM</span></span></div>
 <sc-if value="{{ hrcCurOn }}" hint-placeholder-val="{{ false }}"><div style="margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:2px;"><span style="font-size:12px;color:#9C9CA8;white-space:nowrap;">{{ hrcCurSub }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:{{ hrcCurCol }};white-space:nowrap;">{{ hrcCurBpm }} <span style="font-size:12px;color:#9C9CA8;font-weight:600;">{{ hrcCurU }}</span></span></div></sc-if>
 </div>
+<div style="position:relative;padding-left:30px;">
+<sc-for list="{{ hrcGrid }}" as="t" hint-placeholder-count="0"><span style="position:absolute;left:0;width:24px;text-align:right;top:{{ t.top }};transform:translateY(-50%);line-height:1;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6B76;pointer-events:none;">{{ t.label }}</span></sc-for>
 <div onPointerDown="{{ hrcPtr.down }}" onPointerMove="{{ hrcPtr.move }}" onPointerUp="{{ hrcPtr.up }}" onPointerCancel="{{ hrcPtr.cancel }}" style="position:relative;height:120px;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:crosshair;">
 <svg viewBox="0 0 300 120" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible;">
 <defs><linearGradient id="hrcZs" gradientUnits="userSpaceOnUse" x1="0" y1="120" x2="0" y2="0"><sc-for list="{{ hrcStops }}" as="z" hint-placeholder-count="0"><stop offset="{{ z.off }}" stop-color="{{ z.col }}"></stop></sc-for></linearGradient></defs>
@@ -1438,11 +1440,11 @@ input::placeholder{color:#9C9CA8}
 <sc-for list="{{ hrcSegs }}" as="g" hint-placeholder-count="0"><polygon points="{{ g.area }}" fill="url(#hrcZs)" fill-opacity="0.14"></polygon><polyline points="{{ g.pts }}" fill="none" stroke="url(#hrcZs)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"></polyline></sc-for>
 <line x1="0" y1="{{ hrcAvgY }}" x2="300" y2="{{ hrcAvgY }}" stroke="#C8C8D0" stroke-opacity="0.7" stroke-width="1.5" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"></line>
 </svg>
-<sc-for list="{{ hrcGrid }}" as="t" hint-placeholder-count="0"><span style="position:absolute;left:0;top:{{ t.top }};font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6B76;pointer-events:none;">{{ t.label }}</span></sc-for>
 <sc-if value="{{ hrcCurOn }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;top:0;bottom:0;left:{{ hrcCurL }};width:1px;margin-left:-0.5px;background:rgba(255,255,255,0.55);pointer-events:none;"></div></sc-if>
 <sc-if value="{{ hrcDotOn }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:{{ hrcCurL }};top:{{ hrcCurT }};width:12px;height:12px;margin:-6px 0 0 -6px;box-sizing:border-box;border-radius:50%;background:{{ hrcCurCol }};border:2px solid #16161A;box-shadow:0 0 0 1.5px #FFFFFF;pointer-events:none;"></div></sc-if>
 </div>
-<div style="position:relative;height:14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6B76;"><sc-for list="{{ hrcTicks }}" as="t" hint-placeholder-count="0"><span style="position:absolute;top:0;left:{{ t.left }};transform:{{ t.tx }};white-space:nowrap;">{{ t.label }}</span></sc-for></div>
+</div>
+<div style="position:relative;height:14px;margin-left:30px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6B76;"><sc-for list="{{ hrcTicks }}" as="t" hint-placeholder-count="0"><span style="position:absolute;top:0;left:{{ t.left }};transform:{{ t.tx }};white-space:nowrap;">{{ t.label }}</span></sc-for></div>
 </div>
 </div>
 </sc-if>
@@ -1533,6 +1535,8 @@ input::placeholder{color:#9C9CA8}
 <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;color:#9C9CA8;">{{ hrcMaxL }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;">{{ hrcMax }} <span style="font-size:12px;color:#9C9CA8;font-weight:600;">BPM</span></span></div>
 <sc-if value="{{ hrcCurOn }}" hint-placeholder-val="{{ false }}"><div style="margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:2px;"><span style="font-size:12px;color:#9C9CA8;white-space:nowrap;">{{ hrcCurSub }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:{{ hrcCurCol }};white-space:nowrap;">{{ hrcCurBpm }} <span style="font-size:12px;color:#9C9CA8;font-weight:600;">{{ hrcCurU }}</span></span></div></sc-if>
 </div>
+<div style="position:relative;padding-left:30px;">
+<sc-for list="{{ hrcGrid }}" as="t" hint-placeholder-count="0"><span style="position:absolute;left:0;width:24px;text-align:right;top:{{ t.top }};transform:translateY(-50%);line-height:1;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6B76;pointer-events:none;">{{ t.label }}</span></sc-for>
 <div onPointerDown="{{ hrcPtr.down }}" onPointerMove="{{ hrcPtr.move }}" onPointerUp="{{ hrcPtr.up }}" onPointerCancel="{{ hrcPtr.cancel }}" style="position:relative;height:120px;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:crosshair;">
 <svg viewBox="0 0 300 120" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible;">
 <defs><linearGradient id="hrcZd" gradientUnits="userSpaceOnUse" x1="0" y1="120" x2="0" y2="0"><sc-for list="{{ hrcStops }}" as="z" hint-placeholder-count="0"><stop offset="{{ z.off }}" stop-color="{{ z.col }}"></stop></sc-for></linearGradient></defs>
@@ -1540,11 +1544,11 @@ input::placeholder{color:#9C9CA8}
 <sc-for list="{{ hrcSegs }}" as="g" hint-placeholder-count="0"><polygon points="{{ g.area }}" fill="url(#hrcZd)" fill-opacity="0.14"></polygon><polyline points="{{ g.pts }}" fill="none" stroke="url(#hrcZd)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"></polyline></sc-for>
 <line x1="0" y1="{{ hrcAvgY }}" x2="300" y2="{{ hrcAvgY }}" stroke="#C8C8D0" stroke-opacity="0.7" stroke-width="1.5" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"></line>
 </svg>
-<sc-for list="{{ hrcGrid }}" as="t" hint-placeholder-count="0"><span style="position:absolute;left:0;top:{{ t.top }};font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6B76;pointer-events:none;">{{ t.label }}</span></sc-for>
 <sc-if value="{{ hrcCurOn }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;top:0;bottom:0;left:{{ hrcCurL }};width:1px;margin-left:-0.5px;background:rgba(255,255,255,0.55);pointer-events:none;"></div></sc-if>
 <sc-if value="{{ hrcDotOn }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:{{ hrcCurL }};top:{{ hrcCurT }};width:12px;height:12px;margin:-6px 0 0 -6px;box-sizing:border-box;border-radius:50%;background:{{ hrcCurCol }};border:2px solid #16161A;box-shadow:0 0 0 1.5px #FFFFFF;pointer-events:none;"></div></sc-if>
 </div>
-<div style="position:relative;height:14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6B76;"><sc-for list="{{ hrcTicks }}" as="t" hint-placeholder-count="0"><span style="position:absolute;top:0;left:{{ t.left }};transform:{{ t.tx }};white-space:nowrap;">{{ t.label }}</span></sc-for></div>
+</div>
+<div style="position:relative;height:14px;margin-left:30px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B6B76;"><sc-for list="{{ hrcTicks }}" as="t" hint-placeholder-count="0"><span style="position:absolute;top:0;left:{{ t.left }};transform:{{ t.tx }};white-space:nowrap;">{{ t.label }}</span></sc-for></div>
 </div>
 </div>
 </sc-if>
@@ -3542,8 +3546,9 @@ class Component extends DCLogic {
     const segs = []; let run = [];
     H.c.forEach((x, i) => { if (x > 0) run.push([X(i), Y(x)]); else if (run.length) { segs.push(run); run = []; } }); if (run.length) segs.push(run);
     const pl = p => p.map(([x, y]) => f1(x) + ',' + f1(y)).join(' ');
-    // Repères de BPM : 3 lignes au plus, sur des dizaines, étiquette au-dessus de la ligne (comme Progrès), dessous tout en
-    // haut ; ligne cachée (étiquette gardée) si elle tombe sur la moyenne.
+    // Repères de BPM : 3 lignes au plus, sur des dizaines, étiquette dans une marge à gauche, centrée sur sa ligne (comme
+    // Strava ; avant le 19 nov., dans le graphique : la courbe passait dessus, vu par Hugo) ; ligne cachée (étiquette gardée)
+    // si elle tombe sur la moyenne.
     const grid = [5, 10, 20, 30, 40, 50, 100].map(st => { const t = []; for (let b = Math.ceil(y0 / st) * st; b < y1; b += st) if (b > y0) t.push(b); return t; }).find(t => t.length <= 3) || [];
     // Repères de temps : 5 au plus (0, 10 min, 20 min…), centrés ; le dernier collé au bord droit s'il déborderait.
     const span = (k - 1) * H.step, mins = span / 60, every = [1, 2, 5, 10, 15, 20, 30, 60, 90, 120].find(c => Math.floor(mins / c) <= 4) || 120, ticks = [];
@@ -3556,7 +3561,7 @@ class Component extends DCLogic {
       hrcStops: ZC.flatMap((col, j) => [{ off: off(j ? cut[j - 1] : y0), col }, { off: off(j < 4 ? cut[j] : y1), col }]),
       // Un point seul (entre deux trous) : petit trait pour qu'il se voie.
       hrcSegs: segs.map(p0 => { const p = p0.length > 1 ? p0 : [p0[0], [p0[0][0] + 1.5, p0[0][1]]]; return { pts: pl(p), area: f1(p[0][0]) + ',' + HH + ' ' + pl(p) + ' ' + f1(p[p.length - 1][0]) + ',' + HH }; }),
-      hrcGrid: grid.map(b => ({ y: f1(Y(b)), top: f1(Y(b) < 16 ? Y(b) + 2 : Y(b) - 15) + 'px', label: String(b), line: Math.abs(Y(b) - Y(H.avg)) < 6 ? '0' : '1' })),
+      hrcGrid: grid.map(b => ({ y: f1(Y(b)), top: f1(Math.min(HH - 5, Math.max(5, Y(b)))) + 'px', label: String(b), line: Math.abs(Y(b) - Y(H.avg)) < 6 ? '0' : '1' })),
       hrcAvgY: f1(Math.min(HH, Math.max(0, Y(H.avg)))),
       hrcTicks: ticks.map(m => { const p = span > 0 ? m * 60 / span * 100 : 0; return { left: p.toFixed(2) + '%', tx: 'translateX(' + (m === 0 ? '0' : p > 92 ? '-100%' : '-50%') + ')', label: mTxt(m) }; }),
       hrcCurOn: i >= 0, hrcDotOn: x > 0, hrcCurL: (i >= 0 ? X(i) / W * 100 : 0).toFixed(2) + '%', hrcCurT: f1(x > 0 ? Y(x) : 0) + 'px', hrcCurCol: x > 0 ? ZC[z] : '#9C9CA8',

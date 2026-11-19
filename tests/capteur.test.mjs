@@ -524,10 +524,11 @@ test('Graphique FC : repères de BPM (3 au plus, valeurs rondes) et de temps, mo
   let v = app.hrcVals(app.state);
   // Échelle 94-166 BPM : dizaines, 3 lignes au plus → 120 / 150.
   assert.deepEqual(v.hrcGrid.map(g => [g.label, g.line]), [['120', '1'], ['150', '1']]);
-  assert.ok(v.hrcGrid.every(g => parseFloat(g.top) >= 0), 'étiquettes dans le graphique');
-  // Tout en haut : étiquette sous la ligne ; ligne sur la moyenne : cachée, étiquette gardée.
+  assert.ok(v.hrcGrid.every(g => parseFloat(g.top) >= 5 && parseFloat(g.top) <= 115), 'étiquettes à la hauteur du graphique');
+  // Étiquette centrée sur sa ligne (dans la marge à gauche) ; tout en haut : gardée à 5 px du bord ;
+  // ligne sur la moyenne : cachée, étiquette gardée.
   v = app.hrcVals(st({ avg: 150, c: [100, 110, 0, 0, 120, 0, 150, 176] }));
-  assert.deepEqual(v.hrcGrid.map(g => [g.label, g.line, g.top]), [['120', '1', '68.7px'], ['150', '0', '29.2px'], ['180', '1', '6.7px']]);
+  assert.deepEqual(v.hrcGrid.map(g => [g.label, g.line, g.top]), [['120', '1', '83.7px'], ['150', '0', '44.2px'], ['180', '1', '5.0px']]);
   v = app.hrcVals(app.state);
   assert.equal(v.hrcAvgY, '63.3', 'moyenne 128 en pointillé');
   assert.ok(v.hrcSegs.every(g => g.area.startsWith(g.pts.split(',')[0] + ',120 ') && g.area.endsWith(',120')), 'fond fermé en bas');
