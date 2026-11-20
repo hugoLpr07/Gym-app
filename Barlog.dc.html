@@ -2358,9 +2358,10 @@ class Component extends DCLogic {
     const fail = e => { const t = String((e && e.message) || e); if (!/cancel|annul/i.test(t)) this.acFail('av', (fr ? 'Photo impossible : ' : 'Photo failed: ') + t.slice(0, 80)); };
     // iPhone (0.51.0), plugin BarlogPhoto : galerie = sélecteur de photos d'Apple (Photos et Collections, recherche, sans
     // autorisation sur la photothèque ; celui du plugin Camera n'est qu'une grille de toutes les photos, sans albums) ;
-    // appareil photo = celui d'Apple, qui dit si la photo vient de la caméra avant (front) → recadrage en miroir, comme
+    // appareil photo = celui d'Apple, ouvert sur la caméra avant (photo de profil = selfie), qui dit si la photo vient
+    // de la caméra avant (front) → recadrage en miroir, comme
     // l'aperçu au moment de la prise (la photo enregistrée, elle, n'est pas en miroir).
-    if (bpGo) return Promise.resolve(cam ? BP.camera({ side: 1600 }) : BP.pick({ side: 1600 })).then(r => { if (r && r.ok) return load(r.webPath, !!r.front); if (r && !r.cancel) throw new Error(fr && r.why ? r.why : fr ? 'photo illisible' : 'unreadable photo'); }).catch(fail);
+    if (bpGo) return Promise.resolve(cam ? BP.camera({ side: 1600, front: true }) : BP.pick({ side: 1600 })).then(r => { if (r && r.ok) return load(r.webPath, !!r.front); if (r && !r.cancel) throw new Error(fr && r.why ? r.why : fr ? 'photo illisible' : 'unreadable photo'); }).catch(fail);
     // App native : plugin Camera (appareil photo ; galerie sur Android = sélecteur de photos d'Android). Le champ fichier
     // de la WebView n'offre pas l'appareil photo sur Android. 1600 px (proportions gardées) : assez net pour zoomer.
     if (Cam && Cam.takePhoto) return (cam ? Cam.takePhoto({ quality: 90, targetWidth: 1600, targetHeight: 1600, correctOrientation: true }) : Cam.chooseFromGallery({ allowMultipleSelection: false, limit: 1 }).then(r => (r && r.results && r.results[0]) || null))

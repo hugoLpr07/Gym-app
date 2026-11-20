@@ -159,7 +159,7 @@ test('iPhone, galerie : sélecteur d’Apple (BarlogPhoto), pas la grille du plu
   assert.deepEqual(app.state.acE, { k: 'av', m: 'Photo impossible : photo illisible' });
   // Appareil photo : celui d'Apple par BarlogPhoto.camera ; selfie (caméra avant) → recadrage en miroir, comme l'aperçu.
   asked.length = 0; app.setState({ acE: null }); app.avPick(true); await flush(); await flush();
-  assert.deepEqual(asked, [['camera', { side: 1600 }]]);
+  assert.deepEqual(asked, [['camera', { side: 1600, front: true }]], 'ouvert sur la caméra avant');
   assert.equal(app.state.avCrop.f, true);
   assert.equal(app.renderVals().avcTf, 'scaleX(-1)');
 });
