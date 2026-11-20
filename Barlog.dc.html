@@ -292,6 +292,21 @@ input::placeholder{color:#9C9CA8}
 <span style="font-size:17px;font-weight:700;color:#fff;">{{ avBigName }}</span>
 </div>
 </sc-if>
+<sc-if value="{{ avcOn }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:64;background:#0A0A0C;display:flex;flex-direction:column;box-sizing:border-box;padding:calc(16px + env(safe-area-inset-top)) 0 calc(16px + env(safe-area-inset-bottom));">
+<div style="flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:0 16px 12px;text-align:center;"><span style="font-size:20px;font-weight:800;line-height:26px;">{{ avcTitle }}</span><span style="font-size:14px;line-height:20px;color:#9C9CA8;">{{ avcHint }}</span></div>
+<div onPointerDown="{{ avcPtr.down }}" onPointerMove="{{ avcPtr.move }}" onPointerUp="{{ avcPtr.up }}" onPointerCancel="{{ avcPtr.up }}" style="flex:1;min-height:0;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;touch-action:none;-webkit-user-select:none;user-select:none;cursor:grab;">
+<div data-avc="1" style="position:relative;flex:none;width:min(84vw,360px,46vh);height:min(84vw,360px,46vh);">
+<div style="position:absolute;left:{{ avcL }};top:{{ avcT }};width:{{ avcW }};height:{{ avcH }};background-image:{{ avcImg }};background-size:100% 100%;background-repeat:no-repeat;pointer-events:none;"></div>
+<div style="position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 2000px rgba(10,10,12,0.72);border:2px solid rgba(255,255,255,0.85);pointer-events:none;"></div>
+</div>
+</div>
+<div style="flex:none;align-self:center;width:100%;max-width:480px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:12px 16px 0;">
+<sc-if value="{{ avcZoomOn }}" hint-placeholder-val="{{ true }}"><input type="range" min="0" max="100" step="1" value="{{ avcZv }}" onChange="{{ avcZoom }}" aria-label="{{ avcZoomLabel }}" style="width:100%;height:44px;margin:0;accent-color:var(--acc);"></sc-if>
+<div style="display:flex;gap:10px;"><button onClick="{{ avcNo }}" style="flex:1;min-height:52px;border-radius:16px;border:none;background:#24242B;color:#FFFFFF;font-size:15px;font-weight:600;">{{ avcNoLabel }}</button><button onClick="{{ avcGo }}" style="flex:1;min-height:52px;border-radius:16px;border:none;background:var(--acc);color:#0A0A0C;font-size:16px;font-weight:700;">{{ avcGoLabel }}</button></div>
+</div>
+</div>
+</sc-if>
 <sc-if value="{{ confirmOn }}" hint-placeholder-val="{{ false }}">
 <div onClick="{{ confirmCancel }}" style="position:fixed;inset:0;z-index:60;background:rgba(0,0,0,0.65);display:flex;align-items:flex-end;justify-content:center;">
 <div onClick="{{ stop }}" style="width:100%;max-width:480px;box-sizing:border-box;background:#16161A;border-top:1px solid #33333C;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;">
@@ -1704,6 +1719,15 @@ const bodyHkIn = (b, hk) => { const out = (b || []).map(x => ({ ...x })); const 
   return out.sort((a, c) => a.date - c.date); };
 const avUrl = p => p ? SB_URL + '/storage/v1/object/public/avatars/' + p : '', avImg = p => p ? "url('" + avUrl(p) + "')" : 'none';
 const iniOf = n => (String(n || '?').trim().split(/\s+/).slice(0, 2).map(w => [...w][0] || '').join('') || '?').toUpperCase();
+// Recadrage de la photo de profil (0.51.0). c = { w, h, cx, cy, z } en pixels de l'image : le carré gardé fait
+// min(w, h) / z de côté, centré sur (cx, cy). z = 1 : le plus grand carré (= l'ancien carré coupé au centre) ; zoom
+// limité à 5 et à un carré d'au moins 320 px de l'image (sortie 640 px). avcFix borne le zoom et garde le carré
+// dans l'image (jamais de vide dans le cercle). avcMove : le point du cadre en (ax, ay) (fractions du côté) va en
+// (bx, by) et le zoom est multiplié par f (glisser : f = 1 ; pincer : écart des doigts).
+const avcMax = c => Math.max(1, Math.min(5, Math.min(c.w, c.h) / 320));
+const avcFix = c => { const z = Math.min(avcMax(c), Math.max(1, +c.z || 1)), s = Math.min(c.w, c.h) / z, k = (v, L) => Math.min(L - s / 2, Math.max(s / 2, Number.isFinite(v) ? v : L / 2)); return { ...c, z, cx: k(c.cx, c.w), cy: k(c.cy, c.h) }; };
+const avcMove = (c, ax, ay, bx, by, f) => { const m = Math.min(c.w, c.h), s0 = m / c.z, px = c.cx + (ax - 0.5) * s0, py = c.cy + (ay - 0.5) * s0; const t = avcFix({ ...c, z: c.z * (f > 0 && Number.isFinite(f) ? f : 1) }), s1 = m / t.z; return avcFix({ ...t, cx: px - (bx - 0.5) * s1, cy: py - (by - 0.5) * s1 }); };
+const avcRect = c => { const s = Math.min(c.w, c.h) / c.z; return { x: c.cx - s / 2, y: c.cy - s / 2, s }; };
 const relT = (iso, fr) => { const now = Date.now(); const t = Date.parse(iso); if (!t) return ''; const m = Math.floor((now - t) / 60000); if (m < 1) return fr ? 'à l’instant' : 'just now'; if (m < 60) return fr ? 'il y a ' + m + ' min' : m + ' min ago'; const h = Math.floor(m / 60); if (h < 24) return fr ? 'il y a ' + h + ' h' : h + 'h ago'; const d = Math.floor(h / 24); if (d < 7) return fr ? 'il y a ' + d + ' j' : d + 'd ago'; return new Date(t).toLocaleDateString(fr ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'short', ...(new Date(t).getFullYear() !== new Date(now).getFullYear() ? { year: 'numeric' } : {}) }); };
 const hkName = () => plat() === 'android' ? 'Health Connect' : 'Apple Health';
 const hkStore = () => plat() === 'android' ? 'Health Connect' : (LANG === 'fr' ? 'Santé' : 'Health');
@@ -1965,6 +1989,7 @@ class Component extends DCLogic {
     if (st.hrOpen && prev.screen === 'tabs' && prev.tab === 'profile' && !(st.screen === 'tabs' && st.tab === 'profile')) setTimeout(() => { if (this.state.hrOpen) this.hrClose(); }, 0);
     if (st.hrcAt && (prev.screen !== st.screen || prev.openSess !== st.openSess)) setTimeout(() => this.setState({ hrcAt: null }), 0);   // curseur du graphique FC
     if (st.calDay != null && (prev.screen !== st.screen || prev.tab !== st.tab)) setTimeout(() => this.setState({ calDay: null }), 0);   // fenêtre du jour du calendrier
+    if (st.avCrop && (prev.screen !== st.screen || prev.tab !== st.tab || !st.acct)) setTimeout(() => this.avCropEnd(), 0);   // recadrage de la photo
     if (prev.iconMatch !== st.iconMatch || prev.accent !== st.accent || prev.pro !== st.pro) this.syncIcon();
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.workout !== st.workout || prev.restNotif !== st.restNotif) { this.syncRestNotif(); this.syncCardioNotif(); }
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.restTotal !== st.restTotal || prev.workout !== st.workout || prev.hold !== st.hold || prev.liveRest !== st.liveRest) this.syncLive();
@@ -2324,24 +2349,80 @@ class Component extends DCLogic {
   }
   // Réponse à la question cbOpt : « Activer » = comme le bouton du Profil ; « Non merci » = désactivée (réactivable dans le Profil).
   cbOptSet(yes) { this.setState({ cbOpt: false }); if (yes) this.cbToggle(); else this.cbSet({ on: false, link: false }); }
-  // Photo de profil : carré 640 px en JPEG, rangé dans avatars/<id>/<horodatage>.jpg ; les anciennes sont effacées.
+  // Photo de profil : choisie ou prise → fenêtre de recadrage (avCrop) → carré 640 px en JPEG, rangé dans
+  // avatars/<id>/<horodatage>.jpg ; les anciennes sont effacées.
   avPick(cam) {
-    const s = this.state; const a = s.acct; if (!a || !a.profile || s.avBusy) return; if (!this.termsOk()) return this.terms(() => { if (this.nat()) this.avPick(cam); });
-    // App native : plugin Camera (appareil photo ou galerie). Le champ fichier de la WebView n'offre pas l'appareil photo sur Android.
-    const P = this.nat(); const Cam = P && P.Camera;
-    if (Cam && Cam.takePhoto) return (cam ? Cam.takePhoto({ quality: 85, targetWidth: 800, targetHeight: 800, correctOrientation: true }) : Cam.chooseFromGallery({ allowMultipleSelection: false, limit: 1 }).then(r => (r && r.results && r.results[0]) || null))
-      .then(m => { const u = m && (m.webPath || (m.uri && window.Capacitor.convertFileSrc(m.uri))); if (!u) return; return fetch(u).then(r => r.blob()).then(b => this.avSet(b)); })
-      .catch(e => { const t = String((e && e.message) || e); if (!/cancel|annul/i.test(t)) this.acFail('av', (LANG === 'fr' ? 'Photo impossible : ' : 'Photo failed: ') + t.slice(0, 80)); });
+    const s = this.state; const a = s.acct; if (!a || !a.profile || s.avBusy || s.avCrop) return; if (!this.termsOk()) return this.terms(() => { if (this.nat()) this.avPick(cam); });
+    const fr = LANG === 'fr', P = this.nat(), Cam = P && P.Camera, BP = !cam && P && P.BarlogPhoto;
+    const load = u => u ? fetch(u).then(r => r.blob()).then(b => this.avSet(b)) : null;
+    const fail = e => { const t = String((e && e.message) || e); if (!/cancel|annul/i.test(t)) this.acFail('av', (fr ? 'Photo impossible : ' : 'Photo failed: ') + t.slice(0, 80)); };
+    // iPhone, galerie (0.51.0) : sélecteur de photos d'Apple (plugin BarlogPhoto : Photos et Collections, recherche, sans
+    // autorisation sur la photothèque). Celui du plugin Camera n'est qu'une grille de toutes les photos, sans albums.
+    if (BP && BP.pick) return Promise.resolve(BP.pick({ side: 1600 })).then(r => { if (r && r.ok) return load(r.webPath); if (r && !r.cancel) throw new Error(fr && r.why ? r.why : fr ? 'photo illisible' : 'unreadable photo'); }).catch(fail);
+    // App native : plugin Camera (appareil photo ; galerie sur Android = sélecteur de photos d'Android). Le champ fichier
+    // de la WebView n'offre pas l'appareil photo sur Android. 1600 px (proportions gardées) : assez net pour zoomer.
+    if (Cam && Cam.takePhoto) return (cam ? Cam.takePhoto({ quality: 90, targetWidth: 1600, targetHeight: 1600, correctOrientation: true }) : Cam.chooseFromGallery({ allowMultipleSelection: false, limit: 1 }).then(r => (r && r.results && r.results[0]) || null))
+      .then(m => load(m && (m.webPath || (m.uri && window.Capacitor.convertFileSrc(m.uri))))).catch(fail);
     const i = document.createElement('input'); i.type = 'file'; i.accept = 'image/*'; if (cam) i.setAttribute('capture', 'user'); i.onchange = () => { const f = i.files && i.files[0]; if (f) this.avSet(f); }; i.click();
   }
+  // Image reçue → fenêtre de recadrage. L'image chargée reste dans this._avIm (pour avCropGo), sa position dans
+  // this._avc (en avance sur state.avCrop pendant un geste : un rendu par image).
   avSet(file) {
-    const a = this.state.acct; const fr = LANG === 'fr'; if (!a || !a.profile) return; const uid = a.uid; const path = uid + '/' + Date.now() + '.jpg';
+    const a = this.state.acct; const fr = LANG === 'fr'; if (!a || !a.profile) return;
+    const u = URL.createObjectURL(file), im = new Image();
+    im.onload = () => { if (im.naturalWidth > 0 && im.naturalHeight > 0) this.avCropStart(im, u); else im.onerror(); };
+    im.onerror = () => { URL.revokeObjectURL(u); this.acFail('av', fr ? 'Image illisible' : 'Unreadable image'); };
+    im.src = u;
+  }
+  avCropStart(im, u) {
+    this.avCropEnd(); const c = avcFix({ u, w: im.naturalWidth, h: im.naturalHeight, z: 1, cx: NaN, cy: NaN });
+    this._avIm = im; this._avc = c; this._avP = {}; this.setState({ avCrop: c, acE: null });
+  }
+  avCropEnd() {
+    const c = this.state.avCrop; this._avIm = null; this._avc = null; this._avP = {};
+    if (c) { try { URL.revokeObjectURL(c.u); } catch (e) {} this.setState({ avCrop: null }); }
+  }
+  avcSet(c) {
+    this._avc = c; if (this._avcRaf) return;
+    const go = () => { this._avcRaf = 0; if (this._avc && this.state.avCrop) this.setState({ avCrop: this._avc }); };
+    this._avcRaf = 1; if (typeof requestAnimationFrame === 'function') requestAnimationFrame(go); else go();
+  }
+  // Gestes (événements pointeur, touch-action: none) : un doigt ou la souris déplace la photo ; deux doigts la zooment
+  // autour du point entre les doigts. this._avP = doigts posés { id: { x, y } }. Mesures prises sur le cadre [data-avc].
+  avcPtr(e, kind) {
+    const c = this._avc, el = e && e.currentTarget; if (!c || !el) return; const P = this._avP || (this._avP = {}), id = String(e.pointerId);
+    if (kind === 'down') { try { el.setPointerCapture(e.pointerId); } catch (x) {} P[id] = { x: e.clientX, y: e.clientY }; return; }
+    if (kind === 'up') { delete P[id]; return; }
+    const o = P[id]; if (!o) return; const n = { x: e.clientX, y: e.clientY }; P[id] = n;
+    const b = (el.querySelector && el.querySelector('[data-avc]')) || el, r = b.getBoundingClientRect(), D = r.width || 1, fx = v => (v - r.left) / D, fy = v => (v - r.top) / D;
+    const q = Object.keys(P).filter(k => k !== id).map(k => P[k])[0];
+    if (!q) return this.avcSet(avcMove(c, fx(o.x), fy(o.y), fx(n.x), fy(n.y), 1));
+    const d0 = Math.hypot(o.x - q.x, o.y - q.y), d1 = Math.hypot(n.x - q.x, n.y - q.y);
+    this.avcSet(avcMove(c, fx((o.x + q.x) / 2), fy((o.y + q.y) / 2), fx((n.x + q.x) / 2), fy((n.y + q.y) / 2), d0 > 4 ? d1 / d0 : 1));
+  }
+  // Curseur de zoom (0 à 100, échelle logarithmique), autour du centre du cadre.
+  avcZoom(v) { const c = this._avc; if (!c) return; const zm = avcMax(c); this.avcSet(avcFix({ ...c, z: Math.pow(zm, Math.min(100, Math.max(0, +v || 0)) / 100) })); }
+  avcVals(s, fr) {
+    const c = s.avCrop || { u: '', w: 1, h: 1, cx: 0.5, cy: 0.5, z: 1 }, s0 = Math.min(c.w, c.h) / c.z, zm = avcMax(c), pc = v => (Math.round(v * 10000) / 100) + '%';
+    return { avcOn: !!s.avCrop, avcImg: c.u ? "url('" + c.u + "')" : 'none', avcW: pc(c.w / s0), avcH: pc(c.h / s0), avcL: pc(0.5 - c.cx / s0), avcT: pc(0.5 - c.cy / s0),
+      avcTitle: fr ? 'Recadrer la photo' : 'Adjust your photo', avcHint: fr ? 'Glisse pour placer, pince pour zoomer' : 'Drag to move, pinch to zoom',
+      avcZoomOn: zm > 1.01, avcZv: zm > 1.01 ? Math.round(100 * Math.log(c.z) / Math.log(zm)) : 0, avcZoom: e => this.avcZoom(e && e.target ? e.target.value : 0), avcZoomLabel: 'Zoom',
+      avcPtr: { down: e => this.avcPtr(e, 'down'), move: e => this.avcPtr(e, 'move'), up: e => this.avcPtr(e, 'up') },
+      avcNo: () => this.avCropEnd(), avcNoLabel: fr ? 'Annuler' : 'Cancel', avcGo: () => this.avCropGo(), avcGoLabel: fr ? 'Utiliser' : 'Use photo' };
+  }
+  // « Utiliser » : le carré choisi → 640 px JPEG → envoi (avUp). La fenêtre se ferme tout de suite ; « Envoi… » sur la photo.
+  avCropGo() {
+    const c = this._avc, im = this._avIm, fr = LANG === 'fr'; if (!c || !im || this.state.avBusy) return; const r = avcRect(c);
     this.setState({ avBusy: true, acE: null });
-    new Promise((ok, ko) => { const u = URL.createObjectURL(file); const im = new Image(); im.onload = () => { URL.revokeObjectURL(u); ok(im); }; im.onerror = () => { URL.revokeObjectURL(u); ko(new Error(fr ? 'Image illisible' : 'Unreadable image')); }; im.src = u; })
-      .then(im => new Promise((ok, ko) => { const N = 640, c = document.createElement('canvas'); c.width = c.height = N; const x = c.getContext('2d'); const w = im.naturalWidth, h = im.naturalHeight, m = Math.min(w, h);
-        x.fillStyle = '#24242B'; x.fillRect(0, 0, N, N); x.drawImage(im, (w - m) / 2, (h - m) / 2, m, m, 0, 0, N, N); c.toBlob(b => b ? ok(b) : ko(new Error(fr ? 'Image illisible' : 'Unreadable image')), 'image/jpeg', 0.85); }))
-      .then(b => this.sb().then(c => c.storage.from('avatars').upload(path, b, { contentType: 'image/jpeg', upsert: false }).then(({ error }) => { if (error) throw error; return c.from('profiles').update({ avatar: path }).eq('id', uid); })
-        .then(({ error }) => { if (error) throw error; this.avApply(uid, path); this.setState({ avBusy: false }); this.flash(fr ? 'Photo mise à jour' : 'Photo updated'); return this.avClean(c, uid, path).catch(() => {}); })))
+    new Promise((ok, ko) => { const N = 640, cv = document.createElement('canvas'); cv.width = cv.height = N; const x = cv.getContext('2d');
+      x.fillStyle = '#24242B'; x.fillRect(0, 0, N, N); x.imageSmoothingQuality = 'high'; x.drawImage(im, r.x, r.y, r.s, r.s, 0, 0, N, N); cv.toBlob(b => b ? ok(b) : ko(new Error(fr ? 'Image illisible' : 'Unreadable image')), 'image/jpeg', 0.85); })
+      .then(b => this.avUp(b)).catch(e => { this.setState({ avBusy: false }); this.acErr(e, false, 'av'); });
+    this.avCropEnd();
+  }
+  avUp(b) {
+    const a = this.state.acct; const fr = LANG === 'fr'; if (!a || !a.profile) { this.setState({ avBusy: false }); return Promise.resolve(); } const uid = a.uid; const path = uid + '/' + Date.now() + '.jpg';
+    return this.sb().then(c => c.storage.from('avatars').upload(path, b, { contentType: 'image/jpeg', upsert: false }).then(({ error }) => { if (error) throw error; return c.from('profiles').update({ avatar: path }).eq('id', uid); })
+      .then(({ error }) => { if (error) throw error; this.avApply(uid, path); this.setState({ avBusy: false }); this.flash(fr ? 'Photo mise à jour' : 'Photo updated'); return this.avClean(c, uid, path).catch(() => {}); }))
       .catch(e => { this.setState({ avBusy: false }); this.acErr(e, false, 'av'); });
   }
   avDel() {
@@ -3218,6 +3299,7 @@ class Component extends DCLogic {
   proManage() { const u = (this._rcCi && this._rcCi.managementURL) || (plat() === 'ios' ? 'https://apps.apple.com/account/subscriptions' : 'https://play.google.com/store/account/subscriptions?package=com.hugo.barlog'); try { window.open(u, '_blank'); } catch (e) {} }
   goBack() {
     const s = this.state; const set = p => { this.setState(p); return true; };
+    if (s.avCrop) { this.avCropEnd(); return true; }   // recadrage de la photo de profil = Annuler
     if (s.pw) { this._pwThen = null; return set({ pw: null }); }
     if (s.onboarded === false) { const st = (s.ob && s.ob.step) || 0; if (st > 0) return set({ ob: { ...(s.ob || { step: 0 }), step: st - 1 } }); return this.minimizeApp(); }
     if (s.prFx) { clearTimeout(this.prT); return set({ prFx: null }); }
@@ -3900,6 +3982,7 @@ class Component extends DCLogic {
           cbNowOn: (!pro || on) && !!a && !!p, cbNow: () => linked ? this.cbUp(true) : this.cbCheck(true), cbNowLabel: linked ? (cl.hold ? (fr ? 'Récupérer mes séances' : 'Get my workouts back') : (fr ? 'Sauvegarder maintenant' : 'Back up now')) : pro ? (fr ? 'Restaurer ou fusionner' : 'Restore or merge') : (fr ? 'Restaurer une sauvegarde' : 'Restore a backup'), cbNowOp: cl.busy && this._cbRun ? 0.5 : 1,
           cbDelOn: !!a && !!p, cbDelGo: () => this.cbDelete(), cbDelLabel: fr ? 'Supprimer ma sauvegarde en ligne' : 'Delete my online backup', cbErr: (s.acE && s.acE.k === 'cb' && s.acE.m) || '',
           avBigOn: !!s.avBig, avBigImg: (s.avBig && s.avBig.img) || 'none', avBigName: (s.avBig && s.avBig.name) || '', avBigClose: () => this.setState({ avBig: null }) }; })(),
+      ...this.avcVals(s, fr),
       acSend: () => this.acSend(), acSendLabel: busy ? (fr ? 'Envoi…' : 'Sending…') : (fr ? 'Recevoir un code' : 'Get a code'),
       acSentText: (fr ? 'Code à 6 chiffres envoyé à ' : '6-digit code sent to ') + (s.acSent || '') + (fr ? '. Pense à regarder dans les spams.' : '. Check your spam folder too.'),
       acCode: s.acCode || '', onAcCode: e => this.setState({ acCode: e.target.value.replace(/\D/g, '').slice(0, 10) }),
