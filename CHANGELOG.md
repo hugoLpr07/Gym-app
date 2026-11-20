@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 0.50.1 — 2026-11-19 (en cours)
+- Politique de confidentialité (en vigueur le 20 novembre 2026) : capteur cardiaque Bluetooth. Ce que Barlog fait avec le Bluetooth (seulement la ceinture choisie, pendant les séances, aussi écran verrouillé), où va ta fréquence cardiaque (sur ton téléphone hors de la sauvegarde iCloud ou Google, dans ta sauvegarde en ligne et tes exports) et ce qui peut être publié (la moyenne et le max, seulement avec « Montrer ma fréquence cardiaque »). Le résumé en haut ne dit plus que les données de santé ne sont « jamais publiées » : c’est vrai pour Santé et Health Connect, pas pour la fréquence cardiaque que tu choisis de montrer.
+
 ## 0.50.0 — 2026-11-19
 - iPhone, Barlog Pro : capteur cardiaque Bluetooth (ceinture Garmin, Polar, Wahoo… qui utilise le service standard de fréquence cardiaque, comme Strava). Profil → Capteur cardiaque : chercher sa ceinture, la choisir (gardée sur ce téléphone), voir ses BPM, l’oublier. Ensuite, la ceinture se connecte toute seule au début de chaque séance et se déconnecte à « Terminer ». Pendant la séance, ♥ et les BPM à côté du chrono, dès que la ceinture envoie des données ; ils continuent d’être reçus écran verrouillé.
 - Après « Terminer » et dans l’historique : carte « Fréquence cardiaque » avec la courbe de la séance, la moyenne et le max. Elle est gardée avec la séance, dans la sauvegarde en ligne et dans l’export, mais jamais dans la sauvegarde iCloud du téléphone (règle d’Apple pour les données de santé). Sans Pro, la ligne du Profil ouvre la page Pro et la carte est floutée avec le cadenas.
