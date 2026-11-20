@@ -7,6 +7,7 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 
 ## 0.51.0 (en cours)
 - Android, Barlog Pro : capteur cardiaque Bluetooth, comme sur iPhone (ceinture Garmin, Polar, Wahoo… qui utilise le service standard de fréquence cardiaque). Profil → Capteur cardiaque : chercher sa ceinture (Android demande l’autorisation « Appareils à proximité »), la choisir, voir ses BPM, l’oublier. Elle se connecte toute seule au début de chaque séance et se déconnecte à « Terminer ». Pendant la séance, une notification « ♥ BPM » montre ta fréquence cardiaque et permet de la recevoir écran verrouillé ; elle disparaît à « Terminer ».
+- Politique de confidentialité et page d’aide : capteur cardiaque sur Android (autorisation « Appareils à proximité » sans localisation ; « Position » exigée par Android 8 à 11 pour chercher des appareils Bluetooth, jamais lue par Barlog ; notification « Capteur cardiaque » pendant la connexion ; où autoriser le Bluetooth sur Android).
 - Capteur cardiaque (iPhone et Android) : la section Profil → Capteur cardiaque se replie quand on quitte Profil. Avant, restée dépliée, elle gardait la ceinture connectée après « Terminer ».
 
 ## 0.50.1 — 2026-11-19
