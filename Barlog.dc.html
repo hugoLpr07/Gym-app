@@ -1649,7 +1649,7 @@ const ALIAS = { 'Running': ['treadmill', 'run', 'jog', 'jogging', 'course', 'cou
 const noAcc = t => String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 const libHit = (l, q) => !q || [l.name, ...(ALIAS[l.name] || []), ...(l.group === 'Cardio' ? ['cardio'] : [])].some(n => noAcc(n).includes(q));
 const BASE = {'Bench Press':80,'Overhead Press':50,'Incline DB Press':30,'Lateral Raise':12,'Triceps Pushdown':30,'Deadlift':160,'Barbell Row':70,'Pull-up':10,'Face Pull':25,'Barbell Curl':35,'Squat':120,'Romanian Deadlift':100,'Leg Press':180,'Leg Curl':45,'Calf Raise':70};
-const PK = ['bodyRange','bodyU','lenU','distU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight','accent','onboarded','restNotif','remind','goal','level','liveRest','pro','effort','healthOn','hkWSync','hkCSync','bodyMetric','autoPub','cloud','hkTag','push','cbSnooze','gone','pubQ','acctSeen','iconMatch','hrDev','hrShare','hrHideQ'];
+const PK = ['bodyRange','bodyU','lenU','distU','routines','history','lastRoutineId','workout','focus','unit','haptics','sound','wake','autoRest','restDefault','custom','restEnd','restTotal','installSeen','sessMeta','dayWarn','lastExport','backupSnooze','lang','exMeta','body','barLight','accent','onboarded','restNotif','remind','goal','level','liveRest','pro','effort','healthOn','hkWSync','hkCSync','bodyMetric','autoPub','cloud','hkTag','push','cbSnooze','gone','pubQ','acctSeen','iconMatch','hrDev','hrShare','hrHideQ','rnAsk'];
 const e1 = (w, r) => w * (1 + r / 30);
 // Record (PR) : 1RM estimé jamais atteint OU poids jamais soulevé (au moins 1 rep), peu importe les reps (ex. 125 × 2 après 115 × 5).
 // pe / pw : meilleurs précédents (1RM estimé / poids). prSet : la série record au meilleur 1RM estimé parmi ws, ou null.
@@ -1693,7 +1693,7 @@ const rcMsg = e => { const fr = LANG === 'fr', c = rcCode(e);
   return fr ? 'L’achat n’a pas abouti, réessaie dans un moment' : 'The purchase didn’t go through, try again in a moment'; };
 const RSN = [['Contenu inapproprié ou offensant', 'Inappropriate or offensive content'], ['Harcèlement ou intimidation', 'Harassment or bullying'], ['Spam ou arnaque', 'Spam or scam'], ['Usurpation d’identité', 'Impersonation'], ['Autre', 'Other']];
 // Sauvegarde en ligne : ce qui n'est pas envoyé (propre à l'appareil, ou relu depuis Santé / Health Connect).
-const CB_SKIP = ['workout', 'focus', 'restEnd', 'restTotal', 'cloud', 'installSeen', 'lastExport', 'backupSnooze', 'healthOn', 'hkWSync', 'hkCSync', 'hkTag', 'push', 'cbSnooze', 'pubQ', 'acctSeen', 'hrDev', 'hrHideQ'];
+const CB_SKIP = ['workout', 'focus', 'restEnd', 'restTotal', 'cloud', 'installSeen', 'lastExport', 'backupSnooze', 'healthOn', 'hkWSync', 'hkCSync', 'hkTag', 'push', 'cbSnooze', 'pubQ', 'acctSeen', 'hrDev', 'hrHideQ', 'rnAsk'];
 // Sans Pro, « Pas maintenant » sur une sauvegarde trouvée : on ne la repropose pas avant 7 jours (sauf nouvelle sauvegarde).
 const CB_SNOOZE = 7 * DAY;
 const CB_SET = ['bodyRange', 'bodyU', 'lenU', 'distU', 'unit', 'haptics', 'sound', 'wake', 'autoRest', 'restDefault', 'dayWarn', 'lang', 'barLight', 'accent', 'iconMatch', 'restNotif', 'remind', 'goal', 'level', 'liveRest', 'effort', 'bodyMetric', 'autoPub', 'hrShare', 'lastRoutineId'];
@@ -1970,7 +1970,8 @@ class Component extends DCLogic {
   }
   // Bouton retour d'Android, et lien d'un widget Pro touché sans Pro (com.hugo.barlog://pro sur Android,
   // com.hugoleperlier.barlog://pro sur iPhone) → page Pro. Lien = entrée non fiable : seul ce chemin exact compte.
-  appListen() { try { const A = this.nat() && this.nat().App; if (A && !this._backL) { this._backL = true; if (plat() === 'android') A.addListener('backButton', () => this.goBack()); A.addListener('appUrlOpen', e => { if (/^com\.hugo(leperlier)?\.barlog:\/\/pro\/?$/i.test((e && e.url) || '') && !this.isPro()) this.need('widget'); }); } } catch (e) {} }
+  appListen() { try { const A = this.nat() && this.nat().App; if (A && !this._backL) { this._backL = true; if (plat() === 'android') A.addListener('backButton', () => this.goBack());
+    A.addListener('appStateChange', e => { this._fg = !!(e && e.isActive); if (this._fg) this.restShadeClear(); }); A.addListener('appUrlOpen', e => { if (/^com\.hugo(leperlier)?\.barlog:\/\/pro\/?$/i.test((e && e.url) || '') && !this.isPro()) this.need('widget'); }); } } catch (e) {} }
   componentWillUnmount() { clearInterval(this.iv); clearTimeout(this.ra); clearTimeout(this.tt); document.removeEventListener('visibilitychange', this.onVis); window.removeEventListener('pagehide', this.onVis); window.removeEventListener('online', this.onOnline); if (this.wl) this.wl.release(); }
   componentDidUpdate(_, prevState) {
     const prev = prevState || this._snap || {}; const st = this.state;
@@ -1990,6 +1991,8 @@ class Component extends DCLogic {
     if (st.hrcAt && (prev.screen !== st.screen || prev.openSess !== st.openSess)) setTimeout(() => this.setState({ hrcAt: null }), 0);   // curseur du graphique FC
     if (st.calDay != null && (prev.screen !== st.screen || prev.tab !== st.tab)) setTimeout(() => this.setState({ calDay: null }), 0);   // fenêtre du jour du calendrier
     if (st.avCrop && (prev.screen !== st.screen || prev.tab !== st.tab || !st.acct)) setTimeout(() => this.avCropEnd(), 0);   // recadrage de la photo
+    if (prev.workout && !st.workout) this.restShadeClear();   // séance terminée ou abandonnée : plus de « Repos terminé » dans le volet
+    if (!prev.workout && st.workout && st.rnAsk) setTimeout(() => this.rnAskCheck(), 800);   // 1ʳᵉ séance après une réinstallation Android
     if (prev.iconMatch !== st.iconMatch || prev.accent !== st.accent || prev.pro !== st.pro) this.syncIcon();
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.workout !== st.workout || prev.restNotif !== st.restNotif) { this.syncRestNotif(); this.syncCardioNotif(); }
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.restTotal !== st.restTotal || prev.workout !== st.workout || prev.hold !== st.hold || prev.liveRest !== st.liveRest) this.syncLive();
@@ -2058,7 +2061,12 @@ class Component extends DCLogic {
     return F.readFile(o).then(r => r && r.data, () => null)
       .then(id => id || F.writeFile({ ...o, data: 'i' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36), recursive: true }).then(() => F.readFile(o)).then(r => r && r.data))
       .then(id => { const s = this.state; const was = (s.cloud || {}).inst; if (!id || was === id) return;
-        this.setState(st => { const c = { ...(st.cloud || {}), inst: id }; delete c.dev; return { cloud: c, ...(this._tokNew ? {} : { push: { ...(st.push || {}), tok: null } }), ...(was ? { hrDev: null } : {}) }; });   // ceinture : identifiant Bluetooth propre à l'ancien téléphone
+        // Android, réinstallation (0.51.0, choix de Hugo le 20 nov.) : la sauvegarde remet les réglages, pas les autorisations.
+        // Health Connect : l'autorisation disparaît avec la désinstallation → interrupteur éteint (le rallumer la redemande).
+        // « Fin de repos » : « Alarmes et rappels » n'est jamais remise → rnAsk : redemandée au début de la 1ʳᵉ séance (rnAskCheck).
+        const and = was && plat() === 'android';
+        this.setState(st => { const c = { ...(st.cloud || {}), inst: id }; delete c.dev; return { cloud: c, ...(this._tokNew ? {} : { push: { ...(st.push || {}), tok: null } }), ...(was ? { hrDev: null } : {}),   // ceinture : identifiant Bluetooth propre à l'ancien téléphone
+          ...(and && st.healthOn ? { healthOn: false } : {}), ...(and && st.restNotif ? { rnAsk: 1 } : {}) }; });
         // Données remises par la sauvegarde du téléphone (réinstallation, nouveau téléphone) sans la session, exclue exprès :
         // l'accueil « J'ai déjà un compte » ne s'affiche pas, on propose donc une fois de se reconnecter.
         let sess = false; try { sess = !!localStorage.getItem(SB_STORE); } catch (e) {}
@@ -2741,11 +2749,13 @@ class Component extends DCLogic {
     if (ce) {
       this.updW(w => { const y = w.ex[ce.ei].sets[ce.si]; y.r = y.goal; y.rStr = null; y.run = null; return { now }; });
       if (!ce.late) { this.buzz([80, 60, 80]); this.tone([[880, 0, 0.18], [1320, 0.25, 0.3]]); }
+      setTimeout(() => this.restShadeClear(), 1500);   // « Cardio terminé » affiché pendant qu'on est dans l'app
       if (!this.state.workout.ex[ce.ei].sets[ce.si].done) { this.lastCheck = 0; this.check(ce.ei, ce.si); } return;
     }
     if (s.restEnd && !s.restAlert && now >= s.restEnd) {
       const late = now - s.restEnd > 5000;
       this.setState({ now, restAlert: true });
+      setTimeout(() => this.restShadeClear(), 1500);   // « Repos terminé » affiché pendant qu'on est dans l'app (vérifié à l'exécution : _fg)
       if (!late) { this.buzz([80, 60, 80]); this.tone([[880, 0, 0.18], [880, 0.3, 0.18], [1320, 0.6, 0.35]]); }
       clearTimeout(this.ra); this.ra = setTimeout(() => this.setState({ restAlert: false, restEnd: null }), late ? 1200 : 3000); return;
     }
@@ -3352,6 +3362,22 @@ class Component extends DCLogic {
     this.askNotif().then(ok => { if (ok) { this.setState({ restNotif: true }); this.flash(LANG === 'fr' ? 'Notifications activées' : 'Notifications on'); this.askExact(); } else this.flash(LANG === 'fr' ? 'Notifications indisponibles (installe l’app sur l’écran d’accueil)' : 'Notifications unavailable (install the app to your home screen)'); });
   }
   toggleRemind() { const on = !(this.state.remind || {}).on; if (on && this.nat()) this.askNotif(); this.setState(st => ({ remind: { days: [1, 3, 5], t: '18:00', ...(st.remind || {}), on } })); }
+  // « Repos terminé » (1001) et « Cardio terminé » (1002) déjà affichées restent dans le volet : cancel n'efface que les
+  // notifications à venir (plugin 8.3.1). On les retire quand l'app est active (retour dans l'app, fin du repos ou du
+  // cardio vue dans l'app, fin de séance) — jamais app en arrière-plan, où le JavaScript tourne encore à la fin du repos
+  // (vu le 12 nov.) et effacerait l'alerte qu'on attend. _fg : suivi par App appStateChange (appListen), vrai au départ.
+  restShadeClear() { const P = this.nat(), LN = P && P.LocalNotifications; if (!LN || !LN.removeDeliveredNotifications || this._fg === false) return; try { LN.removeDeliveredNotifications({ notifications: [{ id: 1001 }, { id: 1002 }] }).catch(() => {}); } catch (e) {} }
+  // Après une réinstallation Android (rnAsk, posé par instCheck) : au début de la 1ʳᵉ séance, si « Fin de repos » est allumé
+  // mais qu'une autorisation manque (notifications, « Alarmes et rappels »), fenêtre « Autoriser » / « Plus tard », une seule fois.
+  rnAskCheck() {
+    const s = this.state, P = this.nat(), LN = P && P.LocalNotifications; if (!s.rnAsk || s.sure) return;
+    if (!LN || !s.restNotif || plat() !== 'android') { this.setState({ rnAsk: null }); return; }
+    const disp = LN.checkPermissions ? Promise.resolve(LN.checkPermissions()).then(r => !r || r.display === 'granted').catch(() => true) : Promise.resolve(true);
+    return Promise.all([disp, this.exactOk()]).then(([d, x]) => {
+      if (this.state.sure) return; this.setState({ rnAsk: null }); if (d && x) return;
+      this.sure('rnAsk', () => this.askNotif().then(ok => { if (ok) this.askExact(); else this.flash(LANG === 'fr' ? 'Notifications refusées : Paramètres → Applications → Barlog → Notifications' : 'Notifications denied: Settings → Apps → Barlog → Notifications'); }));
+    });
+  }
   syncRestNotif() {
     const s = this.state; const at = s.restNotif && s.workout && s.restEnd && !s.restAlert && s.restEnd > Date.now() + 1500 ? s.restEnd : null;
     if (this._rnAt === at) return; this._rnAt = at;
@@ -4039,6 +4065,10 @@ class Component extends DCLogic {
               : 'To post, comment or add a photo, accept Barlog’s terms of use. In short: respect others; no hateful, sexual, violent, illegal or harassing content. Every report is reviewed within 24 hours, and an account that breaks the rules may be suspended.',
             g: fr ? 'J’accepte' : 'I accept', bg: 'var(--acc)', c: '#0A0A0C', no: fr ? 'Plus tard' : 'Not now',
             link: fr ? 'Lire les conditions' : 'Read the terms', go: () => this.openSite('terms.html') }
+          : k === 'rnAsk' ? { t: fr ? 'Fin de repos pile à l’heure' : 'Rest alerts on time',
+            x: fr ? 'Barlog a été réinstallée : Android a retiré ses autorisations de notification. Sans elles, la notification de fin de repos peut arriver en retard, ou pas du tout. Les redonner ?'
+              : 'Barlog was reinstalled, so Android removed its notification permissions. Without them, the rest-over alert may come late or not at all. Allow them again?',
+            g: fr ? 'Autoriser' : 'Allow', bg: 'var(--acc)', c: '#0A0A0C', no: fr ? 'Plus tard' : 'Not now' }
           : k === 'back' ? { t: fr ? 'Content de te revoir' : 'Welcome back',
             x: fr ? 'Tes séances sont revenues. Reconnecte-toi à ton compte Barlog pour retrouver ton profil, tes abonnés et le Fil.' : 'Your workouts are back. Sign in to your Barlog account to get your profile, followers and Feed back.',
             g: fr ? 'Me reconnecter' : 'Sign in', bg: 'var(--acc)', c: '#0A0A0C', no: fr ? 'Plus tard' : 'Not now' } : null;
