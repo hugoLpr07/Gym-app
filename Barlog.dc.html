@@ -297,12 +297,12 @@ input::placeholder{color:#9C9CA8}
 <div style="flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:0 16px 12px;text-align:center;"><span style="font-size:20px;font-weight:800;line-height:26px;">{{ avcTitle }}</span><span style="font-size:14px;line-height:20px;color:#9C9CA8;">{{ avcHint }}</span></div>
 <div onPointerDown="{{ avcPtr.down }}" onPointerMove="{{ avcPtr.move }}" onPointerUp="{{ avcPtr.up }}" onPointerCancel="{{ avcPtr.up }}" style="flex:1;min-height:0;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;touch-action:none;-webkit-user-select:none;user-select:none;cursor:grab;">
 <div data-avc="1" style="position:relative;flex:none;width:min(84vw,360px,46vh);height:min(84vw,360px,46vh);">
-<div style="position:absolute;left:{{ avcL }};top:{{ avcT }};width:{{ avcW }};height:{{ avcH }};background-image:{{ avcImg }};background-size:100% 100%;background-repeat:no-repeat;pointer-events:none;"></div>
+<div style="position:absolute;left:{{ avcL }};top:{{ avcT }};width:{{ avcW }};height:{{ avcH }};transform:{{ avcTf }};background-image:{{ avcImg }};background-size:100% 100%;background-repeat:no-repeat;pointer-events:none;"></div>
 <div style="position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 2000px rgba(10,10,12,0.72);border:2px solid rgba(255,255,255,0.85);pointer-events:none;"></div>
 </div>
 </div>
 <div style="flex:none;align-self:center;width:100%;max-width:480px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:12px 16px 0;">
-<sc-if value="{{ avcZoomOn }}" hint-placeholder-val="{{ true }}"><input type="range" min="0" max="100" step="1" value="{{ avcZv }}" onChange="{{ avcZoom }}" aria-label="{{ avcZoomLabel }}" style="width:100%;height:44px;margin:0;accent-color:var(--acc);"></sc-if>
+<div style="display:flex;align-items:center;gap:12px;"><div style="flex:1;min-width:0;"><sc-if value="{{ avcZoomOn }}" hint-placeholder-val="{{ true }}"><input type="range" min="0" max="100" step="1" value="{{ avcZv }}" onChange="{{ avcZoom }}" aria-label="{{ avcZoomLabel }}" style="display:block;width:100%;height:44px;margin:0;accent-color:var(--acc);"></sc-if></div><button onClick="{{ avcFlip }}" aria-label="{{ avcFlipAria }}" style="flex:none;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid #33333C;background:transparent;color:#FFFFFF;font-size:14px;font-weight:600;">{{ avcFlipLabel }}</button></div>
 <div style="display:flex;gap:10px;"><button onClick="{{ avcNo }}" style="flex:1;min-height:52px;border-radius:16px;border:none;background:#24242B;color:#FFFFFF;font-size:15px;font-weight:600;">{{ avcNoLabel }}</button><button onClick="{{ avcGo }}" style="flex:1;min-height:52px;border-radius:16px;border:none;background:var(--acc);color:#0A0A0C;font-size:16px;font-weight:700;">{{ avcGoLabel }}</button></div>
 </div>
 </div>
@@ -2353,12 +2353,14 @@ class Component extends DCLogic {
   // avatars/<id>/<horodatage>.jpg ; les anciennes sont effacées.
   avPick(cam) {
     const s = this.state; const a = s.acct; if (!a || !a.profile || s.avBusy || s.avCrop) return; if (!this.termsOk()) return this.terms(() => { if (this.nat()) this.avPick(cam); });
-    const fr = LANG === 'fr', P = this.nat(), Cam = P && P.Camera, BP = !cam && P && P.BarlogPhoto;
-    const load = u => u ? fetch(u).then(r => r.blob()).then(b => this.avSet(b)) : null;
+    const fr = LANG === 'fr', P = this.nat(), Cam = P && P.Camera, BP = P && P.BarlogPhoto, bpGo = BP && (cam ? BP.camera : BP.pick);
+    const load = (u, flip) => u ? fetch(u).then(r => r.blob()).then(b => this.avSet(b, flip)) : null;
     const fail = e => { const t = String((e && e.message) || e); if (!/cancel|annul/i.test(t)) this.acFail('av', (fr ? 'Photo impossible : ' : 'Photo failed: ') + t.slice(0, 80)); };
-    // iPhone, galerie (0.51.0) : sélecteur de photos d'Apple (plugin BarlogPhoto : Photos et Collections, recherche, sans
-    // autorisation sur la photothèque). Celui du plugin Camera n'est qu'une grille de toutes les photos, sans albums.
-    if (BP && BP.pick) return Promise.resolve(BP.pick({ side: 1600 })).then(r => { if (r && r.ok) return load(r.webPath); if (r && !r.cancel) throw new Error(fr && r.why ? r.why : fr ? 'photo illisible' : 'unreadable photo'); }).catch(fail);
+    // iPhone (0.51.0), plugin BarlogPhoto : galerie = sélecteur de photos d'Apple (Photos et Collections, recherche, sans
+    // autorisation sur la photothèque ; celui du plugin Camera n'est qu'une grille de toutes les photos, sans albums) ;
+    // appareil photo = celui d'Apple, qui dit si la photo vient de la caméra avant (front) → recadrage en miroir, comme
+    // l'aperçu au moment de la prise (la photo enregistrée, elle, n'est pas en miroir).
+    if (bpGo) return Promise.resolve(cam ? BP.camera({ side: 1600 }) : BP.pick({ side: 1600 })).then(r => { if (r && r.ok) return load(r.webPath, !!r.front); if (r && !r.cancel) throw new Error(fr && r.why ? r.why : fr ? 'photo illisible' : 'unreadable photo'); }).catch(fail);
     // App native : plugin Camera (appareil photo ; galerie sur Android = sélecteur de photos d'Android). Le champ fichier
     // de la WebView n'offre pas l'appareil photo sur Android. 1600 px (proportions gardées) : assez net pour zoomer.
     if (Cam && Cam.takePhoto) return (cam ? Cam.takePhoto({ quality: 90, targetWidth: 1600, targetHeight: 1600, correctOrientation: true }) : Cam.chooseFromGallery({ allowMultipleSelection: false, limit: 1 }).then(r => (r && r.results && r.results[0]) || null))
@@ -2366,16 +2368,18 @@ class Component extends DCLogic {
     const i = document.createElement('input'); i.type = 'file'; i.accept = 'image/*'; if (cam) i.setAttribute('capture', 'user'); i.onchange = () => { const f = i.files && i.files[0]; if (f) this.avSet(f); }; i.click();
   }
   // Image reçue → fenêtre de recadrage. L'image chargée reste dans this._avIm (pour avCropGo), sa position dans
-  // this._avc (en avance sur state.avCrop pendant un geste : un rendu par image).
-  avSet(file) {
+  // this._avc (en avance sur state.avCrop pendant un geste : un rendu par image). flip : ouvrir en miroir (selfie).
+  avSet(file, flip) {
     const a = this.state.acct; const fr = LANG === 'fr'; if (!a || !a.profile) return;
     const u = URL.createObjectURL(file), im = new Image();
-    im.onload = () => { if (im.naturalWidth > 0 && im.naturalHeight > 0) this.avCropStart(im, u); else im.onerror(); };
+    im.onload = () => { if (im.naturalWidth > 0 && im.naturalHeight > 0) this.avCropStart(im, u, flip); else im.onerror(); };
     im.onerror = () => { URL.revokeObjectURL(u); this.acFail('av', fr ? 'Image illisible' : 'Unreadable image'); };
     im.src = u;
   }
-  avCropStart(im, u) {
-    this.avCropEnd(); const c = avcFix({ u, w: im.naturalWidth, h: im.naturalHeight, z: 1, cx: NaN, cy: NaN });
+  // avCrop.f = photo affichée en miroir. cx, cy sont alors dans la photo telle qu'affichée (retournée) : avcFix,
+  // avcMove et avcRect n'ont pas à le savoir ; seul avCropGo relit l'image d'origine à l'envers.
+  avCropStart(im, u, flip) {
+    this.avCropEnd(); const c = avcFix({ u, w: im.naturalWidth, h: im.naturalHeight, z: 1, cx: NaN, cy: NaN, f: !!flip });
     this._avIm = im; this._avc = c; this._avP = {}; this.setState({ avCrop: c, acE: null });
   }
   avCropEnd() {
@@ -2402,9 +2406,12 @@ class Component extends DCLogic {
   }
   // Curseur de zoom (0 à 100, échelle logarithmique), autour du centre du cadre.
   avcZoom(v) { const c = this._avc; if (!c) return; const zm = avcMax(c); this.avcSet(avcFix({ ...c, z: Math.pow(zm, Math.min(100, Math.max(0, +v || 0)) / 100) })); }
+  // « ⇆ Retourner » : miroir gauche-droite ; le cercle garde la même partie de la photo.
+  avcFlip() { const c = this._avc; if (!c) return; this.avcSet(avcFix({ ...c, f: !c.f, cx: c.w - c.cx })); }
   avcVals(s, fr) {
     const c = s.avCrop || { u: '', w: 1, h: 1, cx: 0.5, cy: 0.5, z: 1 }, s0 = Math.min(c.w, c.h) / c.z, zm = avcMax(c), pc = v => (Math.round(v * 10000) / 100) + '%';
     return { avcOn: !!s.avCrop, avcImg: c.u ? "url('" + c.u + "')" : 'none', avcW: pc(c.w / s0), avcH: pc(c.h / s0), avcL: pc(0.5 - c.cx / s0), avcT: pc(0.5 - c.cy / s0),
+      avcTf: c.f ? 'scaleX(-1)' : 'none', avcFlip: () => this.avcFlip(), avcFlipLabel: fr ? '⇆ Retourner' : '⇆ Flip', avcFlipAria: fr ? 'Retourner la photo (miroir)' : 'Flip the photo (mirror)',
       avcTitle: fr ? 'Recadrer la photo' : 'Adjust your photo', avcHint: fr ? 'Glisse pour placer, pince pour zoomer' : 'Drag to move, pinch to zoom',
       avcZoomOn: zm > 1.01, avcZv: zm > 1.01 ? Math.round(100 * Math.log(c.z) / Math.log(zm)) : 0, avcZoom: e => this.avcZoom(e && e.target ? e.target.value : 0), avcZoomLabel: 'Zoom',
       avcPtr: { down: e => this.avcPtr(e, 'down'), move: e => this.avcPtr(e, 'move'), up: e => this.avcPtr(e, 'up') },
@@ -2414,8 +2421,10 @@ class Component extends DCLogic {
   avCropGo() {
     const c = this._avc, im = this._avIm, fr = LANG === 'fr'; if (!c || !im || this.state.avBusy) return; const r = avcRect(c);
     this.setState({ avBusy: true, acE: null });
+    // En miroir : le carré affiché [x, x + s] correspond à [w − x − s, w − x] de l'image d'origine, dessiné retourné.
     new Promise((ok, ko) => { const N = 640, cv = document.createElement('canvas'); cv.width = cv.height = N; const x = cv.getContext('2d');
-      x.fillStyle = '#24242B'; x.fillRect(0, 0, N, N); x.imageSmoothingQuality = 'high'; x.drawImage(im, r.x, r.y, r.s, r.s, 0, 0, N, N); cv.toBlob(b => b ? ok(b) : ko(new Error(fr ? 'Image illisible' : 'Unreadable image')), 'image/jpeg', 0.85); })
+      x.fillStyle = '#24242B'; x.fillRect(0, 0, N, N); x.imageSmoothingQuality = 'high'; if (c.f) x.setTransform(-1, 0, 0, 1, N, 0);
+      x.drawImage(im, c.f ? c.w - r.x - r.s : r.x, r.y, r.s, r.s, 0, 0, N, N); cv.toBlob(b => b ? ok(b) : ko(new Error(fr ? 'Image illisible' : 'Unreadable image')), 'image/jpeg', 0.85); })
       .then(b => this.avUp(b)).catch(e => { this.setState({ avBusy: false }); this.acErr(e, false, 'av'); });
     this.avCropEnd();
   }

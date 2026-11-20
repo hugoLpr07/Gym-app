@@ -12,6 +12,8 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - Progrès → Séances, calendrier : plusieurs séances le même jour sont toutes accessibles. Avant, toucher le jour n’ouvrait que la dernière. Maintenant, un petit chiffre (2, 3…) marque le jour, et le toucher ouvre une fenêtre avec les séances de ce jour, de la plus ancienne à la plus récente, avec l’heure de début ; toucher une séance l’ouvre. Un jour à une seule séance s’ouvre directement, comme avant.
 - Photo de profil : fenêtre de recadrage après avoir choisi ou pris une photo (iPhone, Android et site). La photo s’affiche sous un cercle, comme elle apparaîtra : glisser pour la placer, pincer à deux doigts (ou le curseur) pour zoomer, puis « Utiliser » ou « Annuler ». Avant, l’app coupait toute seule un carré au centre ; c’est toujours ce que montre le cercle au départ.
 - iPhone, photo de profil depuis la galerie : sélecteur de photos d’Apple, avec les onglets Photos et Collections (Favoris, albums) et la recherche. Avant, une grille de toutes les photos sans albums obligeait à faire défiler toute la photothèque. Ce sélecteur ne demande plus l’accès aux photos : l’app ne reçoit que la photo choisie (réduite, sans le lieu ni la date de la prise).
+- Photo de profil, bouton « ⇆ Retourner » dans la fenêtre de recadrage : met la photo en miroir (gauche-droite), et la remet à l’endroit si on touche encore.
+- iPhone, selfie pris pour la photo de profil : il reste comme on l’a vu en le prenant (en miroir, comme l’aperçu de la caméra avant). Avant, la photo apparaissait inversée par rapport à l’aperçu. Une photo prise avec la caméra arrière reste telle quelle.
 - Appareil photo (photo de profil) : photo prise en 1600 px au lieu de 800, pour rester nette quand on zoome.
 
 ## 0.50.1 — 2026-11-19

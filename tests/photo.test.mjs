@@ -9,14 +9,14 @@ const near = (a, b, msg) => assert.ok(Math.abs(a - b) < 1e-6, `${msg || ''} : ${
 
 // Navigateur simulé : Image (dimensions choisies par le test), adresses blob, canvas qui note drawImage, fetch, plugins.
 function browser(t, { w = 1600, h = 1200, plugins = null, platform = 'ios' } = {}) {
-  const log = { draws: [], revoked: [], fetched: [] };
+  const log = { draws: [], revoked: [], fetched: [], tf: [] };
   const saved = {};
   const put = (k, v) => { saved[k] = Object.getOwnPropertyDescriptor(globalThis, k); Object.defineProperty(globalThis, k, { configurable: true, writable: true, value: v }); };
   put('Image', class { set src(u) { this._u = u; queueMicrotask(() => { this.naturalWidth = w; this.naturalHeight = h; (w > 0 ? this.onload : this.onerror)(); }); } });
   let n = 0;
   put('URL', { createObjectURL: () => 'blob:photo-' + (++n), revokeObjectURL: u => log.revoked.push(u) });
   put('document', { createElement: k => k === 'canvas'
-    ? { getContext: () => ({ fillRect() {}, drawImage: (...a) => log.draws.push(a.slice(1)) }), toBlob: cb => cb('JPEG640') }
+    ? { getContext: () => ({ fillRect() {}, setTransform: (...a) => log.tf.push(a), drawImage: (...a) => log.draws.push(a.slice(1)) }), toBlob: cb => cb('JPEG640') }
     : { click() {}, setAttribute() {} } });
   put('fetch', async u => { log.fetched.push(u); return { blob: async () => 'BLOB:' + u }; });
   put('window', plugins ? { Capacitor: { isNativePlatform: () => true, getPlatform: () => platform, Plugins: plugins, convertFileSrc: u => u } } : {});
@@ -79,6 +79,7 @@ test('photo choisie → fenêtre de recadrage ; « Utiliser » sans toucher envo
   assert.equal(calls.length, 0, 'rien n’est envoyé avant « Utiliser »');
   v.avcGo(); await flush(); await flush();
   assert.deepEqual(log.draws, [[200, 0, 1200, 1200, 0, 0, 640, 640]]);
+  assert.deepEqual(log.tf, [], 'pas en miroir');
   assert.equal(app.state.avCrop, null, 'fenêtre fermée');
   assert.deepEqual(log.revoked, ['blob:photo-1'], 'image libérée');
   assert.equal(calls[0][0], 'upload'); assert.equal(calls[0][1], 'avatars'); assert.match(calls[0][2], /^u1\/\d+\.jpg$/); assert.equal(calls[0][3], 'JPEG640');
@@ -141,7 +142,7 @@ test('iPhone, galerie : sélecteur d’Apple (BarlogPhoto), pas la grille du plu
   const asked = [];
   let answer = { ok: true, webPath: 'capacitor://localhost/_capacitor_file_/tmp/barlog-photo-1.jpg' };
   const plugins = {
-    BarlogPhoto: { pick: async o => { asked.push(['pick', o]); return answer; } },
+    BarlogPhoto: { pick: async o => { asked.push(['pick', o]); return answer; }, camera: async o => { asked.push(['camera', o]); return { ok: true, webPath: 'selfie.jpg', front: true }; } },
     Camera: { takePhoto: async o => { asked.push(['takePhoto', o]); return { webPath: 'cam.jpg' }; }, chooseFromGallery: async () => { asked.push(['gallery']); return { results: [] }; } },
   };
   const log = browser(t, { plugins });
@@ -150,15 +151,47 @@ test('iPhone, galerie : sélecteur d’Apple (BarlogPhoto), pas la grille du plu
   assert.deepEqual(asked, [['pick', { side: 1600 }]]);
   assert.deepEqual(log.fetched, [answer.webPath]);
   assert.equal(app.state.avCrop.w, 1600, 'fenêtre de recadrage ouverte');
+  assert.equal(app.state.avCrop.f, false, 'photo de la galerie : pas en miroir');
   app.avCropEnd();
   answer = { ok: false, cancel: true }; app.avPick(); await flush(); await flush();
   assert.equal(app.state.avCrop, null); assert.equal(app.state.acE, null, 'annuler : aucun message');
   answer = { ok: false, why: 'photo illisible' }; app.avPick(); await flush(); await flush();
   assert.deepEqual(app.state.acE, { k: 'av', m: 'Photo impossible : photo illisible' });
-  // Appareil photo : toujours le plugin Camera, en 1600 px (proportions gardées) pour rester net quand on zoome.
+  // Appareil photo : celui d'Apple par BarlogPhoto.camera ; selfie (caméra avant) → recadrage en miroir, comme l'aperçu.
   asked.length = 0; app.setState({ acE: null }); app.avPick(true); await flush(); await flush();
-  assert.deepEqual(asked, [['takePhoto', { quality: 90, targetWidth: 1600, targetHeight: 1600, correctOrientation: true }]]);
-  assert.ok(app.state.avCrop, 'photo prise → recadrage aussi');
+  assert.deepEqual(asked, [['camera', { side: 1600 }]]);
+  assert.equal(app.state.avCrop.f, true);
+  assert.equal(app.renderVals().avcTf, 'scaleX(-1)');
+});
+
+test('iPhone d’une version sans BarlogPhoto.camera, et Android : appareil photo du plugin Camera en 1600 px, pas en miroir', async t => {
+  const asked = [];
+  const plugins = { BarlogPhoto: { pick: async () => ({ ok: false, cancel: true }) },
+    Camera: { takePhoto: async o => { asked.push(o); return { webPath: 'cam.jpg' }; }, chooseFromGallery: async () => ({ results: [] }) } };
+  browser(t, { plugins });
+  const app = mk();
+  app.avPick(true); await flush(); await flush();
+  assert.deepEqual(asked, [{ quality: 90, targetWidth: 1600, targetHeight: 1600, correctOrientation: true }], 'proportions gardées, assez net pour zoomer');
+  assert.equal(app.state.avCrop.f, false);
+  assert.equal(app.renderVals().avcTf, 'none');
+});
+
+test('« ⇆ Retourner » : miroir, même partie de la photo dans le cercle ; la photo envoyée est retournée', async t => {
+  const log = browser(t);
+  const app = mk(); fakeSb(app);
+  app.avSet('FICHIER'); await flush();
+  app.avcSet({ ...app.state.avCrop, cx: 680 });   // carré de l'image d'origine : x de 80 à 1280
+  app.renderVals().avcFlip();
+  assert.equal(app.state.avCrop.f, true); near(app.state.avCrop.cx, 920, 'position comptée dans la photo retournée');
+  const v = app.renderVals();
+  assert.equal(v.avcTf, 'scaleX(-1)'); assert.equal(v.avcFlipLabel, '⇆ Retourner');
+  v.avcGo(); await flush(); await flush();
+  assert.deepEqual(log.tf, [[-1, 0, 0, 1, 640, 0]], 'dessin en miroir');
+  assert.deepEqual(log.draws, [[80, 0, 1200, 1200, 0, 0, 640, 640]], 'même carré de l’image d’origine qu’avant de retourner');
+  // Retourner deux fois = comme au départ.
+  app.avSet('FICHIER'); await flush();
+  app.renderVals().avcFlip(); app.renderVals().avcFlip();
+  assert.equal(app.state.avCrop.f, false); near(app.state.avCrop.cx, 800);
 });
 
 test('Android (pas de BarlogPhoto) : galerie = sélecteur du plugin Camera, comme avant', async t => {
