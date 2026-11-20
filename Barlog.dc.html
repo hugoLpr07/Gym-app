@@ -1636,7 +1636,7 @@ Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for detai
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance', 'Remove set': 'Retirer la série' });
 Object.assign(FR, { 'Matching app icon': 'Icône de la même couleur', 'Barlog’s Home Screen icon takes your accent color. iOS shows a message each time it changes.': 'L’icône de Barlog sur l’écran d’accueil prend ta couleur. iOS affiche un message à chaque changement.' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.50.1';
+const APP_VERSION = '0.51.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
@@ -1945,6 +1945,9 @@ class Component extends DCLogic {
     if (st.cloud && st.cloud.link && ['history', 'sessMeta', 'routines', 'body', 'custom', 'exMeta'].some(k => prev[k] !== st[k])) this.cbSoon(15000);
     if (prev.workout !== st.workout || prev.wake !== st.wake) this.syncWake();
     if (prev.workout !== st.workout || prev.hrDev !== st.hrDev || prev.hrOpen !== st.hrOpen || prev.pro !== st.pro || prev.proOff !== st.proOff) this.hrAuto();   // ceinture cardiaque
+    // Section Capteur cardiaque repliée en quittant Profil (0.51.0) : dépliée, elle gardait la ceinture connectée après
+    // « Terminer » (vu sur le Samsung : notification « ♥ BPM » restée ; pareil sur iPhone, sans rien de visible).
+    if (st.hrOpen && prev.screen === 'tabs' && prev.tab === 'profile' && !(st.screen === 'tabs' && st.tab === 'profile')) setTimeout(() => { if (this.state.hrOpen) this.hrClose(); }, 0);
     if (st.hrcAt && (prev.screen !== st.screen || prev.openSess !== st.openSess)) setTimeout(() => this.setState({ hrcAt: null }), 0);   // curseur du graphique FC
     if (prev.iconMatch !== st.iconMatch || prev.accent !== st.accent || prev.pro !== st.pro) this.syncIcon();
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.workout !== st.workout || prev.restNotif !== st.restNotif) { this.syncRestNotif(); this.syncCardioNotif(); }
@@ -3395,8 +3398,8 @@ class Component extends DCLogic {
   hk() { const pf = plat(); if (!this.nat() || (pf !== 'ios' && pf !== 'android')) return null; if (!this._hk) { try { const C = window.Capacitor; this._hk = (C.Plugins || {}).BarlogHealth || (pf === 'ios' && C.registerPlugin ? C.registerPlugin('BarlogHealth') : null); } catch (e) {} } return this._hk || null; }
   // Liaison Santé / Health Connect = Barlog Pro. Sans Pro, healthOn est gardé mais rien n'est lu ni envoyé ; elle reprend dès que le Pro revient.
   hkOn() { return !!this.state.healthOn && this.isPro(); }
-  // Ceinture cardiaque Bluetooth (étape C du plan, Pro ; plugin BarlogHR, iPhone d'abord) : absent sur le site et sur
-  // Android tant que le plugin n'y existe pas → rien ne s'affiche.
+  // Ceinture cardiaque Bluetooth (étape C du plan, Pro ; plugin BarlogHR : iPhone depuis 0.50.0, Android depuis 0.51.0) :
+  // absent sur le site et dans une app Android d'avant la 0.51.0 → rien ne s'affiche.
   hr() { const pf = plat(); if (!this.nat() || (pf !== 'ios' && pf !== 'android')) return null; if (!this._hr) { try { const C = window.Capacitor; this._hr = (C.Plugins || {}).BarlogHR || (pf === 'ios' && C.registerPlugin ? C.registerPlugin('BarlogHR') : null); } catch (e) {} } return this._hr || null; }
   // C1 : fréquence cardiaque d'une séance, gardée dans sessMeta[start].hr (suit la sauvegarde en ligne, l'export / import et
   // la suppression de la séance avec sessMeta). Comme Strava : tout ce que la ceinture envoie entre le début et « Finir »
@@ -3454,9 +3457,13 @@ class Component extends DCLogic {
   }
   hrRowTap() {
     if (!this.isPro()) return this.need('hr', () => this.setState({ hrOpen: true }));
-    const open = !this.state.hrOpen, H = this.hr();
-    if (!open && H && this.state.hrScan) H.stopScan().catch(() => {});
-    this.setState({ hrOpen: open, hrErr: '', ...(open ? {} : { hrFound: [], hrScan: false, hrScanned: false }) });
+    if (this.state.hrOpen) return this.hrClose();
+    this.setState({ hrOpen: true, hrErr: '' });
+  }
+  // Replier la section (toucher la ligne, ou quitter Profil) : recherche arrêtée ; hrAuto déconnecte hors séance.
+  hrClose() {
+    const H = this.hr(); if (H && this.state.hrScan) H.stopScan().catch(() => {});
+    this.setState({ hrOpen: false, hrErr: '', hrFound: [], hrScan: false, hrScanned: false });
   }
   hrFind() {
     const H = this.hr(); if (!H) return; this.hrListen(); this.setState({ hrFound: [], hrScan: true, hrScanned: false, hrErr: '' });
@@ -3467,7 +3474,7 @@ class Component extends DCLogic {
     this.setState({ hrDev: { id: d.id, name: String(d.name || '').slice(0, 60) }, hrFound: [], hrScan: false, hrScanned: false, hrErr: '', hrLive: null, hrLink: 'connecting' });
   }
   hrForget() { this.setState({ hrDev: null, hrLive: null, hrErr: '', hrLink: 'idle' }); }
-  // Profil → Capteur cardiaque (iPhone avec le plugin ; rien sur le site ni sur Android pour l'instant) et pastille ♥ en séance.
+  // Profil → Capteur cardiaque (app iPhone ou Android avec le plugin ; rien sur le site) et pastille ♥ en séance.
   hrVals(s) {
     if (!this.hr()) return { hrOn: false, hrOpen: false, hrHasDev: false, hrNoDev: false, hrNone: false, hrFound: [], hrErr: '', hrPillOn: false };
     const fr = LANG === 'fr', pro = this.isPro(), d = s.hrDev, lv = s.hrLive || {}, w = s.workout, open = !!s.hrOpen && pro;

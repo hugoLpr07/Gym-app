@@ -1,4 +1,4 @@
-// Ceinture cardiaque Bluetooth (étape C, Pro, iPhone) : C1 — fréquence cardiaque gardée avec la séance ; C2a — Profil →
+// Ceinture cardiaque Bluetooth (étape C, Pro, iPhone puis Android en 0.51.0) : C1 — fréquence cardiaque gardée avec la séance ; C2a — Profil →
 // Capteur cardiaque, connexion automatique pendant la séance, pastille ♥, carte « Fréquence cardiaque », hors iCloud.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -95,7 +95,7 @@ test('C1 : sans Pro → aucune fréquence cardiaque', async t => {
   assert.equal(a.H.calls.some(c => c[0] === 'samples'), false, 'natif pas interrogé');
 });
 
-test('C1 : sans le plugin (site, Android pour l’instant) → aucune fréquence cardiaque', async t => {
+test('C1 : sans le plugin (site, Android d’avant la 0.51.0) → aucune fréquence cardiaque', async t => {
   const b = hrSession(t, { plugin: false });
   b.app.finish(); await flush();
   assert.equal('hr' in b.app.state.sessMeta[b.start], false);
@@ -149,10 +149,12 @@ function nativeEnv(t, H, files = {}) {
 const PRO = { pro: { plan: 'app' } };
 const DEV = { id: 'A-1', name: 'HRM200:123041' };
 
-test('C2a : Profil → Capteur cardiaque seulement dans l’app iPhone qui a le plugin', t => {
+test('C2a : Profil → Capteur cardiaque seulement dans l’app qui a le plugin (iPhone, Android 0.51.0)', t => {
   assert.equal(makeApp(loadBarlog(), emptyData()).renderVals().hrOn, false, 'site');
   nativeWindow(t, {}, 'android');
   assert.equal(makeApp(loadBarlog(), emptyData()).renderVals().hrOn, false, 'Android sans le plugin');
+  nativeWindow(t, { BarlogHR: fakeHR() }, 'android');
+  assert.equal(makeApp(loadBarlog(), emptyData()).renderVals().hrOn, true, 'Android avec le plugin (C4)');
 });
 
 test('C2a : sans Pro, la ligne a le ✦ et ouvre la page Pro « capteur cardiaque »', t => {
@@ -234,6 +236,34 @@ test('C2a : connexion automatique pendant la séance seulement (Pro), déconnexi
   const free = makeApp(loadBarlog(), { ...emptyData(), hrDev: DEV, workout: { rid: null, name: 'X', start: now, ex: [] } });
   free.hrAuto();
   assert.equal(H2.calls.some(c => c[0] === 'connect'), false);
+});
+
+test('0.51.0 : section Capteur cardiaque repliée en quittant Profil → ceinture déconnectée hors séance, reconnectée en séance', async t => {
+  const now = Date.now(), H = fakeHR(); nativeWindow(t, { BarlogHR: H }, 'android');
+  const app = makeApp(loadBarlog(), { ...emptyData(), lang: 'fr', ...PRO, hrDev: DEV, screen: 'tabs', tab: 'profile' });
+  // Le harnais n'appelle pas componentDidUpdate : on le fait comme React, puis on laisse passer son setTimeout.
+  const go = async o => { const prev = { ...app.state }; app.setState(o); app.componentDidUpdate({}, prev); await new Promise(r => setTimeout(r, 0)); };
+  const last = () => H.calls.filter(c => c[0] === 'connect' || c[0] === 'disconnect').at(-1)[0];
+  app.renderVals().hrRowTap(); app.hrAuto();
+  assert.deepEqual(H.calls.filter(c => c[0] === 'connect'), [['connect', { id: 'A-1' }]], 'section dépliée : connectée');
+  // Autre réglage, même onglet : la section reste dépliée.
+  await go({ unit: 'lb' });
+  assert.equal(app.state.hrOpen, true);
+  // Recherche en cours puis départ vers Aujourd'hui : section repliée, recherche arrêtée, déconnectée.
+  app.setState({ hrScan: true });
+  await go({ tab: 'today' }); app.hrAuto();   // en vrai : le setState de hrClose relance componentDidUpdate → hrAuto
+  assert.deepEqual([app.state.hrOpen, app.state.hrScan], [false, false]);
+  assert.ok(H.calls.some(c => c[0] === 'stopScan'), 'recherche arrêtée');
+  assert.equal(last(), 'disconnect', 'hors séance : déconnectée');
+  // Séance → connectée ; « Terminer » → déconnectée (plus de section dépliée pour la garder).
+  app.setState({ screen: 'workout', workout: { rid: null, name: 'Push', start: now - 60_000, ex: [{ name: 'Bench Press', sets: [{ w: 60, r: 10, done: true }] }] } }); app.hrAuto();   // (componentDidUpdate d'une séance touche document)
+  assert.equal(last(), 'connect', 'séance : reconnectée');
+  app.finish(); app.hrAuto(); await flush();
+  assert.equal(last(), 'disconnect', '« Terminer » → déconnectée');
+  // Toucher la ligne déplie / replie, comme avant.
+  app.setState({ screen: 'tabs', tab: 'profile' });
+  app.renderVals().hrRowTap(); assert.equal(app.state.hrOpen, true);
+  app.renderVals().hrRowTap(); assert.equal(app.state.hrOpen, false);
 });
 
 test('C2a : pastille ♥ en séance — seulement après des BPM de cette séance, « — » si plus rien depuis 5 s', t => {
