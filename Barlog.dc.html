@@ -236,6 +236,21 @@ input::placeholder{color:#9C9CA8}
 </div>
 </sc-if>
 
+<sc-if value="{{ cdOn }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ cdClose }}" style="position:fixed;inset:0;z-index:60;background:rgba(0,0,0,0.65);display:flex;align-items:flex-end;justify-content:center;">
+<div onClick="{{ stop }}" style="width:100%;max-width:480px;max-height:88%;overflow-y:auto;box-sizing:border-box;background:#16161A;border-top:1px solid #33333C;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;">
+<div style="display:flex;flex-direction:column;gap:2px;padding-bottom:4px;"><span style="font-size:20px;font-weight:800;line-height:26px;">{{ cdTitle }}</span><span style="font-size:15px;color:#9C9CA8;">{{ cdSub }}</span></div>
+<sc-for list="{{ cdList }}" as="r" hint-placeholder-count="2">
+<button onClick="{{ r.onClick }}" style="flex:none;display:grid;grid-template-columns:minmax(0,1fr) 16px;gap:12px;align-items:center;min-height:64px;padding:10px 14px;border-radius:14px;border:1px solid #33333C;background:#0A0A0C;color:#fff;text-align:left;" style-active="background:#24242B">
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0;"><div style="display:flex;align-items:baseline;gap:8px;min-width:0;"><span style="flex:1;min-width:0;font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.name }}<span style="color:var(--acc);font-size:13px;font-weight:700;margin-left:6px;">{{ r.pub }}</span></span><span style="flex:none;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;color:#9C9CA8;">{{ r.time }}</span></div><span style="font-size:13px;color:#9C9CA8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.meta }}</span></div>
+<span style="color:#9C9CA8;font-size:18px;">›</span>
+</button>
+</sc-for>
+<button onClick="{{ cdClose }}" style="flex:none;min-height:52px;border-radius:16px;border:none;background:transparent;color:#9C9CA8;font-size:15px;font-weight:600;">{{ cdCloseLabel }}</button>
+</div>
+</div>
+</sc-if>
+
 <sc-if value="{{ sureOn }}" hint-placeholder-val="{{ false }}">
 <div onClick="{{ sureNo }}" style="position:fixed;inset:0;z-index:63;background:rgba(0,0,0,0.65);display:flex;align-items:flex-end;justify-content:center;">
 <div onClick="{{ stop }}" style="width:100%;max-width:480px;box-sizing:border-box;background:#16161A;border-top:1px solid #33333C;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;">
@@ -453,7 +468,7 @@ input::placeholder{color:#9C9CA8}
 </div>
 <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;">
 <sc-for list="{{ calDays }}" as="c" hint-placeholder-count="35">
-<button onClick="{{ c.onClick }}" style="height:42px;padding:0;border-radius:10px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.color }};font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:{{ c.weight }};opacity:{{ c.opacity }};">{{ c.label }}</button>
+<button onClick="{{ c.onClick }}" aria-label="{{ c.aria }}" style="position:relative;height:42px;padding:0;border-radius:10px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.color }};font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:{{ c.weight }};opacity:{{ c.opacity }};">{{ c.label }}<span style="position:absolute;top:3px;right:5px;font-size:10px;line-height:10px;font-weight:800;">{{ c.n }}</span></button>
 </sc-for>
 </div>
 </div>
@@ -1949,6 +1964,7 @@ class Component extends DCLogic {
     // « Terminer » (vu sur le Samsung : notification « ♥ BPM » restée ; pareil sur iPhone, sans rien de visible).
     if (st.hrOpen && prev.screen === 'tabs' && prev.tab === 'profile' && !(st.screen === 'tabs' && st.tab === 'profile')) setTimeout(() => { if (this.state.hrOpen) this.hrClose(); }, 0);
     if (st.hrcAt && (prev.screen !== st.screen || prev.openSess !== st.openSess)) setTimeout(() => this.setState({ hrcAt: null }), 0);   // curseur du graphique FC
+    if (st.calDay != null && (prev.screen !== st.screen || prev.tab !== st.tab)) setTimeout(() => this.setState({ calDay: null }), 0);   // fenêtre du jour du calendrier
     if (prev.iconMatch !== st.iconMatch || prev.accent !== st.accent || prev.pro !== st.pro) this.syncIcon();
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.workout !== st.workout || prev.restNotif !== st.restNotif) { this.syncRestNotif(); this.syncCardioNotif(); }
     if (prev.restEnd !== st.restEnd || prev.restAlert !== st.restAlert || prev.restTotal !== st.restTotal || prev.workout !== st.workout || prev.hold !== st.hold || prev.liveRest !== st.liveRest) this.syncLive();
@@ -3208,6 +3224,7 @@ class Component extends DCLogic {
     if (s.confirmStart) return set({ confirmStart: null });
     if (s.mod) return set({ mod: null, acE: null });
     if (s.cmt) return set({ cmt: null, cmtDelArm: null });
+    if (s.calDay != null) return set({ calDay: null });
     if (s.screen === 'tabs' && s.sv && s.sv.length) return s.socArm ? set({ socArm: null }) : this.svPop();
     if ((s.screen === 'workout' && s.workout && s.exSheet != null) || (s.screen === 'routine' && s.rSheet != null)) return set({ exSheet: null, rSheet: null });
     if (s.bmBig) return set({ bmBig: false });
@@ -4250,15 +4267,21 @@ class Component extends DCLogic {
     const cm = new Date(d0.getFullYear(), d0.getMonth() + s.calOff, 1);
     const dim = new Date(cm.getFullYear(), cm.getMonth() + 1, 0).getDate();
     const lead = (cm.getDay() + 6) % 7;
-    const dayMap = {}, dayN = {}; sessions.forEach(se => { const k = new Date(se.date).toDateString(); if (!dayMap[k]) dayMap[k] = se; dayN[k] = (dayN[k] || 0) + 1; });
+    // Calendrier : un jour peut avoir plusieurs séances (dayAll, de la plus ancienne à la plus récente). Une seule → ouverte
+    // directement ; plusieurs → petit chiffre dans la case et fenêtre du jour (calDay = minuit du jour touché, non sauvegardé).
+    const dayMap = {}, dayN = {}, dayAll = {}; sessions.forEach(se => { const k = new Date(se.date).toDateString(); if (!dayMap[k]) dayMap[k] = se; dayN[k] = (dayN[k] || 0) + 1; (dayAll[k] = dayAll[k] || []).unshift(se); });
+    const openSe = date => go({ calDay: null, openSess: date, screen: 'session', delSessArm: false, sessEdit: false, editBuf: {} });
     let monthCount = 0;
     const calDays = [];
-    for (let i = 0; i < lead; i++) calDays.push({ label: '', bg: 'transparent', color: '#9C9CA8', border: 'transparent', weight: 400, opacity: 0, onClick: () => {} });
+    for (let i = 0; i < lead; i++) calDays.push({ label: '', n: '', aria: '', bg: 'transparent', color: '#9C9CA8', border: 'transparent', weight: 400, opacity: 0, onClick: () => {} });
     for (let dd = 1; dd <= dim; dd++) {
-      const dt = new Date(cm.getFullYear(), cm.getMonth(), dd); const se = dayMap[dt.toDateString()]; const isT = dt.toDateString() === d0.toDateString();
-      if (se) monthCount += dayN[dt.toDateString()];
-      calDays.push({ label: String(dd), bg: se ? ACC : 'transparent', color: se ? '#0A0A0C' : dt > d0 ? '#55555F' : '#FFFFFF', border: isT ? '#FFFFFF' : 'transparent', weight: se ? 700 : 500, opacity: 1, onClick: se ? go({ openSess: se.date, screen: 'session', delSessArm: false, sessEdit: false, editBuf: {} }) : () => {} });
+      const dt = new Date(cm.getFullYear(), cm.getMonth(), dd); const dk = dt.toDateString(); const se = dayMap[dk]; const isT = dk === d0.toDateString(); const nd = dayN[dk] || 0;
+      if (se) monthCount += nd;
+      calDays.push({ label: String(dd), n: nd > 1 ? String(nd) : '', aria: nd > 1 ? dd + ', ' + nd + L(' session') + 's' : String(dd), bg: se ? ACC : 'transparent', color: se ? '#0A0A0C' : dt > d0 ? '#55555F' : '#FFFFFF', border: isT ? '#FFFFFF' : 'transparent', weight: se ? 700 : 500, opacity: 1, onClick: nd > 1 ? go({ calDay: dt.getTime() }) : se ? openSe(se.date) : () => {} });
     }
+    const cdL = (s.calDay != null && s.screen === 'tabs' && s.tab === 'progress' && dayAll[new Date(s.calDay).toDateString()]) || [];
+    const seLine = se => se.ex.length + L(' exercises · ') + se.sets + L(' sets · ') + volU(se.vol) + ' ' + s.unit + (se.dur ? ' · ' + clock(se.dur) : '');
+    const seMark = se => { const pb = meta[se.date] && meta[se.date].pub; return pb ? (pb.pending ? '↗…' : '↗') : ''; };
     const fmtLong = t => new Date(t).toLocaleDateString(LOC(), { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
     const sd = s.openSess != null ? sessions.find(x => x.date === s.openSess) : null;
     const wkM = new Map(); const wkStart = t => { let k = wkM.get(t); if (k === undefined) { const d = new Date(t); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - (d.getDay() + 6) % 7); k = d.getTime(); wkM.set(t, k); } return k; };
@@ -4472,7 +4495,11 @@ class Component extends DCLogic {
       calTitle: cm.toLocaleDateString(LOC(), { month: 'long', year: 'numeric' }), calCount: monthCount + L(' session') + (monthCount === 1 ? '' : 's'),
       calPrev: go({ calOff: s.calOff - 1 }), calNext: () => { if (s.calOff < 0) this.setState({ calOff: s.calOff + 1 }); }, calNextOpacity: s.calOff < 0 ? 1 : 0.3,
       calDays, noSess: !sessions.length,
-      sessList: sessions.slice(0, 100).map(se => { const dt = new Date(se.date); const pb = meta[se.date] && meta[se.date].pub; return { pub: pb ? (pb.pending ? '↗…' : '↗') : '', day: String(dt.getDate()), mon: fmtMon(dt), name: se.name, meta: se.ex.length + L(' exercises · ') + se.sets + L(' sets · ') + volU(se.vol) + ' ' + s.unit + (se.dur ? ' · ' + clock(se.dur) : ''), onClick: go({ openSess: se.date, screen: 'session', delSessArm: false, sessEdit: false, editBuf: {} }) }; }),
+      sessList: sessions.slice(0, 100).map(se => { const dt = new Date(se.date); return { pub: seMark(se), day: String(dt.getDate()), mon: fmtMon(dt), name: se.name, meta: seLine(se), onClick: openSe(se.date) }; }),
+      ...(() => { if (!cdL.length) return { cdOn: false, cdList: [], cdTitle: '', cdSub: '', cdCloseLabel: '', cdClose: () => {} };
+        const fD = dfmt({ weekday: 'long', month: 'long', day: 'numeric' }), fT = dfmt({ hour: 'numeric', minute: '2-digit' });
+        return { cdOn: true, cdTitle: fD(cdL[0].date), cdSub: cdL.length + L(' session') + 's', cdCloseLabel: LANG === 'fr' ? 'Fermer' : 'Close', cdClose: go({ calDay: null }),
+          cdList: cdL.map(se => ({ name: se.name, pub: seMark(se), time: fT(se.date), meta: seLine(se), onClick: openSe(se.date) })) }; })(),
       sdName: sd ? sd.name : '', sdDate: sd ? fmtLong(sd.date) : '',
       sdStats: sd ? [{ label: L('Time'), value: sd.dur ? clock(sd.dur) : '—' }, { label: L('Sets'), value: String(sd.sets) }, { label: 'Vol ' + s.unit, value: volU(sd.vol) }] : [],
       // La dernière série de la séance ne se retire pas (la séance disparaîtrait) : « Supprimer » est là pour ça.

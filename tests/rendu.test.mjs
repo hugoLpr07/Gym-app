@@ -58,6 +58,62 @@ test('Séances : compteur du mois (deux séances le même jour), mois et dates i
   assert.deepEqual([v.chartFrom, v.chartTo], [md(d(8, 20, 9)), md(d(9, 10, 7))]);
 });
 
+test('Calendrier : un jour à plusieurs séances montre un chiffre et ouvre la fenêtre du jour (bogue du 19 nov. : seule la dernière s’ouvrait)', t => {
+  t.mock.timers.enable({ apis: ['Date'], now: T0 });
+  const B = loadBarlog();
+  const d = (m, j, h) => new Date(2026, m, j, h).getTime();
+  const sets = [{ w: 80, r: 5 }];
+  const history = { 'Bench Press': [d(9, 3, 8), d(9, 3, 18), d(9, 10, 7)].map(date => ({ date, sets })), 'Squat': [{ date: d(9, 3, 18), sets }] };
+  const sessMeta = { [d(9, 3, 8)]: { name: 'Matin', dur: 1800000 }, [d(9, 3, 18)]: { name: 'Soir', dur: 3600000 } };
+  const app = makeApp(B, { ...emptyData(), history, sessMeta, now: T0, tab: 'progress', screen: 'tabs', progView: 'sessions', calOff: 0 });
+  let v = app.renderVals();
+  const cell = j => v.calDays.find(c => c.label === String(j));
+  assert.equal(cell(3).n, '2', 'petit chiffre sur le 3 (2 séances)');
+  assert.equal(cell(3).aria, '3, 2 sessions');
+  assert.equal(cell(10).n, '', 'une seule séance : pas de chiffre');
+  assert.equal(cell(4).n, '', 'jour sans séance');
+  assert.equal(v.cdOn, false, 'fenêtre fermée au départ');
+
+  // Une seule séance : ouverte directement, comme avant.
+  cell(10).onClick();
+  assert.equal(app.state.screen, 'session'); assert.equal(app.state.openSess, d(9, 10, 7));
+  app.setState({ screen: 'tabs', openSess: null });
+
+  // Plusieurs : fenêtre du jour, de la plus ancienne à la plus récente, avec l'heure.
+  v = app.renderVals(); cell(3).onClick();
+  assert.equal(app.state.screen, 'tabs', 'reste sur Progrès');
+  v = app.renderVals();
+  assert.equal(v.cdOn, true);
+  assert.equal(v.cdSub, '2 sessions');
+  assert.equal(v.cdTitle, new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).format(d(9, 3, 8)));
+  const hm = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' });
+  assert.deepEqual(v.cdList.map(r => r.name + ' ' + r.time), ['Matin ' + hm.format(d(9, 3, 8)), 'Soir ' + hm.format(d(9, 3, 18))]);
+  assert.match(v.cdList[1].meta, /^2 exercises · 2 sets · /, 'même ligne que l’Historique');
+
+  // Toucher la 1ʳᵉ (celle qui était inaccessible) l'ouvre et ferme la fenêtre.
+  v.cdList[0].onClick();
+  assert.equal(app.state.screen, 'session'); assert.equal(app.state.openSess, d(9, 3, 8)); assert.equal(app.state.calDay, null);
+  assert.equal(app.renderVals().cdOn, false, 'pas de fenêtre par-dessus la séance');
+
+  // Bouton retour d'Android et « Fermer » : ferment la fenêtre sans rien ouvrir.
+  app.setState({ screen: 'tabs', openSess: null }); v = app.renderVals(); cell(3).onClick();
+  assert.equal(app.goBack(), true); assert.equal(app.state.calDay, null); assert.equal(app.state.screen, 'tabs');
+  v = app.renderVals(); cell(3).onClick(); app.renderVals().cdClose();
+  assert.equal(app.state.calDay, null);
+});
+
+test('Calendrier en français : fenêtre du jour « 2 séances », « Fermer »', t => {
+  t.mock.timers.enable({ apis: ['Date'], now: T0 });
+  const B = loadBarlog();
+  const d = (j, h) => new Date(2026, 9, j, h).getTime();
+  const history = { 'Bench Press': [d(3, 8), d(3, 18)].map(date => ({ date, sets: [{ w: 80, r: 5 }] })) };
+  const app = makeApp(B, { ...emptyData(), lang: 'fr', history, now: T0, tab: 'progress', screen: 'tabs', progView: 'sessions', calOff: 0 });
+  app.renderVals().calDays.find(c => c.label === '3').onClick();
+  const v = app.renderVals();
+  assert.equal(v.cdSub, '2 séances'); assert.equal(v.cdCloseLabel, 'Fermer');
+  assert.equal(v.calDays.find(c => c.label === '3').aria, '3, 2 séances');
+});
+
 // ---- Service worker : chargé tel quel dans un bac à sable, avec un faux navigateur ----
 function loadSw() {
   const src = readFileSync(join(dirname(HTML_PATH), 'sw.js'), 'utf8');
