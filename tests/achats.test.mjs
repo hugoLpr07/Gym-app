@@ -6,8 +6,9 @@ import { readFileSync } from 'node:fs';
 import { loadBarlog, makeApp, emptyData, flush, HTML_PATH } from './harness.mjs';
 
 const HTML = readFileSync(HTML_PATH, 'utf8');
-const KEYS = "const RC_KEYS = { ios: '', android: '' }";
-const withKeys = (html = HTML) => { assert.ok(html.includes(KEYS), 'RC_KEYS introuvable'); return html.replace(KEYS, "const RC_KEYS = { ios: 'appl_essai', android: 'goog_essai' }"); };
+const KEYS_RE = /const RC_KEYS = \{[^}]+\}/;
+const withKeys = (html = HTML) => { assert.match(html, KEYS_RE, 'RC_KEYS introuvable'); return html.replace(KEYS_RE, "const RC_KEYS = { ios: 'appl_essai', android: 'goog_essai' }"); };
+const withoutKeys = (html = HTML) => { assert.match(html, KEYS_RE, 'RC_KEYS introuvable'); return html.replace(KEYS_RE, "const RC_KEYS = { ios: '', android: '' }"); };
 const DAY = 86_400_000;
 const acct = { uid: '00000000-0000-4000-8000-00000000000a', email: 'moi@test.local', profile: { username: 'moi' } };
 
@@ -60,11 +61,11 @@ function fakeSb(app, row, err) {
 }
 const settle = async () => { for (let i = 0; i < 6; i++) await flush(); };
 
-test('achats pas encore ouverts (clés vides) : Pro offert pendant la bêta, même au compte administrateur ; « Bientôt disponible »', async t => {
-  const { R, calls } = fakeRC(); nativeWindow(t, 'ios', { Purchases: R });
+test('achats pas encore ouverts (Android, clé vide) : Pro offert pendant la bêta, même au compte administrateur ; « Bientôt disponible »', async t => {
+  const { R, calls } = fakeRC(); nativeWindow(t, 'android', { Purchases: R });
   const app = makeApp(loadBarlog(), { ...emptyData(), lang: 'fr', acct, mqN: 0 });
   app.renderVals(); app.proEval(); app.rcBoot(); await settle();
-  assert.equal(app.state.pro.beta, true, 'l’administrateur garde le Pro offert tant que les achats ne sont pas ouverts');
+  assert.equal(app.state.pro.beta, true, 'Pro offert tant que les achats Android ne sont pas ouverts');
   assert.equal(calls.length, 0, 'plugin jamais configuré sans clé');
   app.need(null); await settle();
   const v = app.renderVals();
@@ -72,15 +73,25 @@ test('achats pas encore ouverts (clés vides) : Pro offert pendant la bêta, mê
   assert.equal(calls.length, 0);
 });
 
-test('bêta + achats ouverts : les testeurs gardent le Pro offert ; le compte administrateur voit le vrai écran d’achat', async t => {
+test('achats ouverts sur iPhone : clé publique appl_ présente, iPhone voit les vrais achats (utilisateurs et admin), Android garde la bêta', async t => {
+  const m = HTML.match(/const RC_KEYS = \{ ios: '([^']*)', android: '([^']*)' \}/);
+  assert.ok(m, 'RC_KEYS introuvable');
+  assert.ok(m[1].startsWith('appl_') && !m[1].startsWith('test_'), 'clé publique App Store iOS attendue (jamais test_)');
+  assert.equal(m[2], '', 'Android reste sans clé tant que les achats Google Play ne sont pas ouverts');
+
   const { R } = fakeRC(); nativeWindow(t, 'ios', { Purchases: R });
-  const B = loadBarlog(withKeys());
-  const tester = makeApp(B, { ...emptyData(), lang: 'fr', acct, mqN: null });
-  tester.renderVals(); tester.proEval(); tester.rcBoot(); await settle();
-  assert.equal(tester.state.pro.beta, true);
+  const B = loadBarlog();
+  const user = makeApp(B, { ...emptyData(), lang: 'fr', acct, mqN: null, pro: { plan: 'beta', since: 1, beta: true } });
+  user.renderVals(); user.proEval(); user.rcBoot(); await settle();
+  assert.equal(user.state.pro, null, 'utilisateur iPhone : plus de Pro bêta, il voit la vraie page d’achat');
   const admin = makeApp(B, { ...emptyData(), lang: 'fr', acct, mqN: 2, pro: { plan: 'beta', since: 1, beta: true } });
   admin.renderVals(); admin.proEval(); admin.rcBoot(); await settle();
-  assert.equal(admin.state.pro, null, 'administrateur : pas de Pro offert, il peut acheter (achats de test gratuits)');
+  assert.equal(admin.state.pro, null, 'administrateur iPhone : pas de Pro offert');
+
+  nativeWindow(t, 'android', { Purchases: R });
+  const androidTester = makeApp(B, { ...emptyData(), lang: 'fr', acct, mqN: null });
+  androidTester.renderVals(); androidTester.proEval(); androidTester.rcBoot(); await settle();
+  assert.equal(androidTester.state.pro.beta, true, 'testeur Android : Pro bêta gardé');
 });
 
 test('page des prix (iPhone) : prix de la boutique, essai seulement si on y a droit, textes d’Apple, liens Conditions et Confidentialité', async t => {
@@ -177,7 +188,7 @@ test('confidentialité : sans achat, RevenueCat n’est jamais contacté (démar
   const f = fakeRC(); nativeWindow(t, 'ios', { Purchases: f.R });
   const app = makeApp(loadBarlog(withKeys()), { ...emptyData(), lang: 'fr' }); fakeSb(app, null);
   app.renderVals(); app.proEval(); app.rcBoot(); app.setState({ acct, mqN: null }); app.rcLogin(acct.uid); await settle();
-  assert.deepEqual(f.calls, []); assert.equal(app.state.pro.beta, true);
+  assert.deepEqual(f.calls, []); assert.equal(app.state.pro || null, null); assert.equal(app.isPro(), false);
   const g = makeApp(loadBarlog(withKeys()), { ...emptyData(), lang: 'fr', acct }); fakeSb(g, null, true);
   g.rcLogin(acct.uid); await settle(); assert.deepEqual(f.calls, [], 'serveur injoignable : RevenueCat pas démarré pour autant');
 });

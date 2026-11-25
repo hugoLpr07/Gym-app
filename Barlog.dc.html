@@ -1666,19 +1666,19 @@ Object.assign(TX, { nAccent: 'Accent color', nTapMuscle: 'Tap a muscle for detai
 Object.assign(FR, { 'Accent color': 'Couleur d’accent', 'Tap a muscle for details': 'Touche un muscle pour voir le détail', 'Enlarge map': 'Agrandir la carte', 'Your exercises: ': 'Tes exercices : ', 'Muscles worked': 'Muscles travaillés', 'Share': 'Partager', 'Exercises for this muscle': 'Exercices pour ce muscle', 'Exercises for ': 'Exercices · ', 'Primary': 'Principal', 'Secondary': 'Secondaire', '+ Workout': '+ Séance', '▶ Start': '▶ Lancer', 'Added to workout': 'Ajouté à la séance', 'Already in workout': 'Déjà dans la séance', 'Remove set': 'Retirer la série' });
 Object.assign(FR, { 'Matching app icon': 'Icône de la même couleur', 'Barlog’s Home Screen icon takes your accent color. iOS shows a message each time it changes.': 'L’icône de Barlog sur l’écran d’accueil prend ta couleur. iOS affiche un message à chaque changement.' });
 const L = s => LANG === 'fr' && FR[s] != null ? FR[s] : s;
-const APP_VERSION = '0.51.0';
+const APP_VERSION = '1.0.0';
 const SB_URL = 'https://yudeusxoogssqyenxslx.supabase.co', SB_KEY = 'sb_publishable_xMRCurU7JH9njrVxxkIDjQ_kLh3gRY0', SB_STORE = 'barlog-sb-auth', UNAME = /^[a-z0-9_.]{3,20}$/, FEED_N = 20;
 // Site (politique, conditions, aide) ; TERMS_V = version des conditions d'utilisation à accepter (profiles.terms_v).
 const SITE = 'https://hugolpr07.github.io/Gym-app/', TERMS_V = 1;
 // Vérification anti-robot avant l'envoi d'un code (Cloudflare Turnstile) : clé publique du site ; vide = désactivée.
 // Le serveur ne l'exige qu'une fois activée dans Supabase (plan 0.10), quand toutes les versions installées l'envoient.
 const TS_KEY = '';
-// Bêta (TestFlight, test fermé Google) : Barlog Pro offert dans les apps, sans écran d'achat (Apple 3.1.1 et 2.5.19) ;
-// passer à false avec les vrais achats (plan, phase 3) retire automatiquement ce Pro offert. Le site garde le mode test.
+// Bêta (TestFlight, test fermé Google) : tant que BETA = true, Barlog Pro reste offert sur les plateformes où les achats ne
+// sont pas encore ouverts (Android en test fermé). Dès qu'une clé RC_KEYS est définie (iPhone), les vrais achats s'ouvrent.
 const BETA = true;
 // Vrais achats (plan 3.4) : RevenueCat. Clés SDK PUBLIQUES, faites pour être dans l'app (comme SB_KEY) ; vide = achats pas encore
 // ouverts sur cette plateforme (« Bientôt disponible »). Droit RevenueCat « pro » (réglages : docs/achats-pro.md de barlog-app).
-const RC_KEYS = { ios: '', android: '' }, RC_ENT = 'pro';
+const RC_KEYS = { ios: 'appl_APKXFkXMtujWNFMIKEynrwOkGli', android: '' }, RC_ENT = 'pro';
 // Site de test (/dev/, fichier local, localhost) : achats simulés gardés pour les essais ; le vrai site ne vend rien.
 const webTest = () => { try { return !/^https?:$/.test(location.protocol) || /\/dev\//.test(location.pathname) || /^(localhost|127\.0\.0\.1)$/.test(location.hostname); } catch (e) { return true; } };
 const proPlan = id => /lifetime/.test(id || '') ? 'life' : /year|annual/.test(id || '') ? 'year' : 'month';
@@ -3205,16 +3205,16 @@ class Component extends DCLogic {
   need(f, fn) { this._pwThen = fn || null; this.setState({ pw: { f, plan: 'year' } }); if (this.nat()) this.pwLoad(); }
   // ───── Barlog Pro : vrais achats (RevenueCat, plan 3.4) ─────
   // D'où vient le Pro (proEval) : app native = droit « pro » de la boutique, lu par RevenueCat (marche aussi sans compte) ;
-  // pendant la bêta (BETA), Pro offert aux testeurs, sauf au compte administrateur quand les achats sont ouverts (il voit le
-  // vrai écran d'achat pour les essais ; achats de test gratuits) ; site = droit enregistré par le serveur (pro_entitlements)
-  // si connecté au même compte (on n'achète pas sur le site) ; achats simulés seulement sur le site de test (webTest).
+  // pendant la bêta (BETA), Pro offert uniquement sur les plateformes sans achats ouverts (!this.rcP(), ex. Android en test
+  // fermé) ; site = droit enregistré par le serveur (pro_entitlements) si connecté au même compte (on n'achète pas sur le site) ;
+  // achats simulés seulement sur le site de test (webTest).
   proEval() {
     const s = this.state, cur = s.pro || null, now = Date.now(), live = p => !!p && (p.until == null || p.until > now); let p;
     if (this.nat()) {
       const st = this._rcPro;
       if (st) p = st;
       else if (st === undefined && cur && cur.src === 'store' && live(cur)) p = cur;   // boutique pas encore relue (démarrage, hors ligne) : dernier droit connu
-      else if (BETA && !(s.acct && s.mqN != null && this.rcP())) p = cur && cur.beta ? cur : { plan: 'beta', since: now, beta: true };
+      else if (BETA && !this.rcP()) p = cur && cur.beta ? cur : { plan: 'beta', since: now, beta: true };
       else p = null;
     } else if (webTest()) p = cur && cur.test ? cur : this._srvPro || null;
     else { const sv = this._srvPro; p = sv !== undefined ? sv : cur && cur.src === 'server' && live(cur) ? cur : null; }

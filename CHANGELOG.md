@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 1.0.0 — 2026-11-25 (en cours)
+- iPhone : ouverture des achats Barlog Pro via l’App Store (mensuel avec essai gratuit de 7 jours, annuel avec essai gratuit d’1 mois, ou À vie ; restaurer mes achats ; gestion de l’abonnement depuis le compte Apple). Sur Android (test fermé), Barlog Pro reste offert tant que les achats Google Play ne sont pas ouverts.
+
 ## 0.51.0 — 2026-11-23
 - Android, Barlog Pro : capteur cardiaque Bluetooth, comme sur iPhone (ceinture Garmin, Polar, Wahoo… qui utilise le service standard de fréquence cardiaque). Profil → Capteur cardiaque : chercher sa ceinture (Android demande l’autorisation « Appareils à proximité »), la choisir, voir ses BPM, l’oublier. Elle se connecte toute seule au début de chaque séance et se déconnecte à « Terminer ». Pendant la séance, une notification « ♥ BPM » montre ta fréquence cardiaque et permet de la recevoir écran verrouillé ; elle disparaît à « Terminer ».
 - Politique de confidentialité (en vigueur le 23 novembre 2026) et page d’aide : capteur cardiaque sur Android (autorisation « Appareils à proximité » sans localisation ; « Position » exigée par Android 8 à 11 pour chercher des appareils Bluetooth, jamais lue par Barlog ; notification « Capteur cardiaque » pendant la connexion ; où autoriser le Bluetooth sur Android).
