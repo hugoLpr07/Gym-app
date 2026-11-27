@@ -5,6 +5,9 @@ Format : MAJEUR.MINEUR.CORRECTIF (ex. 0.4.1)
 - MINEUR : nouvelle fonctionnalité
 - MAJEUR : 1.0 = première version publique sur l'App Store
 
+## 1.0.1 — 2026-11-27
+- App Store : ajout de la fiche en anglais américain (`English (U.S.)`) en préparation de l’ouverture aux États-Unis.
+
 ## 1.0.0 — 2026-11-25
 - iPhone : ouverture des achats Barlog Pro via l’App Store (mensuel avec essai gratuit de 7 jours, annuel avec essai gratuit d’1 mois, ou À vie ; restaurer mes achats ; gestion de l’abonnement depuis le compte Apple). Sur Android (test fermé), Barlog Pro reste offert tant que les achats Google Play ne sont pas ouverts.
 
